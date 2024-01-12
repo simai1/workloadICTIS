@@ -1,34 +1,41 @@
-import {DataTypes, Model} from "sequelize";
-import Educator from "./educator.js";
-import Workload from "./workload.js";
+import { DataTypes, Model } from 'sequelize';
+import Educator from './educator.js';
+import Workload from './workload.js';
 
-
-export default class EducatorForWorkload extends Model{
+export default class EducatorForWorkload extends Model {
     static initialize(sequelize) {
-        EducatorForWorkload.init({
-            EducatorId: {
-                type: DataTypes.INTEGER,
-                references: {
-                    model: Educator,
-                    key: 'id',
+        EducatorForWorkload.init(
+            {
+                id: {
+                    type: DataTypes.UUID,
+                    defaultValue: DataTypes.UUIDV4,
+                    allowNull: false,
+                    primaryKey: true,
                 },
-                allowNull: false,
-            },
-            WorkloadId:{
-                type: DataTypes.INTEGER,
-                references: {
-                    model: Workload,
-                    key: 'id',
+                EducatorId: {
+                    type: DataTypes.UUID,
+                    references: {
+                        model: Educator,
+                        key: 'id',
+                    },
+                    allowNull: false,
                 },
-                allowNull: false,
+                WorkloadId: {
+                    type: DataTypes.UUID,
+                    references: {
+                        model: Workload,
+                        key: 'id',
+                    },
+                    allowNull: false,
+                },
             },
-        },
-{
-            sequelize,
-            schema: 'public',
-            modelName: 'EducatorForWorkload',
-            tableName: 'educator_for_workload',
-            timestamps: false,
-        })
+            {
+                sequelize,
+                schema: 'public',
+                modelName: 'EducatorForWorkload',
+                tableName: 'educator_for_workload',
+                timestamps: false,
+            }
+        );
     }
 }

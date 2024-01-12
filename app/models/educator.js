@@ -12,7 +12,7 @@ export default class Educator extends Model {
                     allowNull: false,
                     primaryKey: true,
                 },
-                employee: {
+                name: {
                     type: DataTypes.STRING,
                     allowNull: false,
                 },
