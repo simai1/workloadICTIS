@@ -4,6 +4,12 @@ export default class Notification extends Model {
     static initialize(sequelize) {
         Notification.init(
             {
+                id: {
+                    type: DataTypes.UUID,
+                    defaultValue: DataTypes.UUIDV4,
+                    allowNull: false,
+                    primaryKey: true,
+                },
                 message: {
                     type: DataTypes.STRING,
                     allowNull: false,
