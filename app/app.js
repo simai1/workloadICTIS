@@ -7,13 +7,13 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 (async function initDb() {
-	try {
-		await dbUtils.initializeDbModels();
-	} catch (e) {
-		console.log(e);
-		console.log('COULD NOT CONNECT TO THE DB, retrying in 5 seconds');
-		setTimeout(initDb, 5000);
-	}
+    try {
+        await dbUtils.initializeDbModels();
+    } catch (e) {
+        console.log(e);
+        console.log('COULD NOT CONNECT TO THE DB, retrying in 5 seconds');
+        setTimeout(initDb, 5000);
+    }
 })();
 
 app.use(express.json({ limit: '10mb' }));
