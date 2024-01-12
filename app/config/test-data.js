@@ -41,3 +41,24 @@ export const workloads = [
         comment: null,
     },
 ];
+
+export const educators = [
+    {
+        name: 'Алексеев Кирилл Николаевич',
+        position: 4,
+        typeOfEmployment: 0,
+        rate: 0.5,
+        maxHours: 450,
+        recommendedMaxHours: 400,
+        minHours: 75,
+    },
+    {
+        name: 'Беспалов Дмитрий Анатольевич',
+        position: 4,
+        typeOfEmployment: 2,
+        rate: 1,
+        maxHours: 900,
+        recommendedMaxHours: 800,
+        minHours: 150,
+    },
+];
