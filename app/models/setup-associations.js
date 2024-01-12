@@ -1,9 +1,12 @@
 import { models } from "./index.js";
+import EducatorForWorkload from "./educator-for-workload.js";
 const { Workload, Educator } = models;
 
 export default function () {
-    //User.hasOne(TokenSchema, { foreignKey: 'userId' });
-    //TokenSchema.belongsTo(User, { foreignKey: 'userId' });
-
-
+    Educator.belongsToMany(Workload,{
+        through: EducatorForWorkload,
+    });
+    Workload.belongsToMany(Educator, {
+        through: EducatorForWorkload,
+    });
 }

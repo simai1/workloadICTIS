@@ -1,6 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
-import EnumTypes from '../config/position';
-import EnumTypeOfEmployment from '../config/type-of-employment';
+import EnumTypes from '../config/position.js';
+import EnumTypeOfEmployment from '../config/type-of-employment.js';
 
 export default class Educator extends Model {
 	static initialize(sequelize) {
