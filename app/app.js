@@ -2,6 +2,7 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import corsMiddleware from './middlewares/cors.js';
 import dbUtils from './utils/db.js';
+import testUtils from './utils/test-data.js';
 import 'dotenv/config';
 
 const app = express();
@@ -10,6 +11,9 @@ const PORT = process.env.PORT || 3000;
 (async function initDb() {
     try {
         await dbUtils.initializeDbModels();
+        if (process.env.NODE_ENV === 'development') {
+            await testUtils.fillWorkload();
+        }
     } catch (e) {
         console.log(e);
         console.log('COULD NOT CONNECT TO THE DB, retrying in 5 seconds');
