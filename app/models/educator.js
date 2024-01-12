@@ -1,56 +1,62 @@
 import { DataTypes, Model } from 'sequelize';
-import EnumTypes from '../config/position';
-import EnumTypeOfEmployment from '../config/type-of-employment';
+import EnumTypes from '../config/position.js';
+import EnumTypeOfEmployment from '../config/type-of-employment.js';
 
 export default class Educator extends Model {
-	static initialize(sequelize) {
-		Educator.init(
-			{
-				employee: {
-					type: DataTypes.STRING,
-					allowNull: false,
-				},
-				position: {
-					type: DataTypes.SMALLINT,
-					allowNull: false,
-					validate: {
-						isIn: [Object.values(EnumTypes)],
-					},
-				},
-				typeOfEmployment: {
-					type: DataTypes.SMALLINT,
-					allowNull: false,
-					validate: {
-						isIn: [Object.values(EnumTypeOfEmployment)],
-					},
-				},
-				rate: {
-					type: DataTypes.REAL,
-					allowNull: false,
-				},
-				maxHours: {
-					type: DataTypes.REAL,
-					allowNull: false,
-					defaultValue: 0,
-				},
-				recommendedMaxHours: {
-					type: DataTypes.REAL,
-					allowNull: false,
-					defaultValue: 0,
-				},
-				minHours: {
-					type: DataTypes.REAL,
-					allowNull: false,
-					defaultValue: 0,
-				},
-			},
-			{
-				sequelize,
-				schema: 'public',
-				modelName: 'Educator',
-				tableName: 'educators',
-				paranoid: true,
-			}
-		);
-	}
+    static initialize(sequelize) {
+        Educator.init(
+            {
+                id: {
+                    type: DataTypes.UUID,
+                    defaultValue: DataTypes.UUIDV4,
+                    allowNull: false,
+                    primaryKey: true,
+                },
+                employee: {
+                    type: DataTypes.STRING,
+                    allowNull: false,
+                },
+                position: {
+                    type: DataTypes.SMALLINT,
+                    allowNull: false,
+                    validate: {
+                        isIn: [Object.values(EnumTypes)],
+                    },
+                },
+                typeOfEmployment: {
+                    type: DataTypes.SMALLINT,
+                    allowNull: false,
+                    validate: {
+                        isIn: [Object.values(EnumTypeOfEmployment)],
+                    },
+                },
+                rate: {
+                    type: DataTypes.REAL,
+                    allowNull: false,
+                },
+                maxHours: {
+                    type: DataTypes.REAL,
+                    allowNull: false,
+                    defaultValue: 0,
+                },
+                recommendedMaxHours: {
+                    type: DataTypes.REAL,
+                    allowNull: false,
+                    defaultValue: 0,
+                },
+                minHours: {
+                    type: DataTypes.REAL,
+                    allowNull: false,
+                    defaultValue: 0,
+                },
+            },
+            {
+                sequelize,
+                schema: 'public',
+                modelName: 'Educator',
+                tableName: 'educators',
+                paranoid: true,
+            }
+        );
+    }
 }
