@@ -1,4 +1,5 @@
 import { Sequelize } from 'sequelize';
+import 'dotenv/config';
 import Notification from './notifications.js';
 import Workload from './workload.js';
 import Educator from './educator.js';
