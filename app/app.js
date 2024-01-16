@@ -3,9 +3,10 @@ import cookieParser from 'cookie-parser';
 import corsMiddleware from './middlewares/cors.js';
 import dbUtils from './utils/db.js';
 import testUtils from './utils/test-data.js';
+import parserRoute from './routes/parser.js'
+import eduRoute from './routes/educator.js';
 import 'dotenv/config';
 
-import eduRoute from './routes/educator.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -30,6 +31,8 @@ app.use(cookieParser());
 app.use(corsMiddleware);
 
 app.use('/educator', eduRoute);
+app.use('/parser', parserRoute);
 
+// app.use('/auth', authRoute);
 console.log(`Node env: ${process.env.NODE_ENV}`);
 app.listen(PORT, () => console.log(`Listen on :${PORT}`));
