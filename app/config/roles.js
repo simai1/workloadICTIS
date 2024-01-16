@@ -1,5 +1,6 @@
 export default {
     DEPARTMENT_HEAD: 0,
     METHODIST: 1,
-    LECTURER: 2,
+    DIRECTORATE: 2,
+    LECTURER: 3,
 };

@@ -5,6 +5,8 @@ import dbUtils from './utils/db.js';
 import testUtils from './utils/test-data.js';
 import 'dotenv/config';
 
+import eduRoute from './routes/educator.js';
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -27,6 +29,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(corsMiddleware);
 
-// app.use('/auth', authRoute);
+app.use('/educator', eduRoute);
+
 console.log(`Node env: ${process.env.NODE_ENV}`);
 app.listen(PORT, () => console.log(`Listen on :${PORT}`));
