@@ -1,7 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 import EnumTypes from '../config/position.js';
 import EnumTypeOfEmployment from '../config/type-of-employment.js';
-import { beforeCU } from '../utils/educators-hours.js';
+import { setHours } from '../utils/educators-hours.js';
 
 export default class Educator extends Model {
     static initialize(sequelize) {
@@ -60,10 +60,10 @@ export default class Educator extends Model {
             }
         );
         Educator.beforeCreate(educator => {
-            beforeCU(educator);
+            setHours(educator);
         });
         Educator.beforeUpdate(educator => {
-            beforeCU(educator);
+            setHours(educator);
         });
     }
 }
