@@ -45,20 +45,14 @@ export const workloads = [
 export const educators = [
     {
         name: 'Алексеев Кирилл Николаевич',
-        position: 4,
-        typeOfEmployment: 0,
+        position: 5,
+        typeOfEmployment: 1,
         rate: 0.5,
-        maxHours: 450,
-        recommendedMaxHours: 400,
-        minHours: 75,
     },
     {
         name: 'Беспалов Дмитрий Анатольевич',
-        position: 4,
-        typeOfEmployment: 2,
+        position: 5,
+        typeOfEmployment: 3,
         rate: 1,
-        maxHours: 900,
-        recommendedMaxHours: 800,
-        minHours: 150,
     },
 ];

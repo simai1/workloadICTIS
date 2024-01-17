@@ -1,6 +1,15 @@
-export default {
-    'Внешнее совместительство': 0,
-    'Внутреннее совместительство': 1,
-    'Основное место работы': 2,
-    'Почасовая оплата труда': 3,
+const typeOfEmployments = {
+    'Внешнее совместительство': 1,
+    'Внутреннее совместительство': 2,
+    'Основное место работы': 3,
+    'Почасовая оплата труда': 4,
 };
+
+export default typeOfEmployments;
+export const map = Object.keys(typeOfEmployments).reduce(
+    (acc, k) => ({
+        ...acc,
+        [typeOfEmployments[k]]: k,
+    }),
+    {}
+);
