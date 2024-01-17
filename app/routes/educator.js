@@ -4,6 +4,8 @@ import { asyncRoute } from '../utils/errors.js';
 
 const router = Router();
 
-router.get('/get', asyncRoute(eduController.getAll));
-
+router.route('/:educatorId').get(asyncRoute(eduController.getOne)).patch(asyncRoute(eduController.update));
+router.route('/').get(asyncRoute(eduController.getAll)).post(asyncRoute(eduController.create));
+router.route('/get/positions').get(asyncRoute(eduController.getPositions));
+router.route('/get/typeOfEmployments').get(asyncRoute(eduController.getTypeOfEmployments));
 export default router;
