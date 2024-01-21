@@ -3,14 +3,14 @@ import 'dotenv/config';
 import Notification from './notifications.js';
 import Workload from './workload.js';
 import Educator from './educator.js';
-import EducatorForWorkload from "./educator-for-workload.js";
+import EducatorForWorkload from './educator-for-workload.js';
 
 const { DB_USER, DB_PWD, DB_HOST, DB_PORT, DB_NAME } = process.env;
 
 export const models = {
-	Notification,
-	Workload,
-	Educator,
+    Notification,
+    Workload,
+    Educator,
     EducatorForWorkload,
 };
 export const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PWD, {
