@@ -16,4 +16,10 @@ export default {
         }
         res.json(workloadsDto);
     },
+    // todo: Написать запросы
+    async splitRow(){},
+    async getEducators(){},
+    async update(){},
+    async sort(){},
+
 };
