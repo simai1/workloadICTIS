@@ -21,8 +21,9 @@ const upload = multer({ // multer settings
 // fixme: привести к человеческому виду
 router.post('/xlsx', upload.single('file'), function (req, res) {
     const fileLocation = req.file.path;
-    console.log(fileLocation); // logs uploads/file-1541675389394.xls
+    console.log(fileLocation);
     asyncRoute(parserController.parseFromXlsx(fileLocation, res));
 });
+
 
 export default router;
