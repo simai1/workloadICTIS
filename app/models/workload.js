@@ -82,6 +82,10 @@ export default class Workload extends Model {
                     type: DataTypes.STRING,
                     allowNull: true,
                 },
+                isSplit: {
+                    type: DataTypes.BOOLEAN,
+                    allowNull: true,
+                },
             },
             {
                 sequelize,

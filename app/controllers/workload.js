@@ -17,9 +17,13 @@ export default {
         res.json(workloadsDto);
     },
     // todo: Написать запросы
-    async splitRow(){},
-    async getEducators(){},
-    async update(){},
-    async sort(){},
+     //Разделить одну нагруозку на несколько подгрупп. !Сумма часов не совпадает
+     async splitRow(){},
+     //Получить список преподов
+     async getEducators(){},
+     //Обновить поля все
+     async update(){},
+     //...?
+     async sort(){},
 
 };

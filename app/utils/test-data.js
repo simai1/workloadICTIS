@@ -28,6 +28,7 @@ async function fillWorkload() {
                 numberOfStudents: x.numberOfStudents,
                 hours: x.hours,
                 audienceHours: x.audienceHours,
+                isSplit: x.isSplit,
             });
         }
     }
