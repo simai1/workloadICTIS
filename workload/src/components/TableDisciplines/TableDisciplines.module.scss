@@ -1,0 +1,34 @@
+.TableDisciplines__inner{
+    width: 100%;
+    overflow-y: scroll;
+}
+.TableDisciplines{
+    width: 100%;
+    overflow-y: scroll;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+   
+  }
+  
+  th, td {
+    border: 1px solid #dddddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  th {
+    background-color: #f2f2f2;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  input[type="text"] {
+    padding: 8px;
+    margin-bottom: 10px;
+  }
+  
