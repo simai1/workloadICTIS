@@ -22,7 +22,7 @@ input[type="text"] {
     top: 0;
   }
 
-.TableDisciplines__inner{
+.TableTeachers__inner{
   overflow-x: scroll;
   border-radius: 8px; 
   border-left: 1px solid var(--gray-color);
@@ -30,24 +30,24 @@ input[type="text"] {
   border-top: 1px solid var(--gray-color);
   position: relative;
   top: 60px;
-  .TableDisciplines{
+  .TableTeachers{
     width: 100%;
   } 
 }
-.TableDisciplines__inner::-webkit-scrollbar {
+.TableTeachers__inner::-webkit-scrollbar {
   background-color: #ffffff;
   height: 5px;
   margin-bottom: 8px;
 }
 
-.TableDisciplines__inner::-webkit-scrollbar-thumb {
+.TableTeachers__inner::-webkit-scrollbar-thumb {
   background-color: #cccccc;
   border-radius: 8px; 
   width: 200px!important;
 }
 
 
-.TableDisciplines__inner::-webkit-scrollbar-track {
+.TableTeachers__inner::-webkit-scrollbar-track {
   background-color: transparent;
   border-left: 1px solid var(--gray-color);
   border-right: 1px solid var(--gray-color);
@@ -64,11 +64,12 @@ table {
   }
   th, td {
     padding: 8px;
-    text-align: left;
+    text-align: center;
   }
   th {
     background-color: var(--gray-color); 
-    padding: 10px 16px;
+    padding: 8px;
+    
   }
   th:first-child{
     
@@ -82,13 +83,13 @@ table {
   }
 }
   
-.Block__tables__shadow{
-    background: linear-gradient(270deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0) 100%);
-    height:100%;
-    width: 20px;
-    position: absolute;
-    right: 0;
-    top: 60px;
-    border-radius: 0px 8px 8px 0px;
+// .Block__tables__shadow{
+//     background: linear-gradient(270deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0) 100%);
+//     height:100%;
+//     width: 20px;
+//     position: absolute;
+//     right: 0;
+//     top: 60px;
+//     border-radius: 0px 8px 8px 0px;
     
-}
+// }

@@ -75,7 +75,7 @@ function TableDisciplines() {
     'Период',
     'Учебный план',
     'Подразделение учебного плана',
-    'Идентификатор 1С-ЗКГУ подразделения учебного плана',
+    'Идентификатор 1С-ЗКГУ',
     'Форма обучения',
     'Уровень подготовки',
     'Направление подготовки (специальность)',
@@ -105,16 +105,16 @@ function TableDisciplines() {
       <Button Bg={selectedComponent === "cathedrals" ? "#DDDDDD": "#ffffff"} text="Кафедральные" onClick={() => handleComponentChange("cathedrals")}/>
       <Button Bg={selectedComponent === "genInstitute" ? "#DDDDDD": "#ffffff"} text="Общеинститутские" onClick={() => handleComponentChange("genInstitute")}/>
     </div>
-   <div className={styles.EditInput}>
-    <EditInput/>
-   </div>
+    <div className={styles.EditInput}>
+      <EditInput/>
+    </div>
  
     <div className={styles.TableDisciplines__inner}>
       <table className={styles.TableDisciplines}>
         <thead>
           <tr>
             {tableHeaders.map((header) => (
-              <th key={header}>{header}</th>
+              <th key={header} className={styles.head__table}>{header}</th>
             ))}
           </tr>
         </thead>

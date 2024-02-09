@@ -1,61 +1,43 @@
 import styles from "./TableTeachers.module.scss";
 import React, { useState } from 'react';
 import EditInput from "../EditInput/EditInput";
-function TableTeachers() {
- 
+
+function TableTeachers({onNameChange}) {
   const [searchText, setSearchText] = useState('');
-  
+  const [clickedName, setClickedName] = useState('');
+
   const tableData = [
     {
       id: 1,
-      discipline: 'Дисциплина 1',
-      workload: 'Нагрузка 1',
-      group: 'Группа 1',
-      block: 'Блок 1',
-      semester: 'Семестр 1',
-      period: 'Период 1',
-      studyPlan: 'Учебный план 1',
-      studyPlanUnit: 'Подразделение учебного плана 1',
-      studyPlanUnitId: 'Идентификатор 1С-ЗКГУ подразделения учебного плана 1',
-      educationForm: 'Форма обучения 1',
-      educationLevel: 'Уровень подготовки 1',
-      trainingDirection: 'Направление подготовки (специальность) 1',
-      profile: 'Профиль 1',
-      educationalProgram: 'Образовательная программа 1',
-      studentCount: 'Количество студентов 1',
-      hours: 'Часы 1',
-      classroomHours: 'Аудиторные часы 1',
-      ratingControlHours: 'Часы рейтинг-контроль 1',
-      zetCount: 'Количество в ЗЕТ 1',
-      teacher: 'Преподаватель 1',
+      name: 'Данильченко Владислав Иванович',
+      post: 'Старший преподаватель',
+      bet: '0,75',
+      hours: '600',
+      hours_period_1: '240',
+      hours_period_2: '260',
+      hours_without_a_period: '100',
+      department: 'ПиБЖ',
     },
     {
       id: 2,
-      discipline: 'Дисциплина 1',
-      workload: 'Нагрузка 1',
-      group: 'Группа 1',
-      block: 'Блок 1',
-      semester: 'Семестр 1',
-      period: 'Период 1',
-      studyPlan: 'Учебный план 1',
-      studyPlanUnit: 'Подразделение учебного плана 1',
-      studyPlanUnitId: 'Идентификатор 1С-ЗКГУ подразделения учебного плана 1',
-      educationForm: 'Форма обучения 1',
-      educationLevel: 'Уровень подготовки 1',
-      trainingDirection: 'Направление подготовки (специальность) 1',
-      profile: 'Профиль 1',
-      educationalProgram: 'Образовательная программа 1',
-      studentCount: 'Количество студентов 1',
-      hours: 'Часы 1',
-      classroomHours: 'Аудиторные часы 1',
-      ratingControlHours: 'Часы рейтинг-контроль 1',
-      zetCount: 'Количество в ЗЕТ 1',
-      teacher: 'Преподаватель 1',
+      name: 'Капылов Никита Максимович',
+      post: 'Старший преподаватель',
+      bet: '0,75',
+      hours: '600',
+      hours_period_1: '240',
+      hours_period_2: '260',
+      hours_without_a_period: '100',
+      department: 'ПиБЖ',
     },
   ];
 
   const handleSearch = (e) => {
     setSearchText(e.target.value);
+  };
+
+  const handleNameClick = (name) => {
+    setClickedName(name);
+    onNameChange(name);
   };
 
   const filteredData = tableData.filter((row) =>
@@ -66,66 +48,51 @@ function TableTeachers() {
 
   const tableHeaders = [
     '№',
-    'Дисциплина',
-    'Нагрузка',
-    'Группа',
-    'Блок',
-    'Семестр',
-    'Период',
-    'Учебный план',
-    'Подразделение учебного плана',
-    'Идентификатор 1С-ЗКГУ подразделения учебного плана',
-    'Форма обучения',
-    'Уровень подготовки',
-    'Направление подготовки (специальность)',
-    'Профиль',
-    'Образовательная программа',
-    'Количество студентов',
+    'Преподователь',
+    'Должность',
+    'Ставка',
     'Часы',
-    'Аудиторные часы',
-    'Часы рейтинг-контроль',
-    'Количество в ЗЕТ',
-    'Преподаватель',
+    'Часы период 1',
+    'Часы период 2',
+    'Часы без периода',
+    'Кафедра',
   ];
 
-  const [selectedComponent, setSelectedComponent] = useState("cathedrals");
-
-  const handleComponentChange = (component) => {
-    setSelectedComponent(component);
-  };
-
- 
-  
   return (
     <div>
-    <input type="text" value={searchText} onChange={handleSearch} placeholder="Поиск" />
+      <input type="text" value={searchText} onChange={handleSearch} placeholder="Поиск" />
 
-    <div className={styles.EditInput}>
-    <EditInput/>
-   </div>
+      <div className={styles.EditInput}>
+        <EditInput />
+      </div>
 
-    <div className={styles.TableDisciplines__inner}>
-      <table className={styles.TableDisciplines}>
-        <thead>
-          <tr>
-            {tableHeaders.map((header) => (
-              <th key={header}>{header}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {filteredData.map((row, index) => (
-            <tr key={index}>
-              {Object.values(row).map((value, i) => (
-                <td key={i}>{value}</td>
+      <div className={styles.TableTeachers__inner}>
+        <table className={styles.TableTeachers}>
+          <thead>
+            <tr>
+              {tableHeaders.map((header) => (
+                <th key={header}>{header}</th>
               ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-    <div className={styles.Block__tables__shadow}></div>
-
+          </thead>
+          <tbody>
+            {filteredData.map((row, index) => (
+              <tr key={index}>
+                <td>{row.id}</td>
+                <td onClick={() => handleNameClick(row.name)}>{row.name}</td>
+                <td>{row.post}</td>
+                <td>{row.bet}</td>
+                <td>{row.hours}</td>
+                <td>{row.hours_period_1}</td>
+                <td>{row.hours_period_2}</td>
+                <td>{row.hours_without_a_period}</td>
+                <td>{row.department}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {/* <div className={styles.Block__tables__shadow}></div> */}
     </div>
   );
 }
