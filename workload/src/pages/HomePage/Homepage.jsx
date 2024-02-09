@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styles from "./HomePage.module.scss";
 import TableDisciplines from '../../components/TableDisciplines/TableDisciplines';
 import TableTeachers from '../../components/TableTeachers/TableTeachers';
@@ -13,9 +13,6 @@ function HomePage() {
     setSelectedComponent(component);
   };
 
-  useEffect(() => {
-    console.log(selectedComponent);
-  }, [selectedComponent]);
   return (
     <Layout>
     <div className={styles.HomePage}> 
@@ -30,7 +27,6 @@ function HomePage() {
       </div>
       <div className={styles.Block__tables}>
         {selectedComponent === "Disciplines" ? <TableDisciplines /> : <TableTeachers />}
-        <div className={styles.Block__tables__shadow}></div>
       </div>
     </div>
     </Layout>

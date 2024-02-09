@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styles from "./TableDisciplines.module.scss";
 import Button from '../../ui/Button/Button';
+import EditInput from '../EditInput/EditInput';
 
 function TableDisciplines() {
   const [searchText, setSearchText] = useState('');
@@ -104,8 +105,10 @@ function TableDisciplines() {
       <Button Bg={selectedComponent === "cathedrals" ? "#DDDDDD": "#ffffff"} text="Кафедральные" onClick={() => handleComponentChange("cathedrals")}/>
       <Button Bg={selectedComponent === "genInstitute" ? "#DDDDDD": "#ffffff"} text="Общеинститутские" onClick={() => handleComponentChange("genInstitute")}/>
     </div>
-   
-
+   <div className={styles.EditInput}>
+    <EditInput/>
+   </div>
+ 
     <div className={styles.TableDisciplines__inner}>
       <table className={styles.TableDisciplines}>
         <thead>
@@ -126,6 +129,8 @@ function TableDisciplines() {
         </tbody>
       </table>
     </div>
+    <div className={styles.Block__tables__shadow}></div>
+
     </div>
   );
 }
