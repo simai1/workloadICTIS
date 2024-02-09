@@ -18,6 +18,7 @@ export const workloads = [
         audienceHours: 132.5,
         ratingControlHours: null,
         comment: null,
+        isSplit: false,
     },
     {
         department: 2,
@@ -39,6 +40,7 @@ export const workloads = [
         audienceHours: 23.35,
         ratingControlHours: null,
         comment: null,
+        isSplit: true,
     },
 ];
 
