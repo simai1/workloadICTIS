@@ -86,6 +86,10 @@ export default class Workload extends Model {
                     type: DataTypes.BOOLEAN,
                     allowNull: true,
                 },
+                originalId: {
+                    type: DataTypes.UUID,
+                    allowNull: true,
+                }
             },
             {
                 sequelize,

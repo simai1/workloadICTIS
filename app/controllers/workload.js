@@ -1,4 +1,4 @@
-import { AppErrorInvalid, AppErrorMissing, AppErrorAlreadyExists, AppErrorNotFound } from '../utils/errors.js';
+import { AppErrorInvalid, AppErrorMissing} from '../utils/errors.js';
 import departments from '../config/departments.js';
 import Workload from '../models/workload.js';
 import WorkloadDto from '../dtos/workloadDto.js';
@@ -26,7 +26,7 @@ export default {
         
             // Загружаем изначальную нагрузку
             const originalWorkload = await Workload.findByPk(id);
-            if (!originalWorkload) throw new AppErrorNotFound('Workload not found');
+            if (!originalWorkload) throw new Error('Workload not found');
         
             // Проверяем, разделена ли уже нагрузка
             if (originalWorkload.isSplit === true) {
@@ -44,6 +44,7 @@ export default {
                     // Устанавливаем новое время и флаг разделения для каждой новой нагрузки
                     copyWorkload.hours = newHours;
                     copyWorkload.isSplit = true;
+                    copyWorkload.originalId = originalWorkload.id;
         
                     // Удаляем уникальный идентификатор для создания нового
                     delete copyWorkload.id;
@@ -68,9 +69,9 @@ export default {
         }
     },
 
-    async getOne({params: {workloadId}}, res) {
-        if(!workloadId) throw new Error('Не указан айди нагрузки');
-        const workload = await Workload.findByPk(workloadId);
+    async getOne({params: {id}}, res) {
+        // if(!workloadId) throw new Error('Не указан айди нагрузки');
+        const workload = await Workload.findByPk(id);
         if(!workload) throw new Error('Нет такой нагрузки');
         const workloadDto = new WorkloadDto(workload);
         res.json(workloadDto);
@@ -80,9 +81,9 @@ export default {
         // Реализация метода получения списка преподавателей
     },
 
-    async update({params: {workloadId}, body: {numberOfStudents, hours, comment}}, res) {
-        if(!workloadId) throw new Error('Не указан айди нагрузки');
-        const workload = await Workload.findByPk(workloadId);
+    async update({params: {id}, body: {numberOfStudents, hours, comment}}, res) {
+        // if(!workloadId) throw new Error('Не указан айди нагрузки');
+        const workload = await Workload.findByPk(id);
         if (!numberOfStudents && !hours && !comment) throw new Error('Не указаны обязательные поля');
         if(!numberOfStudents) numberOfStudents = workload.numberOfStudents;
         if(!hours) hours = workload.hours;
