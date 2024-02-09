@@ -3,6 +3,7 @@ import departments from '../config/departments.js';
 import Workload from '../models/workload.js';
 import WorkloadDto from '../dtos/workloadDto.js';
 import _ from 'lodash';
+import Educator from '../models/educator.js';
 
 export default {
     async getDepartment({ params: { department } }, res) {
@@ -81,21 +82,45 @@ export default {
         // Реализация метода получения списка преподавателей
     },
 
-    async update({params: {id}, body: {numberOfStudents, hours, comment}}, res) {
-        // if(!workloadId) throw new Error('Не указан айди нагрузки');
-        const workload = await Workload.findByPk(id);
-        if (!numberOfStudents && !hours && !comment) throw new Error('Не указаны обязательные поля');
-        if(!numberOfStudents) numberOfStudents = workload.numberOfStudents;
-        if(!hours) hours = workload.hours;
-        if(!comment) comment = workload.comment;
-        if (!workload) throw new Error('Нет такой нагрузки');
-        await workload.update({
-            numberOfStudents,
-            hours,
-            comment,
-        });
-        res.json({status: 'OK'});
+    async update({ params: { id }, body: { name, numberOfStudents, hours, comment } }, res) {
+        try {
+            const workload = await Workload.findByPk(id, { include: Educator });
+            if (!numberOfStudents && !hours && !comment) {
+                throw new Error('Не указаны обязательные поля');
+            }
+    
+            if (!workload) {
+                throw new Error('Нет такой нагрузки');
+            }
+    
+            // Обновляем поля
+            numberOfStudents = numberOfStudents || workload.numberOfStudents;
+            hours = hours || workload.hours;
+            comment = comment || workload.comment;
+    
+            // Если указано новое имя, обновляем его в таблице Educator
+            // if (name) {
+            //     if (!workload.Educator) {
+            //         throw new Error('Нагрузка не связана с преподавателем');
+            //     }
+    
+            //     await workload.Educator.update({ name });
+            // }
+    
+            // Обновляем запись в таблице Workload
+            await workload.update({
+                numberOfStudents,
+                hours,
+                comment,
+            });
+    
+            res.json({ status: 'OK' });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
     },
+    
 
     async sort(res) {
         // Реализация метода сортировки
