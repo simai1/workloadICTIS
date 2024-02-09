@@ -22,8 +22,8 @@ export default {
     async splitRow({ params: { id }, body: { n } }, res) {
         try {
             // Проверяем, что параметры корректны
-            if (!id) throw new AppErrorMissing('id');
-            if (!n || isNaN(n) || n < 1) throw new AppErrorMissing('Valid n value');
+            if (!id) throw new Error('Укажите айди нагрузки');
+            if (!n || isNaN(n) || n < 1) throw new Error('Укажите количество групп для разделения нагрузки');
         
             // Загружаем изначальную нагрузку
             const originalWorkload = await Workload.findByPk(id);
