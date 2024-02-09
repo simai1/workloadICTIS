@@ -1,8 +1,7 @@
-import { AppErrorInvalid, AppErrorMissing } from '../utils/errors.js';
+import { AppErrorInvalid, AppErrorMissing, AppErrorAlreadyExists, AppErrorNotFound } from '../utils/errors.js';
 import departments from '../config/departments.js';
 import Workload from '../models/workload.js';
 import WorkloadDto from '../dtos/workloadDto.js';
-import { AppErrorAlreadyExists} from '../utils/errors.js';
 import _ from 'lodash';
 
 export default {
@@ -18,7 +17,7 @@ export default {
         }
         res.json(workloadsDto);
     },
-    // todo: Написать запросы
+
     async splitRow({ params: { id }, body: { n } }, res) {
         try {
             // Проверяем, что параметры корректны
@@ -68,16 +67,36 @@ export default {
             res.status(500).json({ error: 'Internal Server Error' });
         }
     },
-    
-        
-        // Отправляем результат в формате JSON
-      
-          
-     //Получить список преподов
-     async getEducators(){},
-     //Обновить поля все
-     async update(){},
-     //...?
-     async sort(){},
 
+    async getOne({params: {workloadId}}, res) {
+        if(!workloadId) throw new Error('Не указан айди нагрузки');
+        const workload = await Workload.findByPk(workloadId);
+        if(!workload) throw new Error('Нет такой нагрузки');
+        const workloadDto = new WorkloadDto(workload);
+        res.json(workloadDto);
+    },
+
+    async getEducators(res) {
+        // Реализация метода получения списка преподавателей
+    },
+
+    async update({params: {workloadId}, body: {numberOfStudents, hours, comment}}, res) {
+        if(!workloadId) throw new Error('Не указан айди нагрузки');
+        const workload = await Workload.findByPk(workloadId);
+        if (!numberOfStudents && !hours && !comment) throw new Error('Не указаны обязательные поля');
+        if(!numberOfStudents) numberOfStudents = workload.numberOfStudents;
+        if(!hours) hours = workload.hours;
+        if(!comment) comment = workload.comment;
+        if (!workload) throw new Error('Нет такой нагрузки');
+        await workload.update({
+            numberOfStudents,
+            hours,
+            comment,
+        });
+        res.json({status: 'OK'});
+    },
+
+    async sort(res) {
+        // Реализация метода сортировки
+    },
 };
