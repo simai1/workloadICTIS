@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styles from "./TableDisciplines.module.scss";
+import Button from '../../ui/Button/Button';
 
 function TableDisciplines() {
   const [searchText, setSearchText] = useState('');
@@ -86,18 +87,26 @@ function TableDisciplines() {
     'Количество в ЗЕТ',
     'Преподаватель',
   ];
+
+  const [selectedComponent, setSelectedComponent] = useState("cathedrals");
+
+  const handleComponentChange = (component) => {
+    setSelectedComponent(component);
+  };
+
+ 
   
   return (
     <div>
-<input
-        type="text"
-        value={searchText}
-        onChange={handleSearch}
-        placeholder="Поиск"
-      />
-    
+    <input type="text" value={searchText} onChange={handleSearch} placeholder="Поиск" />
+
+    <div className={styles.ButtonCaf_gen}>
+      <Button Bg={selectedComponent === "cathedrals" ? "#DDDDDD": "#ffffff"} text="Кафедральные" onClick={() => handleComponentChange("cathedrals")}/>
+      <Button Bg={selectedComponent === "genInstitute" ? "#DDDDDD": "#ffffff"} text="Общеинститутские" onClick={() => handleComponentChange("genInstitute")}/>
+    </div>
+   
+
     <div className={styles.TableDisciplines__inner}>
-      
       <table className={styles.TableDisciplines}>
         <thead>
           <tr>

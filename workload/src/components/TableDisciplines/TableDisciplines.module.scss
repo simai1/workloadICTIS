@@ -1,34 +1,81 @@
+@import "./../../style/colors.scss";
+
+
 .TableDisciplines__inner{
-    width: 100%;
-    overflow-y: scroll;
+    //width: 100%;
+    overflow-x: scroll;
+    border-radius: 8px; 
+    border-left: 1px solid var(--gray-color);
+    border-right: 1px  solid var(--gray-color);
+    border-top: 1px solid var(--gray-color);
+    .TableDisciplines{
+      width: 100%;
+     
+    } 
 }
-.TableDisciplines{
-    width: 100%;
-    overflow-y: scroll;
+  .TableDisciplines__inner::-webkit-scrollbar {
+    background-color: #ffffff;
+    height: 5px;
+    margin-bottom: 8px;
+  }
+
+  .TableDisciplines__inner::-webkit-scrollbar-thumb {
+    background-color: #cccccc;
+    border-radius: 8px; 
+    width: 200px!important;
+  }
+  
+  
+  .TableDisciplines__inner::-webkit-scrollbar-track {
+    background-color: transparent;
+    border-left: 1px solid var(--gray-color);
+    border-right: 1px solid var(--gray-color);
+    border-bottom: 1px solid var(--gray-color);
+    border-radius: 0px 0px 8px 8px; 
+    
+  }
+
+
+.ButtonCaf_gen{
+margin-bottom: 16px;
 }
+
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
-   
-  }
-  
-  th, td {
-    border: 1px solid #dddddd;
-    padding: 8px;
-    text-align: left;
-  }
-  
-  th {
-    background-color: #f2f2f2;
-  }
-  
-  tr:nth-child(even) {
-    background-color: #f2f2f2;
+    font-size: 14px;
+    thead{
+      height: 58px;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: var(--gray-color); 
+      padding: 10px 16px;
+    }
+    th:first-child{
+      
+      border-radius: 8px 0px 0px 0px;
+    }
+    th:last-child{
+      border-radius: 0px 8px 0px 0px;
+    }
+    tr {
+      background-color: var(--white-color);
+    }
   }
   
   input[type="text"] {
-    padding: 8px;
     margin-bottom: 10px;
+    position: absolute;
+    top: -92px;
+    width: 310px;
+    font-size: 18px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    color: var(--border-color);
+    padding: 9px 0px 9px 16px;
   }
   
