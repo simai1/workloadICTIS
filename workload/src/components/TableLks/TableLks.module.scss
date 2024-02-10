@@ -105,8 +105,15 @@ table {
     position: relative;
     left: 0;
     top: 0;
-
+    transition: 0.15s linear all;   
     p{
         margin-left: 6px;
     }
+}
+.buttonBack:hover{
+  img,p{
+    transition: 0.15s linear all;   
+    opacity: 0.6;
+    cursor: pointer;
+  }
 }
