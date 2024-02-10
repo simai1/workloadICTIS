@@ -46,9 +46,11 @@ function TableTeachers({onNameChange}) {
     setSearchText(e.target.value);
   };
 
-  const handleNameClick = (name) => {
+  const handleNameClick = (name, index) => {
     setClickedName(name);
-    onNameChange(name);
+    let postClickTicher = tableData[index].post;
+    let betClickTicher = tableData[index].bet;
+    onNameChange(name, postClickTicher, betClickTicher);
   };
 
   const filteredData = tableData.filter((row) =>
@@ -80,7 +82,7 @@ function TableTeachers({onNameChange}) {
             {filteredData.map((row, index) => (
               <tr key={index}>
                 <td>{row.id}</td>
-                <td onClick={() => handleNameClick(row.name)} className={styles.tdName}>{row.name}</td>
+                <td onClick={() => handleNameClick(row.name, index)} className={styles.tdName}>{row.name}</td>
                 <td>{row.post}</td>
                 <td>{row.bet}</td>
                 <td>{row.hours}</td>

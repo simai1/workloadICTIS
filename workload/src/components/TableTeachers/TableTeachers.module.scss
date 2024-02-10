@@ -8,8 +8,10 @@ input[type="text"] {
   font-size: 18px;
   border-radius: 8px;
   border: 1px solid var(--border-color);
-  color: var(--border-color);
+  color: var(--black-color);
   padding: 9px 0px 9px 16px;
+ 
+  
 }
 
 .ButtonCaf_gen{
@@ -81,6 +83,7 @@ table {
   }
   tr {
     background-color: var(--white-color);
+    margin: 17px 0;
     .tdName{
       transition: 0.15s linear all;
     }

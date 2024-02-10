@@ -13,6 +13,9 @@ function HomePage() {
     setSelectedComponent(component);
   };
   const [name, setName] = useState('');
+  const [post, setpost] = useState('');
+  const [bet, setbet] = useState('');
+
 
   useEffect(() => {
     console.log(name); // Этот код будет выполняться каждый раз, когда изменяется значение name
@@ -22,8 +25,10 @@ function HomePage() {
     setName('');
   };
 
-  const handleNameChange = (value) => {
-    setName(value);
+  const handleNameChange = (nameTeacher, postTeacher, betTeacher) => {
+    setName(nameTeacher);
+    setpost(postTeacher)
+    setbet(betTeacher)
   };
  
   return (
@@ -43,7 +48,7 @@ function HomePage() {
       <div className={styles.Block__tables}>
         {(selectedComponent === "Disciplines" && (name === "" || name !== "")) ? <TableDisciplines /> :
         (selectedComponent === "Teachers" && name === "") ? <TableTeachers onNameChange={handleNameChange}/> : 
-        (selectedComponent === "Teachers" && name !== "") ? <TableLks delNameChange={handleNameChange}/> : null}
+        (selectedComponent === "Teachers" && name !== "") ? <TableLks delNameChange={handleNameChange} NameTeachers={{name, post, bet}}/> : null}
       </div>
     </div>
     </Layout>

@@ -8,7 +8,7 @@ input[type="text"] {
   font-size: 18px;
   border-radius: 8px;
   border: 1px solid var(--border-color);
-  color: var(--border-color);
+  color: var(--black-color);
   padding: 9px 0px 9px 16px;
 }
 
@@ -18,7 +18,7 @@ input[type="text"] {
 .EditInput{
   position: absolute;
   right: 0;
-  top: 0;
+  bottom: 0;
 }
 
 .TableLks__inner{
@@ -27,8 +27,7 @@ input[type="text"] {
   border-left: 1px solid var(--gray-color);
   border-right: 1px  solid var(--gray-color);
   border-top: 1px solid var(--gray-color);
-  position: relative;
-  top: 35px;
+  margin-top: 16px;
   .TableLks{
     width: 100%;
   } 
@@ -62,12 +61,12 @@ table {
     height: 58px;
   }
   th, td {
-    padding: 8px;
+    //padding: 8px;
     text-align: center;
   }
   th {
     background-color: var(--gray-color); 
-    padding: 10px 20px!important;
+    padding: 17px 20px!important;
   }
   th:first-child{
     
@@ -83,7 +82,7 @@ table {
     }
   }
 }
-  
+
 // .Block__tables__shadow{
 //   background: linear-gradient(270deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0) 100%);
 //   height:83%;
@@ -106,6 +105,9 @@ table {
     left: 0;
     top: 0;
     transition: 0.15s linear all;   
+    margin-bottom: 0px;
+    font-size: 18px;
+    font-weight: 400;
     p{
         margin-left: 6px;
     }
@@ -115,5 +117,46 @@ table {
     transition: 0.15s linear all;   
     opacity: 0.6;
     cursor: pointer;
+  }
+}
+.DataLks{
+  position: relative;
+  width: 100%;
+  .DataLksInner{
+    background-color: var(--gray-color);
+    padding: 20px 24px;
+    border-radius: 8px;
+    width: 660px;
+    margin-top: 12px;
+    
+    .DataLksHead{
+      display: flex;
+      justify-content: space-between;
+      .DataLksHeadSchet{
+        background-color: var(--grin-color);
+        width: 100px;
+        height: 45px;
+        border-radius: 8px;
+        font-size: 18px;
+        text-align: center;
+        color: var(--textLKS-color);
+        p{
+          padding-top: 10px;
+        }
+      }
+      h1{
+        font-size: 24px;
+        margin: 0;
+        padding-bottom: 4px;
+        font-weight: 600;
+      }
+    }
+    p{
+      padding: 4px 0px;
+      margin: 0;
+      font-size: 18px;
+      font-weight: 300;
+      max-width: 400px;
+    }
   }
 }

@@ -3,31 +3,49 @@ import styles from "./TableLks.module.scss";
 import EditInput from '../EditInput/EditInput';
 import ArrowBack from "./../../img/arrow-back.svg";
 
-function TableLks({delNameChange}) {
+function TableLks({delNameChange, NameTeachers}) {
   const [searchText, setSearchText] = useState('');
   
+  const tableHeaders = [
+    '№',
+    'Дисциплина',
+    'Нагрузка',
+    'Тип',
+    'Подразделение учебного плана',
+    'Направление подготовки',
+    'Часы',
+    'Часы период 1',
+    'Часы период 2',
+    'Часы без периода',
+    'Ауд. часы',
+  ];
+
   const tableData = [
     {
       id: 1,
-      discipline: 'Дисциплина 1',
-      workload: 'Нагрузка 1',
-      group: 'Группа 1',
-      block: 'Блок 1',
-      semester: 'Семестр 1',
-      period: 'Период 1',
-      studyPlan: 'Учебный план 1',
-      studyPlanUnit: 'Подразделение учебного плана 1',
+      discipline: 'Технологии программирования',
+      workload: 'Лекционные',
+      type: 'ОИД',
+      division: 'ИКТИБ ИРТСУ',
+      direction: 'Направление подготовки',
+      hours: '50',
+      hours_period_1: '25',
+      hours_period_2: '25',
+      hours_without_a_period: '0',
+      classroom_hours: '3',
     },
     {
       id: 2,
-      discipline: 'Дисциплина 1',
-      workload: 'Нагрузка 1',
-      group: 'Группа 1',
-      block: 'Блок 1',
-      semester: 'Семестр 1',
-      period: 'Период 1',
-      studyPlan: 'Учебный план 1',
-      studyPlanUnit: 'Подразделение учебного плана 1',
+      discipline: 'Методы оптимизации',
+      workload: 'Практические',
+      type: 'ОИД',
+      division: 'ИКТИБ ИРТСУ',
+      direction: 'Направление подготовки',
+      hours: '50',
+      hours_period_1: '30',
+      hours_period_2: '20',
+      hours_without_a_period: '0',
+      classroom_hours: '3',
     },
   ];
 
@@ -41,18 +59,7 @@ function TableLks({delNameChange}) {
     )
   );
 
-  const tableHeaders = [
-    '№',
-    'Дисциплина',
-    'Нагрузка',
-    'Группа',
-    'Блок',
-    'Семестр',
-    'Период',
-    'Учебный план',
-    'Подразделение учебного плана',
-   
-  ];
+  
   const handleNameClick = (name) => {
     delNameChange(name);
   };
@@ -66,10 +73,22 @@ function TableLks({delNameChange}) {
         <p>Назад</p>
     </button>
 
-    <div className={styles.EditInput}>
-      <EditInput/>
+   <div className={styles.DataLks}>
+      <div className={styles.DataLksInner}>
+        <div className={styles.DataLksHead}>
+          <h1>{NameTeachers.name}</h1>
+          <div className={styles.DataLksHeadSchet}><p><span>600</span>/<span>800</span></p></div>
+        </div>
+      
+        <p>Кафедра информационной безопасности телекоммуникационных систем</p>
+        <p>{NameTeachers.post}</p>
+        <p>Ставка: {NameTeachers.bet}</p>
+      </div>
+      <div className={styles.EditInput}>
+          <EditInput/>
+        </div>
     </div>
- 
+   
     <div className={styles.TableLks__inner}>
       <table className={styles.TableLks}>
         <thead>
