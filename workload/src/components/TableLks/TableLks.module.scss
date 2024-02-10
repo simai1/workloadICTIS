@@ -21,7 +21,7 @@ input[type="text"] {
   top: 0;
 }
 
-.TableDisciplines__inner{
+.TableLks__inner{
   overflow-x: scroll;
   border-radius: 8px; 
   border-left: 1px solid var(--gray-color);
@@ -29,24 +29,24 @@ input[type="text"] {
   border-top: 1px solid var(--gray-color);
   position: relative;
   top: 35px;
-  .TableDisciplines{
+  .TableLks{
     width: 100%;
   } 
 }
-.TableDisciplines__inner::-webkit-scrollbar {
+.TableLks__inner::-webkit-scrollbar {
   background-color: #ffffff;
   height: 5px;
   margin-bottom: 8px;
 }
 
-.TableDisciplines__inner::-webkit-scrollbar-thumb {
+.TableLks__inner::-webkit-scrollbar-thumb {
   background-color: #cccccc;
   border-radius: 8px; 
   width: 200px!important;
 }
 
 
-.TableDisciplines__inner::-webkit-scrollbar-track {
+.TableLks__inner::-webkit-scrollbar-track {
   background-color: transparent;
   border-left: 1px solid var(--gray-color);
   border-right: 1px solid var(--gray-color);

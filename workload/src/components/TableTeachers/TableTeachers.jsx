@@ -30,6 +30,17 @@ function TableTeachers({onNameChange}) {
       department: 'ПиБЖ',
     },
   ];
+  const tableHeaders = [
+    '№',
+    'Преподователь',
+    'Должность',
+    'Ставка',
+    'Часы',
+    'Часы период 1',
+    'Часы период 2',
+    'Часы без периода',
+    'Кафедра',
+  ];
 
   const handleSearch = (e) => {
     setSearchText(e.target.value);
@@ -46,17 +57,7 @@ function TableTeachers({onNameChange}) {
     )
   );
 
-  const tableHeaders = [
-    '№',
-    'Преподователь',
-    'Должность',
-    'Ставка',
-    'Часы',
-    'Часы период 1',
-    'Часы период 2',
-    'Часы без периода',
-    'Кафедра',
-  ];
+ 
 
   return (
     <div>
@@ -79,7 +80,7 @@ function TableTeachers({onNameChange}) {
             {filteredData.map((row, index) => (
               <tr key={index}>
                 <td>{row.id}</td>
-                <td onClick={() => handleNameClick(row.name)}>{row.name}</td>
+                <td onClick={() => handleNameClick(row.name)} className={styles.tdName}>{row.name}</td>
                 <td>{row.post}</td>
                 <td>{row.bet}</td>
                 <td>{row.hours}</td>

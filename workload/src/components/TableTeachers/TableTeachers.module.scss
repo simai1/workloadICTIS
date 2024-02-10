@@ -59,6 +59,7 @@ table {
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
+
   thead{
     height: 58px;
   }
@@ -80,6 +81,13 @@ table {
   }
   tr {
     background-color: var(--white-color);
+    .tdName{
+      transition: 0.15s linear all;
+    }
+    .tdName:hover{
+      cursor: pointer;
+      opacity: 0.6;
+    }
   }
 }
   

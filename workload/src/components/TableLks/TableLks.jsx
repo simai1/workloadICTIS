@@ -70,8 +70,8 @@ function TableLks({delNameChange}) {
       <EditInput/>
     </div>
  
-    <div className={styles.TableDisciplines__inner}>
-      <table className={styles.TableDisciplines}>
+    <div className={styles.TableLks__inner}>
+      <table className={styles.TableLks}>
         <thead>
           <tr>
             {tableHeaders.map((header) => (
