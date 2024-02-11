@@ -49,12 +49,14 @@ export const workloads = [
 export const educators = [
     {
         name: 'Алексеев Кирилл Николаевич',
+        department: 1,
         position: 5,
         typeOfEmployment: 1,
         rate: 0.5,
     },
     {
         name: 'Беспалов Дмитрий Анатольевич',
+        department: 1,
         position: 5,
         typeOfEmployment: 3,
         rate: 1,

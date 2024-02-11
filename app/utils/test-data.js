@@ -45,6 +45,7 @@ async function fillEducators() {
             await Educator.create({
                 name: x.name,
                 position: x.position,
+                department: x.department,
                 typeOfEmployment: x.typeOfEmployment,
                 rate: x.rate,
                 maxHours: x.maxHours,
