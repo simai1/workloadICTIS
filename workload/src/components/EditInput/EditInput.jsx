@@ -4,7 +4,7 @@ import arrow from "./../../img/arrow.svg";
 import { useSelector, useDispatch } from 'react-redux';
 import { actions } from './../../store/filter/filter.slice';
 
-function EditInput({ tableHeaders }) {
+function EditInput({ tableHeaders, top }) {
   const [isListOpen, setListOpen] = useState(false);
   const [checkedItems, setCheckedItems] = useState(Array(tableHeaders.length).fill(true));
   const dispatch = useDispatch();
@@ -32,7 +32,7 @@ function EditInput({ tableHeaders }) {
     newCheckedItems[index] = !newCheckedItems[index];
     setCheckedItems(newCheckedItems);
   }
-
+  
   return (
     <div className={styles.EditInput}>
       {!isListOpen && (
@@ -42,7 +42,7 @@ function EditInput({ tableHeaders }) {
         </button>
       )}
       {isListOpen && (
-        <div className={styles.EditInputOpen}>
+        <div className={styles.EditInputOpen} style={{top:top + "vh"}}>
           <button onClick={toggleList}>
             <p>Редактирование полей</p>
             <img src={arrow} alt="arrow"></img>
