@@ -1,6 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 import EnumTypes from '../config/position.js';
 import EnumTypeOfEmployment from '../config/type-of-employment.js';
+import EnumDepartment from '../config/departments.js';
 import { setHours } from '../utils/educators-hours.js';
 
 export default class Educator extends Model {
@@ -49,6 +50,13 @@ export default class Educator extends Model {
                     type: DataTypes.REAL,
                     allowNull: false,
                     defaultValue: 0,
+                },
+                department: {
+                  type: DataTypes.SMALLINT,
+                  allowNull: false,
+                  validate: {
+                    isIn: [Object.values(EnumDepartment)],
+                  },
                 },
             },
             {
