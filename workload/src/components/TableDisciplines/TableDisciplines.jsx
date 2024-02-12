@@ -113,6 +113,7 @@ function TableDisciplines() {
       <table className={styles.TableDisciplines}>
         <thead>
           <tr>
+            <input type="checkbox" id="chooseAll" className={styles.checkbox}/>
             {tableHeaders.map((header) => (
               <th key={header} className={styles.head__table}>{header}</th>
             ))}
@@ -120,7 +121,9 @@ function TableDisciplines() {
         </thead>
         <tbody>
           {filteredData.map((row, index) => (
+            
             <tr key={index}>
+              <input key={index} type="checkbox" className={styles.checkbox}/>
               {Object.values(row).map((value, i) => (
                 <td key={i}>{value}</td>
               ))}
