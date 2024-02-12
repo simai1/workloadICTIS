@@ -10,6 +10,14 @@ export default function () {
     Workload.belongsToMany(Educator, {
         through: EducatorForWorkload,
     });
+
+    Educator.hasMany(EducatorForWorkload);
+    EducatorForWorkload.belongsTo(Educator, {foreignKey: { name: 'EducatorId', allowNull: false }});
+
+    Workload.hasMany(EducatorForWorkload);
+    EducatorForWorkload.belongsTo(Workload, {foreignKey: { name: 'WorkloadId', allowNull: false }});
+
+
     User.hasOne(TokenModel, { foreignKey: 'userId' });
     TokenModel.belongsTo(User, { foreignKey: 'userId' });
 }
