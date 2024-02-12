@@ -95,8 +95,7 @@ function TableDisciplines() {
     setSelectedComponent(component);
   };
 
- 
-  
+
   return (
     <div>
     <input type="text" value={searchText} onChange={handleSearch} placeholder="Поиск" />
@@ -106,14 +105,14 @@ function TableDisciplines() {
       <Button Bg={selectedComponent === "genInstitute" ? "#DDDDDD": "#ffffff"} text="Общеинститутские" onClick={() => handleComponentChange("genInstitute")}/>
     </div>
     <div className={styles.EditInput}>
-      <EditInput/>
+      <EditInput tableHeaders={tableHeaders}/>
     </div>
  
     <div className={styles.TableDisciplines__inner}>
       <table className={styles.TableDisciplines}>
         <thead>
           <tr>
-            <input type="checkbox" id="chooseAll" className={styles.checkbox}/>
+            {/* <input type="checkbox" id="chooseAll" className={styles.checkbox}/> */}
             {tableHeaders.map((header) => (
               <th key={header} className={styles.head__table}>{header}</th>
             ))}
@@ -123,7 +122,7 @@ function TableDisciplines() {
           {filteredData.map((row, index) => (
             
             <tr key={index}>
-              <input key={index} type="checkbox" className={styles.checkbox}/>
+              {/* <input key={index} type="checkbox" className={styles.checkbox}/> */}
               {Object.values(row).map((value, i) => (
                 <td key={i}>{value}</td>
               ))}
@@ -133,7 +132,7 @@ function TableDisciplines() {
       </table>
     </div>
     <div className={styles.Block__tables__shadow}></div>
-
+    
     </div>
   );
 }

@@ -1,6 +1,8 @@
 import styles from "./TableTeachers.module.scss";
 import React, { useState } from 'react';
 import EditInput from "../EditInput/EditInput";
+import { useDispatch, useSelector } from 'react-redux';
+import { actions } from '../../store/filter/filter.slice';
 
 function TableTeachers({onNameChange}) {
   const [searchText, setSearchText] = useState('');
@@ -58,15 +60,18 @@ function TableTeachers({onNameChange}) {
       value.toString().toLowerCase().includes(searchText.toLowerCase())
     )
   );
+   //////////////////////////////state
+  //  const {filters} = useSelector(state => state);
+  //  const dispatch = useDispatch();
+  //  console.log(filters)
 
- 
 
   return (
     <div>
       <input type="text" value={searchText} onChange={handleSearch} placeholder="Поиск" />
 
       <div className={styles.EditInput}>
-        <EditInput />
+        <EditInput tableHeaders={tableHeaders}/>
       </div>
 
       <div className={styles.TableTeachers__inner}>

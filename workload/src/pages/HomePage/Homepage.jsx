@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styles from "./HomePage.module.scss";
 import TableDisciplines from '../../components/TableDisciplines/TableDisciplines';
 import TableTeachers from '../../components/TableTeachers/TableTeachers';
@@ -6,6 +6,7 @@ import Button from '../../ui/Button/Button';
 import Layout from '../../ui/Layout/Layout';
 import Warnings from '../../components/Warnings/Warnings';
 import TableLks from '../../components/TableLks/TableLks';
+
 function HomePage() {
   const [selectedComponent, setSelectedComponent] = useState("Disciplines");
 
@@ -17,9 +18,9 @@ function HomePage() {
   const [bet, setbet] = useState('');
 
 
-  useEffect(() => {
-    console.log(name); // Этот код будет выполняться каждый раз, когда изменяется значение name
-  }, [name]); // Указываем зависимость от переменной name
+  // useEffect(() => {
+  //   console.log(name); // Этот код будет выполняться каждый раз, когда изменяется значение name
+  // }, [name]); // Указываем зависимость от переменной name
 
   const handleButtonClick = () => {
     setName('');
@@ -30,12 +31,10 @@ function HomePage() {
     setpost(postTeacher)
     setbet(betTeacher)
   };
- 
+  
   return (
     <Layout>
     <div className={styles.HomePage}> 
-
-
       <div className={styles.button}>
         <div className={styles.button__inner}>
           <Button Bg={selectedComponent === "Disciplines" ? "#DDDDDD" : "#ffffff"} onClick={() => { handleComponentChange("Disciplines"); handleButtonClick(); }} text="Дисциплины" />
@@ -50,7 +49,10 @@ function HomePage() {
         (selectedComponent === "Teachers" && name === "") ? <TableTeachers onNameChange={handleNameChange}/> : 
         (selectedComponent === "Teachers" && name !== "") ? <TableLks delNameChange={handleNameChange} NameTeachers={{name, post, bet}}/> : null}
       </div>
+    
     </div>
+
+    
     </Layout>
   );
 }
