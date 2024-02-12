@@ -1,7 +1,7 @@
 import { AppErrorInvalid, AppErrorMissing } from '../utils/errors.js';
 import departments from '../config/departments.js';
 import Workload from '../models/workload.js';
-import WorkloadDto from '../dtos/workloadDto.js';
+import WorkloadDto from '../dtos/workload-dto.js';
 
 export default {
     async getDepartment({ params: { department } }, res) {
