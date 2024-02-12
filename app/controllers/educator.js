@@ -1,5 +1,5 @@
 import Educator from '../models/educator.js';
-import EducatorDto from '../dtos/educatorDto.js';
+import EducatorDto from '../dtos/educator-dto.js';
 import { AppErrorAlreadyExists, AppErrorMissing, AppErrorNotExist } from '../utils/errors.js';
 import { map as mapPositions} from '../config/position.js';
 import { map as mapTypeOfEmployments } from '../config/type-of-employment.js';

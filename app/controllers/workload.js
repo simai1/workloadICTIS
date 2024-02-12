@@ -1,10 +1,11 @@
 import { AppErrorInvalid, AppErrorMissing } from '../utils/errors.js';
 import departments from '../config/departments.js';
 import Workload from '../models/workload.js';
-import WorkloadDto from '../dtos/workloadDto.js';
 import _ from 'lodash';
 import Educator from '../models/educator.js';
 import EducatorForWorkload from '../models/educator-for-workload.js';
+
+import WorkloadDto from '../dtos/workload-dto.js';
 
 export default {
     async getDepartment({ params: { department } }, res) {
