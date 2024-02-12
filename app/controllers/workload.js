@@ -86,7 +86,9 @@ export default {
 
     async update({ params: { id }, body: { name, numberOfStudents, hours, comment } }, res) {
         try {
-            const workload = await Workload.findByPk(id, { include: Educator });
+            const workload = await Workload.findByPk(id, {
+                include: { model: EducatorForWorkload, include: { model: Educator } },
+            });
             if (!numberOfStudents && !hours && !comment) {
                 throw new Error('Не указаны обязательные поля');
             }
@@ -100,14 +102,7 @@ export default {
             hours = hours || workload.hours;
             comment = comment || workload.comment;
 
-            // Если указано новое имя, обновляем его в таблице Educator
-            // if (name) {
-            //     if (!workload.Educator) {
-            //         throw new Error('Нагрузка не связана с преподавателем');
-            //     }
-
-            //     await workload.Educator.update({ name });
-            // }
+      
 
             // Обновляем запись в таблице Workload
             await workload.update({
@@ -130,8 +125,5 @@ export default {
             WorkloadId: workloadId,
         });
         res.json({ status: 'OK' });
-    },
-    async sort(res) {
-        // Реализация метода сортировки
     },
 };
