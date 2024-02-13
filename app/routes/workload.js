@@ -5,7 +5,8 @@ import { asyncRoute } from '../utils/errors.js';
 const router = Router();
 
 router.route('/:department').get(asyncRoute(workloadController.getDepartment));
-router.route('/:id/split').post(workloadController.splitRow);
+router.route('/:id/split').post(asyncRoute(workloadController.splitRow));
 router.route('/faculty').post(asyncRoute(workloadController.facultyEducator));
 router.route('/:id/update').get(asyncRoute(workloadController.getOne)).patch(asyncRoute(workloadController.update));
+router.route('/map').post(asyncRoute(workloadController.mapRow));
 export default router;

@@ -6,6 +6,7 @@ import Educator from '../models/educator.js';
 import EducatorForWorkload from '../models/educator-for-workload.js';
 
 import WorkloadDto from '../dtos/workload-dto.js';
+import { where } from 'sequelize';
 
 export default {
     async getDepartment({ params: { department } }, res) {
@@ -126,4 +127,50 @@ export default {
         });
         res.json({ status: 'OK' });
     },
+
+    async mapRow({ body: { ids } }, res) {
+        try {
+            const workloads = await Workload.findAll({ where: { id: ids } });
+    
+            let totalStudents = 0;
+            let totalHours = 0;
+    
+            workloads.forEach((workload) => {
+                totalStudents += workload.numberOfStudents;
+                totalHours += workload.hours;
+            });
+    
+            const mergeWorkload = await Workload.create({
+                department: workloads[0].get('department'),
+                discipline: workloads[0].get('discipline'),
+                workload: workloads[0].get('workload'),
+                groups: workloads[0].get('groups'),
+                block: workloads[0].get('block'),
+                semester: workloads[0].get('semester'),
+                period: workloads[0].get('period'),
+                curriculum: workloads[0].get('curriculum'),
+                curriculumUnit: workloads[0].get('curriculumUnit'),
+                formOfEducation: workloads[0].get('formOfEducation'),
+                levelOfTraining: workloads[0].get('levelOfTraining'),
+                specialty: workloads[0].get('specialty'),
+                core: workloads[0].get('core'),
+                numberOfStudents: totalStudents,
+                hours: totalHours,
+                audienceHours: workloads[0].get('audienceHours'),
+                ratingControlHours: workloads[0].get('ratingControlHours'),
+                comment: workloads[0].get('comment'),
+                isSplit: true,
+                originalId: null,
+            });
+    
+            await Promise.allSettled(workloads.map((workload) => workload.destroy()));
+    
+            res.status(200).json('Successfully merged');
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+    
+    
 };
