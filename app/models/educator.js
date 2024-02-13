@@ -52,11 +52,11 @@ export default class Educator extends Model {
                     defaultValue: 0,
                 },
                 department: {
-                  type: DataTypes.SMALLINT,
-                  allowNull: false,
-                  validate: {
-                    isIn: [Object.values(EnumDepartment)],
-                  },
+                    type: DataTypes.SMALLINT,
+                    allowNull: false,
+                    validate: {
+                        isIn: [Object.values(EnumDepartment)],
+                    },
                 },
             },
             {

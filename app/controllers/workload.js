@@ -1,18 +1,23 @@
-import { AppErrorInvalid, AppErrorMissing} from '../utils/errors.js';
+import { AppErrorInvalid, AppErrorMissing } from '../utils/errors.js';
 import departments from '../config/departments.js';
 import Workload from '../models/workload.js';
-import _ from 'lodash';
 import Educator from '../models/educator.js';
 
 import WorkloadDto from '../dtos/workload-dto.js';
-import EducatorForWorkload from "../models/educator-for-workload.js";
 
 export default {
+    // fixme: Таблицы EducatorForWorkload больше нет, нужно переделать запрос
     async getDepartment({ params: { department } }, res) {
         if (!department) throw new AppErrorMissing('department');
         if (typeof department !== 'number') department = parseInt(department);
         if (!Object.values(departments).includes(department)) throw new AppErrorInvalid(department);
-        const workloads = await Workload.findAll({ where: { department }, include: {model: EducatorForWorkload, include: { model: Educator }}  });
+        const workloads = await Workload.findAll({
+            where: { department },
+            include: {
+                model: EducatorForWorkload,
+                include: { model: Educator },
+            },
+        });
         // res.json(workloads);
         const workloadsDto = [];
         for (const workload of workloads) {
@@ -73,10 +78,10 @@ export default {
         }
     },
 
-    async getOne({params: {id}}, res) {
+    async getOne({ params: { id } }, res) {
         // if(!workloadId) throw new Error('Не указан айди нагрузки');
         const workload = await Workload.findByPk(id);
-        if(!workload) throw new Error('Нет такой нагрузки');
+        if (!workload) throw new Error('Нет такой нагрузки');
         const workloadDto = new WorkloadDto(workload);
         res.json(workloadDto);
     },
@@ -123,7 +128,6 @@ export default {
             res.status(500).json({ error: 'Internal Server Error' });
         }
     },
-
 
     async sort(res) {
         // Реализация метода сортировки

@@ -1,4 +1,3 @@
-import EducatorForWorkload from "../models/educator-for-workload.js";
 
 export default class WorkloadDto {
     id;
