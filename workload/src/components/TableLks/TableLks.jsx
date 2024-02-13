@@ -85,7 +85,7 @@ function TableLks({delNameChange, NameTeachers}) {
         <p>Ставка: {NameTeachers.bet}</p>
       </div>
       <div className={styles.EditInput}>
-          <EditInput tableHeaders={tableHeaders}  top={73.3}/>
+          <EditInput tableHeaders={tableHeaders}  top={60.3} h={64} />
         </div>
     </div>
    
