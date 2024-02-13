@@ -15,10 +15,6 @@ export const filterSlice = createSlice({
             state.push(value);
           }
       },
-           
-    // removeFilter: (state, { payload: filter }) => {
-    //   return state.filter(r => r.id !== filter.id);
-    // },
     initializeFilters: (state, { payload: tableHeaders }) => {
       state.splice(0, state.length, ...tableHeaders);
     },
