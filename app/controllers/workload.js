@@ -141,17 +141,26 @@ export default {
 
     async mapRow({ body: { ids } }, res) {
         try {
-            //TODO: Обернуть проверками: department, workload, discipline.
-
             const workloads = await Workload.findAll({ where: { id: ids } });
 
-            const firstWorkload = workloads[0];
-            if (workloads.some(workload => workload.department !== firstWorkload.department ||
-                                          workload.workload !== firstWorkload.workload ||
-                                          workload.discipline !== firstWorkload.discipline)) {
-                return res.status(400).json({ error: 'Invalid request. Department, workload, and discipline must be the same for all workloads.' });
+            if (!id) {
+                throw new AppErrorMissing('id');
             }
-           
+            const firstWorkload = workloads[0];
+            if (
+                workloads.some(
+                    workload =>
+                        workload.department !== firstWorkload.department ||
+                        workload.workload !== firstWorkload.workload ||
+                        workload.discipline !== firstWorkload.discipline
+                )
+            ) {
+                return res
+                    .status(400)
+                    .json({
+                        error: 'Invalid request. Department, workload, and discipline must be the same for all workloads.',
+                    });
+            }
 
             let totalStudents = 0;
             let totalHours = 0;
