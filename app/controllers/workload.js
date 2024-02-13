@@ -1,7 +1,6 @@
-import { AppErrorInvalid, AppErrorMissing } from '../utils/errors.js';
+import { AppErrorInvalid, AppErrorMissing  } from '../utils/errors.js';
 import departments from '../config/departments.js';
 import Workload from '../models/workload.js';
-import _ from 'lodash';
 import Educator from '../models/educator.js';
 import EducatorForWorkload from '../models/educator-for-workload.js';
 
@@ -13,7 +12,11 @@ export default {
         if (!department) throw new AppErrorMissing('department');
         if (typeof department !== 'number') department = parseInt(department);
         if (!Object.values(departments).includes(department)) throw new AppErrorInvalid(department);
-        const workloads = await Workload.findAll({ where: { department } });
+        const workloads = await Workload.findAll({
+            where: { department },
+            include: {model: Educator}
+        });
+        // res.json(workloads);
         const workloadsDto = [];
         for (const workload of workloads) {
             const workloadDto = new WorkloadDto(workload);
@@ -104,6 +107,14 @@ export default {
             comment = comment || workload.comment;
 
       
+            // Если указано новое имя, обновляем его в таблице Educator
+            // if (name) {
+            //     if (!workload.Educator) {
+            //         throw new Error('Нагрузка не связана с преподавателем');
+            //     }
+
+            //     await workload.Educator.update({ name });
+            // }
 
             // Обновляем запись в таблице Workload
             await workload.update({
@@ -118,6 +129,7 @@ export default {
             res.status(500).json({ error: 'Internal Server Error' });
         }
     },
+
     async facultyEducator({ body: { educatorId, workloadId } }, res) {
         if (!educatorId) throw new AppErrorMissing('educatorId');
         if (!workloadId) throw new AppErrorMissing('workloadId');
@@ -127,6 +139,7 @@ export default {
         });
         res.json({ status: 'OK' });
     },
+
 
     async mapRow({ body: { ids } }, res) {
         try {

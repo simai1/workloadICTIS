@@ -1,3 +1,4 @@
+
 export default class WorkloadDto {
     id;
     department;
@@ -18,6 +19,7 @@ export default class WorkloadDto {
     audienceHours;
     ratingControlHours;
     comment;
+    educator;
 
     constructor(model) {
         this.id = model.id;
@@ -39,5 +41,6 @@ export default class WorkloadDto {
         this.audienceHours = model.audienceHours;
         this.ratingControlHours = model.ratingControlHours;
         this.comment = model.comment;
+        this.educator = model.Educator;
     }
 }
