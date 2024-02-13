@@ -1,8 +1,7 @@
-import { AppErrorInvalid, AppErrorMissing  } from '../utils/errors.js';
+import { AppErrorInvalid, AppErrorMissing } from '../utils/errors.js';
 import departments from '../config/departments.js';
 import Workload from '../models/workload.js';
 import Educator from '../models/educator.js';
-import EducatorForWorkload from '../models/educator-for-workload.js';
 
 import WorkloadDto from '../dtos/workload-dto.js';
 import { where } from 'sequelize';
@@ -14,7 +13,7 @@ export default {
         if (!Object.values(departments).includes(department)) throw new AppErrorInvalid(department);
         const workloads = await Workload.findAll({
             where: { department },
-            include: {model: Educator}
+            include: { model: Educator },
         });
         // res.json(workloads);
         const workloadsDto = [];
@@ -91,7 +90,7 @@ export default {
     async update({ params: { id }, body: { name, numberOfStudents, hours, comment } }, res) {
         try {
             const workload = await Workload.findByPk(id, {
-                include: { model: EducatorForWorkload, include: { model: Educator } },
+                include: { model: Educator },
             });
             if (!numberOfStudents && !hours && !comment) {
                 throw new Error('Не указаны обязательные поля');
@@ -106,7 +105,6 @@ export default {
             hours = hours || workload.hours;
             comment = comment || workload.comment;
 
-      
             // Если указано новое имя, обновляем его в таблице Educator
             // if (name) {
             //     if (!workload.Educator) {
@@ -130,6 +128,7 @@ export default {
         }
     },
 
+    //TODO: Переписать назначение препода для нагрузки
     async facultyEducator({ body: { educatorId, workloadId } }, res) {
         if (!educatorId) throw new AppErrorMissing('educatorId');
         if (!workloadId) throw new AppErrorMissing('workloadId');
@@ -140,19 +139,28 @@ export default {
         res.json({ status: 'OK' });
     },
 
-
     async mapRow({ body: { ids } }, res) {
         try {
+            //TODO: Обернуть проверками: department, workload, discipline.
+
             const workloads = await Workload.findAll({ where: { id: ids } });
-    
+
+            const firstWorkload = workloads[0];
+            if (workloads.some(workload => workload.department !== firstWorkload.department ||
+                                          workload.workload !== firstWorkload.workload ||
+                                          workload.discipline !== firstWorkload.discipline)) {
+                return res.status(400).json({ error: 'Invalid request. Department, workload, and discipline must be the same for all workloads.' });
+            }
+           
+
             let totalStudents = 0;
             let totalHours = 0;
-    
-            workloads.forEach((workload) => {
+
+            workloads.forEach(workload => {
                 totalStudents += workload.numberOfStudents;
                 totalHours += workload.hours;
             });
-    
+
             const mergeWorkload = await Workload.create({
                 department: workloads[0].get('department'),
                 discipline: workloads[0].get('discipline'),
@@ -172,18 +180,16 @@ export default {
                 audienceHours: workloads[0].get('audienceHours'),
                 ratingControlHours: workloads[0].get('ratingControlHours'),
                 comment: workloads[0].get('comment'),
-                isSplit: true,
+                isSplit: false,
                 originalId: null,
             });
-    
-            await Promise.allSettled(workloads.map((workload) => workload.destroy()));
-    
+
+            await Promise.allSettled(workloads.map(workload => workload.destroy()));
+
             res.status(200).json('Successfully merged');
         } catch (error) {
             console.error(error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
-    }
-    
-    
+    },
 };
