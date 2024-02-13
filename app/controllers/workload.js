@@ -6,17 +6,13 @@ import Educator from '../models/educator.js';
 import WorkloadDto from '../dtos/workload-dto.js';
 
 export default {
-    // fixme: Таблицы EducatorForWorkload больше нет, нужно переделать запрос
     async getDepartment({ params: { department } }, res) {
         if (!department) throw new AppErrorMissing('department');
         if (typeof department !== 'number') department = parseInt(department);
         if (!Object.values(departments).includes(department)) throw new AppErrorInvalid(department);
         const workloads = await Workload.findAll({
             where: { department },
-            include: {
-                model: EducatorForWorkload,
-                include: { model: Educator },
-            },
+            include: {model: Educator}
         });
         // res.json(workloads);
         const workloadsDto = [];

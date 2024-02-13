@@ -41,7 +41,6 @@ export default class WorkloadDto {
         this.audienceHours = model.audienceHours;
         this.ratingControlHours = model.ratingControlHours;
         this.comment = model.comment;
-        // this.educator = model.EducatorForWorkloads[0].Educator.id;
-        this.educator = model.EducatorForWorkloads;
+        this.educator = model.Educator;
     }
 }
