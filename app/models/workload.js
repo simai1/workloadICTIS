@@ -89,7 +89,11 @@ export default class Workload extends Model {
                 originalId: {
                     type: DataTypes.UUID,
                     allowNull: true,
-                }
+                },
+                educatorId: {
+                    type: DataTypes.UUID,
+                    allowNull: true,
+                },
             },
             {
                 sequelize,
