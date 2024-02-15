@@ -1,8 +1,8 @@
-import summaryWorkload from "../models/summary-workload.js";
+import SummaryWorkload from '../models/summary-workload.js';
 
-export default async function createSummaryWorkload(workloadId) {
-    const summaryWorkload = await summaryWorkload.create({
-        WorkloadId: workloadId,
+export default async function createSummaryWorkload(educatorId) {
+    await SummaryWorkload.create({
+        educatorId,
     });
-    console.log('Я вызвался')
+    console.log('Я вызвался');
 }
