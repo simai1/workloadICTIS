@@ -4,6 +4,10 @@ import Workload from '../models/workload.js';
 import Educator from '../models/educator.js';
 
 import WorkloadDto from '../dtos/workload-dto.js';
+<<<<<<< Updated upstream
+=======
+import { where } from 'sequelize';
+>>>>>>> Stashed changes
 
 export default {
     async getDepartment({ params: { department } }, res) {
