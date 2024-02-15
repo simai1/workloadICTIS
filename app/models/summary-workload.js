@@ -1,6 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
-import getSumHours from '../utils/summary-workload.js';
-export default class SummaryWorkload extends Model{
+import getHours from '../utils/summary-workload.js';
+
+export default class SummaryWorkload extends Model {
     static initialize(sequelize) {
         SummaryWorkload.init(
             {
@@ -59,7 +60,6 @@ export default class SummaryWorkload extends Model{
                     allowNull: true,
                     defaultValue: 0,
                 },
-
             },
             {
                 sequelize,
@@ -70,10 +70,9 @@ export default class SummaryWorkload extends Model{
             }
         );
         SummaryWorkload.beforeUpdate(summaryWorkload => {
-            getSumHours(summaryWorkload);
+            getHours(summaryWorkload);
         });
 
-
-        //При обновлении нагрузки просчитывать часы
+        // При обновлении нагрузки просчитывать часы
     }
 }
