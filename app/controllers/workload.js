@@ -4,8 +4,6 @@ import Workload from '../models/workload.js';
 import Educator from '../models/educator.js';
 
 import WorkloadDto from '../dtos/workload-dto.js';
-import { where } from 'sequelize';
-import HoursDto from '../dtos/hours-dto.js';
 
 export default {
     async getDepartment({ params: { department } }, res) {
@@ -129,14 +127,16 @@ export default {
         }
     },
 
-    //TODO: Переписать назначение препода для нагрузки
     async facultyEducator({ body: { educatorId, workloadId } }, res) {
         if (!educatorId) throw new AppErrorMissing('educatorId');
         if (!workloadId) throw new AppErrorMissing('workloadId');
-        const efw = await EducatorForWorkload.create({
-            EducatorId: educatorId,
-            WorkloadId: workloadId,
-        });
+        await Workload.update(
+            { educatorId },
+            {
+                where: { id: workloadId },
+                individualHooks: true,
+            }
+        );
         res.json({ status: 'OK' });
     },
 
@@ -144,7 +144,7 @@ export default {
         try {
             const workloads = await Workload.findAll({ where: { id: ids } });
 
-            if (!id) {
+            if (!ids) {
                 throw new AppErrorMissing('id');
             }
             const firstWorkload = workloads[0];
@@ -156,11 +156,9 @@ export default {
                         workload.discipline !== firstWorkload.discipline
                 )
             ) {
-                return res
-                    .status(400)
-                    .json({
-                        error: 'Invalid request. Department, workload, and discipline must be the same for all workloads.',
-                    });
+                return res.status(400).json({
+                    error: 'Invalid request. Department, workload, and discipline must be the same for all workloads.',
+                });
             }
 
             let totalStudents = 0;
@@ -209,8 +207,6 @@ export default {
             res.status(500).json({ error: 'Internal Server Error' });
         }
     },
-    
 
-    //Нужен метод, который будет просчитывать часы у конкретного препода
-
+    // Нужен метод, который будет просчитывать часы у конкретного препода
 };

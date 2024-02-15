@@ -4,5 +4,4 @@ export default async function createSummaryWorkload(educatorId) {
     await SummaryWorkload.create({
         educatorId,
     });
-    console.log('Я вызвался');
 }

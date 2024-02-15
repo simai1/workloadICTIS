@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import EnumDepartments from '../config/departments.js';
+import setHours from '../utils/summary-workload.js';
 
 export default class Workload extends Model {
     static initialize(sequelize) {
@@ -99,8 +100,6 @@ export default class Workload extends Model {
                     allowNull: false,
                     defaultValue: false,
                 },
-
-                
             },
             {
                 sequelize,
@@ -110,5 +109,8 @@ export default class Workload extends Model {
                 paranoid: true,
             }
         );
+        Workload.beforeUpdate(async workload => {
+            await setHours(workload);
+        });
     }
 }

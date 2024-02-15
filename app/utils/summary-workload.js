@@ -1,9 +1,11 @@
 import Workload from '../models/workload.js';
+import SummaryWorkload from '../models/summary-workload.js';
 
-async function getHours(summaryWorkload) {
+async function setHours(workload) {
+    const summaryWorkload = await SummaryWorkload.findOne({ where: { educatorId: workload.educatorId } });
     const educatorHours = await Workload.findAll({
         where: {
-            educatorId: summaryWorkload.educatorId,
+            educatorId: workload.educatorId,
         },
         attributes: ['isOID', 'period', 'hours'],
     });
@@ -44,4 +46,4 @@ async function getHours(summaryWorkload) {
     summaryWorkload.set('instituteManagementWorkload', hours.instituteManagementWorkload);
 }
 
-export default getHours;
+export default setHours;
