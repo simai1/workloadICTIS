@@ -11,11 +11,11 @@ const { DB_USER, DB_PWD, DB_HOST, DB_PORT, DB_NAME } = process.env;
 
 export const models = {
     Notification,
+    SummaryWorkload,
     Educator,
     Workload,
     User,
     TokenModel,
-    SummaryWorkload,
 };
 export const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PWD, {
     host: DB_HOST,

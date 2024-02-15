@@ -32,26 +32,32 @@ export default class SummaryWorkload extends Model{
                 kafedralAutumnWorkload: {
                     type: DataTypes.REAL,
                     allowNull: true,
+                    defaultValue: 0,
                 },
                 kafedralSpringWorkload: {
                     type: DataTypes.REAL,
                     allowNull: true,
+                    defaultValue: 0,
                 },
                 kafedralAdditionalWorkload: {
                     type: DataTypes.REAL,
                     allowNull: true,
+                    defaultValue: 0,
                 },
                 instituteAutumnWorkload: {
                     type: DataTypes.REAL,
                     allowNull: true,
+                    defaultValue: 0,
                 },
                 instituteSpringWorkload: {
                     type: DataTypes.REAL,
                     allowNull: true,
+                    defaultValue: 0,
                 },
                 instituteManagementWorkload: {
                     type: DataTypes.REAL,
                     allowNull: true,
+                    defaultValue: 0,
                 },
 
             },
