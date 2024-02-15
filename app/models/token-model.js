@@ -4,8 +4,17 @@ export default class TokenModel extends Model {
     static initialize(sequelize) {
         TokenModel.init(
             {
-                isActivated: { type: DataTypes.BOOLEAN, defaultValue: false },
-                refreshToken: { type: DataTypes.STRING, allowNull: false },
+                id: {
+                    type: DataTypes.UUID,
+                    defaultValue: DataTypes.UUIDV4,
+                    allowNull: false,
+                    primaryKey: true,
+                },
+                refreshToken: { type: DataTypes.STRING(500), allowNull: false },
+                userId: {
+                    type: DataTypes.UUID,
+                    allowNull: false,
+                },
             },
             {
                 sequelize,
