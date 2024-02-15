@@ -21,6 +21,8 @@ export default {
         const educatorDto = new EducatorDto(educator);
         res.json(educatorDto);
     },
+    
+    //Обновляем данные преподователя
     async update({ params: { educatorId }, body: { name, position, typeOfEmployment, rate } }, res) {
         if (!educatorId) throw new AppErrorMissing('educatorId');
         const educator = await Educator.findByPk(educatorId);
@@ -41,6 +43,7 @@ export default {
 
         res.json({ status: 'OK' });
     },
+    //Создаем преподователя
     async create({ body: { name, position, typeOfEmployment, rate } }, res) {
         if (!name) throw new AppErrorMissing('name');
         if (!position) throw new AppErrorMissing('position');

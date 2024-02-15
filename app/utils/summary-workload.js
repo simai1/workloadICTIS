@@ -1,6 +1,7 @@
 import Workload from '../models/workload.js';
 import SummaryWorkload from '../models/summary-workload.js';
 
+//Устанавливаем итоговые часы
 async function setHours(workload) {
     const summaryWorkload = await SummaryWorkload.findOne({ where: { educatorId: workload.educatorId } });
     const educatorHours = await Workload.findAll({
@@ -20,6 +21,7 @@ async function setHours(workload) {
         totalOIDHours: 0,
         totalHours: 0,
     };
+    //Проверяем предмет на общеинститутский ли он и период и устанавливаем часы для кафедральных или институтских дисциплин
     for (const x of educatorHours) {
         if (x.isOid === false && x.period === 1) hours.kafedralAutumnWorkload += x.hours;
         if (x.isOid === false && x.period === 2) hours.kafedralSpringWorkload += x.hours;
@@ -29,12 +31,14 @@ async function setHours(workload) {
         if (x.isOid === true && !x.period) hours.instituteManagementWorkload += x.hours;
     }
 
+    //Итоговые часы для кафедральных, общеинститутских предметов и общей нагрузки
     hours.totalKafedralHours =
         hours.kafedralAutumnWorkload + hours.kafedralSpringWorkload + hours.kafedralAdditionalWorkload;
     hours.totalOIDHours =
         hours.instituteAutumnWorkload + hours.instituteSpringWorkload + hours.instituteManagementWorkload;
     hours.totalHours = hours.totalKafedralHours + hours.totalOIDHours;
 
+    //Заполняем бд этими данными
     summaryWorkload.set('totalKafedralHours', hours.totalKafedralHours);
     summaryWorkload.set('totalOIDHours', hours.totalOIDHours);
     summaryWorkload.set('totalHours', hours.totalHours);

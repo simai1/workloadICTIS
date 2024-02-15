@@ -4,10 +4,6 @@ import Workload from '../models/workload.js';
 import Educator from '../models/educator.js';
 
 import WorkloadDto from '../dtos/workload-dto.js';
-<<<<<<< Updated upstream
-=======
-import { where } from 'sequelize';
->>>>>>> Stashed changes
 
 export default {
     async getDepartment({ params: { department } }, res) {
@@ -28,58 +24,52 @@ export default {
     },
 
     async splitRow({ params: { id }, body: { n } }, res) {
-        try {
-            // Проверяем, что параметры корректны
-            if (!id) throw new Error('Укажите айди нагрузки');
-            if (!n || isNaN(n) || n < 1) throw new Error('Укажите количество групп для разделения нагрузки');
+        // Проверяем, что параметры корректны
+        if (!id) throw new Error('Укажите айди нагрузки');
+        if (!n || isNaN(n) || n < 1) throw new Error('Укажите количество групп для разделения нагрузки');
 
-            // Загружаем изначальную нагрузку
-            const originalWorkload = await Workload.findByPk(id);
-            if (!originalWorkload) throw new Error('Workload not found');
+        // Загружаем изначальную нагрузку
+        const originalWorkload = await Workload.findByPk(id);
+        if (!originalWorkload) throw new Error('Workload not found');
 
-            // Проверяем, разделена ли уже нагрузка
-            if (originalWorkload.isSplit === true) {
-                throw new Error('Нагрузка уже разделена по группам или ее нельзя делить');
-            } else {
-                // Распределяем время равномерно между каждой из новых нагрузок
-                const newWorkloads = [];
-                const newHours = originalWorkload.hours / n;
+        // Проверяем, разделена ли уже нагрузка
+        if (originalWorkload.isSplit === true) {
+            throw new Error('Нагрузка уже разделена по группам или ее нельзя делить');
+        } else {
+            // Распределяем время равномерно между каждой из новых нагрузок
+            const newWorkloads = [];
+            const newHours = originalWorkload.hours / n;
 
-                // Создаем и сохраняем новые нагрузки в базу данных
-                for (let i = 0; i < n; i++) {
-                    // Копируем изначальную нагрузку со всеми полями
-                    const copyWorkload = { ...originalWorkload.get() };
+            // Создаем и сохраняем новые нагрузки в базу данных
+            for (let i = 0; i < n; i++) {
+                // Копируем изначальную нагрузку со всеми полями
+                const copyWorkload = { ...originalWorkload.get() };
 
-                    // Устанавливаем новое время и флаг разделения для каждой новой нагрузки
-                    copyWorkload.hours = newHours;
-                    copyWorkload.isSplit = true;
-                    copyWorkload.originalId = originalWorkload.id;
+                // Устанавливаем новое время и флаг разделения для каждой новой нагрузки
+                copyWorkload.hours = newHours;
+                copyWorkload.isSplit = true;
+                copyWorkload.originalId = originalWorkload.id;
 
-                    // Удаляем уникальный идентификатор для создания нового
-                    delete copyWorkload.id;
+                // Удаляем уникальный идентификатор для создания нового
+                delete copyWorkload.id;
 
-                    // Сохраняем новую нагрузку в базу данных
-                    const newWorkload = await Workload.create(copyWorkload);
+                // Сохраняем новую нагрузку в базу данных
+                const newWorkload = await Workload.create(copyWorkload);
 
-                    // Добавляем новую нагрузку в массив новых нагрузок
-                    newWorkloads.push(newWorkload);
-                }
-
-                // Помечаем изначальную нагрузку как разделенную
-                originalWorkload.isSplit = true;
-                await originalWorkload.save();
-
-                res.json(newWorkloads);
+                // Добавляем новую нагрузку в массив новых нагрузок
+                newWorkloads.push(newWorkload);
             }
-        } catch (error) {
-            // Обработка ошибок
-            console.error(error);
-            res.status(500).json({ error: 'Internal Server Error' });
+
+            // Помечаем изначальную нагрузку как разделенную
+            originalWorkload.isSplit = true;
+            await originalWorkload.save();
+
+            res.json(newWorkloads);
         }
     },
 
+    //Получение нагрузки
     async getOne({ params: { id } }, res) {
-        // if(!workloadId) throw new Error('Не указан айди нагрузки');
         const workload = await Workload.findByPk(id);
         if (!workload) throw new Error('Нет такой нагрузки');
         const workloadDto = new WorkloadDto(workload);
@@ -91,44 +81,32 @@ export default {
     },
 
     async update({ params: { id }, body: { name, numberOfStudents, hours, comment } }, res) {
-        try {
-            const workload = await Workload.findByPk(id, {
-                include: { model: Educator },
-            });
-            if (!numberOfStudents && !hours && !comment) {
-                throw new Error('Не указаны обязательные поля');
-            }
+        const workload = await Workload.findByPk(id, {
+            include: { model: Educator },
+        });
 
-            if (!workload) {
-                throw new Error('Нет такой нагрузки');
-            }
-
-            // Обновляем поля
-            numberOfStudents = numberOfStudents || workload.numberOfStudents;
-            hours = hours || workload.hours;
-            comment = comment || workload.comment;
-
-            // Если указано новое имя, обновляем его в таблице Educator
-            // if (name) {
-            //     if (!workload.Educator) {
-            //         throw new Error('Нагрузка не связана с преподавателем');
-            //     }
-
-            //     await workload.Educator.update({ name });
-            // }
-
-            // Обновляем запись в таблице Workload
-            await workload.update({
-                numberOfStudents,
-                hours,
-                comment,
-            });
-
-            res.json({ status: 'OK' });
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ error: 'Internal Server Error' });
+        if (!id) throw new Error('Не указан ID');
+        if (!numberOfStudents && !hours && !comment) {
+            throw new Error('Не указаны обязательные поля');
         }
+
+        if (!workload) {
+            throw new Error('Нет такой нагрузки');
+        }
+
+        // Обновляем поля
+        numberOfStudents = numberOfStudents || workload.numberOfStudents;
+        hours = hours || workload.hours;
+        comment = comment || workload.comment;
+
+        // Обновляем запись в таблице Workload
+        await workload.update({
+            numberOfStudents,
+            hours,
+            comment,
+        });
+
+        res.json({ status: 'OK' });
     },
 
     async facultyEducator({ body: { educatorId, workloadId } }, res) {
@@ -145,71 +123,71 @@ export default {
     },
 
     async mapRow({ body: { ids } }, res) {
-        try {
-            const workloads = await Workload.findAll({ where: { id: ids } });
+        const workloads = await Workload.findAll({ where: { id: ids } });
 
-            if (!ids) {
-                throw new AppErrorMissing('id');
-            }
-            const firstWorkload = workloads[0];
-            if (
-                workloads.some(
-                    workload =>
-                        workload.department !== firstWorkload.department ||
-                        workload.workload !== firstWorkload.workload ||
-                        workload.discipline !== firstWorkload.discipline
-                )
-            ) {
-                return res.status(400).json({
-                    error: 'Invalid request. Department, workload, and discipline must be the same for all workloads.',
-                });
-            }
-
-            let totalStudents = 0;
-            let totalHours = 0;
-
-            workloads.forEach(workload => {
-                totalStudents += workload.numberOfStudents;
-                totalHours += workload.hours;
-            });
-
-            const mergeWorkload = await Workload.create({
-                department: firstWorkload.get('department'),
-                discipline: firstWorkload.get('discipline'),
-                workload: firstWorkload.get('workload'),
-                groups: firstWorkload.get('groups'),
-                block: firstWorkload.get('block'),
-                semester: firstWorkload.get('semester'),
-                period: firstWorkload.get('period'),
-                curriculum: firstWorkload.get('curriculum'),
-                curriculumUnit: firstWorkload.get('curriculumUnit'),
-                formOfEducation: firstWorkload.get('formOfEducation'),
-                levelOfTraining: firstWorkload.get('levelOfTraining'),
-                specialty: firstWorkload.get('specialty'),
-                core: firstWorkload.get('core'),
-                numberOfStudents: totalStudents,
-                hours: totalHours,
-                audienceHours: firstWorkload.get('audienceHours'),
-                ratingControlHours: firstWorkload.get('ratingControlHours'),
-                comment: firstWorkload.get('comment'),
-                isSplit: false,
-                originalId: null,
-                isOID: firstWorkload.get('isOID'),
-                kafedralAutumnWorkload: firstWorkload.get('kafedralAutumnWorkload'),
-                kafedralSpringWorkload: firstWorkload.get('kafedralSpringWorkload'),
-                kafedralAdditionalWorkload: firstWorkload.get('kafedralAdditionalWorkload'),
-                instituteAutumnWorkload: firstWorkload.get('instituteAutumnWorkload'),
-                instituteSpringWorkload: firstWorkload.get('instituteSpringWorkload'),
-                instituteManagementWorkload: firstWorkload.get('instituteManagementWorkload'),
-            });
-
-            await Promise.allSettled(workloads.map(workload => workload.destroy()));
-
-            res.status(200).json('Successfully merged');
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ error: 'Internal Server Error' });
+        if (!ids) {
+            throw new AppErrorMissing('id');
         }
+        //Проверка массива нагрузок на идентичность полей для соединения
+        const firstWorkload = workloads[0];
+        if (
+            workloads.some(
+                workload =>
+                    workload.department !== firstWorkload.department ||
+                    workload.workload !== firstWorkload.workload ||
+                    workload.discipline !== firstWorkload.discipline
+            )
+        ) {
+            return res.status(400).json({
+                error: 'Invalid request. Department, workload, and discipline must be the same for all workloads.',
+            });
+        }
+
+
+        //Совмещаем часы
+        let totalStudents = 0;
+        let totalHours = 0;
+
+        workloads.forEach(workload => {
+            totalStudents += workload.numberOfStudents;
+            totalHours += workload.hours;
+        });
+
+        //Создаем совмещенную нагрузку
+        const mergeWorkload = await Workload.create({
+            department: firstWorkload.get('department'),
+            discipline: firstWorkload.get('discipline'),
+            workload: firstWorkload.get('workload'),
+            groups: firstWorkload.get('groups'),
+            block: firstWorkload.get('block'),
+            semester: firstWorkload.get('semester'),
+            period: firstWorkload.get('period'),
+            curriculum: firstWorkload.get('curriculum'),
+            curriculumUnit: firstWorkload.get('curriculumUnit'),
+            formOfEducation: firstWorkload.get('formOfEducation'),
+            levelOfTraining: firstWorkload.get('levelOfTraining'),
+            specialty: firstWorkload.get('specialty'),
+            core: firstWorkload.get('core'),
+            numberOfStudents: totalStudents,
+            hours: totalHours,
+            audienceHours: firstWorkload.get('audienceHours'),
+            ratingControlHours: firstWorkload.get('ratingControlHours'),
+            comment: firstWorkload.get('comment'),
+            isSplit: false,
+            originalId: null,
+            isOID: firstWorkload.get('isOID'),
+            kafedralAutumnWorkload: firstWorkload.get('kafedralAutumnWorkload'),
+            kafedralSpringWorkload: firstWorkload.get('kafedralSpringWorkload'),
+            kafedralAdditionalWorkload: firstWorkload.get('kafedralAdditionalWorkload'),
+            instituteAutumnWorkload: firstWorkload.get('instituteAutumnWorkload'),
+            instituteSpringWorkload: firstWorkload.get('instituteSpringWorkload'),
+            instituteManagementWorkload: firstWorkload.get('instituteManagementWorkload'),
+        });
+
+        //Удаляем записи которые учавствовали в совмещении
+        await Promise.allSettled(workloads.map(workload => workload.destroy()));
+
+        res.status(200).json('Successfully merged');
     },
 
     // Нужен метод, который будет просчитывать часы у конкретного препода
