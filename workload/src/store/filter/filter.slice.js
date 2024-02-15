@@ -7,17 +7,19 @@ export const filterSlice = createSlice({
   initialState,
   reducers: {
     toggleTofilter: (state, { payload: filter }) => {
-        const value = filter;
-        console.log(value)
-        if (state.includes(value)) {
-            state.splice(state.indexOf(value), 1);
-          } else {
-            state.push(value);
-          }
-      },
-    initializeFilters: (state, { payload: tableHeaders }) => {
-      state.splice(0, state.length, ...tableHeaders);
+      const value = filter;
+      if (state.includes(value)) {
+          state.splice(state.indexOf(value), 1);
+        } else {
+          state.push(value);
+        }
     },
+    initializeFilters: (state, { payload: tableHeaders }) => {
+      const keys = tableHeaders.map(header => header.key);
+      state.splice(0, state.length, ...keys);
+    },
+    
+   
   },
 });
 

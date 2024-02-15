@@ -1,24 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from "./TableLks.module.scss";
 import EditInput from '../EditInput/EditInput';
 import ArrowBack from "./../../img/arrow-back.svg";
+import { useDispatch, useSelector} from "react-redux";
 
 function TableLks({delNameChange, NameTeachers}) {
-  const [searchText, setSearchText] = useState('');
+  const [updatedHeader, setUpdatedHeader] = useState([]); // State to hold the updated table headers
+  const [updatedData, setUpdatedData] = useState([]); // State to hold the updated table headers
+  const [searchTerm, setSearchTerm] = useState(""); // State to hold the search term
+
   
   const tableHeaders = [
-    '№',
-    'Дисциплина',
-    'Нагрузка',
-    'Тип',
-    'Подразделение учебного плана',
-    'Направление подготовки',
-    'Часы',
-    'Часы период 1',
-    'Часы период 2',
-    'Часы без периода',
-    'Ауд. часы',
+    { key: 'id', label: '№' },
+    { key: 'discipline', label: 'Дисциплина' },
+    { key: 'workload', label: 'Нагрузка' },
+    { key: 'type', label: 'Тип' },
+    { key: 'division', label: 'Подразделение учебного плана' },
+    { key: 'direction', label: 'Направление подготовки' },
+    { key: 'hours', label: 'Часы' },
+    { key: 'hours_period_1', label: 'Часы период 1' },
+    { key: 'hours_period_2', label: 'Часы период 2' },
+    { key: 'hours_without_a_period', label: 'Часы без периода' },
+    { key: 'classroom_hours', label: 'Ауд. часы' },
   ];
+  
 
   const tableData = [
     {
@@ -49,24 +54,48 @@ function TableLks({delNameChange, NameTeachers}) {
     },
   ];
 
-  const handleSearch = (e) => {
-    setSearchText(e.target.value);
-  };
-
-  const filteredData = tableData.filter((row) =>
-    Object.values(row).some((value) =>
-      value.toString().toLowerCase().includes(searchText.toLowerCase())
-    )
-  );
+ 
 
   
   const handleNameClick = (name) => {
     delNameChange(name);
   };
 
+  const dispatch = useDispatch();
+  const filters = useSelector((state) => state.filters);
+  
+  useEffect(() => {
+    addHeadersTable(filters, tableHeaders, tableData);
+  }, [filters, dispatch]);
+
+  function addHeadersTable(filters, tableHeaders, tableData) {
+    const updatedHeader = tableHeaders.filter((header) => filters.includes(header.key));
+    const updatedData = tableData.map((data) => {
+      const updatedRow = {};
+      Object.keys(data).forEach((key) => {
+        if (filters.includes(key)) {
+          updatedRow[key] = data[key];
+        }
+      });
+      return updatedRow;
+    });
+    setUpdatedHeader(updatedHeader);
+    setUpdatedData(updatedData);
+   
+  }
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const filteredData = updatedData.filter((row) => {
+    return Object.values(row).some((value) =>
+      value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
+
   return (
     <div>
-    <input type="text" value={searchText} onChange={handleSearch} placeholder="Поиск" />
+     <input type="text" placeholder="Поиск" value={searchTerm} onChange={handleSearch} />
     
     <button className={styles.buttonBack} onClick={() => handleNameClick("")}>
         <img src={ArrowBack}></img>
@@ -91,22 +120,26 @@ function TableLks({delNameChange, NameTeachers}) {
    
     <div className={styles.TableLks__inner}>
       <table className={styles.TableLks}>
-        <thead>
+      <thead>
           <tr>
-            {tableHeaders.map((header) => (
-              <th key={header} className={styles.head__table}>{header}</th>
+            {updatedHeader.map((header) => (
+              <th key={header.key}>
+                {header.label}  
+              </th>
             ))}
           </tr>
         </thead>
         <tbody>
-          {filteredData.map((row, index) => (
-            <tr key={index}>
-              {Object.values(row).map((value, i) => (
-                <td key={i}>{value}</td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
+            {filteredData.map((row, index) => (
+              <tr key={index}>
+                {Object.keys(row).map(key => (
+                  <td key={key}>
+                    {row[key]}
+                  </td>  
+                ))}
+              </tr>
+            ))}
+          </tbody>
       </table>
     </div>
     {/* <div className={styles.Block__tables__shadow}></div> */}

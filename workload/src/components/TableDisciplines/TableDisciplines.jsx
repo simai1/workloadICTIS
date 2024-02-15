@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from "./TableDisciplines.module.scss";
 import Button from '../../ui/Button/Button';
 import EditInput from '../EditInput/EditInput';
+import { useDispatch, useSelector} from "react-redux";
 
 function TableDisciplines() {
-  const [searchText, setSearchText] = useState('');
-  
+  const [updatedHeader, setUpdatedHeader] = useState([]); // State to hold the updated table headers
+  const [updatedData, setUpdatedData] = useState([]); // State to hold the updated table headers
+  const [searchTerm, setSearchTerm] = useState(""); // State to hold the search term
+
   const tableData = [
     {
       id: 1,
@@ -55,50 +58,71 @@ function TableDisciplines() {
     },
   ];
 
-  const handleSearch = (e) => {
-    setSearchText(e.target.value);
-  };
-
-  const filteredData = tableData.filter((row) =>
-    Object.values(row).some((value) =>
-      value.toString().toLowerCase().includes(searchText.toLowerCase())
-    )
-  );
-
   const tableHeaders = [
-    '№',
-    'Дисциплина',
-    'Нагрузка',
-    'Группа',
-    'Блок',
-    'Семестр',
-    'Период',
-    'Учебный план',
-    'Подразделение учебного плана',
-    'Идентификатор 1С-ЗКГУ',
-    'Форма обучения',
-    'Уровень подготовки',
-    'Направление подготовки',
-    'Профиль',
-    'Образовательная программа',
-    'Количество студентов',
-    'Часы',
-    'Аудиторные часы',
-    'Часы рейтинг-контроль',
-    'Количество в ЗЕТ',
-    'Преподаватель',
+    { key: 'id', label: '№' },
+    { key: 'discipline', label: 'Дисциплина' },
+    { key: 'workload', label: 'Нагрузка' },
+    { key: 'group', label: 'Группа' },
+    { key: 'block', label: 'Блок' },
+    { key: 'semester', label: 'Семестр' },
+    { key: 'period', label: 'Период' },
+    { key: 'studyPlan', label: 'Учебный план' },
+    { key: 'studyPlanUnit', label: 'Подразделение учебного плана' },
+    { key: 'studyPlanUnitId', label: 'Идентификатор 1С-ЗКГУ' },
+    { key: 'educationForm', label: 'Форма обучения' },
+    { key: 'educationLevel', label: 'Уровень подготовки' },
+    { key: 'trainingDirection', label: 'Направление подготовки (специальность)' },
+    { key: 'profile', label: 'Профиль' },
+    { key: 'educationalProgram', label: 'Образовательная программа' },
+    { key: 'studentCount', label: 'Количество студентов' },
+    { key: 'hours', label: 'Часы' },
+    { key: 'classroomHours', label: 'Аудиторные часы' },
+    { key: 'ratingControlHours', label: 'Часы рейтинг-контроль' },
+    { key: 'zetCount', label: 'Количество в ЗЕТ' },
+    { key: 'teacher', label: 'Преподаватель' },
   ];
-
+  
   const [selectedComponent, setSelectedComponent] = useState("cathedrals");
 
   const handleComponentChange = (component) => {
     setSelectedComponent(component);
   };
 
+  const dispatch = useDispatch();
+  const filters = useSelector((state) => state.filters);
+  
+  useEffect(() => {
+    addHeadersTable(filters, tableHeaders, tableData);
+  }, [filters, dispatch]);
 
+  function addHeadersTable(filters, tableHeaders, tableData) {
+    const updatedHeader = tableHeaders.filter((header) => filters.includes(header.key));
+    const updatedData = tableData.map((data) => {
+      const updatedRow = {};
+      Object.keys(data).forEach((key) => {
+        if (filters.includes(key)) {
+          updatedRow[key] = data[key];
+        }
+      });
+      return updatedRow;
+    });
+    setUpdatedHeader(updatedHeader);
+    setUpdatedData(updatedData);
+   
+  }
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const filteredData = updatedData.filter((row) => {
+    return Object.values(row).some((value) =>
+      value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
+  
   return (
     <div>
-    <input type="text" value={searchText} onChange={handleSearch} placeholder="Поиск" />
+     <input type="text" placeholder="Поиск" value={searchTerm} onChange={handleSearch} />
 
     <div className={styles.ButtonCaf_gen}>
       <Button Bg={selectedComponent === "cathedrals" ? "#DDDDDD": "#ffffff"} text="Кафедральные" onClick={() => handleComponentChange("cathedrals")}/>
@@ -112,27 +136,27 @@ function TableDisciplines() {
       <table className={styles.TableDisciplines}>
         <thead>
           <tr>
-            {/* <input type="checkbox" id="chooseAll" className={styles.checkbox}/> */}
-            {tableHeaders.map((header) => (
-              <th key={header} className={styles.head__table}>{header}</th>
+            {updatedHeader.map((header) => (
+              <th key={header.key}>
+                {header.label}  
+              </th>
             ))}
           </tr>
         </thead>
         <tbody>
-          {filteredData.map((row, index) => (
-            
-            <tr key={index}>
-              {/* <input key={index} type="checkbox" className={styles.checkbox}/> */}
-              {Object.values(row).map((value, i) => (
-                <td key={i}>{value}</td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
+            {filteredData.map((row, index) => (
+              <tr key={index}>
+                {Object.keys(row).map(key => (
+                  <td key={key}>
+                    {row[key]}
+                  </td>  
+                ))}
+              </tr>
+            ))}
+          </tbody>
       </table>
+      <div className={styles.Block__tables__shadow}></div>
     </div>
-    <div className={styles.Block__tables__shadow}></div>
-    
     </div>
   );
 }

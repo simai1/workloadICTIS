@@ -1,25 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import styles from "./EditInput.module.scss";
 import arrow from "./../../img/arrow.svg";
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { actions } from './../../store/filter/filter.slice';
 
-function EditInput({ tableHeaders, top, h }) {
+function EditInput({ tableHeaders}) {
   const [isListOpen, setListOpen] = useState(false);
   const [checkedItems, setCheckedItems] = useState(Array(tableHeaders.length).fill(true));
   const dispatch = useDispatch();
 
-
   useEffect(() => {
     dispatch(actions.initializeFilters(tableHeaders));
-  }, [dispatch, tableHeaders]);
-
+  }, []);
+  
   const toggleList = () => {
     setListOpen(!isListOpen);
   }
 
   const takeFunction = (index, value) => {
-    handleItemClick(value);
+    handleItemClick(value.key);
     toggleChecked(index);
   }
 
@@ -32,6 +31,7 @@ function EditInput({ tableHeaders, top, h }) {
     newCheckedItems[index] = !newCheckedItems[index];
     setCheckedItems(newCheckedItems);
   }
+ 
   
   return (
     <div className={styles.EditInput}>
@@ -49,21 +49,18 @@ function EditInput({ tableHeaders, top, h }) {
           </button>
           <div className={styles.EditInputList}>
             <ul>
-                {tableHeaders.map((row, index) => (
-                  <li key={index}>
-                    
-                    <input
-                      type="checkbox"
-                      onChange={() => takeFunction(index, row)}
-                      checked={checkedItems[index]}
-                      className={styles.customInput}
-                    />
-                    <p>
-                    {Object.values(row).join("")}
-                    </p>
-                  </li>
-                ))}
-              </ul>
+        {tableHeaders.map((row, index) => (
+          <li key={index}>
+            <input
+              type="checkbox"
+              onChange={() => takeFunction(index, row)}
+              checked={checkedItems[index]}
+              className={styles.customInput}
+            />
+            <p>{row.label}</p>
+          </li>
+        ))}
+      </ul>
             
           </div>
         </div>
