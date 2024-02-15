@@ -5,6 +5,7 @@ import Educator from '../models/educator.js';
 
 import WorkloadDto from '../dtos/workload-dto.js';
 import { where } from 'sequelize';
+import HoursDto from '../dtos/hours-dto.js';
 
 export default {
     async getDepartment({ params: { department } }, res) {
@@ -171,26 +172,33 @@ export default {
             });
 
             const mergeWorkload = await Workload.create({
-                department: workloads[0].get('department'),
-                discipline: workloads[0].get('discipline'),
-                workload: workloads[0].get('workload'),
-                groups: workloads[0].get('groups'),
-                block: workloads[0].get('block'),
-                semester: workloads[0].get('semester'),
-                period: workloads[0].get('period'),
-                curriculum: workloads[0].get('curriculum'),
-                curriculumUnit: workloads[0].get('curriculumUnit'),
-                formOfEducation: workloads[0].get('formOfEducation'),
-                levelOfTraining: workloads[0].get('levelOfTraining'),
-                specialty: workloads[0].get('specialty'),
-                core: workloads[0].get('core'),
+                department: firstWorkload.get('department'),
+                discipline: firstWorkload.get('discipline'),
+                workload: firstWorkload.get('workload'),
+                groups: firstWorkload.get('groups'),
+                block: firstWorkload.get('block'),
+                semester: firstWorkload.get('semester'),
+                period: firstWorkload.get('period'),
+                curriculum: firstWorkload.get('curriculum'),
+                curriculumUnit: firstWorkload.get('curriculumUnit'),
+                formOfEducation: firstWorkload.get('formOfEducation'),
+                levelOfTraining: firstWorkload.get('levelOfTraining'),
+                specialty: firstWorkload.get('specialty'),
+                core: firstWorkload.get('core'),
                 numberOfStudents: totalStudents,
                 hours: totalHours,
-                audienceHours: workloads[0].get('audienceHours'),
-                ratingControlHours: workloads[0].get('ratingControlHours'),
-                comment: workloads[0].get('comment'),
+                audienceHours: firstWorkload.get('audienceHours'),
+                ratingControlHours: firstWorkload.get('ratingControlHours'),
+                comment: firstWorkload.get('comment'),
                 isSplit: false,
                 originalId: null,
+                isOID: firstWorkload.get('isOID'),
+                kafedralAutumnWorkload: firstWorkload.get('kafedralAutumnWorkload'),
+                kafedralSpringWorkload: firstWorkload.get('kafedralSpringWorkload'),
+                kafedralAdditionalWorkload: firstWorkload.get('kafedralAdditionalWorkload'),
+                instituteAutumnWorkload: firstWorkload.get('instituteAutumnWorkload'),
+                instituteSpringWorkload: firstWorkload.get('instituteSpringWorkload'),
+                instituteManagementWorkload: firstWorkload.get('instituteManagementWorkload'),
             });
 
             await Promise.allSettled(workloads.map(workload => workload.destroy()));
@@ -201,4 +209,8 @@ export default {
             res.status(500).json({ error: 'Internal Server Error' });
         }
     },
+    
+
+    //Нужен метод, который будет просчитывать часы у конкретного препода
+
 };

@@ -84,7 +84,7 @@ export default class Workload extends Model {
                 },
                 isSplit: {
                     type: DataTypes.BOOLEAN,
-                    allowNull: true,
+                    allowNull: false,
                 },
                 originalId: {
                     type: DataTypes.UUID,
@@ -94,6 +94,13 @@ export default class Workload extends Model {
                     type: DataTypes.UUID,
                     allowNull: true,
                 },
+                isOID: {
+                    type: DataTypes.BOOLEAN,
+                    allowNull: false,
+                    defaultValue: false,
+                },
+
+                
             },
             {
                 sequelize,
