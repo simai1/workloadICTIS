@@ -1,4 +1,5 @@
 import { models } from './index.js';
+import SummaryWorkload from './summary-workload.js';
 
 const { Educator, Workload, User, TokenModel } = models;
 
@@ -8,4 +9,12 @@ export default function () {
 
     User.hasOne(TokenModel, { foreignKey: 'userId' });
     TokenModel.belongsTo(User, { foreignKey: 'userId' });
+
+
+    Educator.hasOne(SummaryWorkload);
+    SummaryWorkload.belongsTo(Educator);
+
 }
+
+
+

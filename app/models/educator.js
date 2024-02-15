@@ -69,6 +69,7 @@ export default class Educator extends Model {
         );
         Educator.beforeCreate(educator => {
             setHours(educator);
+            //Создает summaryWorkload.
         });
         Educator.beforeUpdate(educator => {
             setHours(educator);

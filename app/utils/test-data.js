@@ -29,6 +29,13 @@ async function fillWorkload() {
                 hours: x.hours,
                 audienceHours: x.audienceHours,
                 isSplit: x.isSplit,
+                educatorId: null,
+                kafedralAutumnWorkload: x.kafedralAutumnWorkload,
+                kafedralSpringWorkload: x.kafedralSpringWorkload,
+                kafedralAdditionalWorkload: x.kafedralAdditionalWorkload,
+                instituteAutumnWorkload: x.instituteAutumnWorkload,
+                instituteSpringWorkload: x.instituteSpringWorkload,
+                instituteManagementWorkload: x.instituteAutumnWorkload,
             });
         }
     }

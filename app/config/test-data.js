@@ -20,6 +20,14 @@ export const workloads = [
         comment: null,
         isSplit: false,
         originalId: null,
+        educatorId: null,
+        kafedralAutumnWorkload: 40,
+        kafedralSpringWorkload: 50,
+        kafedralAdditionalWorkload: 20,
+        instituteAutumnWorkload: 30,
+        instituteSpringWorkload: 50,
+        instituteManagementWorkload: 10,
+
     },
     {
         department: 2,
@@ -43,6 +51,13 @@ export const workloads = [
         comment: null,
         isSplit: true,
         originalId: null,
+        educatorId: null,
+        kafedralAutumnWorkload: 22,
+        kafedralSpringWorkload: 34,
+        kafedralAdditionalWorkload: 50,
+        instituteAutumnWorkload: 60,
+        instituteSpringWorkload: 20,
+        instituteManagementWorkload: 10,
     },
 ];
 
