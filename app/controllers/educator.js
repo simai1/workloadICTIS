@@ -67,4 +67,18 @@ export default {
     async getTypeOfEmployments(params, res) {
         res.json(mapTypeOfEmployments);
     },
+
+    async deleteEducator({ params: { educatorId } }, res) {
+        if (!educatorId) throw new AppErrorMissing('educatorId');
+
+        const educator = await Educator.findByPk(educatorId);
+
+        if (!educator) {
+            return res.status(404).json('Educator not found');
+        }
+
+        await educator.destroy({force: true});
+
+        res.status(200).json('Successfully deleted');
+    }
 };

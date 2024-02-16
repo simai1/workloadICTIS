@@ -45,6 +45,7 @@ async function setHours(workload) {
 
 
     console.log(hours.totalKafedralHours, hours.totalOIDHours, hours.totalHours)
+    //TODO: Нужно доделать правильное обновление часов, при нагрузке >1
     //Заполняем бд этими данными
     summaryWorkload.set('totalKafedralHours', hours.totalKafedralHours);
     summaryWorkload.set('totalOIDHours', hours.totalOIDHours);

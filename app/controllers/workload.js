@@ -143,7 +143,6 @@ export default {
             });
         }
 
-
         //Совмещаем часы
         let totalStudents = 0;
         let totalHours = 0;
@@ -188,6 +187,21 @@ export default {
         await Promise.allSettled(workloads.map(workload => workload.destroy()));
 
         res.status(200).json('Successfully merged');
+    },
+
+    async deleteWorkload({ params: { id } }, res) {
+        if (!id) throw new AppErrorMissing('id');
+
+        const workload = await Workload.findByPk(id);
+
+        if (!workload) {
+            return res.status(404).json('Workload not found');
+        }
+
+        // Delete the instance from the database
+        await workload.destroy({force: true});
+
+        res.status(200).json('Successfully deleted');
     },
 
     // Нужен метод, который будет просчитывать часы у конкретного препода
