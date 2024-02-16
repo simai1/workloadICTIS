@@ -3,7 +3,6 @@ import styles from "./TableDisciplines.module.scss";
 import Button from '../../ui/Button/Button';
 import EditInput from '../EditInput/EditInput';
 import { useDispatch, useSelector} from "react-redux";
-import arrow from "./../../img/arrow.svg"
 function TableDisciplines() {
   const [updatedHeader, setUpdatedHeader] = useState([]); // State to hold the updated table headers
   const [updatedData, setUpdatedData] = useState([]); // State to hold the updated table headers
@@ -143,32 +142,33 @@ function TableDisciplines() {
     </div>
  
     <div className={styles.TableDisciplines__inner}>
-      <table className={styles.TableDisciplines}>
-        <thead>
-          <tr>
-            {updatedHeader.map((header) => (
-              <th key={header.key} >
-                {header.label} 
-              </th>
-              
-               
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-            {filteredData.map((row, index) => (
-              <tr key={index}>
-                {Object.keys(row).map(key => (
-                  <td key={key}>
-                    {row[key]}
-                  </td>  
-                ))}
-              </tr>
-            ))}
-          </tbody>
-      </table>
-      <div className={styles.Block__tables__shadow}></div>
-    </div>
+  <table className={styles.TableDisciplines}>
+    <thead>
+      <tr>
+        <th>
+          <input type="checkbox" className={styles.customInput} />
+        </th> 
+        {updatedHeader.map((header) => (
+          <th key={header.key}>{header.label}</th>
+        ))}
+      </tr>
+    </thead>
+    <tbody>
+      {filteredData.map((row, index) => (
+        <tr key={index}>
+          <td>
+            <input type="checkbox" className={styles.customInput}/>
+          </td>
+          {Object.keys(row).map((key) => (
+            <td key={key}>{row[key]}</td>
+          ))}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+  <div className={styles.Block__tables__shadow}></div>
+</div>
+
     </div>
   );
 }
