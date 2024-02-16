@@ -3,6 +3,7 @@ import styles from "./TableDisciplines.module.scss";
 import Button from '../../ui/Button/Button';
 import EditInput from '../EditInput/EditInput';
 import { useDispatch, useSelector} from "react-redux";
+import ContextMenu from '../../ui/ContextMenu/ContextMenu';
 function TableDisciplines() {
   const [updatedHeader, setUpdatedHeader] = useState([]); // State to hold the updated table headers
   const [updatedData, setUpdatedData] = useState([]); // State to hold the updated table headers
@@ -143,6 +144,7 @@ function TableDisciplines() {
  
     <div className={styles.TableDisciplines__inner}>
   <table className={styles.TableDisciplines}>
+  <ContextMenu/>
     <thead>
       <tr>
         <th>
