@@ -10,6 +10,8 @@ async function setHours(workload) {
         },
         attributes: ['isOID', 'period', 'hours'],
     });
+
+    console.log('Start')
     const hours = {
         kafedralAutumnWorkload: 0,
         kafedralSpringWorkload: 0,
@@ -21,6 +23,7 @@ async function setHours(workload) {
         totalOIDHours: 0,
         totalHours: 0,
     };
+    console.log(hours);
     //Проверяем предмет на общеинститутский ли он и период и устанавливаем часы для кафедральных или институтских дисциплин
     for (const x of educatorHours) {
         if (x.isOid === false && x.period === 1) hours.kafedralAutumnWorkload += x.hours;
@@ -31,6 +34,8 @@ async function setHours(workload) {
         if (x.isOid === true && !x.period) hours.instituteManagementWorkload += x.hours;
     }
 
+    console.log(hours.instituteAutumnWorkload, hours.instituteManagementWorkload)
+
     //Итоговые часы для кафедральных, общеинститутских предметов и общей нагрузки
     hours.totalKafedralHours =
         hours.kafedralAutumnWorkload + hours.kafedralSpringWorkload + hours.kafedralAdditionalWorkload;
@@ -38,6 +43,8 @@ async function setHours(workload) {
         hours.instituteAutumnWorkload + hours.instituteSpringWorkload + hours.instituteManagementWorkload;
     hours.totalHours = hours.totalKafedralHours + hours.totalOIDHours;
 
+
+    console.log(hours.totalKafedralHours, hours.totalOIDHours, hours.totalHours)
     //Заполняем бд этими данными
     summaryWorkload.set('totalKafedralHours', hours.totalKafedralHours);
     summaryWorkload.set('totalOIDHours', hours.totalOIDHours);
@@ -48,6 +55,8 @@ async function setHours(workload) {
     summaryWorkload.set('instituteAutumnWorkload', hours.instituteAutumnWorkload);
     summaryWorkload.set('instituteSpringWorkload', hours.instituteSpringWorkload);
     summaryWorkload.set('instituteManagementWorkload', hours.instituteManagementWorkload);
+
+    await summaryWorkload.save();
 }
 
 export default setHours;

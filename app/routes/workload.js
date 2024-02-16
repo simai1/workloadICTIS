@@ -6,7 +6,7 @@ const router = Router();
 
 router.route('/:department').get(asyncRoute(workloadController.getDepartment));
 router.route('/:id/split').post(asyncRoute(workloadController.splitRow));
-router.route('/faculty').post(asyncRoute(workloadController.facultyEducator));
+router.route('/faculty').patch(asyncRoute(workloadController.facultyEducator));
 router.route('/:id/update').get(asyncRoute(workloadController.getOne)).patch(asyncRoute(workloadController.update));
 router.route('/map').post(asyncRoute(workloadController.mapRow));
 // router.route('/hours/:id').get(asyncRoute(workloadController.getHours));

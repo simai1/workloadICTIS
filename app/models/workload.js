@@ -109,8 +109,15 @@ export default class Workload extends Model {
                 paranoid: true,
             }
         );
-        Workload.beforeUpdate(async workload => {
-            await setHours(workload);
+        Workload.beforeUpdate(async (workload, options) => {
+            try {
+                await setHours(workload);
+                return workload;
+            } catch (error) {
+                console.error('Error in beforeUpdate trigger:', error.message);
+                console.error(error.stack);
+                throw error; // Прокиньте ошибку дальше, чтобы Sequelize мог обработать её правильно
+            }
         });
     }
 }
