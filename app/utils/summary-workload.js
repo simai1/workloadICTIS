@@ -26,12 +26,12 @@ async function setHours(workload) {
     console.log(hours);
     //Проверяем предмет на общеинститутский ли он и период и устанавливаем часы для кафедральных или институтских дисциплин
     for (const x of educatorHours) {
-        if (x.isOid === false && x.period === 1) hours.kafedralAutumnWorkload += x.hours;
-        if (x.isOid === false && x.period === 2) hours.kafedralSpringWorkload += x.hours;
-        if (x.isOid === false && !x.period) hours.kafedralAdditionalWorkload += x.hours;
-        if (x.isOid === true && x.period === 1) hours.instituteAutumnWorkload += x.hours;
-        if (x.isOid === true && x.period === 2) hours.instituteSpringWorkload += x.hours;
-        if (x.isOid === true && !x.period) hours.instituteManagementWorkload += x.hours;
+        if (x.isOID === false && x.period === 1) hours.kafedralAutumnWorkload += x.hours;
+        if (x.isOID === false && x.period === 2) hours.kafedralSpringWorkload += x.hours;
+        if (x.isOID === false && !x.period) hours.kafedralAdditionalWorkload += x.hours;
+        if (x.isOID === true && x.period === 1) hours.instituteAutumnWorkload += x.hours;
+        if (x.isOID === true && x.period === 2) hours.instituteSpringWorkload += x.hours;
+        if (x.isOID === true && !x.period) hours.instituteManagementWorkload += x.hours;
     }
 
     console.log(hours.instituteAutumnWorkload, hours.instituteManagementWorkload)
