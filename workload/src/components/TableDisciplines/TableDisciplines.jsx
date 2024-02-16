@@ -1,15 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import styles from "./TableDisciplines.module.scss";
 import Button from '../../ui/Button/Button';
 import EditInput from '../EditInput/EditInput';
 import { useDispatch, useSelector} from "react-redux";
-
+import arrow from "./../../img/arrow.svg"
 function TableDisciplines() {
   const [updatedHeader, setUpdatedHeader] = useState([]); // State to hold the updated table headers
   const [updatedData, setUpdatedData] = useState([]); // State to hold the updated table headers
   const [searchTerm, setSearchTerm] = useState(""); // State to hold the search term
+  const [selectedComponent, setSelectedComponent] = useState("cathedrals");
 
-  const tableData = [
+
+  const tableData = useMemo(() => 
+  [
     {
       id: 1,
       discipline: 'Дисциплина 1',
@@ -56,10 +59,12 @@ function TableDisciplines() {
       zetCount: 'Количество в ЗЕТ 1',
       teacher: 'Преподаватель 1',
     },
-  ];
+  ]
+, []);
 
-  const tableHeaders = [
-    { key: 'id', label: '№' },
+  const tableHeaders = useMemo(() => {
+    return [
+      { key: 'id', label: '№' },
     { key: 'discipline', label: 'Дисциплина' },
     { key: 'workload', label: 'Нагрузка' },
     { key: 'group', label: 'Группа' },
@@ -80,9 +85,9 @@ function TableDisciplines() {
     { key: 'ratingControlHours', label: 'Часы рейтинг-контроль' },
     { key: 'zetCount', label: 'Количество в ЗЕТ' },
     { key: 'teacher', label: 'Преподаватель' },
-  ];
-  
-  const [selectedComponent, setSelectedComponent] = useState("cathedrals");
+    ];
+  }, []);
+ 
 
   const handleComponentChange = (component) => {
     setSelectedComponent(component);
@@ -93,7 +98,7 @@ function TableDisciplines() {
   
   useEffect(() => {
     addHeadersTable(filters, tableHeaders, tableData);
-  }, [filters, dispatch]);
+  }, [filters, dispatch, tableHeaders, tableData]);
 
   function addHeadersTable(filters, tableHeaders, tableData) {
     const updatedHeader = tableHeaders.filter((header) => filters.includes(header.key));
@@ -120,13 +125,18 @@ function TableDisciplines() {
     );
   });
   
+  const EditTableData = (selectedComponent) =>{
+    console.log(selectedComponent);
+    //тут написать функцию которая будет подгружать нужное содержимое tableData и tableHeaders
+  }
+
   return (
     <div>
      <input type="text" placeholder="Поиск" value={searchTerm} onChange={handleSearch} />
 
     <div className={styles.ButtonCaf_gen}>
-      <Button Bg={selectedComponent === "cathedrals" ? "#DDDDDD": "#ffffff"} text="Кафедральные" onClick={() => handleComponentChange("cathedrals")}/>
-      <Button Bg={selectedComponent === "genInstitute" ? "#DDDDDD": "#ffffff"} text="Общеинститутские" onClick={() => handleComponentChange("genInstitute")}/>
+      <Button Bg={selectedComponent === "cathedrals" ? "#DDDDDD": "#ffffff"} text="Кафедральные" onClick={() => {handleComponentChange("cathedrals"); EditTableData(selectedComponent);}}/>
+      <Button Bg={selectedComponent === "genInstitute" ? "#DDDDDD": "#ffffff"} text="Общеинститутские" onClick={() => {handleComponentChange("genInstitute"); EditTableData(selectedComponent);}}/>
     </div>
     <div className={styles.EditInput}>
       <EditInput tableHeaders={tableHeaders}/>
@@ -137,9 +147,11 @@ function TableDisciplines() {
         <thead>
           <tr>
             {updatedHeader.map((header) => (
-              <th key={header.key}>
-                {header.label}  
+              <th key={header.key} >
+                {header.label} 
               </th>
+              
+               
             ))}
           </tr>
         </thead>
