@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from "react";
 import styles from "./TableDisciplines.module.scss";
-import Button from '../../ui/Button/Button';
-import EditInput from '../EditInput/EditInput';
-import { useDispatch, useSelector} from "react-redux";
-import ContextMenu from '../../ui/ContextMenu/ContextMenu';
+import Button from "../../ui/Button/Button";
+import EditInput from "../EditInput/EditInput";
+import { useDispatch, useSelector } from "react-redux";
+import ContextMenu from "../../ui/ContextMenu/ContextMenu";
 import { NotificationForm } from "../../ui/NotificationForm/NotificationForm";
 
 function TableDisciplines() {
@@ -16,13 +16,17 @@ function TableDisciplines() {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [idRow, setIdrow] = useState(0);
 
- 
+  const [isSelectionOfItemsShow, setSelectionOfItemsShow] = useState(false);
 
   const handleClic = (el, index) => {
     setIsHovered(!isHovered);
     setPosition({ x: el.clientX - 50, y: el.clientY - 300 });
     setIdrow(index);
     console.log(index);
+  };
+
+  const clickFigth = () => {
+    setSelectionOfItemsShow(!isSelectionOfItemsShow);
   };
 
   const notice = [
@@ -143,32 +147,32 @@ function TableDisciplines() {
 
   const tableHeaders = useMemo(() => {
     return [
-      { key: 'id', label: '№' },
-    { key: 'discipline', label: 'Дисциплина' },
-    { key: 'workload', label: 'Нагрузка' },
-    { key: 'group', label: 'Группа' },
-    { key: 'block', label: 'Блок' },
-    { key: 'semester', label: 'Семестр' },
-    { key: 'period', label: 'Период' },
-    { key: 'studyPlan', label: 'Учебный план' },
-    { key: 'studyPlanUnit', label: 'Подразделение учебного плана' },
-    { key: 'studyPlanUnitId', label: 'Идентификатор 1С-ЗКГУ' },
-    { key: 'educationForm', label: 'Форма обучения' },
-    { key: 'educationLevel', label: 'Уровень подготовки' },
-    { key: 'trainingDirection', label: 'Направление подготовки (специальность)' },
-    { key: 'profile', label: 'Профиль' },
-    { key: 'educationalProgram', label: 'Образовательная программа' },
-    { key: 'studentCount', label: 'Количество студентов' },
-    { key: 'hours', label: 'Часы' },
-    { key: 'classroomHours', label: 'Аудиторные часы' },
-    { key: 'ratingControlHours', label: 'Часы рейтинг-контроль' },
-    { key: 'zetCount', label: 'Количество в ЗЕТ' },
-    { key: 'teacher', label: 'Преподаватель' },
+      { key: "id", label: "№" },
+      { key: "discipline", label: "Дисциплина" },
+      { key: "workload", label: "Нагрузка" },
+      { key: "group", label: "Группа" },
+      { key: "block", label: "Блок" },
+      { key: "semester", label: "Семестр" },
+      { key: "period", label: "Период" },
+      { key: "studyPlan", label: "Учебный план" },
+      { key: "studyPlanUnit", label: "Подразделение учебного плана" },
+      { key: "studyPlanUnitId", label: "Идентификатор 1С-ЗКГУ" },
+      { key: "educationForm", label: "Форма обучения" },
+      { key: "educationLevel", label: "Уровень подготовки" },
+      {
+        key: "trainingDirection",
+        label: "Направление подготовки (специальность)",
+      },
+      { key: "profile", label: "Профиль" },
+      { key: "educationalProgram", label: "Образовательная программа" },
+      { key: "studentCount", label: "Количество студентов" },
+      { key: "hours", label: "Часы" },
+      { key: "classroomHours", label: "Аудиторные часы" },
+      { key: "ratingControlHours", label: "Часы рейтинг-контроль" },
+      { key: "zetCount", label: "Количество в ЗЕТ" },
+      { key: "teacher", label: "Преподаватель" },
     ];
   }, []);
- 
-
-  
 
   const handleComponentChange = (component) => {
     setSelectedComponent(component);
@@ -176,13 +180,15 @@ function TableDisciplines() {
 
   const dispatch = useDispatch();
   const filters = useSelector((state) => state.filters);
-  
+
   useEffect(() => {
     addHeadersTable(filters, tableHeaders, tableData);
-  }, [filters, dispatch, tableHeaders, tableData]);
+  }, [filters, dispatch]);
 
   function addHeadersTable(filters, tableHeaders, tableData) {
-    const updatedHeader = tableHeaders.filter((header) => filters.includes(header.key));
+    const updatedHeader = tableHeaders.filter((header) =>
+      filters.includes(header.key)
+    );
     const updatedData = tableData.map((data) => {
       const updatedRow = {};
       Object.keys(data).forEach((key) => {
@@ -192,9 +198,9 @@ function TableDisciplines() {
       });
       return updatedRow;
     });
+
     setUpdatedHeader(updatedHeader);
     setUpdatedData(updatedData);
-   
   }
 
   const handleSearch = (event) => {
@@ -206,11 +212,11 @@ function TableDisciplines() {
       value.toString().toLowerCase().includes(searchTerm.toLowerCase())
     );
   });
-  
-  const EditTableData = (selectedComponent) =>{
+
+  const EditTableData = (selectedComponent) => {
     console.log(selectedComponent);
     //тут написать функцию которая будет подгружать нужное содержимое tableData и tableHeaders
-  }
+  };
 
   //меню
   const [showMenu, setShowMenu] = useState(false);
@@ -223,24 +229,42 @@ function TableDisciplines() {
   };
 
   const handleMenuClick = () => {
-   setShowMenu(false);
+    setShowMenu(false);
   };
-
 
   return (
     <div className={styles.tabledisciplines}>
-     <input type="text" placeholder="Поиск" value={searchTerm} onChange={handleSearch} />
+      <input
+        type="text"
+        placeholder="Поиск"
+        value={searchTerm}
+        onChange={handleSearch}
+      />
 
-    <div className={styles.ButtonCaf_gen}>
-      <Button Bg={selectedComponent === "cathedrals" ? "#DDDDDD": "#ffffff"} text="Кафедральные" onClick={() => {handleComponentChange("cathedrals"); EditTableData(selectedComponent);}}/>
-      <Button Bg={selectedComponent === "genInstitute" ? "#DDDDDD": "#ffffff"} text="Общеинститутские" onClick={() => {handleComponentChange("genInstitute"); EditTableData(selectedComponent);}}/>
-    </div>
-    <div className={styles.EditInput}>
-      <EditInput tableHeaders={tableHeaders}/>
-    </div>
- 
-    <div className={styles.TableDisciplines__inner}>
-    <table className={styles.TableDisciplines_circle}>
+      <div className={styles.ButtonCaf_gen}>
+        <Button
+          Bg={selectedComponent === "cathedrals" ? "#DDDDDD" : "#ffffff"}
+          text="Кафедральные"
+          onClick={() => {
+            handleComponentChange("cathedrals");
+            EditTableData(selectedComponent);
+          }}
+        />
+        <Button
+          Bg={selectedComponent === "genInstitute" ? "#DDDDDD" : "#ffffff"}
+          text="Общеинститутские"
+          onClick={() => {
+            handleComponentChange("genInstitute");
+            EditTableData(selectedComponent);
+          }}
+        />
+      </div>
+      <div className={styles.EditInput}>
+        <EditInput tableHeaders={tableHeaders} />
+      </div>
+
+      <div className={styles.TableDisciplines__inner}>
+        <table className={styles.TableDisciplines_circle}>
           <thead>
             <tr>
               <td></td>
@@ -254,8 +278,9 @@ function TableDisciplines() {
               <tr className={styles.notice} key={index}>
                 <td
                   className={
-                    notice.some((item) => item.id_row === index) &&
-                    styles.notice_circle
+                    notice.some((item) => item.id_row === index)
+                      ? styles.notice_circle
+                      : null
                   }
                 >
                   <div
@@ -276,36 +301,47 @@ function TableDisciplines() {
             idRow={idRow}
           />
         )}
-  <table className={styles.TableDisciplines}>
-   
-    <thead>
-      <tr>
-        {updatedHeader.map((header) => (
-          <th key={header.key}>{header.label}</th>
-        ))}
-      </tr>
-    </thead>
-    <tbody>
-    {showMenu && (
-      <ContextMenu showMenu={showMenu} menuPosition={menuPosition}
-      handleMenuClick = {handleMenuClick}
-      />
-    )}
-      {filteredData.map((row, index) => (
-        <tr key={index} onContextMenu={handleContextMenu}>
-       
-          {Object.keys(row).map((key) => (
-            <td key={key}>{row[key]}</td>
-          ))}
-        </tr>
-      ))}
-     
-    </tbody>
-  </table>
-  <div className={styles.Block__tables__shadow}></div>
-</div>
-</div>
-)}
+
+        {isSelectionOfItemsShow && <div>form</div>}
+
+        <table className={styles.TableDisciplines}>
+          <thead>
+            <tr>
+              {updatedHeader.map((header) => (
+                <th key={header.key}>
+                  <div className={styles.th_inner}>
+                    {header.label}
+                    <img
+                      src="./img/th_fight.svg"
+                      alt=">"
+                      onClick={clickFigth}
+                    ></img>
+                  </div>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {showMenu && (
+              <ContextMenu
+                showMenu={showMenu}
+                menuPosition={menuPosition}
+                handleMenuClick={handleMenuClick}
+              />
+            )}
+            {filteredData.map((row, index) => (
+              <tr key={index} onContextMenu={handleContextMenu}>
+                {Object.keys(row).map((key) => (
+                  <td key={key}>{row[key]}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div className={styles.Block__tables__shadow}></div>
+      </div>
+    </div>
+  );
+}
 
 export default TableDisciplines;
-
