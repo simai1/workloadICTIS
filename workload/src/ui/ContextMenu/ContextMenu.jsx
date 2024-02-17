@@ -1,26 +1,15 @@
 import React, { useState } from 'react';
 
 const ContextMenu = (props) => {
-  const [showMenu, setShowMenu] = useState(false);
-  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
+  const [menuPosition, setMenuPosition] = useState(props.menuPosition);
 
   const handleContextMenu = (e) => {
     e.preventDefault();
-    setShowMenu(true);
     setMenuPosition({ x: e.clientX, y: e.clientY });
   };
-
-  const handleMenuClick = () => {
-    // Обработка действий при выборе пункта меню
-   // ...
-   // Закрытие контекстного меню
-   setShowMenu(false);
-  };
-
-  console.log(props);
+  
   return (
     <div onContextMenu={handleContextMenu}>
-      {showMenu && (
         <div
           style={{
             position: 'fixed',
@@ -31,12 +20,12 @@ const ContextMenu = (props) => {
             padding: '8px',
           }}
         >
-          <button onClick={handleMenuClick}>Пункт меню 1</button>
-          <button onClick={handleMenuClick}>Пункт меню 2</button>
-          <button onClick={handleMenuClick}>Пункт меню 3</button>
-          <button onClick={handleMenuClick}>Пункт меню 4</button>
+          <button onClick={props.handleMenuClick}>Пункт меню 1</button>
+          <button onClick={props.handleMenuClick}>Пункт меню 2</button>
+          <button onClick={props.handleMenuClick}>Пункт меню 3</button>
+          <button onClick={props.handleMenuClick}>Пункт меню 4</button>
         </div>
-      )}
+      
     </div>
   );
 };

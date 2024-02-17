@@ -4,7 +4,8 @@ import Button from '../../ui/Button/Button';
 import EditInput from '../EditInput/EditInput';
 import { useDispatch, useSelector} from "react-redux";
 import ContextMenu from '../../ui/ContextMenu/ContextMenu';
-function TableDisciplines() {
+
+function TableDisciplines(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]); // State to hold the updated table headers
   const [updatedData, setUpdatedData] = useState([]); // State to hold the updated table headers
   const [searchTerm, setSearchTerm] = useState(""); // State to hold the search term
@@ -133,23 +134,16 @@ function TableDisciplines() {
   //меню
   const [showMenu, setShowMenu] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
-  var dateMenu = {
-    showMenu:false,
-    menuPositionX : 0,
-    menuPositionY: 0,
-  };
-const a = 5
+
   const handleContextMenu = (e) => {
     e.preventDefault();
-    setShowMenu(true);
+    setShowMenu(!showMenu);
     setMenuPosition({ x: e.clientX, y: e.clientY });
-    dateMenu.showMenu = showMenu;
-    dateMenu.menuPositionX = menuPosition.x;
-    dateMenu.menuPositionY = menuPosition.y;
-    console.log(dateMenu)
   };
 
-
+  const handleMenuClick = () => {
+   setShowMenu(false);
+  };
 
   return (
     <div>
@@ -177,6 +171,11 @@ const a = 5
       </tr>
     </thead>
     <tbody>
+    {showMenu && (
+      <ContextMenu showMenu={showMenu} menuPosition={menuPosition}
+      handleMenuClick = {handleMenuClick}
+      />
+    )}
       {filteredData.map((row, index) => (
         <tr key={index} onContextMenu={handleContextMenu}>
           <td>
@@ -187,12 +186,7 @@ const a = 5
           ))}
         </tr>
       ))}
-      {showMenu && (
-        <ContextMenu 
-          dateMenu={dateMenu}
-          a={a}
-        />
-      )}
+     
     </tbody>
   </table>
   <div className={styles.Block__tables__shadow}></div>
