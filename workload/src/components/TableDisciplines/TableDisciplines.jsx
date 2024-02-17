@@ -304,13 +304,13 @@ function TableDisciplines() {
           <thead>
             <tr>
               {updatedHeader.map((header) => (
-                <th key={header.key}>
+                <th key={header.key}  onClick={clickFigth}>
                   <div className={styles.th_inner}>
                     {header.label}
                     <img
                       src="./img/th_fight.svg"
                       alt=">"
-                      onClick={clickFigth}
+                     
                     ></img>
                   </div>
                 </th>
