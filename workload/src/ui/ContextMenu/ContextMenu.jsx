@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const ContextMenu = () => {
+const ContextMenu = (props) => {
   const [showMenu, setShowMenu] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
 
@@ -12,11 +12,12 @@ const ContextMenu = () => {
 
   const handleMenuClick = () => {
     // Обработка действий при выборе пункта меню
-    // ...
-    // Закрытие контекстного меню
-    setShowMenu(false);
+   // ...
+   // Закрытие контекстного меню
+   setShowMenu(false);
   };
 
+  console.log(props);
   return (
     <div onContextMenu={handleContextMenu}>
       {showMenu && (

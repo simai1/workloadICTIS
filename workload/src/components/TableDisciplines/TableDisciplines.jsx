@@ -130,6 +130,27 @@ function TableDisciplines() {
     //тут написать функцию которая будет подгружать нужное содержимое tableData и tableHeaders
   }
 
+  //меню
+  const [showMenu, setShowMenu] = useState(false);
+  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
+  var dateMenu = {
+    showMenu:false,
+    menuPositionX : 0,
+    menuPositionY: 0,
+  };
+const a = 5
+  const handleContextMenu = (e) => {
+    e.preventDefault();
+    setShowMenu(true);
+    setMenuPosition({ x: e.clientX, y: e.clientY });
+    dateMenu.showMenu = showMenu;
+    dateMenu.menuPositionX = menuPosition.x;
+    dateMenu.menuPositionY = menuPosition.y;
+    console.log(dateMenu)
+  };
+
+
+
   return (
     <div>
      <input type="text" placeholder="Поиск" value={searchTerm} onChange={handleSearch} />
@@ -144,7 +165,7 @@ function TableDisciplines() {
  
     <div className={styles.TableDisciplines__inner}>
   <table className={styles.TableDisciplines}>
-  <ContextMenu/>
+   
     <thead>
       <tr>
         <th>
@@ -157,7 +178,7 @@ function TableDisciplines() {
     </thead>
     <tbody>
       {filteredData.map((row, index) => (
-        <tr key={index}>
+        <tr key={index} onContextMenu={handleContextMenu}>
           <td>
             <input type="checkbox" className={styles.customInput}/>
           </td>
@@ -166,6 +187,12 @@ function TableDisciplines() {
           ))}
         </tr>
       ))}
+      {showMenu && (
+        <ContextMenu 
+          dateMenu={dateMenu}
+          a={a}
+        />
+      )}
     </tbody>
   </table>
   <div className={styles.Block__tables__shadow}></div>
