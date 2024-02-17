@@ -58,6 +58,7 @@
     width: 100%;
     border-collapse: collapse;
     font-size: 14px;
+   
     thead {
       height: 58px;
     }
@@ -94,7 +95,7 @@
     width: 5px;
     height: 100%;
     td {
-      opacity: 0;
+      // opacity: 0;
       font-size: 0;
       height: 110px;
       box-sizing: border-box;
@@ -137,6 +138,7 @@
       border-radius: 10px;
     }
   }
+  
 }
   
 table td{

@@ -228,7 +228,7 @@ function TableDisciplines() {
 
 
   return (
-    <div>
+    <div className={styles.tabledisciplines}>
      <input type="text" placeholder="Поиск" value={searchTerm} onChange={handleSearch} />
 
     <div className={styles.ButtonCaf_gen}>
@@ -280,9 +280,6 @@ function TableDisciplines() {
    
     <thead>
       <tr>
-        <th>
-          <input type="checkbox" className={styles.customInput} />
-        </th> 
         {updatedHeader.map((header) => (
           <th key={header.key}>{header.label}</th>
         ))}
@@ -296,9 +293,7 @@ function TableDisciplines() {
     )}
       {filteredData.map((row, index) => (
         <tr key={index} onContextMenu={handleContextMenu}>
-          <td>
-            <input type="checkbox" className={styles.customInput}/>
-          </td>
+       
           {Object.keys(row).map((key) => (
             <td key={key}>{row[key]}</td>
           ))}
