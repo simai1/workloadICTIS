@@ -58,23 +58,14 @@
     width: 100%;
     border-collapse: collapse;
     font-size: 14px;
-
+   
     thead {
       height: 58px;
     }
     th,
     td {
       text-align: center;
-      position: relative;
-    }
-    //стрелка в оглавлении таблицы
-    .th_inner {
-      display: flex;
-      img {
-        padding-left: 4px;
-        padding-top: 3px;
-        cursor: pointer;
-      }
+      // position: relative;
     }
     th {
       background-color: var(--gray-color);
@@ -90,7 +81,7 @@
       background-color: var(--white-color);
     }
   }
-
+  
   .table {
     display: flex;
   }
@@ -106,9 +97,8 @@
     td {
       // opacity: 0;
       font-size: 0;
+      height: 110px;
       box-sizing: border-box;
-      // border: 1px solid red;
-      height: 70px;
     }
     tr {
       height: 20px;
@@ -116,8 +106,7 @@
 
     th {
       background-color: #fff;
-      height: 70px;
-      box-sizing: border-box;
+      height: 9px;
     }
   }
 
@@ -149,22 +138,38 @@
       border-radius: 10px;
     }
   }
+  
 }
-
-table td {
-  padding: 17px 20px !important;
+  
+table td{
+  padding: 17px 20px!important;
 }
-.Block__tables__shadow {
-  background: linear-gradient(
-    270deg,
-    rgba(0, 0, 0, 0.2) 0%,
-    rgba(0, 0, 0, 0) 100%
-  );
-  height: calc((100%) - (60px));
+.Block__tables__shadow{
+  background: linear-gradient(270deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0) 100%);
+  height:calc((100%) - (60px));
   width: 20px;
   position: absolute;
   right: 0;
   top: 60px;
   border-radius: 0px 8px 8px 0px;
   z-index: 10;
+}
+
+th:nth-child(1),
+td:nth-child(1) {
+  position: sticky!important;
+  left: 0px;
+  background-color: white; /* Чтобы столбцы не перекрывали друг друга */
+}
+th:nth-child(2),
+td:nth-child(2) {
+  position: sticky!important;
+  left: 54.4px;
+  background-color: white; /* Чтобы столбцы не перекрывали друг друга */
+}
+th:nth-child(3),
+td:nth-child(3) {
+  position: sticky!important;
+  left: 185.5px;
+  background-color: white; /* Чтобы столбцы не перекрывали друг друга */
 }
