@@ -11,11 +11,9 @@ function TableDisciplines() {
   const [updatedData, setUpdatedData] = useState([]); // State to hold the updated table headers
   const [searchTerm, setSearchTerm] = useState(""); // State to hold the search term
   const [selectedComponent, setSelectedComponent] = useState("cathedrals");
-  const [searchText, setSearchText] = useState("");
   const [isHovered, setIsHovered] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [idRow, setIdrow] = useState(0);
-
  
 
   const handleClic = (el, index) => {
@@ -179,7 +177,7 @@ function TableDisciplines() {
   
   useEffect(() => {
     addHeadersTable(filters, tableHeaders, tableData);
-  }, [filters, dispatch, tableHeaders, tableData]);
+  }, [filters, dispatch]);
 
   function addHeadersTable(filters, tableHeaders, tableData) {
     const updatedHeader = tableHeaders.filter((header) => filters.includes(header.key));
@@ -254,8 +252,8 @@ function TableDisciplines() {
               <tr className={styles.notice} key={index}>
                 <td
                   className={
-                    notice.some((item) => item.id_row === index) &&
-                    styles.notice_circle
+                    notice.some((item) => item.id_row === index) ?
+                    styles.notice_circle : null
                   }
                 >
                   <div
@@ -291,9 +289,10 @@ function TableDisciplines() {
       handleMenuClick = {handleMenuClick}
       />
     )}
+
       {filteredData.map((row, index) => (
+        
         <tr key={index} onContextMenu={handleContextMenu}>
-       
           {Object.keys(row).map((key) => (
             <td key={key}>{row[key]}</td>
           ))}
@@ -302,6 +301,7 @@ function TableDisciplines() {
      
     </tbody>
   </table>
+
   <div className={styles.Block__tables__shadow}></div>
 </div>
 </div>
