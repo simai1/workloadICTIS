@@ -174,7 +174,7 @@ export default {
             comment: firstWorkload.get('comment'),
             isSplit: false,
             originalId: null,
-            isOID: firstWorkload.get('isOID'),
+            isOid: firstWorkload.get('isOid'),
             kafedralAutumnWorkload: firstWorkload.get('kafedralAutumnWorkload'),
             kafedralSpringWorkload: firstWorkload.get('kafedralSpringWorkload'),
             kafedralAdditionalWorkload: firstWorkload.get('kafedralAdditionalWorkload'),

@@ -8,7 +8,7 @@ async function setHours(workload) {
         where: {
             educatorId: workload.educatorId,
         },
-        attributes: ['isOID', 'period', 'hours'],
+        attributes: ['isOid', 'period', 'hours'],
     });
 
     console.log('Start')
@@ -26,12 +26,12 @@ async function setHours(workload) {
     console.log(hours);
     //Проверяем предмет на общеинститутский ли он и период и устанавливаем часы для кафедральных или институтских дисциплин
     for (const x of educatorHours) {
-        if (x.isOID === false && x.period === 1) hours.kafedralAutumnWorkload += x.hours;
-        if (x.isOID === false && x.period === 2) hours.kafedralSpringWorkload += x.hours;
-        if (x.isOID === false && !x.period) hours.kafedralAdditionalWorkload += x.hours;
-        if (x.isOID === true && x.period === 1) hours.instituteAutumnWorkload += x.hours;
-        if (x.isOID === true && x.period === 2) hours.instituteSpringWorkload += x.hours;
-        if (x.isOID === true && !x.period) hours.instituteManagementWorkload += x.hours;
+        if (x.isOid === false && x.period === 1) hours.kafedralAutumnWorkload += x.hours;
+        if (x.isOid === false && x.period === 2) hours.kafedralSpringWorkload += x.hours;
+        if (x.isOid === false && !x.period) hours.kafedralAdditionalWorkload += x.hours;
+        if (x.isOid === true && x.period === 1) hours.instituteAutumnWorkload += x.hours;
+        if (x.isOid === true && x.period === 2) hours.instituteSpringWorkload += x.hours;
+        if (x.isOid === true && !x.period) hours.instituteManagementWorkload += x.hours;
     }
 
     console.log(hours.instituteAutumnWorkload, hours.instituteManagementWorkload)
@@ -39,16 +39,16 @@ async function setHours(workload) {
     //Итоговые часы для кафедральных, общеинститутских предметов и общей нагрузки
     hours.totalKafedralHours =
         hours.kafedralAutumnWorkload + hours.kafedralSpringWorkload + hours.kafedralAdditionalWorkload;
-    hours.totalOIDHours =
+    hours.totalOidHours =
         hours.instituteAutumnWorkload + hours.instituteSpringWorkload + hours.instituteManagementWorkload;
-    hours.totalHours = hours.totalKafedralHours + hours.totalOIDHours;
+    hours.totalHours = hours.totalKafedralHours + hours.totalOidHours;
 
 
-    console.log(hours.totalKafedralHours, hours.totalOIDHours, hours.totalHours)
+    console.log(hours.totalKafedralHours, hours.totalOidHours , hours.totalHours)
     //TODO: Нужно доделать правильное обновление часов, при нагрузке >1
     //Заполняем бд этими данными
     summaryWorkload.set('totalKafedralHours', hours.totalKafedralHours);
-    summaryWorkload.set('totalOIDHours', hours.totalOIDHours);
+    summaryWorkload.set('totalOidHours', hours.totalOIDHours);
     summaryWorkload.set('totalHours', hours.totalHours);
     summaryWorkload.set('kafedralAutumnWorkload', hours.kafedralAutumnWorkload);
     summaryWorkload.set('kafedralSpringWorkload', hours.kafedralSpringWorkload);
