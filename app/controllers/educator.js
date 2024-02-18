@@ -21,8 +21,8 @@ export default {
         const educatorDto = new EducatorDto(educator);
         res.json(educatorDto);
     },
-    
-    //Обновляем данные преподователя
+
+    // Обновляем данные преподователя
     async update({ params: { educatorId }, body: { name, position, typeOfEmployment, rate } }, res) {
         if (!educatorId) throw new AppErrorMissing('educatorId');
         const educator = await Educator.findByPk(educatorId);
@@ -43,12 +43,13 @@ export default {
 
         res.json({ status: 'OK' });
     },
-    //Создаем преподователя
-    async create({ body: { name, position, typeOfEmployment, rate } }, res) {
+    // Создаем преподователя
+    async create({ body: { name, position, typeOfEmployment, rate, department } }, res) {
         if (!name) throw new AppErrorMissing('name');
         if (!position) throw new AppErrorMissing('position');
         if (!typeOfEmployment) throw new AppErrorMissing('typeOfEmployment');
         if (!rate) throw new AppErrorMissing('rate');
+        if (!department) throw new AppErrorMissing('department');
         const checkEducator = await Educator.findOne({ where: { name } });
         if (checkEducator) throw new AppErrorAlreadyExists('educator');
 
@@ -57,6 +58,7 @@ export default {
             position,
             typeOfEmployment,
             rate,
+            department,
         });
         const educatorDto = new EducatorDto(educator);
         res.json(educatorDto);
