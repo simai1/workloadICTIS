@@ -95,7 +95,7 @@ export default class Workload extends Model {
           type: DataTypes.UUID,
           allowNull: true
         },
-        isOID: {
+        isOid: {
           type: DataTypes.BOOLEAN,
           allowNull: false,
           defaultValue: false

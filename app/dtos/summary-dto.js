@@ -1,11 +1,11 @@
 export default class SummaryDto {
     
     totalKafedralHours
-    totalOIDHours
+    totalOidHours
     totalHours
     constructor(model) {
         this.totalKafedralHours = model.totalKafedralHours;
-        this.totalOIDHours = model.totalOIDHours
+        this.totalOidHours = model.totalOidHours
         this.totalHours = model.totalHours
     }
 }
