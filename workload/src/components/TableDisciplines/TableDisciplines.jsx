@@ -34,7 +34,12 @@ function TableDisciplines() {
   const clickFigth = (el, index) => {
     setSamplePointsShow(!isSamplePointsShow);
     setIsHovered(false);
-    setPositionFigth({ x: el.clientX - 50, y: el.clientY - 100 });
+    if (el.clientX + 372 > window.innerWidth) {
+      setPositionFigth({ x: window.innerWidth - 500, y: el.clientY - 100 });
+    } else {
+      setPositionFigth({ x: el.clientX - 50, y: el.clientY - 100 });
+    }
+
     const td = filteredData
       .map((item) => item[Object.keys(item)[index]])
       .filter((value, i, arr) => arr.indexOf(value) === i);
@@ -313,11 +318,7 @@ function TableDisciplines() {
               );
               if (!checkValues) {
                 return (
-                  <tr
-                    className={styles.notice}
-                    key={index}
-                    onContextMenu={handleContextMenu}
-                  >
+                  <tr className={styles.notice} key={index}>
                     <td
                       className={
                         notice.some((item) => item.id_row === index)
