@@ -27,29 +27,36 @@ const ContextMenu = (props) => {
           className={styles.blockMenu}
         >
           <div>
-            <button onClick={props.handleMenuClick}>Добавить преподователя</button>
+            <button onClick={props.handleMenuClick} className={styles.activeStylePointer}>Добавить преподователя</button>
           </div>
           <div 
             onClick={handleMouseClickPop}
             className={styles.blockMenuPop}
             >
-            <button>Разделить</button>
-            <img src={arrow}/>
+            <button className={styles.buttonDel}>Разделить</button>
+            
+            
+            {showSubMenu && (
+             <img src={arrow} className={styles.imgOpen}/>
+            )}
+            {!showSubMenu && (
+             <img src={arrow} className={styles.imgClose}/>
+            )}
           </div>
           <div>
-            <button onClick={props.handleMenuClick}>Объеденить</button>
+            <button className={styles.activeStylePointer} onClick={props.handleMenuClick}>Объеденить</button>
           </div>
           <div>
-            <button onClick={props.handleMenuClick}>Копировать</button>
+            <button className={styles.activeStylePointer} onClick={props.handleMenuClick}>Копировать</button>
           </div>
           <div>
-            <button onClick={props.handleMenuClick}>Согласовать</button>
+            <button className={styles.activeStylePointer} onClick={props.handleMenuClick}>Согласовать</button>
           </div>
           <div>
-            <button onClick={props.handleMenuClick}>Предложить</button>
+            <button className={styles.activeStylePointer} onClick={props.handleMenuClick}>Предложить</button>
           </div>
           <div>
-            <button onClick={props.handleMenuClick}>Удалить</button>
+            <button className={styles.activeStylePointer} onClick={props.handleMenuClick}>Удалить</button>
           </div>
         </div>
         {showSubMenu && (
@@ -63,13 +70,13 @@ const ContextMenu = (props) => {
               // onMouseLeave={handleMouseLeave}
               > 
                 <div>
-                  <button onClick={props.handleMenuClick}>На 2 потока</button>
+                  <button className={styles.activeStylePointer} onClick={props.handleMenuClick}>На 2 потока</button>
                 </div>
                 <div>
-                  <button onClick={props.handleMenuClick}>На 3 потока</button>
+                  <button className={styles.activeStylePointer} onClick={props.handleMenuClick}>На 3 потока</button>
                 </div>
                 <div>
-                  <button onClick={props.handleMenuClick}>На 4 потока</button>
+                  <button className={styles.activeStylePointer} onClick={props.handleMenuClick}>На 4 потока</button>
                 </div>
               </div>
             )}
