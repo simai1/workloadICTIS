@@ -1,6 +1,6 @@
 @import "./../../style/colors.scss";
 
-.tabledisciplines {
+.tabledisciplinesMain {
   input[type="text"] {
     margin-bottom: 10px;
     position: absolute;
@@ -138,7 +138,39 @@
       border-radius: 10px;
     }
   }
-  
+  .taleDestiplinesMainTable{
+    th:nth-child(1){
+      position: sticky!important;
+      left: 0px;
+      background-color: var(--gray-color); 
+    }
+    td:nth-child(1) {
+      position: sticky!important;
+      left: 0px;
+      background-color: var(--white-color); /* Чтобы столбцы не перекрывали друг друга */
+    }
+    th:nth-child(2){
+      position: sticky!important;
+      left: 54.4px;
+      background-color: var(--gray-color);  
+    }
+    td:nth-child(2) {
+      position: sticky!important;
+      left: 54.4px;
+      background-color: var(--white-color); /* Чтобы столбцы не перекрывали друг друга */
+    }
+    th:nth-child(3){
+      position: sticky!important;
+      left: 185.5px;
+      background-color: var(--gray-color); 
+    }
+    td:nth-child(3) {
+      position: sticky!important;
+      left: 185.5px;
+      background-color: var(--white-color); /* Чтобы столбцы не перекрывали друг друга */
+    }  
+  }
+ 
 }
   
 table td{
@@ -155,21 +187,3 @@ table td{
   z-index: 10;
 }
 
-th:nth-child(1),
-td:nth-child(1) {
-  position: sticky!important;
-  left: 0px;
-  background-color: white; /* Чтобы столбцы не перекрывали друг друга */
-}
-th:nth-child(2),
-td:nth-child(2) {
-  position: sticky!important;
-  left: 70.41px;
-  background-color: white; /* Чтобы столбцы не перекрывали друг друга */
-}
-th:nth-child(3),
-td:nth-child(3) {
-  position: sticky!important;
-  left: 217.55px;
-  background-color: white; /* Чтобы столбцы не перекрывали друг друга */
-}

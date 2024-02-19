@@ -231,7 +231,7 @@ function TableDisciplines() {
   };
 
   return (
-    <div className={styles.tabledisciplines}>
+    <div className={styles.tabledisciplinesMain}>
       <input
         type="text"
         placeholder="Поиск"
@@ -300,6 +300,7 @@ function TableDisciplines() {
           />
         )}
         {isSelectionOfItemsShow && <div>form</div>}
+        <div className={styles.taleDestiplinesMainTable}>
         <table className={styles.TableDisciplines}>
           <thead>
             <tr>
@@ -334,6 +335,7 @@ function TableDisciplines() {
             ))}
           </tbody>
         </table>
+        </div>
         <div className={styles.Block__tables__shadow}></div>
       </div>
     </div>
