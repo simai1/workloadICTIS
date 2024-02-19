@@ -1,12 +1,18 @@
-import { models } from "./index.js";
-import EducatorForWorkload from "./educator-for-workload.js";
-const { Workload, Educator } = models;
+import { models } from './index.js';
+import SummaryWorkload from './summary-workload.js';
+
+const { Educator, Workload, User, TokenSchema } = models;
 
 export default function () {
-    Educator.belongsToMany(Workload,{
-        through: EducatorForWorkload,
-    });
-    Workload.belongsToMany(Educator, {
-        through: EducatorForWorkload,
-    });
+    Educator.hasMany(Workload);
+    Workload.belongsTo(Educator, { constraints: false });
+
+    Educator.hasOne(SummaryWorkload);
+    SummaryWorkload.belongsTo(Educator);
+
+    User.hasOne(TokenSchema, { foreignKey: 'userId' });
+    TokenSchema.belongsTo(User, { foreignKey: 'userId' });
 }
+
+
+

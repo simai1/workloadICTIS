@@ -18,6 +18,10 @@ export const workloads = [
         audienceHours: 132.5,
         ratingControlHours: null,
         comment: null,
+        isSplit: false,
+        originalId: null,
+        educatorId: null,
+        isOid: false,
     },
     {
         department: 2,
@@ -39,18 +43,24 @@ export const workloads = [
         audienceHours: 23.35,
         ratingControlHours: null,
         comment: null,
+        isSplit: true,
+        originalId: null,
+        educatorId: null,
+        isOid: true,
     },
 ];
 
 export const educators = [
     {
         name: 'Алексеев Кирилл Николаевич',
+        department: 1,
         position: 5,
         typeOfEmployment: 1,
         rate: 0.5,
     },
     {
         name: 'Беспалов Дмитрий Анатольевич',
+        department: 1,
         position: 5,
         typeOfEmployment: 3,
         rate: 1,

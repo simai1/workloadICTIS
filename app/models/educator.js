@@ -1,11 +1,12 @@
 import { DataTypes, Model } from 'sequelize';
 import EnumTypes from '../config/position.js';
 import EnumTypeOfEmployment from '../config/type-of-employment.js';
+import EnumDepartment from '../config/departments.js';
 import { setHours } from '../utils/educators-hours.js';
-
+import createSummaryWorkload from '../utils/create-summary-workload.js';
 export default class Educator extends Model {
     static initialize(sequelize) {
-        Educator.init(
+         Educator.init(
             {
                 id: {
                     type: DataTypes.UUID,
@@ -50,6 +51,13 @@ export default class Educator extends Model {
                     allowNull: false,
                     defaultValue: 0,
                 },
+                department: {
+                    type: DataTypes.SMALLINT,
+                    allowNull: false,
+                    validate: {
+                        isIn: [Object.values(EnumDepartment)],
+                    },
+                },
             },
             {
                 sequelize,
@@ -59,8 +67,9 @@ export default class Educator extends Model {
                 paranoid: true,
             }
         );
-        Educator.beforeCreate(educator => {
+        Educator.beforeCreate(async educator => {
             setHours(educator);
+            await createSummaryWorkload(educator.id);
         });
         Educator.beforeUpdate(educator => {
             setHours(educator);
