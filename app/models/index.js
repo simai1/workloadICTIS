@@ -29,5 +29,5 @@ export const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PWD, {
         timestamps: true,
         underscored: true,
     },
-    logging: true,
+    logging: false,
 });
