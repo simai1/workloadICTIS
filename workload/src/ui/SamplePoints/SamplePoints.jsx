@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./SamplePoints.module.scss";
 export function SamplePoints(props) {
-  const [isChecked, setChecked] = useState([]);
-  const [isAllChecked, setAllChecked] = useState(false);
+  const [isAllChecked, setAllChecked] = useState(true);
   const [searchText, setSearchText] = useState("");
+
   const handleInputChange = (event) => {
     setSearchText(event.target.value);
   };
@@ -12,20 +12,22 @@ export function SamplePoints(props) {
   );
 
   const onAllChecked = () => {
-    isAllChecked ? setChecked(filteredData) : setChecked([]);
+    isAllChecked ? props.setChecked(filteredData) : props.setChecked([]);
     setAllChecked(!isAllChecked);
   };
 
   const onChecked = (el, index) => {
-    if (isChecked.includes(el)) {
+    if (props.isChecked.includes(el)) {
       // Если значение уже существует, удаляем его из массива
-      setChecked((prevChecked) => prevChecked.filter((item) => item !== el));
-      setAllChecked(true);
+      props.setChecked((prevChecked) =>
+        prevChecked.filter((item) => item !== el)
+      );
     } else {
       // Если значение уникально, добавляем его в массив
-      setChecked((prevChecked) => [...prevChecked, el]);
+      props.setChecked((prevChecked) => [...prevChecked, el]);
+      setAllChecked(true);
     }
-    console.log(el, isChecked);
+    console.log(el, props.isChecked);
   };
 
   return (
@@ -49,8 +51,8 @@ export function SamplePoints(props) {
             <input
               type="checkbox"
               onClick={onAllChecked}
-              checked={!isAllChecked}
-            />{" "}
+              checked={isAllChecked}
+            />
             <p>Все</p>
           </div>
           {filteredData.map((el, index) => {
@@ -59,7 +61,7 @@ export function SamplePoints(props) {
                 <input
                   type="checkbox"
                   onClick={() => onChecked(el, index)}
-                  checked={isChecked.includes(el)}
+                  checked={!props.isChecked.includes(el)}
                 />
                 <p>{el}</p>
               </div>
