@@ -7,13 +7,11 @@ export default function () {
     Educator.hasMany(Workload);
     Workload.belongsTo(Educator, { constraints: false });
 
-
-    User.hasOne(TokenModel, { foreignKey: 'userId' });
-    TokenModel.belongsTo(User, { foreignKey: 'userId' });
-  
     Educator.hasOne(SummaryWorkload);
     SummaryWorkload.belongsTo(Educator);
 
+    User.hasOne(TokenSchema, { foreignKey: 'userId' });
+    TokenSchema.belongsTo(User, { foreignKey: 'userId' });
 }
 
 
