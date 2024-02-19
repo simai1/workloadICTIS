@@ -278,13 +278,10 @@ function TableDisciplines() {
                   className={
                     notice.some((item) => item.id_row === index) ?
                     styles.notice_circle : null
-
-                  }
-                >
+                  }>
                   <div
                     className={styles.notice_circle_inner}
-                    onClick={(el) => handleClic(el, index)}
-                  >
+                    onClick={(el) => handleClic(el, index)}>
                     {notice.filter((item) => item.id_row === index).length}
                   </div>
                 </td>
@@ -304,6 +301,10 @@ function TableDisciplines() {
         <table className={styles.TableDisciplines}>
           <thead>
             <tr>
+              <th className={styles.checkboxHeader}>
+                <input type="checkbox" className={styles.custom__checkbox} name="dataRowGlobal"/>
+                <label for="dataRowGlobal"></label>
+              </th>
               {updatedHeader.map((header) => (
                 <th key={header.key}  onClick={clickFigth}>
                   <div className={styles.th_inner}>
@@ -311,7 +312,6 @@ function TableDisciplines() {
                     <img
                       src="./img/th_fight.svg"
                       alt=">"
-                     
                     ></img>
                   </div>
                 </th>
@@ -328,8 +328,12 @@ function TableDisciplines() {
             )}
             {filteredData.map((row, index) => (
               <tr key={index} onContextMenu={handleContextMenu}>
+                <td className={styles.checkbox}>
+                  <input type="checkbox" className={styles.custom__checkbox} name="dataRow"/>
+                  <label for="dataRow"></label>
+                </td>
                 {Object.keys(row).map((key) => (
-                  <td key={key}>{row[key]}</td>
+                      <td key={key}>{row[key]}</td>
                 ))}
               </tr>
             ))}

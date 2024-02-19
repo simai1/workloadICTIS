@@ -18,8 +18,6 @@ export const filterSlice = createSlice({
       const keys = tableHeaders.map(header => header.key);
       state.splice(0, state.length, ...keys);
     },
-    
-   
   },
 });
 

@@ -20,9 +20,7 @@ input[type="text"] {
    right: 0;
    top: 165px;
  }
-.TableLks{
-  
-}
+
 .TableLks__inner{
   overflow-x: scroll;
   border-radius: 8px; 
@@ -83,16 +81,6 @@ table {
     }
   }
 }
-
-// .Block__tables__shadow{
-//   background: linear-gradient(270deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0) 100%);
-//   height:83%;
-//   width: 20px;
-//   position: absolute;
-//   right: 0;
-//   top: 60px;
-//   border-radius: 0px 8px 8px 0px;
-// }
 
 .buttonBack{
     display: flex;

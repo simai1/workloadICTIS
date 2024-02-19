@@ -12,7 +12,6 @@
     color: var(--black-color);
     padding: 9px 0px 9px 16px;
   }
-
   .ButtonCaf_gen {
     margin-bottom: 16px;
   }
@@ -21,7 +20,6 @@
     right: 0;
     top: 0;
   }
-
   .TableDisciplines__inner {
     flex-direction: row;
     overflow-x: scroll;
@@ -35,13 +33,13 @@
     }
   }
   .TableDisciplines__inner::-webkit-scrollbar {
-    background-color: #ffffff;
+    background-color: var(--white-color);
     height: 5px;
     margin-bottom: 8px;
   }
 
   .TableDisciplines__inner::-webkit-scrollbar-thumb {
-    background-color: #cccccc;
+    background-color: var(--formBg-color);
     border-radius: 8px;
     width: 200px !important;
   }
@@ -58,14 +56,15 @@
     width: 100%;
     border-collapse: collapse;
     font-size: 14px;
-   
     thead {
       height: 58px;
     }
     th,
     td {
       text-align: center;
-      // position: relative;
+    }
+    td{
+      padding: 17px 20px!important;
     }
     th {
       background-color: var(--gray-color);
@@ -81,13 +80,11 @@
       background-color: var(--white-color);
     }
   }
-  
   .table {
     display: flex;
   }
 
   //уведомления
-
   .TableDisciplines_circle {
     position: absolute;
     left: -65px;
@@ -95,7 +92,6 @@
     width: 5px;
     height: 100%;
     td {
-      // opacity: 0;
       font-size: 0;
       height: 110px;
       box-sizing: border-box;
@@ -103,10 +99,8 @@
     tr {
       height: 20px;
     }
-
     th {
-      background-color: #fff;
-      height: 9px;
+      background-color: var(--white-color);
     }
   }
 
@@ -118,12 +112,11 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      // margin-top: 22px;
       color: #fff;
       width: 24px;
       height: 24px;
       text-align: center;
-      background-color: #e81414;
+      background-color: var(--curcle-color);
       border-radius: 100%;
       cursor: pointer;
     }
@@ -134,48 +127,74 @@
       right: -3px;
       width: 4px;
       height: 54px;
-      background-color: #e81414;
+      background-color: var(--curcle-color);
       border-radius: 10px;
     }
   }
   .taleDestiplinesMainTable{
-    th:nth-child(1){
+    th:nth-child(1),th:nth-child(2),th:nth-child(3),th:nth-child(4){
       position: sticky!important;
-      left: 0px;
       background-color: var(--gray-color); 
     }
-    td:nth-child(1) {
+    td:nth-child(1),td:nth-child(2),td:nth-child(3),td:nth-child(4){
       position: sticky!important;
+      background-color: var(--white-color);
+    }
+    th:nth-child(1), td:nth-child(1){
       left: 0px;
-      background-color: var(--white-color); /* Чтобы столбцы не перекрывали друг друга */
     }
-    th:nth-child(2){
-      position: sticky!important;
-      left: 54.4px;
-      background-color: var(--gray-color);  
+    th:nth-child(2), td:nth-child(2){
+      left: 56px;
     }
-    td:nth-child(2) {
-      position: sticky!important;
-      left: 54.4px;
-      background-color: var(--white-color); /* Чтобы столбцы не перекрывали друг друга */
+    th:nth-child(3), td:nth-child(3){
+      left: 110.4px;
     }
-    th:nth-child(3){
-      position: sticky!important;
-      left: 185.5px;
-      background-color: var(--gray-color); 
+    th:nth-child(4), td:nth-child(4){
+      left: 241.54px;
     }
-    td:nth-child(3) {
-      position: sticky!important;
-      left: 185.5px;
-      background-color: var(--white-color); /* Чтобы столбцы не перекрывали друг друга */
-    }  
+    .checkboxHeader{
+      height: 106px;
+    }
+    .checkbox{
+      height: 110px;
+    }
+    .checkbox,.checkboxHeader{
+      align-items: center;
+      display: flex;
+      justify-content: center;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+    .custom__checkbox {
+      position: absolute;
+      opacity: 0;
+    }
+    .custom__checkbox+label {
+      display: inline-flex;
+      align-items: center;
+      user-select: none;
+    }
+    .custom__checkbox+label::before {
+      content: '';
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 1px solid var(--black-gray);
+      border-radius: 4px;
+      pointer-events: none;
+    }
+    .custom__checkbox:hover{
+      cursor: pointer;
+    }
+    .custom__checkbox:checked+label::before {
+      border-color: var(--black-gray);
+      background-color: var(--black-gray);
+    }
   }
- 
 }
   
-table td{
-  padding: 17px 20px!important;
-}
+
 .Block__tables__shadow{
   background: linear-gradient(270deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0) 100%);
   height:calc((100%) - (60px));
