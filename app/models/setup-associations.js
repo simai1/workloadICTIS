@@ -1,11 +1,11 @@
 import { models } from './index.js';
 
-const { Educator, Workload, User, TokenModel } = models;
+const { Educator, Workload, User, TokenSchema } = models;
 
 export default function () {
     Educator.hasMany(Workload);
     Workload.belongsTo(Educator, { constraints: false });
 
-    User.hasOne(TokenModel, { foreignKey: 'userId' });
-    TokenModel.belongsTo(User, { foreignKey: 'userId' });
+    User.hasOne(TokenSchema, { foreignKey: 'userId' });
+    TokenSchema.belongsTo(User, { foreignKey: 'userId' });
 }
