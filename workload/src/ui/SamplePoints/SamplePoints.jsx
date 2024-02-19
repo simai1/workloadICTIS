@@ -25,7 +25,7 @@ export function SamplePoints(props) {
     } else {
       // Если значение уникально, добавляем его в массив
       props.setChecked((prevChecked) => [...prevChecked, el]);
-      setAllChecked(true);
+      setAllChecked(false);
     }
     console.log(el, props.isChecked);
   };
