@@ -68,7 +68,7 @@ export default {
         }
     },
 
-    //Получение нагрузки
+    // Получение нагрузки
     async getOne({ params: { id } }, res) {
         const workload = await Workload.findByPk(id);
         if (!workload) throw new Error('Нет такой нагрузки');
@@ -122,13 +122,21 @@ export default {
         res.json({ status: 'OK' });
     },
 
+    async unfacultyEducator({ body: { workloadId } }, res) {
+        if (!workloadId) throw new AppErrorMissing('workloadId');
+        const workload = await Workload.findByPk(workloadId);
+        if (!workload) throw new AppErrorInvalid('workload');
+        workload.update({ educatorId: null });
+        res.json({ status: 'OK' });
+    },
+
     async mapRow({ body: { ids } }, res) {
         const workloads = await Workload.findAll({ where: { id: ids } });
 
         if (!ids) {
             throw new AppErrorMissing('id');
         }
-        //Проверка массива нагрузок на идентичность полей для соединения
+        // Проверка массива нагрузок на идентичность полей для соединения
         const firstWorkload = workloads[0];
         if (
             workloads.some(
@@ -143,7 +151,7 @@ export default {
             });
         }
 
-        //Совмещаем часы
+        // Совмещаем часы
         let totalStudents = 0;
         let totalHours = 0;
 
@@ -152,8 +160,8 @@ export default {
             totalHours += workload.hours;
         });
 
-        //Создаем совмещенную нагрузку
-        const mergeWorkload = await Workload.create({
+        // Создаем совмещенную нагрузку
+        await Workload.create({
             department: firstWorkload.get('department'),
             discipline: firstWorkload.get('discipline'),
             workload: firstWorkload.get('workload'),
@@ -183,7 +191,7 @@ export default {
             instituteManagementWorkload: firstWorkload.get('instituteManagementWorkload'),
         });
 
-        //Удаляем записи которые учавствовали в совмещении
+        // Удаляем записи которые учавствовали в совмещении
         await Promise.allSettled(workloads.map(workload => workload.destroy()));
 
         res.status(200).json('Successfully merged');
@@ -199,7 +207,7 @@ export default {
         }
 
         // Delete the instance from the database
-        await workload.destroy({force: true});
+        await workload.destroy({ force: true });
 
         res.status(200).json('Successfully deleted');
     },
