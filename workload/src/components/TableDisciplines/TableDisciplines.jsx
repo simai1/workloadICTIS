@@ -357,7 +357,7 @@ function TableDisciplines() {
             setChecked={setChecked}
           />
         )}
-        <table className={styles.TableDisciplines}>
+        <table className={styles.taleDestiplinesMainTable}>
           <thead>
             <tr>
               <th className={styles.checkboxHeader}>
@@ -378,7 +378,7 @@ function TableDisciplines() {
               ))}
             </tr>
           </thead>
-          <tbody>
+          <tbody >
             {showMenu && (
               <ContextMenu
                 showMenu={showMenu}
