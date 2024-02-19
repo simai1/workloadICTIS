@@ -5,6 +5,12 @@ export default class User extends Model {
     static initialize(sequelize) {
         User.init(
             {
+                id: {
+                    type: DataTypes.UUID,
+                    defaultValue: DataTypes.UUIDV4,
+                    allowNull: false,
+                    primaryKey: true,
+                },
                 login: {
                     type: DataTypes.STRING,
                     allowNull: false,
@@ -13,8 +19,6 @@ export default class User extends Model {
                 },
                 password: { type: DataTypes.STRING, allowNull: false },
                 name: { type: DataTypes.STRING, allowNull: false },
-                isActivated: { type: DataTypes.BOOLEAN, defaultValue: false },
-                activationLink: { type: DataTypes.STRING },
             },
             {
                 sequelize,
