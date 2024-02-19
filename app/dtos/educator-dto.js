@@ -3,6 +3,7 @@ export default class EducatorDto {
   name;
   position;
   typeOfEmployment;
+  department;
   rate;
   maxHours;
   recommendedMaxHours;
@@ -16,5 +17,6 @@ export default class EducatorDto {
     this.maxHours = model.maxHours;
     this.recommendedMaxHours = model.recommendedMaxHours;
     this.minHours = model.minHours;
+    this.department = model.department;
   }
 }

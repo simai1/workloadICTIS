@@ -20,6 +20,8 @@ export const workloads = [
         comment: null,
         isSplit: false,
         originalId: null,
+        educatorId: null,
+        isOid: false,
     },
     {
         department: 2,
@@ -43,6 +45,8 @@ export const workloads = [
         comment: null,
         isSplit: true,
         originalId: null,
+        educatorId: null,
+        isOid: true,
     },
 ];
 

@@ -4,12 +4,15 @@ import Notification from './notifications.js';
 import Workload from './workload.js';
 import Educator from './educator.js';
 import User from './user.js';
+import SummaryWorkload from './summary-workload.js';
 import TokenSchema from './token-model.js';
+
 
 const { DB_USER, DB_PWD, DB_HOST, DB_PORT, DB_NAME } = process.env;
 
 export const models = {
     Notification,
+    SummaryWorkload,
     Educator,
     Workload,
     User,
