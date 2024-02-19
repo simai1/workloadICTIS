@@ -58,7 +58,7 @@
     width: 100%;
     border-collapse: collapse;
     font-size: 14px;
-   
+
     thead {
       height: 58px;
     }
@@ -67,9 +67,19 @@
       text-align: center;
       // position: relative;
     }
+    .th_inner {
+      display: flex;
+      flex-direction: row;
+      img {
+        padding-left: 4px;
+        padding-top: 3px;
+        cursor: pointer;
+      }
+    }
     th {
       background-color: var(--gray-color);
       padding: 15px 20px !important;
+      cursor: pointer;
     }
     th:first-child {
       border-radius: 8px 0px 0px 0px;
@@ -81,7 +91,7 @@
       background-color: var(--white-color);
     }
   }
-  
+
   .table {
     display: flex;
   }
@@ -97,8 +107,9 @@
     td {
       // opacity: 0;
       font-size: 0;
-      height: 110px;
       box-sizing: border-box;
+      // border: 1px solid red;
+      height: 54.4px;
     }
     tr {
       height: 20px;
@@ -106,7 +117,8 @@
 
     th {
       background-color: #fff;
-      height: 9px;
+      box-sizing: border-box;
+      height: 61px;
     }
   }
 
@@ -138,15 +150,18 @@
       border-radius: 10px;
     }
   }
-  
 }
-  
-table td{
-  padding: 17px 20px!important;
+
+table td {
+  padding: 17px 20px !important;
 }
-.Block__tables__shadow{
-  background: linear-gradient(270deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0) 100%);
-  height:calc((100%) - (60px));
+.Block__tables__shadow {
+  background: linear-gradient(
+    270deg,
+    rgba(0, 0, 0, 0.2) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  height: calc((100%) - (60px));
   width: 20px;
   position: absolute;
   right: 0;
@@ -157,19 +172,19 @@ table td{
 
 th:nth-child(1),
 td:nth-child(1) {
-  position: sticky!important;
+  position: sticky !important;
   left: 0px;
   background-color: white; /* Чтобы столбцы не перекрывали друг друга */
 }
 th:nth-child(2),
 td:nth-child(2) {
-  position: sticky!important;
-  left: 70.41px;
+  position: sticky !important;
+  left: 54.4px;
   background-color: white; /* Чтобы столбцы не перекрывали друг друга */
 }
 th:nth-child(3),
 td:nth-child(3) {
-  position: sticky!important;
-  left: 217.55px;
+  position: sticky !important;
+  left: 185.55px;
   background-color: white; /* Чтобы столбцы не перекрывали друг друга */
 }
