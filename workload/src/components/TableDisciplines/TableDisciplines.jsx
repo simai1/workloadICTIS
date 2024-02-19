@@ -19,6 +19,8 @@ function TableDisciplines() {
   const [isSamplePointsShow, setSamplePointsShow] = useState(false);
   const [isSamplePointsData, setSamplePointsData] = useState("");
 
+  const [isChecked, setChecked] = useState([]);
+
   // при нажатии на кружок уведомления
   const handleClic = (el, index) => {
     setIsHovered(!isHovered);
@@ -32,13 +34,16 @@ function TableDisciplines() {
   const clickFigth = (el, index) => {
     setSamplePointsShow(!isSamplePointsShow);
     setIsHovered(false);
-    setPositionFigth({ x: el.clientX - 50, y: el.clientY - 100 });
-    setSamplePointsData(
-      // выбор уникальных значений для каждой группы
-      tableData
-        .map((item) => item[Object.keys(item)[index]])
-        .filter((value, i, arr) => arr.indexOf(value) === i)
-    );
+    if (el.clientX + 372 > window.innerWidth) {
+      setPositionFigth({ x: window.innerWidth - 500, y: el.clientY - 100 });
+    } else {
+      setPositionFigth({ x: el.clientX - 50, y: el.clientY - 100 });
+    }
+
+    const td = filteredData
+      .map((item) => item[Object.keys(item)[index]])
+      .filter((value, i, arr) => arr.indexOf(value) === i);
+    setSamplePointsData(td);
   };
 
   const notice = [
@@ -272,7 +277,10 @@ function TableDisciplines() {
         />
       </div>
       <div className={styles.EditInput}>
-        <EditInput tableHeaders={tableHeaders} />
+        <EditInput
+          tableHeaders={tableHeaders}
+          setSamplePointsShow={setSamplePointsShow}
+        />
       </div>
 
       <div className={styles.TableDisciplines__inner}>
@@ -286,22 +294,50 @@ function TableDisciplines() {
             <tr>
               <th></th>
             </tr>
-            {filteredData.map((row, index) => (
+            {/* {filteredData.map((row, index) => (
               <tr className={styles.notice} key={index}>
                 <td
                   className={
-                    notice.some((item) => item.id_row === index) ?
-                    styles.notice_circle : null
-                  }>
-
+                    notice.some((item) => item.id_row === index)
+                      ? styles.notice_circle
+                      : null
+                  }
+                >
                   <div
                     className={styles.notice_circle_inner}
-                    onClick={(el) => handleClic(el, index)}>
+                    onClick={(el) => handleClic(el, index)}
+                  >
                     {notice.filter((item) => item.id_row === index).length}
                   </div>
                 </td>
               </tr>
-            ))}
+            ))} */}
+            {filteredData.map((row, index) => {
+              const checkValues = Object.values(row).some((value) =>
+                isChecked.includes(value)
+              );
+              if (!checkValues) {
+                return (
+                  <tr className={styles.notice} key={index}>
+                    <td
+                      className={
+                        notice.some((item) => item.id_row === index)
+                          ? styles.notice_circle
+                          : null
+                      }
+                    >
+                      <div
+                        className={styles.notice_circle_inner}
+                        onClick={(el) => handleClic(el, index)}
+                      >
+                        {notice.filter((item) => item.id_row === index).length}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              }
+              return null;
+            })}
           </tbody>
         </table>
         {isHovered && (
@@ -317,14 +353,20 @@ function TableDisciplines() {
             isSamplePointsData={isSamplePointsData}
             positionFigth={positionFigth}
             filteredData={filteredData}
+            isChecked={isChecked}
+            setChecked={setChecked}
           />
         )}
         <table className={styles.taleDestiplinesMainTable}>
           <thead>
             <tr>
-            <th className={styles.checkboxHeader}>
-                <input type="checkbox" className={styles.custom__checkbox} name="dataRowGlobal"/>
-                <label for="dataRowGlobal"></label>
+              <th className={styles.checkboxHeader}>
+                <input
+                  type="checkbox"
+                  className={styles.custom__checkbox}
+                  name="dataRowGlobal"
+                />
+                <label htmlFor="dataRowGlobal"></label>
               </th>
               {updatedHeader.map((header, index) => (
                 <th key={header.key} onClick={(el) => clickFigth(el, index)}>
@@ -344,24 +386,36 @@ function TableDisciplines() {
                 handleMenuClick={handleMenuClick}
               />
             )}
-            {filteredData.map((row, index) => (
+            {/* {filteredData.map((row, index) => (
               <tr key={index} onContextMenu={handleContextMenu}>
                 <td className={styles.checkbox}>
-                  <input type="checkbox" className={styles.custom__checkbox} name="dataRow"/>
-                  <label for="dataRow"></label>
+                  <input
+                    type="checkbox"
+                    className={styles.custom__checkbox}
+                    name="dataRow"
+                  />
+                  <label htmlFor="dataRow"></label>
                 </td>
                 {Object.keys(row).map((key) => (
-                      <td key={key}>{row[key]}</td>
+                  <td key={key}>{row[key]}</td>
                 ))}
               </tr>
-            ))}
-            {/* {filteredData.map((row, index) => {
-              const checkValues = Object.values(row).some(
-                (value) => value === "Дисциплина 1"
+            ))} */}
+            {filteredData.map((row, index) => {
+              const checkValues = Object.values(row).some((value) =>
+                isChecked.includes(value)
               );
-              if (checkValues) {
+              if (!checkValues) {
                 return (
                   <tr key={index} onContextMenu={handleContextMenu}>
+                    <td className={styles.checkbox}>
+                      <input
+                        type="checkbox"
+                        className={styles.custom__checkbox}
+                        name="dataRow"
+                      />
+                      <label htmlFor="dataRow"></label>
+                    </td>
                     {Object.keys(row).map((key) => (
                       <td key={key}>{row[key]}</td>
                     ))}
@@ -369,12 +423,12 @@ function TableDisciplines() {
                 );
               }
               return null;
-            })} */}
+            })}
           </tbody>
         </table>
-        </div>
-        <div className={styles.Block__tables__shadow}></div>
       </div>
+      <div className={styles.Block__tables__shadow}></div>
+    </div>
   );
 }
 
