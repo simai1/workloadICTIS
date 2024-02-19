@@ -49,6 +49,11 @@ function EditInput({ tableHeaders, setSamplePointsShow }) {
             <p>Редактирование полей</p>
             <img src={arrow} alt="arrow"></img>
           </button>
+          <input
+            placeholder="Поиск..."
+            type="text"
+            className={styles.edit_input}
+          />
           <div className={styles.EditInputList}>
             <ul>
               {tableHeaders.map((row, index) => (
