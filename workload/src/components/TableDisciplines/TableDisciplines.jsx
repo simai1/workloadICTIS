@@ -8,18 +8,39 @@ import { NotificationForm } from "../../ui/NotificationForm/NotificationForm";
 import { SamplePoints } from "../../ui/SamplePoints/SamplePoints";
 
 function TableDisciplines() {
-  const [updatedHeader, setUpdatedHeader] = useState([]); // State to hold the updated table headers
-  const [updatedData, setUpdatedData] = useState([]); // State to hold the updated table headers
-  const [searchTerm, setSearchTerm] = useState(""); // State to hold the search term
-  const [selectedComponent, setSelectedComponent] = useState("cathedrals");
+  const [updatedHeader, setUpdatedHeader] = useState([]); //заголовок обновленный для Redux сортировки
+  const [updatedData, setUpdatedData] = useState([]); //массив обновленный для Redux сортировки
+  const [searchTerm, setSearchTerm] = useState(""); //поиск по таблице
+  const [selectedComponent, setSelectedComponent] = useState("cathedrals");//выбранный компонент
   const [isHovered, setIsHovered] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [positionFigth, setPositionFigth] = useState({ x: 0, y: 0 });
   const [idRow, setIdrow] = useState(0);
   const [isSamplePointsShow, setSamplePointsShow] = useState(false);
   const [isSamplePointsData, setSamplePointsData] = useState("");
-
+  const [isCheckedGlobal, setIsCheckedGlobal] = useState(false);//главный чекбокс таблицы
+  const [individualCheckboxes, setIndividualCheckboxes] = useState([]);//чекбоксы таблицы
   const [isChecked, setChecked] = useState([]);
+  const [showMenu, setShowMenu] = useState(false);//меню
+  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });//меню
+
+  //чекбоксы 
+  const handleGlobalCheckboxChange = () => {
+    setIsCheckedGlobal(!isCheckedGlobal);
+    setIndividualCheckboxes(
+      filteredData.map(() => !isCheckedGlobal)
+    );
+  };
+
+  const handleIndividualCheckboxChange = (index) => {
+    const updatedCheckboxes = [...individualCheckboxes];
+    updatedCheckboxes[index] = !updatedCheckboxes[index];
+    setIndividualCheckboxes(updatedCheckboxes);
+    if(!isCheckedGlobal){
+      setIsCheckedGlobal(!isCheckedGlobal)
+    }
+  };
+
 
   // при нажатии на кружок уведомления
   const handleClic = (el, index) => {
@@ -39,13 +60,13 @@ function TableDisciplines() {
     } else {
       setPositionFigth({ x: el.clientX - 50, y: el.clientY - 100 });
     }
-
     const td = filteredData
       .map((item) => item[Object.keys(item)[index]])
       .filter((value, i, arr) => arr.indexOf(value) === i);
     setSamplePointsData(td);
   };
 
+  //данные сраницы "Поттом все будет подшгружаться из API"
   const notice = [
     {
       id: 0,
@@ -191,13 +212,14 @@ function TableDisciplines() {
     ];
   }, []);
 
+  //выбор компонента
   const handleComponentChange = (component) => {
     setSelectedComponent(component);
   };
 
+  //работа с таплицами через REDUX
   const dispatch = useDispatch();
   const filters = useSelector((state) => state.filters);
-
   useEffect(() => {
     addHeadersTable(filters, tableHeaders, tableData);
   }, [filters, dispatch]);
@@ -215,11 +237,11 @@ function TableDisciplines() {
       });
       return updatedRow;
     });
-
     setUpdatedHeader(updatedHeader);
     setUpdatedData(updatedData);
   }
 
+  //поиск и фильтрация таблицы
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
   };
@@ -235,10 +257,8 @@ function TableDisciplines() {
     //тут написать функцию которая будет подгружать нужное содержимое tableData и tableHeaders
   };
 
-  //меню
-  const [showMenu, setShowMenu] = useState(false);
-  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
-
+  //меню при нажатии пкм
+ 
   const handleContextMenu = (e) => {
     e.preventDefault();
     setShowMenu(!showMenu);
@@ -249,6 +269,7 @@ function TableDisciplines() {
     setShowMenu(false);
   };
 
+  //содержимое
   return (
     <div className={styles.tabledisciplinesMain}>
       <input
@@ -257,24 +278,23 @@ function TableDisciplines() {
         value={searchTerm}
         onChange={handleSearch}
       />
-
       <div className={styles.ButtonCaf_gen}>
         <Button
-          Bg={selectedComponent === "cathedrals" ? "#DDDDDD" : "#ffffff"}
-          text="Кафедральные"
-          onClick={() => {
-            handleComponentChange("cathedrals");
-            EditTableData(selectedComponent);
-          }}
-        />
+            Bg={selectedComponent === "cathedrals" ? "#DDDDDD" : "#ffffff"}
+            text="Кафедральные"
+            onClick={() => {
+              handleComponentChange("cathedrals");
+              EditTableData(selectedComponent);
+            }}
+          />
         <Button
-          Bg={selectedComponent === "genInstitute" ? "#DDDDDD" : "#ffffff"}
-          text="Общеинститутские"
-          onClick={() => {
-            handleComponentChange("genInstitute");
-            EditTableData(selectedComponent);
-          }}
-        />
+            Bg={selectedComponent === "genInstitute" ? "#DDDDDD" : "#ffffff"}
+            text="Общеинститутские"
+            onClick={() => {
+              handleComponentChange("genInstitute");
+              EditTableData(selectedComponent);
+            }}
+          />
       </div>
       <div className={styles.EditInput}>
         <EditInput
@@ -282,7 +302,6 @@ function TableDisciplines() {
           setSamplePointsShow={setSamplePointsShow}
         />
       </div>
-
       <div className={styles.TableDisciplines__inner}>
         <table className={styles.TableDisciplines_circle}>
           <thead>
@@ -347,7 +366,6 @@ function TableDisciplines() {
             idRow={idRow}
           />
         )}
-
         {isSamplePointsShow && (
           <SamplePoints
             isSamplePointsData={isSamplePointsData}
@@ -365,6 +383,8 @@ function TableDisciplines() {
                   type="checkbox"
                   className={styles.custom__checkbox}
                   name="dataRowGlobal"
+                  checked={isCheckedGlobal}
+                  onChange={handleGlobalCheckboxChange}
                 />
                 <label htmlFor="dataRowGlobal"></label>
               </th>
@@ -409,11 +429,13 @@ function TableDisciplines() {
                 return (
                   <tr key={index} onContextMenu={handleContextMenu}>
                     <td className={styles.checkbox}>
-                      <input
-                        type="checkbox"
-                        className={styles.custom__checkbox}
-                        name="dataRow"
-                      />
+                    <input
+                      type="checkbox"
+                      className={styles.custom__checkbox}
+                      name="dataRow"
+                      checked={individualCheckboxes[index] || false}
+                      onChange={() => handleIndividualCheckboxChange(index)}
+                    />
                       <label htmlFor="dataRow"></label>
                     </td>
                     {Object.keys(row).map((key) => (
