@@ -70,7 +70,7 @@ export default class SummaryWorkload extends Model {
             }
         );
 
-        SummaryWorkload.afterSave(summaryWorkload => {
+        SummaryWorkload.afterUpdate(summaryWorkload => {
             checkHours(summaryWorkload);
         });
 
