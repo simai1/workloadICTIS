@@ -28,7 +28,6 @@ function EditInput({ tableHeaders, setSamplePointsShow }) {
   const takeFunction = (index, value) => {
     handleItemClick(value.key);
     toggleChecked(index);
-
     if (isChecked.includes(value)) {
       // Если значение уже существует, удаляем его из массива
       setChecked(isChecked.filter((item) => item.key !== value.key));
@@ -36,8 +35,6 @@ function EditInput({ tableHeaders, setSamplePointsShow }) {
       // Если значение уникально, добавляем его в массив
       setChecked((isChecked) => [...isChecked, value]);
     }
-    // setChecked(isChecked.filter((item) => item.key !== value.key));
-    console.log(isChecked);
   };
 
   const handleItemClick = (value) => {
