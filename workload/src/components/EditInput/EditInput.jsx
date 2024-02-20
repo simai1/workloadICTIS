@@ -5,10 +5,15 @@ import { useDispatch } from "react-redux";
 import { actions } from "./../../store/filter/filter.slice";
 
 function EditInput({ tableHeaders, setSamplePointsShow }) {
+  const [searchResults, setSearchResults] = useState(tableHeaders);
+
   const [isListOpen, setListOpen] = useState(false);
   const [checkedItems, setCheckedItems] = useState(
-    Array(tableHeaders.length).fill(true)
+    Array(searchResults.length).fill(true)
   );
+
+  const [isChecked, setChecked] = useState(tableHeaders);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -23,6 +28,16 @@ function EditInput({ tableHeaders, setSamplePointsShow }) {
   const takeFunction = (index, value) => {
     handleItemClick(value.key);
     toggleChecked(index);
+
+    if (isChecked.includes(value)) {
+      // Если значение уже существует, удаляем его из массива
+      setChecked(isChecked.filter((item) => item.key !== value.key));
+    } else {
+      // Если значение уникально, добавляем его в массив
+      setChecked((isChecked) => [...isChecked, value]);
+    }
+    // setChecked(isChecked.filter((item) => item.key !== value.key));
+    console.log(isChecked);
   };
 
   const handleItemClick = (value) => {
@@ -33,6 +48,21 @@ function EditInput({ tableHeaders, setSamplePointsShow }) {
     const newCheckedItems = [...checkedItems];
     newCheckedItems[index] = !newCheckedItems[index];
     setCheckedItems(newCheckedItems);
+  };
+
+  const handleSearch = (el) => {
+    const query = el.target.value;
+    setSearchResults(
+      tableHeaders.filter((item) =>
+        item.label.toLowerCase().includes(query.toLowerCase())
+      )
+    );
+    if (query === "") {
+      setSearchResults(tableHeaders);
+    }
+    console.log(
+      tableHeaders.filter((value, i, arr) => arr.indexOf(value) === 1)
+    );
   };
 
   return (
@@ -53,15 +83,17 @@ function EditInput({ tableHeaders, setSamplePointsShow }) {
             placeholder="Поиск..."
             type="text"
             className={styles.edit_input}
+            onChange={handleSearch}
           />
           <div className={styles.EditInputList}>
             <ul>
-              {tableHeaders.map((row, index) => (
+              {searchResults.map((row, index) => (
                 <li key={index}>
                   <input
                     type="checkbox"
                     onChange={() => takeFunction(index, row)}
-                    checked={checkedItems[index]}
+                    // checked={checkedItems[index]}
+                    checked={isChecked.includes(row)}
                     className={styles.customInput}
                   />
                   <p>{row.label}</p>

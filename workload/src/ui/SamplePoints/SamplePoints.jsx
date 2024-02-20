@@ -27,7 +27,7 @@ export function SamplePoints(props) {
       props.setChecked((prevChecked) => [...prevChecked, el]);
       setAllChecked(false);
     }
-    console.log(el, props.isChecked);
+    // console.log(el, props.isChecked);
   };
 
   return (
