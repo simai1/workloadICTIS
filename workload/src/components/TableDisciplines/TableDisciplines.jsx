@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import styles from "./TableDisciplines.module.scss";
 import Button from "../../ui/Button/Button";
 import EditInput from "../EditInput/EditInput";
@@ -11,36 +11,33 @@ function TableDisciplines() {
   const [updatedHeader, setUpdatedHeader] = useState([]); //заголовок обновленный для Redux сортировки
   const [updatedData, setUpdatedData] = useState([]); //массив обновленный для Redux сортировки
   const [searchTerm, setSearchTerm] = useState(""); //поиск по таблице
-  const [selectedComponent, setSelectedComponent] = useState("cathedrals");//выбранный компонент
+  const [selectedComponent, setSelectedComponent] = useState("cathedrals"); //выбранный компонент
   const [isHovered, setIsHovered] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [positionFigth, setPositionFigth] = useState({ x: 0, y: 0 });
   const [idRow, setIdrow] = useState(0);
   const [isSamplePointsShow, setSamplePointsShow] = useState(false);
   const [isSamplePointsData, setSamplePointsData] = useState("");
-  const [isCheckedGlobal, setIsCheckedGlobal] = useState(false);//главный чекбокс таблицы
-  const [individualCheckboxes, setIndividualCheckboxes] = useState([]);//чекбоксы таблицы
+  const [isCheckedGlobal, setIsCheckedGlobal] = useState(false); //главный чекбокс таблицы
+  const [individualCheckboxes, setIndividualCheckboxes] = useState([]); //чекбоксы таблицы
   const [isChecked, setChecked] = useState([]);
-  const [showMenu, setShowMenu] = useState(false);//меню
-  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });//меню
+  const [showMenu, setShowMenu] = useState(false); //меню
+  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 }); //меню
 
-  //чекбоксы 
+  //чекбоксы
   const handleGlobalCheckboxChange = () => {
     setIsCheckedGlobal(!isCheckedGlobal);
-    setIndividualCheckboxes(
-      filteredData.map(() => !isCheckedGlobal)
-    );
+    setIndividualCheckboxes(filteredData.map(() => !isCheckedGlobal));
   };
 
   const handleIndividualCheckboxChange = (index) => {
     const updatedCheckboxes = [...individualCheckboxes];
     updatedCheckboxes[index] = !updatedCheckboxes[index];
     setIndividualCheckboxes(updatedCheckboxes);
-    if(!isCheckedGlobal){
-      setIsCheckedGlobal(!isCheckedGlobal)
+    if (!isCheckedGlobal) {
+      setIsCheckedGlobal(!isCheckedGlobal);
     }
   };
-
 
   // при нажатии на кружок уведомления
   const handleClic = (el, index) => {
@@ -64,6 +61,7 @@ function TableDisciplines() {
       .map((item) => item[Object.keys(item)[index]])
       .filter((value, i, arr) => arr.indexOf(value) === i);
     setSamplePointsData(td);
+    console.log(el.clientX);
   };
 
   //данные сраницы "Поттом все будет подшгружаться из API"
@@ -237,6 +235,12 @@ function TableDisciplines() {
       });
       return updatedRow;
     });
+    const tableCells = document.querySelectorAll("th:nth-child(-n+3)");
+    const widths = Array.from(tableCells).map(
+      (cell) => cell.getBoundingClientRect().width
+    );
+    setLeft((Left) => [widths[0], widths[1], widths[2]]);
+    console.log(Left);
     setUpdatedHeader(updatedHeader);
     setUpdatedData(updatedData);
   }
@@ -258,7 +262,7 @@ function TableDisciplines() {
   };
 
   //меню при нажатии пкм
- 
+
   const handleContextMenu = (e) => {
     e.preventDefault();
     setShowMenu(!showMenu);
@@ -268,6 +272,27 @@ function TableDisciplines() {
   const handleMenuClick = () => {
     setShowMenu(false);
   };
+
+  // исправить
+  const [Left, setLeft] = useState([]);
+  useEffect(() => {
+    const tableCells = document.querySelectorAll("th:nth-child(-n+3)");
+    const widths = Array.from(tableCells).map(
+      (cell) => cell.getBoundingClientRect().width
+    );
+    setLeft((Left) => [widths[0], widths[1], widths[2]]);
+    console.log(Left);
+  }, []);
+
+  const arrLeft = [56, 126, 272];
+  //------------
+
+  // const tableCells = document.querySelectorAll("th:nth-child(-n+3)");
+  // const widths = Array.from(tableCells).map(
+  //   (cell) => cell.getBoundingClientRect().width
+  // );
+  // console.log(widths);
+  // const arrLeft = [widths[0], widths[2], widths[2]];
 
   //содержимое
   return (
@@ -280,21 +305,21 @@ function TableDisciplines() {
       />
       <div className={styles.ButtonCaf_gen}>
         <Button
-            Bg={selectedComponent === "cathedrals" ? "#DDDDDD" : "#ffffff"}
-            text="Кафедральные"
-            onClick={() => {
-              handleComponentChange("cathedrals");
-              EditTableData(selectedComponent);
-            }}
-          />
+          Bg={selectedComponent === "cathedrals" ? "#DDDDDD" : "#ffffff"}
+          text="Кафедральные"
+          onClick={() => {
+            handleComponentChange("cathedrals");
+            EditTableData(selectedComponent);
+          }}
+        />
         <Button
-            Bg={selectedComponent === "genInstitute" ? "#DDDDDD" : "#ffffff"}
-            text="Общеинститутские"
-            onClick={() => {
-              handleComponentChange("genInstitute");
-              EditTableData(selectedComponent);
-            }}
-          />
+          Bg={selectedComponent === "genInstitute" ? "#DDDDDD" : "#ffffff"}
+          text="Общеинститутские"
+          onClick={() => {
+            handleComponentChange("genInstitute");
+            EditTableData(selectedComponent);
+          }}
+        />
       </div>
       <div className={styles.EditInput}>
         <EditInput
@@ -378,7 +403,7 @@ function TableDisciplines() {
         <table className={styles.taleDestiplinesMainTable}>
           <thead>
             <tr>
-              <th className={styles.checkboxHeader}>
+              <th className={styles.checkboxHeader} style={{ left: "0" }}>
                 <input
                   type="checkbox"
                   className={styles.custom__checkbox}
@@ -389,7 +414,18 @@ function TableDisciplines() {
                 <label htmlFor="dataRowGlobal"></label>
               </th>
               {updatedHeader.map((header, index) => (
-                <th key={header.key} onClick={(el) => clickFigth(el, index)}>
+                <th
+                  key={header.key}
+                  onClick={(el) => clickFigth(el, index)}
+                  className={
+                    header.key === "discipline" ||
+                    header.key === "id" ||
+                    header.key === "workload"
+                      ? styles.stytic_th
+                      : null
+                  }
+                  style={{ left: arrLeft[index] }}
+                >
                   <div className={styles.th_inner}>
                     {header.label}
                     <img src="./img/th_fight.svg" alt=">"></img>
@@ -398,7 +434,7 @@ function TableDisciplines() {
               ))}
             </tr>
           </thead>
-          <tbody >
+          <tbody>
             {showMenu && (
               <ContextMenu
                 showMenu={showMenu}
@@ -406,21 +442,6 @@ function TableDisciplines() {
                 handleMenuClick={handleMenuClick}
               />
             )}
-            {/* {filteredData.map((row, index) => (
-              <tr key={index} onContextMenu={handleContextMenu}>
-                <td className={styles.checkbox}>
-                  <input
-                    type="checkbox"
-                    className={styles.custom__checkbox}
-                    name="dataRow"
-                  />
-                  <label htmlFor="dataRow"></label>
-                </td>
-                {Object.keys(row).map((key) => (
-                  <td key={key}>{row[key]}</td>
-                ))}
-              </tr>
-            ))} */}
             {filteredData.map((row, index) => {
               const checkValues = Object.values(row).some((value) =>
                 isChecked.includes(value)
@@ -428,18 +449,30 @@ function TableDisciplines() {
               if (!checkValues) {
                 return (
                   <tr key={index} onContextMenu={handleContextMenu}>
-                    <td className={styles.checkbox}>
-                    <input
-                      type="checkbox"
-                      className={styles.custom__checkbox}
-                      name="dataRow"
-                      checked={individualCheckboxes[index] || false}
-                      onChange={() => handleIndividualCheckboxChange(index)}
-                    />
+                    <td className={styles.checkbox} style={{ left: "0" }}>
+                      <input
+                        type="checkbox"
+                        className={styles.custom__checkbox}
+                        name="dataRow"
+                        checked={individualCheckboxes[index] || false}
+                        onChange={() => handleIndividualCheckboxChange(index)}
+                      />
                       <label htmlFor="dataRow"></label>
                     </td>
-                    {Object.keys(row).map((key) => (
-                      <td key={key}>{row[key]}</td>
+                    {Object.keys(row).map((key, index) => (
+                      <td
+                        key={key}
+                        className={
+                          key === "discipline" ||
+                          key === "id" ||
+                          key === "workload"
+                            ? styles.stytic_td
+                            : null
+                        }
+                        style={{ left: arrLeft[index] }}
+                      >
+                        {row[key]}{" "}
+                      </td>
                     ))}
                   </tr>
                 );
