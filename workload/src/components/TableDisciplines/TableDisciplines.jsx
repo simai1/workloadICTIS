@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import styles from "./TableDisciplines.module.scss";
 import Button from "../../ui/Button/Button";
 import EditInput from "../EditInput/EditInput";
@@ -277,27 +277,18 @@ function TableDisciplines() {
   };
 
 
-  // исправить
-  const [Left, setLeft] = useState([]);
+  
+   
+  const [arrLeft, setArrLeft] = useState([]);
+  const tableRef = useRef();
   useEffect(() => {
-    const tableCells = document.querySelectorAll("th:nth-child(-n+3)");
+    const tableCells = tableRef.current.querySelectorAll("th:nth-child(-n+4)");
     const widths = Array.from(tableCells).map(
       (cell) => cell.getBoundingClientRect().width
     );
-    setLeft((Left) => [widths[0], widths[1], widths[2]]);
-    console.log(Left);
+    console.log(widths)
+    setArrLeft([widths[1], widths[1]+ widths[2], widths[1]+ widths[2]+ widths[3]]);
   }, []);
-
-  const arrLeft = [56, 126, 272];
-  //------------
-
-  // const tableCells = document.querySelectorAll("th:nth-child(-n+3)");
-  // const widths = Array.from(tableCells).map(
-  //   (cell) => cell.getBoundingClientRect().width
-  // );
-  // console.log(widths);
-  // const arrLeft = [widths[0], widths[2], widths[2]];
-
   //содержимое
   return (
     <div className={styles.tabledisciplinesMain}>
@@ -404,7 +395,7 @@ function TableDisciplines() {
             setChecked={setChecked}
           />
         )}
-        <table className={styles.taleDestiplinesMainTable}>
+        <table className={styles.taleDestiplinesMainTable} ref={tableRef}>
           <thead>
             <tr>
               <th className={styles.checkboxHeader} style={{ left: "0" }}>
