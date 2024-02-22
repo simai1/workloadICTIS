@@ -71,7 +71,9 @@ export default class SummaryWorkload extends Model {
         );
 
         SummaryWorkload.afterUpdate(summaryWorkload => {
-            checkHours(summaryWorkload);
+            if(summaryWorkload.changed()) {
+                checkHours(summaryWorkload);
+            }
         });
 
         // При обновлении нагрузки просчитывать часы
