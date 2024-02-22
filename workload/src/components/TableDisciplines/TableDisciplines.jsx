@@ -24,10 +24,7 @@ function TableDisciplines() {
   const [showMenu, setShowMenu] = useState(false);//меню
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });//меню
 
-  //ширина столбцов заголовка
-  const tableCells = document.querySelectorAll('th:nth-child(-n+3)');
-  const widths = Array.from(tableCells).map(cell => cell.getBoundingClientRect().width);
-  console.log(widths);
+
   //чекбоксы 
   const handleGlobalCheckboxChange = () => {
     setIsCheckedGlobal(!isCheckedGlobal);
@@ -247,6 +244,9 @@ function TableDisciplines() {
       });
       return updatedRow;
     });
+    const tableCells = document.querySelectorAll('th:nth-child(-n+3)');
+    const widths = Array.from(tableCells).map(cell => cell.getBoundingClientRect().width);
+    console.log(widths);
     setUpdatedHeader(updatedHeader);
     setUpdatedData(updatedData);
   }
@@ -282,10 +282,7 @@ function TableDisciplines() {
     setShowMenu(false);
   };
 
-  const refs = updatedHeader.map(() => React.createRef());
-  refs.forEach((ref, index) => {
-    console.log(ref);
-  });
+ 
 
   //содержимое
   return (
@@ -407,7 +404,7 @@ function TableDisciplines() {
                 <label htmlFor="dataRowGlobal"></label>
               </th>
               {updatedHeader.map((header, index) => (
-                <th key={header.key} onClick={(el) => clickFigth(el, index)}  ref = {refs[index]}>
+                <th key={header.key} onClick={(el) => clickFigth(el, index)}>
                   <div className={styles.th_inner}>
                     {header.label}
                     <img src="./img/th_fight.svg" alt=">"></img>
