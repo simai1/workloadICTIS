@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import styles from "./TableDisciplines.module.scss";
 import Button from "../../ui/Button/Button";
 import EditInput from "../EditInput/EditInput";
@@ -241,6 +241,11 @@ function TableDisciplines() {
       });
       return updatedRow;
     });
+    const tableCells = document.querySelectorAll("th:nth-child(-n+3)");
+    const widths = Array.from(tableCells).map(
+      (cell) => cell.getBoundingClientRect().width
+    );
+    setLeft((Left) => [widths[0], widths[1], widths[2]]);
     setUpdatedHeader(updatedHeader);
     setUpdatedData(updatedData);
   }
@@ -279,16 +284,10 @@ function TableDisciplines() {
 
   
    
-  const [arrLeft, setArrLeft] = useState([]);
-  const tableRef = useRef();
-  useEffect(() => {
-    const tableCells = tableRef.current.querySelectorAll("th:nth-child(-n+4)");
-    const widths = Array.from(tableCells).map(
-      (cell) => cell.getBoundingClientRect().width
-    );
-    console.log(widths)
-    setArrLeft([widths[1], widths[1]+ widths[2], widths[1]+ widths[2]+ widths[3]]);
-  }, []);
+ 
+
+  const arrLeft = [56, 126, 272];
+ 
   //содержимое
   return (
     <div className={styles.tabledisciplinesMain}>
