@@ -19,6 +19,7 @@ export default class WorkloadDto {
     audienceHours;
     ratingControlHours;
     comment;
+    isSplit;
     educator;
 
     constructor(model) {
@@ -41,6 +42,7 @@ export default class WorkloadDto {
         this.audienceHours = model.audienceHours;
         this.ratingControlHours = model.ratingControlHours;
         this.comment = model.comment;
+        this.isSplit = model.isSplit;
         this.educator = model.Educator;
     }
 }
