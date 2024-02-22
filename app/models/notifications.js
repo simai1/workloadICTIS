@@ -14,10 +14,14 @@ export default class Notification extends Model {
                     type: DataTypes.STRING,
                     allowNull: false,
                 },
-                receiverRoles: { type: DataTypes.ARRAY(DataTypes.SMALLINT) },
+                // receiverRoles: { type: DataTypes.ARRAY(DataTypes.SMALLINT) },
                 isChecked: {
                     type: DataTypes.BOOLEAN,
                     defaultValue: false,
+                },
+                educatorId: {
+                    type: DataTypes.UUID,
+                    allowNull: false,
                 },
             },
             {
