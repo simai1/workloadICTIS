@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, } from "react";
 import styles from "./TableDisciplines.module.scss";
 import Button from "../../ui/Button/Button";
 import EditInput from "../EditInput/EditInput";
@@ -24,7 +24,7 @@ function TableDisciplines() {
   const [showMenu, setShowMenu] = useState(false); //меню
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 }); //меню
 
-  //чекбоксы
+  //чекбоксы 
   const handleGlobalCheckboxChange = () => {
     setIsCheckedGlobal(!isCheckedGlobal);
     setIndividualCheckboxes(filteredData.map(() => !isCheckedGlobal));
@@ -210,6 +210,12 @@ function TableDisciplines() {
     ];
   }, []);
 
+  const ProwNoHidenrow = [
+    'id',
+    "discipline",
+    "workload",
+    "group",
+  ] 
   //выбор компонента
   const handleComponentChange = (component) => {
     setSelectedComponent(component);
@@ -235,12 +241,6 @@ function TableDisciplines() {
       });
       return updatedRow;
     });
-    const tableCells = document.querySelectorAll("th:nth-child(-n+3)");
-    const widths = Array.from(tableCells).map(
-      (cell) => cell.getBoundingClientRect().width
-    );
-    setLeft((Left) => [widths[0], widths[1], widths[2]]);
-    // console.log(Left);
     setUpdatedHeader(updatedHeader);
     setUpdatedData(updatedData);
   }
@@ -255,7 +255,10 @@ function TableDisciplines() {
       value.toString().toLowerCase().includes(searchTerm.toLowerCase())
     );
   });
+ 
 
+
+ 
   const EditTableData = (selectedComponent) => {
     console.log(selectedComponent);
     //тут написать функцию которая будет подгружать нужное содержимое tableData и tableHeaders
@@ -273,6 +276,7 @@ function TableDisciplines() {
     setShowMenu(false);
   };
 
+
   // исправить
   const [Left, setLeft] = useState([]);
   useEffect(() => {
@@ -281,8 +285,8 @@ function TableDisciplines() {
       (cell) => cell.getBoundingClientRect().width
     );
     setLeft((Left) => [widths[0], widths[1], widths[2]]);
-    // console.log(Left);
-  }, [updatedData]);
+    console.log(Left);
+  }, []);
 
   const arrLeft = [56, 126, 272];
   //------------
