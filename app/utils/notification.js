@@ -25,43 +25,63 @@
         console.log('Recomended Max Hours:',recommendedMaxHours);
         console.log('Min Hours:', minHours);
         console.log('Total Hours:', totalHours);
+
+        const existingNotification = await Notification.findOne({
+            where: { educatorId: summaryWorkload.educatorId}
+        })
     
-        if (totalHours < minHours) {
+        if (!existingNotification && totalHours < minHours) {
             const notification = await Notification.create({
                 message: 'Нужно увеличить нагрузку для преподавателя',
                 educatorId: summaryWorkload.educatorId,
             });
             console.log('Сработало тут 3');
-
-            eventEmitter.emit('notificationCreated', { notification });
     
+            eventEmitter.emit('notificationCreated', { notification });
             // Отправляем уведомление на сервер клиента
             // socket.emit('notificationCreated', { notification });
     
-        } else if (totalHours > maxHours) {
+        } else if (!existingNotification && totalHours > maxHours) {
             const notification = await Notification.create({
                 message: 'Превышены максимальные часы для преподавателя',
                 educatorId: summaryWorkload.educatorId,
             });
             console.log('Сработало тут 2');
-
-            eventEmitter.emit('notificationCreated', { notification });
     
+            eventEmitter.emit('notificationCreated', { notification });
             // Отправляем уведомление на сервер клиента
             // socket.emit('notificationCreated', { notification });
     
-        } else if (totalHours > recommendedMaxHours) {
+        } else if (!existingNotification && totalHours > recommendedMaxHours) {
             const notification = await Notification.create({
                 message: 'Превышены рекомендуемые максимальные часы для преподавателя',
                 educatorId: summaryWorkload.educatorId,
             });
             console.log('Сработало тут');
             eventEmitter.emit('notificationCreated', { notification });
-    
             // Отправляем уведомление на сервер клиента
             // socket.emit('notificationCreated', { notification });
+    
+        } else if (existingNotification && totalHours < minHours) {
+            // Уведомление уже существует, и условия изменились - обновляем сообщение
+            existingNotification.message = 'Нужно увеличить нагрузку для преподавателя';
+            await existingNotification.save();
+            console.log('Уведомление обновлено', existingNotification);
+    
+        } else if (existingNotification && totalHours > maxHours) {
+            // Уведомление уже существует, и условия изменились - обновляем сообщение
+            existingNotification.message = 'Превышены максимальные часы для преподавателя';
+            await existingNotification.save();
+            console.log('Уведомление обновлено', existingNotification);
+    
+        } else if (existingNotification && totalHours > recommendedMaxHours) {
+            // Уведомление уже существует, и условия изменились - обновляем сообщение
+            existingNotification.message = 'Превышены рекомендуемые максимальные часы для преподавателя';
+            await existingNotification.save();
+            console.log('Уведомление обновлено', existingNotification);
         }
     }
+
 
     eventEmitter.on('notificationCreated', eventData => {
         eventQueue.push(eventData);
