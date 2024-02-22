@@ -9,10 +9,10 @@ function Warnings() {
   };
   const [arrMessage, setMessage] = useState([
     { id: "1", name: "Бабулинко А А", hours: "98" },
-    { id: "1", name: "Бабулинко А А", hours: "98" },
-    { id: "1", name: "Бабулинко А А", hours: "98" },
-    { id: "1", name: "Бабулинко А А", hours: "98" },
-    { id: "1", name: "Бабулинко А А", hours: "98" },
+    { id: "2", name: "Бабулинко А А", hours: "98" },
+    { id: "3", name: "Бабулинко А А", hours: "98" },
+    { id: "4", name: "Бабулинко А А", hours: "98" },
+    { id: "5", name: "Бабулинко А А", hours: "98" },
   ]);
   return (
     <div className={styles.Warnings}>
