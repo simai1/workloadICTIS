@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import styles from "./TableDisciplines.module.scss";
 import Button from "../../ui/Button/Button";
 import EditInput from "../EditInput/EditInput";
@@ -240,7 +240,7 @@ function TableDisciplines() {
       (cell) => cell.getBoundingClientRect().width
     );
     setLeft((Left) => [widths[0], widths[1], widths[2]]);
-    console.log(Left);
+    // console.log(Left);
     setUpdatedHeader(updatedHeader);
     setUpdatedData(updatedData);
   }
@@ -281,8 +281,8 @@ function TableDisciplines() {
       (cell) => cell.getBoundingClientRect().width
     );
     setLeft((Left) => [widths[0], widths[1], widths[2]]);
-    console.log(Left);
-  }, []);
+    // console.log(Left);
+  }, [updatedData]);
 
   const arrLeft = [56, 126, 272];
   //------------

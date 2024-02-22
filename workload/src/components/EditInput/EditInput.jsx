@@ -5,14 +5,14 @@ import { useDispatch } from "react-redux";
 import { actions } from "./../../store/filter/filter.slice";
 
 function EditInput({ tableHeaders, setSamplePointsShow }) {
-  const [searchResults, setSearchResults] = useState(tableHeaders);
+  const [searchResults, setSearchResults] = useState(tableHeaders.slice(3));
 
   const [isListOpen, setListOpen] = useState(false);
   const [checkedItems, setCheckedItems] = useState(
     Array(searchResults.length).fill(true)
   );
 
-  const [isChecked, setChecked] = useState(tableHeaders);
+  const [isChecked, setChecked] = useState(tableHeaders.slice(3));
 
   const dispatch = useDispatch();
 
@@ -50,12 +50,14 @@ function EditInput({ tableHeaders, setSamplePointsShow }) {
   const handleSearch = (el) => {
     const query = el.target.value;
     setSearchResults(
-      tableHeaders.filter((item) =>
-        item.label.toLowerCase().includes(query.toLowerCase())
-      )
+      tableHeaders
+        .slice(3)
+        .filter((item) =>
+          item.label.toLowerCase().includes(query.toLowerCase())
+        )
     );
     if (query === "") {
-      setSearchResults(tableHeaders);
+      setSearchResults(tableHeaders.slice(3));
     }
     console.log(
       tableHeaders.filter((value, i, arr) => arr.indexOf(value) === 1)

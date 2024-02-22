@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./HomePage.module.scss";
 import TableDisciplines from "../../components/TableDisciplines/TableDisciplines";
 import TableTeachers from "../../components/TableTeachers/TableTeachers";
@@ -6,10 +6,10 @@ import Button from "../../ui/Button/Button";
 import Layout from "../../ui/Layout/Layout";
 import Warnings from "../../components/Warnings/Warnings";
 import TableLks from "../../components/TableLks/TableLks";
+import axios from "axios";
 
 function HomePage() {
   const [selectedComponent, setSelectedComponent] = useState("Disciplines");
-
   const handleComponentChange = (component) => {
     setSelectedComponent(component);
   };
@@ -20,6 +20,25 @@ function HomePage() {
   // useEffect(() => {
   //   console.log(name); // Этот код будет выполняться каждый раз, когда изменяется значение name
   // }, [name]); // Указываем зависимость от переменной name
+
+  // обращение к API
+  // const [data, setData] = useState(null);
+  // useEffect(() => {
+  //   const feachData = async () => {
+  //     try {
+  //       const response1 = await axios.get(
+  //         "https://9610-95-174-102-182.ngrok-free.app/educator"
+  //       );
+  //       setData(response1.data);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   feachData();
+  // }, []);
+  // console.log(data);
+
+  //  API ---------
 
   const handleButtonClick = () => {
     setName("");
