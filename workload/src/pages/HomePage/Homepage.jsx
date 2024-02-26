@@ -29,14 +29,9 @@ function HomePage() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "https://8f38-95-174-102-182.ngrok-free.app/educator",
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
+          "https://workload.sfedu.ru/educator",
+          {}
         );
-        console.log(response);
         setData(response.data);
       } catch (error) {
         console.log(error);
@@ -46,7 +41,7 @@ function HomePage() {
     fetchData();
   }, []);
 
-  //console.log(data);
+  console.log(data);
 
   //----------------
 
