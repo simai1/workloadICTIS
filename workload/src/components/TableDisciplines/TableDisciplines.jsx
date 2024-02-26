@@ -282,9 +282,17 @@ function TableDisciplines() {
   };
 
 
-  
-   
- 
+
+  // исправить
+  const [Left, setLeft] = useState([]);
+  useEffect(() => {
+    const tableCells = document.querySelectorAll("th:nth-child(-n+3)");
+    const widths = Array.from(tableCells).map(
+      (cell) => cell.getBoundingClientRect().width
+    );
+    setLeft((Left) => [widths[0], widths[1], widths[2]]);
+    console.log(Left);
+  }, []);
 
   const arrLeft = [56, 126, 272];
  
