@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styles from "./EditInput.module.scss";
 import arrow from "./../../img/arrow.svg";
 import { useDispatch } from "react-redux";
@@ -20,9 +20,22 @@ function EditInput({ tableHeaders, setSamplePointsShow }) {
     dispatch(actions.initializeFilters(tableHeaders));
   }, []);
 
+  // закрытие модального окна при нажатии вне него
+  const refLO = useRef(null);
+  useEffect(() => {
+    const handler = (event) => {
+      if (refLO.current && !refLO.current.contains(event.target)) {
+        setListOpen(false);
+      }
+    };
+    document.addEventListener("click", handler, true);
+    return () => {
+      document.removeEventListener("click", handler);
+    };
+  }, []);
+
   const toggleList = () => {
     setListOpen(!isListOpen);
-    setSamplePointsShow(false);
   };
 
   const takeFunction = (index, value) => {
@@ -65,7 +78,7 @@ function EditInput({ tableHeaders, setSamplePointsShow }) {
   };
 
   return (
-    <div className={styles.EditInput}>
+    <div ref={refLO} className={styles.EditInput}>
       {!isListOpen && (
         <button onClick={toggleList}>
           <p>Редактирование полей</p>
@@ -79,10 +92,12 @@ function EditInput({ tableHeaders, setSamplePointsShow }) {
             <img src={arrow} alt="arrow"></img>
           </button>
           <input
-            placeholder="Поиск..."
+            placeholder="Поиск"
             type="text"
             className={styles.edit_input}
             onChange={handleSearch}
+            id="search2"
+            name="search2"
           />
           <div className={styles.EditInputList}>
             <ul>
@@ -94,6 +109,8 @@ function EditInput({ tableHeaders, setSamplePointsShow }) {
                     // checked={checkedItems[index]}
                     checked={isChecked.includes(row)}
                     className={styles.customInput}
+                    id={`search3-${index}`}
+                    name="search3"
                   />
                   <p>{row.label}</p>
                 </li>

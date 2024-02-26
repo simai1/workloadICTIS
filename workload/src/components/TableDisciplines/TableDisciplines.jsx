@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo } from "react";
+
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import styles from "./TableDisciplines.module.scss";
 import Button from "../../ui/Button/Button";
 import EditInput from "../EditInput/EditInput";
@@ -12,7 +13,7 @@ function TableDisciplines() {
   const [updatedData, setUpdatedData] = useState([]); //массив обновленный для Redux сортировки
   const [searchTerm, setSearchTerm] = useState(""); //поиск по таблице
   const [selectedComponent, setSelectedComponent] = useState("cathedrals"); //выбранный компонент
-  const [isHovered, setIsHovered] = useState(false);
+  const [isHovered, setIsHovered] = useState(false); // флаг открытия уведомлений от преподавателей
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [positionFigth, setPositionFigth] = useState({ x: 0, y: 0 });
   const [idRow, setIdrow] = useState(0);
@@ -24,7 +25,26 @@ function TableDisciplines() {
   const [showMenu, setShowMenu] = useState(false); //меню
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 }); //меню
 
-  //чекбоксы 
+  // закрытие модального окна при нажатии вне него
+  const refSP = useRef(null);
+  const refHoverd = useRef(null);
+  useEffect(() => {
+    const handler = (event) => {
+      if (refSP.current && !refSP.current.contains(event.target)) {
+        setSamplePointsShow(false);
+      }
+      if (refHoverd.current && !refHoverd.current.contains(event.target)) {
+        setIsHovered(false);
+      }
+    };
+
+    document.addEventListener("click", handler, true);
+    return () => {
+      document.removeEventListener("click", handler);
+    };
+  }, []);
+
+  //чекбоксы
   const handleGlobalCheckboxChange = () => {
     setIsCheckedGlobal(!isCheckedGlobal);
     setIndividualCheckboxes(filteredData.map(() => !isCheckedGlobal));
@@ -42,26 +62,24 @@ function TableDisciplines() {
   // при нажатии на кружок уведомления
   const handleClic = (el, index) => {
     setIsHovered(!isHovered);
-    setSamplePointsShow(false);
-    setPosition({ x: el.clientX - 50, y: el.clientY - 300 });
+    // setSamplePointsShow(false);
+    setPosition({ x: el.clientX - 40, y: el.clientY - 200 });
     setIdrow(index);
-    console.log(index);
   };
 
-  // фильтры к отдельной колонке
-  const clickFigth = (el, index) => {
+  // клик на th, открытие МО фильтры к колонке
+  const clickFigth = (event, index) => {
     setSamplePointsShow(!isSamplePointsShow);
-    setIsHovered(false);
-    if (el.clientX + 372 > window.innerWidth) {
-      setPositionFigth({ x: window.innerWidth - 500, y: el.clientY - 100 });
+    // setIsHovered(false);
+    if (event.clientX + 372 > window.innerWidth) {
+      setPositionFigth({ x: window.innerWidth - 500, y: event.clientY - 100 });
     } else {
-      setPositionFigth({ x: el.clientX - 50, y: el.clientY - 100 });
+      setPositionFigth({ x: event.clientX - 50, y: event.clientY - 100 });
     }
     const td = filteredData
       .map((item) => item[Object.keys(item)[index]])
       .filter((value, i, arr) => arr.indexOf(value) === i);
     setSamplePointsData(td);
-    console.log(el.clientX);
   };
 
   //данные сраницы "Поттом все будет подшгружаться из API"
@@ -210,12 +228,6 @@ function TableDisciplines() {
     ];
   }, []);
 
-  const ProwNoHidenrow = [
-    'id',
-    "discipline",
-    "workload",
-    "group",
-  ] 
   //выбор компонента
   const handleComponentChange = (component) => {
     setSelectedComponent(component);
@@ -260,10 +272,7 @@ function TableDisciplines() {
       value.toString().toLowerCase().includes(searchTerm.toLowerCase())
     );
   });
- 
 
-
- 
   const EditTableData = (selectedComponent) => {
     console.log(selectedComponent);
     //тут написать функцию которая будет подгружать нужное содержимое tableData и tableHeaders
@@ -282,7 +291,6 @@ function TableDisciplines() {
   };
 
 
-
   // исправить
   const [Left, setLeft] = useState([]);
   useEffect(() => {
@@ -291,7 +299,7 @@ function TableDisciplines() {
       (cell) => cell.getBoundingClientRect().width
     );
     setLeft((Left) => [widths[0], widths[1], widths[2]]);
-    console.log(Left);
+    // console.log(Left);
   }, []);
 
   const arrLeft = [56, 126, 272];
@@ -302,6 +310,8 @@ function TableDisciplines() {
       <input
         type="text"
         placeholder="Поиск"
+        id="search"
+        name="search"
         value={searchTerm}
         onChange={handleSearch}
       />
@@ -324,10 +334,7 @@ function TableDisciplines() {
         />
       </div>
       <div className={styles.EditInput}>
-        <EditInput
-          tableHeaders={tableHeaders}
-          setSamplePointsShow={setSamplePointsShow}
-        />
+        <EditInput tableHeaders={tableHeaders} />
       </div>
       <div className={styles.TableDisciplines__inner}>
         <table className={styles.TableDisciplines_circle}>
@@ -340,24 +347,6 @@ function TableDisciplines() {
             <tr>
               <th></th>
             </tr>
-            {/* {filteredData.map((row, index) => (
-              <tr className={styles.notice} key={index}>
-                <td
-                  className={
-                    notice.some((item) => item.id_row === index)
-                      ? styles.notice_circle
-                      : null
-                  }
-                >
-                  <div
-                    className={styles.notice_circle_inner}
-                    onClick={(el) => handleClic(el, index)}
-                  >
-                    {notice.filter((item) => item.id_row === index).length}
-                  </div>
-                </td>
-              </tr>
-            ))} */}
             {filteredData.map((row, index) => {
               const checkValues = Object.values(row).some((value) =>
                 isChecked.includes(value)
@@ -388,13 +377,16 @@ function TableDisciplines() {
         </table>
         {isHovered && (
           <NotificationForm
+            refHoverd={refHoverd}
             position={position}
             notice={notice.filter((item) => item.id_row === idRow)}
             idRow={idRow}
           />
         )}
+
         {isSamplePointsShow && (
           <SamplePoints
+            refSP={refSP}
             isSamplePointsData={isSamplePointsData}
             positionFigth={positionFigth}
             filteredData={filteredData}
@@ -409,6 +401,7 @@ function TableDisciplines() {
                 <input
                   type="checkbox"
                   className={styles.custom__checkbox}
+                  id="dataRowGlobal"
                   name="dataRowGlobal"
                   checked={isCheckedGlobal}
                   onChange={handleGlobalCheckboxChange}
@@ -418,7 +411,7 @@ function TableDisciplines() {
               {updatedHeader.map((header, index) => (
                 <th
                   key={header.key}
-                  onClick={(el) => clickFigth(el, index)}
+                  onClick={(event) => clickFigth(event, index)}
                   className={
                     header.key === "discipline" ||
                     header.key === "id" ||
@@ -456,10 +449,11 @@ function TableDisciplines() {
                         type="checkbox"
                         className={styles.custom__checkbox}
                         name="dataRow"
+                        id={`dataRow-${index}`}
                         checked={individualCheckboxes[index] || false}
                         onChange={() => handleIndividualCheckboxChange(index)}
                       />
-                      <label htmlFor="dataRow"></label>
+                      <label htmlFor={`dataRow-${index}`}></label>
                     </td>
                     {Object.keys(row).map((key, index) => (
                       <td

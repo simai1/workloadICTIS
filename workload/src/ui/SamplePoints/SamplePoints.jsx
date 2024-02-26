@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import styles from "./SamplePoints.module.scss";
 export function SamplePoints(props) {
   const [isAllChecked, setAllChecked] = useState(true);
@@ -7,9 +7,11 @@ export function SamplePoints(props) {
   const handleInputChange = (event) => {
     setSearchText(event.target.value);
   };
-  const filteredData = props.isSamplePointsData.filter((el) =>
-    el.toLowerCase().includes(searchText.toLowerCase())
-  );
+  const filteredData = props.isSamplePointsData.filter((el) => {
+    // Преобразовываем el в строку, если он является числом
+    const elString = typeof el === "number" ? el.toString() : el;
+    return elString.toLowerCase().includes(searchText.toLowerCase());
+  });
 
   const onAllChecked = () => {
     isAllChecked ? props.setChecked(filteredData) : props.setChecked([]);
@@ -27,11 +29,11 @@ export function SamplePoints(props) {
       props.setChecked((prevChecked) => [...prevChecked, el]);
       setAllChecked(false);
     }
-    // console.log(el, props.isChecked);
   };
 
   return (
     <main
+      ref={props.refSP}
       className={styles.SamplePoints}
       style={{
         top: props.positionFigth.y,
@@ -47,20 +49,22 @@ export function SamplePoints(props) {
           onChange={handleInputChange}
         />
         <div className={styles.points}>
-          <div>
+          <div htmlFor="allCheckbox">
             <input
+              id="allCheckbox"
               type="checkbox"
-              onClick={onAllChecked}
+              onChange={onAllChecked}
               checked={isAllChecked}
             />
             <p>Все</p>
           </div>
           {filteredData.map((el, index) => {
             return (
-              <div key={index}>
+              <div key={index} htmlFor={`checkbox-${index}`}>
                 <input
+                  id={`checkbox-${index}`}
                   type="checkbox"
-                  onClick={() => onChecked(el, index)}
+                  onChange={() => onChecked(el, index)}
                   checked={!props.isChecked.includes(el)}
                 />
                 <p>{el}</p>

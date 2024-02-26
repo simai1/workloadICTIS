@@ -15,7 +15,7 @@ export function NotificationForm(props) {
     setIsComment(!isComment);
   };
   return (
-    <main className={styles.notification}>
+    <main ref={props.refHoverd} className={styles.notification}>
       <div
         className={styles.hovered_notice}
         style={{
@@ -42,7 +42,7 @@ export function NotificationForm(props) {
 
         {
           <div className={isComment ? styles.comment : styles.comment_show}>
-            <textarea type="text" />
+            <textarea id="textareaNotificationForm" type="text" />
             <button onClick={onCheckmarkClick}>Отправать</button>
           </div>
         }
