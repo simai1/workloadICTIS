@@ -10,7 +10,7 @@
     const eventQueue = [];
 
     // Создаем соединение с сервером клиента
-    // const socket = ioClient('http://localhost:4000'); // Обновите порт, если вы используете другой порт для сервера клиента
+    const socket = ioClient('https://workload.sfedu.ru'); // Обновите порт, если вы используете другой порт для сервера клиента
 
     export default async function checkHours(summaryWorkload) {
         console.log('Туть');
