@@ -10,7 +10,7 @@
     const eventQueue = [];
 
     // Создаем соединение с сервером клиента
-    // const socket = ioClient('http://localhost:4000'); // Обновите порт, если вы используете другой порт для сервера клиента
+    const socket = ioClient('http://localhost:4000'); // Обновите порт, если вы используете другой порт для сервера клиента
 
     export default async function checkHours(summaryWorkload) {
         console.log('Туть');
@@ -67,26 +67,33 @@
             existingNotification.message = 'Нужно увеличить нагрузку для преподавателя';
             await existingNotification.save();
             console.log('Уведомление обновлено', existingNotification);
+            eventEmitter.emit('notificationCreated', { existingNotification });
+
     
         } else if (existingNotification && totalHours > maxHours) {
             // Уведомление уже существует, и условия изменились - обновляем сообщение
             existingNotification.message = 'Превышены максимальные часы для преподавателя';
             await existingNotification.save();
             console.log('Уведомление обновлено', existingNotification);
+            eventEmitter.emit('notificationCreated', { existingNotification });
+
     
         } else if (existingNotification && totalHours > recommendedMaxHours) {
             // Уведомление уже существует, и условия изменились - обновляем сообщение
             existingNotification.message = 'Превышены рекомендуемые максимальные часы для преподавателя';
             await existingNotification.save();
             console.log('Уведомление обновлено', existingNotification);
+            eventEmitter.emit('notificationCreated', { existingNotification });
+
         }
     }
 
 
     eventEmitter.on('notificationCreated', eventData => {
         eventQueue.push(eventData);
-        const messageValue = eventQueue.length;
-        console.log('Message Value:', messageValue);
+        // const messageValue = eventQueue.length;
+        socket.emit('notificationCreated', eventData);
+        // console.log('Message Value:', messageValue);
     });
     
     export { eventEmitter }; // Export eventEmitter for use in other parts of your application
