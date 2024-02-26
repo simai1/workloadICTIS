@@ -22,23 +22,33 @@ function HomePage() {
   // }, [name]); // Указываем зависимость от переменной name
 
   // обращение к API
-  // const [data, setData] = useState(null);
-  // useEffect(() => {
-  //   const feachData = async () => {
-  //     try {
-  //       const response1 = await axios.get(
-  //         "https://9610-95-174-102-182.ngrok-free.app/educator"
-  //       );
-  //       setData(response1.data);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   feachData();
-  // }, []);
-  // console.log(data);
 
-  //  API ---------
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          "https://8f38-95-174-102-182.ngrok-free.app/educator",
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        console.log(response);
+        setData(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  //console.log(data);
+
+  //----------------
 
   const handleButtonClick = () => {
     setName("");
