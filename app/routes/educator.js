@@ -10,3 +10,4 @@ router.route('/get/positions').get(asyncRoute(eduController.getPositions));
 router.route('/get/typeOfEmployments').get(asyncRoute(eduController.getTypeOfEmployments));
 router.route('/delete/:id').delete(asyncRoute(eduController.deleteEducator));
 export default router;
+        

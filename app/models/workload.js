@@ -1,7 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 import EnumDepartments from '../config/departments.js';
 import { deleteHours, setHours } from '../utils/summary-workload.js';
-
+// import checkHours from '../utils/notification.js';
 export default class Workload extends Model {
     static initialize(sequelize) {
         Workload.init(

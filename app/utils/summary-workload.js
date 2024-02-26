@@ -4,7 +4,7 @@ import Workload from '../models/workload.js';
 // Устанавливаем итоговые часы
 async function setHours(workload) {
     const summaryWorkload = await SummaryWorkload.findOne({ where: { educatorId: workload.educatorId } });
-
+    if (!summaryWorkload) return;
     const hours = {
         kafedralAutumnWorkload: 0,
         kafedralSpringWorkload: 0,

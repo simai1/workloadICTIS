@@ -1,4 +1,5 @@
 import { models } from './index.js';
+import Notification from './notifications.js';
 import SummaryWorkload from './summary-workload.js';
 
 const { Educator, Workload, User, TokenSchema } = models;
@@ -12,6 +13,9 @@ export default function () {
 
     User.hasOne(TokenSchema, { foreignKey: 'userId' });
     TokenSchema.belongsTo(User, { foreignKey: 'userId' });
+
+    Educator.hasMany(Notification);
+    Notification.belongsTo(Educator);
 }
 
 

@@ -12,6 +12,11 @@ export default {
             const educatorDto = new EducatorDto(educator);
             educatorDtos.push(educatorDto);
         }
+        if (!educatorDtos.length) {
+            // Если нет преподавателей, отправляем 404 и выходим из функции
+            return res.status(404).json('Educator not found');
+        }
+    
         res.json(educatorDtos);
     },
     async getOne({ params: { educatorId } }, res) {
