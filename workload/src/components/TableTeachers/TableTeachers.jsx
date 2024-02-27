@@ -2,6 +2,8 @@ import styles from "./TableTeachers.module.scss";
 import React, { useState, useEffect } from "react";
 import EditInput from "../EditInput/EditInput";
 import { useDispatch, useSelector } from "react-redux";
+import { ApiGetData } from "../../api/services/ApiGetData";
+import DataContext from "../../context";
 
 function TableTeachers({ onNameChange }) {
   const [updatedHeader, setUpdatedHeader] = useState([]);
@@ -9,30 +11,39 @@ function TableTeachers({ onNameChange }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [clickedName, setClickedName] = useState("");
 
-  const tableData = [
-    {
-      id: 1,
-      name: "Данильченко Владислав Иванович",
-      post: "Старший преподаватель",
-      bet: "0,75",
-      hours: "600",
-      hours_period_1: "240",
-      hours_period_2: "260",
-      hours_without_a_period: "100",
-      department: "ПиБЖ",
-    },
-    {
-      id: 2,
-      name: "Капылов Никита Максимович",
-      post: "Старший преподаватель",
-      bet: "0,75",
-      hours: "600",
-      hours_period_1: "240",
-      hours_period_2: "260",
-      hours_without_a_period: "100",
-      department: "ПиБЖ",
-    },
-  ];
+  const { setEducator, educator } = React.useContext(DataContext);
+  // заносим данные о преподавателях в состояние
+  React.useEffect(() => {
+    ApiGetData().then((data) => {
+      setEducator(data);
+    });
+  }, []);
+
+  const tableData = educator;
+  // const tableData = [
+  //   {
+  //     id: 1,
+  //     name: "Данильченко Владислав Иванович",
+  //     post: "Старший преподаватель",
+  //     bet: "0,75",
+  //     hours: "600",
+  //     hours_period_1: "240",
+  //     hours_period_2: "260",
+  //     hours_without_a_period: "100",
+  //     department: "ПиБЖ",
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Капылов Никита Максимович",
+  //     post: "Старший преподаватель",
+  //     bet: "0,75",
+  //     hours: "600",
+  //     hours_period_1: "240",
+  //     hours_period_2: "260",
+  //     hours_without_a_period: "100",
+  //     department: "ПиБЖ",
+  //   },
+  // ];
   const tableHeaders = [
     { key: "id", label: "№" },
     { key: "name", label: "Преподователь" },

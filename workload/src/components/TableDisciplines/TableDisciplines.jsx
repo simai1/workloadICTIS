@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import ContextMenu from "../../ui/ContextMenu/ContextMenu";
 import { NotificationForm } from "../../ui/NotificationForm/NotificationForm";
 import { SamplePoints } from "../../ui/SamplePoints/SamplePoints";
+import DataContext from "../../context";
 
 function TableDisciplines() {
   const [updatedHeader, setUpdatedHeader] = useState([]); //заголовок обновленный для Redux сортировки
@@ -24,6 +25,10 @@ function TableDisciplines() {
   const [isChecked, setChecked] = useState([]);
   const [showMenu, setShowMenu] = useState(false); //меню
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 }); //меню
+
+  //данные вотащили из контекста
+  const { educator } = React.useContext(DataContext);
+  console.log(educator);
 
   // закрытие модального окна при нажатии вне него
   const refSP = useRef(null);
