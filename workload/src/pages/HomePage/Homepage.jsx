@@ -6,9 +6,18 @@ import Button from "../../ui/Button/Button";
 import Layout from "../../ui/Layout/Layout";
 import Warnings from "../../components/Warnings/Warnings";
 import TableLks from "../../components/TableLks/TableLks";
-import axios from "axios";
+import { ApiGetData } from "../../api/services/ApiGetData";
+import DataContext from "../../context";
 
 function HomePage() {
+  const { setEducator, educator } = React.useContext(DataContext);
+  // заносим данные о преподавателях в состояние
+  useEffect(() => {
+    ApiGetData().then((data) => {
+      setEducator(data);
+    });
+  }, []);
+
   const [selectedComponent, setSelectedComponent] = useState("Disciplines");
   const handleComponentChange = (component) => {
     setSelectedComponent(component);
@@ -20,30 +29,6 @@ function HomePage() {
   // useEffect(() => {
   //   console.log(name); // Этот код будет выполняться каждый раз, когда изменяется значение name
   // }, [name]); // Указываем зависимость от переменной name
-
-  // обращение к API
-
-  const [data, setData] = useState(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          "https://workload.sfedu.ru/educator",
-          {}
-        );
-        setData(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  console.log(data);
-
-  //----------------
 
   const handleButtonClick = () => {
     setName("");
