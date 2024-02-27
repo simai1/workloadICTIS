@@ -394,7 +394,7 @@ function TableDisciplines() {
             setChecked={setChecked}
           />
         )}
-        <table className={styles.taleDestiplinesMainTable} ref={tableRef}>
+        <table className={styles.taleDestiplinesMainTable} >
           <thead>
             <tr>
               <th className={styles.checkboxHeader} style={{ left: "0" }}>
