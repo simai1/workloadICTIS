@@ -8,7 +8,7 @@ import { notificationMessages } from '../const/messages.js';
 
 const eventEmitter = new EventEmitter();
 const eventQueue = [];
-const socket = ioClient('http://localhost:4000');
+const socket = ioClient('https://workload.sfedu.ru');
 
 async function createNotification(message, educatorId) {
     try {
