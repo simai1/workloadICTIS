@@ -40,16 +40,25 @@ export default class Educator extends Model {
                     type: DataTypes.REAL,
                     allowNull: false,
                     defaultValue: 0,
+                    validate: {
+                        isNumeric: true,
+                    }
                 },
                 recommendedMaxHours: {
                     type: DataTypes.REAL,
                     allowNull: false,
                     defaultValue: 0,
+                    validate: {
+                        isNumeric: true,
+                    }
                 },
                 minHours: {
                     type: DataTypes.REAL,
                     allowNull: false,
                     defaultValue: 0,
+                    validate: {
+                        isNumeric: true,
+                    }
                 },
                 department: {
                     type: DataTypes.SMALLINT,
