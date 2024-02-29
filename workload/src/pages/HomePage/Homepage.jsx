@@ -10,14 +10,6 @@ import { ApiGetData } from "../../api/services/ApiGetData";
 import DataContext from "../../context";
 
 function HomePage() {
-  const { setEducator, educator } = React.useContext(DataContext);
-  // заносим данные о преподавателях в состояние
-  useEffect(() => {
-    ApiGetData().then((data) => {
-      setEducator(data);
-    });
-  }, []);
-
   const [selectedComponent, setSelectedComponent] = useState("Disciplines");
   const handleComponentChange = (component) => {
     setSelectedComponent(component);

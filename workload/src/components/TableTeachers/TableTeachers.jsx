@@ -2,7 +2,7 @@ import styles from "./TableTeachers.module.scss";
 import React, { useState, useEffect } from "react";
 import EditInput from "../EditInput/EditInput";
 import { useDispatch, useSelector } from "react-redux";
-import { ApiGetData } from "../../api/services/ApiGetData";
+import { Educator, Positions } from "../../api/services/ApiGetData";
 import DataContext from "../../context";
 
 function TableTeachers({ onNameChange }) {
@@ -10,16 +10,22 @@ function TableTeachers({ onNameChange }) {
   const [updatedData, setUpdatedData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [clickedName, setClickedName] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
 
-  const { setEducator, educator } = React.useContext(DataContext);
+  const { setEducator, educator, positions, setPositions } =
+    React.useContext(DataContext);
   // заносим данные о преподавателях в состояние
   React.useEffect(() => {
-    ApiGetData().then((data) => {
+    Educator().then((data) => {
       setEducator(data);
+      setFilteredData(data);
+      setUpdatedData(data);
+    });
+    Positions().then((data) => {
+      setPositions(data);
     });
   }, []);
 
-  const tableData = educator;
   // const tableData = [
   //   {
   //     id: 1,
@@ -47,19 +53,19 @@ function TableTeachers({ onNameChange }) {
   const tableHeaders = [
     { key: "id", label: "№" },
     { key: "name", label: "Преподователь" },
-    { key: "post", label: "Должность" },
-    { key: "bet", label: "Ставка" },
-    { key: "hours", label: "Часы" },
-    { key: "hours_period_1", label: "Часы период 1" },
-    { key: "hours_period_2", label: "Часы период 2" },
-    { key: "hours_without_a_period", label: "Часы без периода" },
+    { key: "position", label: "Должность" },
+    { key: "typeOfEmployment", label: "Вид занятости" },
     { key: "department", label: "Кафедра" },
+    { key: "rate", label: "Ставка" },
+    { key: "maxHours", label: "Максимум часов" },
+    { key: "recommendedMaxHours", label: "Рекомендуемый максимум часов" },
+    { key: "minHours", label: "Минимум часов" },
   ];
 
   const handleNameClick = (name, index) => {
     setClickedName(name);
-    let postClickTicher = tableData[index].post;
-    let betClickTicher = tableData[index].bet;
+    let postClickTicher = educator[index].post;
+    let betClickTicher = educator[index].bet;
     onNameChange(name, postClickTicher, betClickTicher);
   };
 
@@ -67,14 +73,14 @@ function TableTeachers({ onNameChange }) {
   const filters = useSelector((state) => state.filters);
 
   useEffect(() => {
-    addHeadersTable(filters, tableHeaders, tableData);
+    addHeadersTable(filters, tableHeaders, educator);
   }, [filters, dispatch]);
 
-  function addHeadersTable(filters, tableHeaders, tableData) {
+  function addHeadersTable(filters, tableHeaders, educator) {
     const updatedHeader = tableHeaders.filter((header) =>
       filters.includes(header.key)
     );
-    const updatedData = tableData.map((data) => {
+    const updatedData = educator.map((data) => {
       const updatedRow = {};
       Object.keys(data).forEach((key) => {
         if (filters.includes(key)) {
@@ -87,14 +93,33 @@ function TableTeachers({ onNameChange }) {
     setUpdatedData(updatedData);
   }
   const handleSearch = (event) => {
-    setSearchTerm(event.target.value);
+    const searchTerm = event.target.value;
+    setSearchTerm(searchTerm);
+    let fd;
+    if (searchTerm === "") {
+      fd = updatedData;
+    } else {
+      fd = updatedData.filter((row) => {
+        return Object.values(row).some((value) =>
+          value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      });
+    }
+    setFilteredData(fd);
   };
-
-  const filteredData = updatedData.filter((row) => {
-    return Object.values(row).some((value) =>
-      value.toString().toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  });
+  React.useEffect(() => {
+    let fd;
+    if (searchTerm === "") {
+      fd = updatedData;
+    } else {
+      fd = updatedData.filter((row) => {
+        return Object.values(row).some((value) =>
+          value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      });
+    }
+    setFilteredData(fd);
+  }, [updatedData, searchTerm]);
 
   return (
     <div>
@@ -134,7 +159,9 @@ function TableTeachers({ onNameChange }) {
                       </td>
                     );
                   } else {
-                    return <td key={key}>{row[key]}</td>;
+                    return (
+                      <td key={key}>{key === "id" ? index + 1 : row[key]}</td>
+                    );
                   }
                 })}
               </tr>

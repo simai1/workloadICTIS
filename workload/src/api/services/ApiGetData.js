@@ -19,9 +19,21 @@ import axios from "axios";
 //   return educator;
 // }
 
-export const ApiGetData = async () => {
+export const Educator = async () => {
   try {
     const response = await axios.get("https://workload.sfedu.ru/educator");
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
+export const Positions = async () => {
+  try {
+    const response = await axios.get(
+      "https://workload.sfedu.ru/educator/get/positions"
+    );
     return response.data;
   } catch (error) {
     console.error("Error:", error);

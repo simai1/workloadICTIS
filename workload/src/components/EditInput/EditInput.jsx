@@ -4,7 +4,7 @@ import arrow from "./../../img/arrow.svg";
 import { useDispatch } from "react-redux";
 import { actions } from "./../../store/filter/filter.slice";
 
-function EditInput({ tableHeaders, setSamplePointsShow }) {
+function EditInput({ tableHeaders }) {
   const [searchResults, setSearchResults] = useState(tableHeaders.slice(3));
 
   const [isListOpen, setListOpen] = useState(false);
@@ -72,9 +72,7 @@ function EditInput({ tableHeaders, setSamplePointsShow }) {
     if (query === "") {
       setSearchResults(tableHeaders.slice(3));
     }
-    console.log(
-      tableHeaders.filter((value, i, arr) => arr.indexOf(value) === 1)
-    );
+    console.log(isChecked);
   };
 
   return (
@@ -106,7 +104,6 @@ function EditInput({ tableHeaders, setSamplePointsShow }) {
                   <input
                     type="checkbox"
                     onChange={() => takeFunction(index, row)}
-                    // checked={checkedItems[index]}
                     checked={isChecked.includes(row)}
                     className={styles.customInput}
                     id={`search3-${index}`}

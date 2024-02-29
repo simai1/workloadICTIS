@@ -4,10 +4,13 @@ import HomePage from "./pages/HomePage/Homepage";
 import DataContext from "./context";
 
 function App() {
-  const [educator, setEducator] = useState(null); // преподаватели
+  const [educator, setEducator] = useState([]); // преподаватели
+  const [positions, setPositions] = useState([]); // должности
 
   return (
-    <DataContext.Provider value={{ educator, setEducator }}>
+    <DataContext.Provider
+      value={{ educator, setEducator, positions, setPositions }}
+    >
       <BrowserRouter>
         <div className="Container">
           <Routes>

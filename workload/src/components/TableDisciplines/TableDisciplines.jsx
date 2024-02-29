@@ -26,8 +26,8 @@ function TableDisciplines() {
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 }); //меню
 
   //данные вотащили из контекста
-  const { educator } = React.useContext(DataContext);
-  console.log(educator);
+  // const { educator } = React.useContext(DataContext);
+  // console.log(educator);
 
   // закрытие модального окна при нажатии вне него
   const refSP = useRef(null);
