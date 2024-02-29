@@ -1,0 +1,49 @@
+.SamplePoints {
+  position: absolute;
+  height: 280px;
+  background-color: #fff;
+  width: 340px;
+  //   top: 100px;
+  //   left: 200px;
+  box-shadow: 9px 3px 18px rgba(0, 0, 0, 0.2);
+  z-index: 100;
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+  border-radius: 8px;
+  .search {
+    padding: 0;
+    top: 0 !important;
+    position: relative !important;
+    cursor: pointer;
+  }
+  .points {
+    position: relative;
+    overflow-y: auto;
+    height: 70%;
+    font-size: 16px;
+    input {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      margin-left: -2px;
+      opacity: 0;
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+  }
+  .points::-webkit-scrollbar {
+    width: 5px; /* ширина scrollbar */
+  }
+  .points::-webkit-scrollbar-track {
+    background: #fff; /* цвет дорожки */
+  }
+  .points::-webkit-scrollbar-thumb,
+  .points::-webkit-scrollbar-thumb {
+    background-color: #a6a6a6;
+    border-radius: 5px;
+    border: 3px solid #a6a6a6;
+  }
+}
