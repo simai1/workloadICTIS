@@ -1,5 +1,6 @@
 import SummaryWorkload from '../models/summary-workload.js';
 import Workload from '../models/workload.js';
+import checkHours from './notification.js';
 
 // Устанавливаем итоговые часы
 async function setHours(workload) {
@@ -61,7 +62,11 @@ async function setHours(workload) {
         summaryWorkload.instituteManagementWorkload + hours.instituteManagementWorkload
     );
 
+    console.log("Total hours in swrk", summaryWorkload.totalHours);
+    console.log("Total hours in hours", hours.totalHours);
     await summaryWorkload.save();
+
+    await checkHours(summaryWorkload);
 }
 
 async function deleteHours(newWorkload) {
@@ -122,6 +127,8 @@ async function deleteHours(newWorkload) {
         'instituteManagementWorkload',
         summaryWorkload.instituteManagementWorkload - hours.instituteManagementWorkload
     );
+
+    console.log('Удалился')
     await summaryWorkload.save();
 }
 
