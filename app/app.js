@@ -13,6 +13,7 @@ import authRoute from './routes/auth.js';
 import parserRoute from './routes/parser.js';
 import eduRoute from './routes/educator.js';
 import workloadRoute from './routes/workload.js';
+import notificationRoute from './routes/notification.js';
 
 import { eventEmitter } from './utils/notification.js';
 
@@ -44,6 +45,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(corsMiddleware);
 
+app.use('/notification', notificationRoute);
 app.use('/educator', eduRoute);
 app.use('/parser', parserRoute);
 app.use('/workload', workloadRoute);

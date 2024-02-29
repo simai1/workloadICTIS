@@ -14,5 +14,6 @@ router
 router.route('/:id/update').get(asyncRoute(workloadController.getOne)).patch(asyncRoute(workloadController.update));
 router.route('/map').post(asyncRoute(workloadController.mapRow));
 router.route('/delete/:id').delete(asyncRoute(workloadController.deleteWorkload));
+router.route('/').get(asyncRoute(workloadController.getAllWorkload));
 // router.route('/hours/:id').get(asyncRoute(workloadController.getHours));
 export default router;
