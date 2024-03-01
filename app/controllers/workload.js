@@ -6,6 +6,10 @@ import Educator from '../models/educator.js';
 import WorkloadDto from '../dtos/workload-dto.js';
 
 export default {
+    async getAllDepartment(req, res){
+        res.json(departments);
+    },
+
     async getDepartment({ params: { department } }, res) {
         if (!department) throw new AppErrorMissing('department');
         if (typeof department !== 'number') department = parseInt(department);
