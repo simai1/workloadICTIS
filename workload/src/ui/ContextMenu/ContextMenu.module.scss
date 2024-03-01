@@ -1,0 +1,55 @@
+@import "./../../style/colors.scss";
+
+.ContextMenu{
+    display: flex;
+    position: relative;
+    z-index: 10;
+    div{
+        padding: 5px 0;
+    }
+    .blockMenu{
+        width:  232px;
+        height: 260px;
+        padding: 16px;
+        border-radius: 8px;
+        background-color: var(--white-color);
+        box-shadow: 4px 4px 20px 0px #00000026;
+        display: block;
+        div{
+            width: 100%;
+        }
+    }
+    .blockMenuRight{
+        width:  123px;
+        height: 124px;
+        padding: 16px;
+        border-radius: 8px;
+        background-color: var(--white-color);
+        box-shadow: 4px 4px 20px 0px #00000026;
+        display: block;
+    }
+    button{
+        border: none;
+        background-color: none;
+        background-color: var(--white-color);
+        font-size: 16px;
+        line-height: 24px;
+    }
+    .blockMenuPop{
+        display: flex;
+        justify-content: space-between;
+    }
+   .imgOpen{
+    transform: rotate(-90deg);
+   }
+   .activeStylePointer, .blockMenuPop{
+    transition: 0.15s linear all;
+   }
+   .activeStylePointer:hover, .blockMenuPop:hover{
+    opacity: 0.6;
+    cursor: pointer;
+   }
+   .buttonDel:hover{
+    cursor: pointer;
+   }
+}

@@ -1,0 +1,150 @@
+@import "./../../style/colors.scss";
+
+input[type="text"] {
+  margin-bottom: 10px;
+  position: absolute;
+  top: -92px;
+  width: 310px;
+  font-size: 18px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  color: var(--black-color);
+  padding: 9px 0px 9px 16px;
+}
+
+.ButtonCaf_gen{
+  margin-bottom: 16px;
+}
+ .EditInput{
+   position: absolute;
+   right: 0;
+   top: 165px;
+ }
+
+.TableLks__inner{
+  overflow-x: scroll;
+  border-radius: 8px; 
+  border-left: 1px solid var(--gray-color);
+  border-right: 1px  solid var(--gray-color);
+  border-top: 1px solid var(--gray-color);
+  margin-top: 16px;
+  .TableLks{
+    width: 100%;
+  } 
+}
+.TableLks__inner::-webkit-scrollbar {
+  background-color: #ffffff;
+  height: 5px;
+  margin-bottom: 8px;
+}
+
+.TableLks__inner::-webkit-scrollbar-thumb {
+  background-color: #cccccc;
+  border-radius: 8px; 
+  width: 200px!important;
+}
+
+
+.TableLks__inner::-webkit-scrollbar-track {
+  background-color: transparent;
+  border-left: 1px solid var(--gray-color);
+  border-right: 1px solid var(--gray-color);
+  border-bottom: 1px solid var(--gray-color);
+  border-radius: 0px 0px 8px 8px; 
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  thead{
+    height: 58px;
+  }
+  th, td {
+    text-align: center;
+  }
+  th {
+    background-color: var(--gray-color); 
+    padding: 17px 20px!important;
+  }
+  th:first-child{
+    
+    border-radius: 8px 0px 0px 0px;
+  }
+  th:last-child{
+    border-radius: 0px 8px 0px 0px;
+  }
+  tr {
+    background-color: var(--white-color);
+    th{
+      margin: 0 40px;
+    }
+  }
+}
+
+.buttonBack{
+    display: flex;
+    text-align: center;
+    background: none;
+    border: none;
+    width: 82px;
+    height: 25px;
+    align-items: center;
+    position: relative;
+    left: 0;
+    top: 0;
+    transition: 0.15s linear all;   
+    margin-bottom: 0px;
+    font-size: 18px;
+    font-weight: 400;
+    p{
+        margin-left: 6px;
+    }
+}
+.buttonBack:hover{
+  img,p{
+    transition: 0.15s linear all;   
+    opacity: 0.6;
+    cursor: pointer;
+  }
+}
+.DataLks{
+  position: relative;
+  width: 100%;
+  .DataLksInner{
+    background-color: var(--gray-color);
+    padding: 20px 24px;
+    border-radius: 8px;
+    width: 660px;
+    margin-top: 12px;
+    
+    .DataLksHead{
+      display: flex;
+      justify-content: space-between;
+      .DataLksHeadSchet{
+        width: 100px;
+        height: 45px;
+        border-radius: 8px;
+        font-size: 18px;
+        text-align: center;
+        color: var(--black-color);
+        p{
+          padding-top: 10px;
+        }
+      }
+      h1{
+        font-size: 24px;
+        margin: 0;
+        padding-bottom: 4px;
+        font-weight: 600;
+      }
+    }
+    p{
+      padding: 4px 0px;
+      margin: 0;
+      font-size: 18px;
+      font-weight: 300;
+      max-width: 400px;
+    }
+  }
+}

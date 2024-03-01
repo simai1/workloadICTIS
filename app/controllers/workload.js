@@ -6,6 +6,21 @@ import Educator from '../models/educator.js';
 import WorkloadDto from '../dtos/workload-dto.js';
 
 export default {
+    // Получение нагрузки
+    async getAllWorkload(req, res) {
+        try {
+            const workloads = await Workload.findAll({
+                include: { model: Educator },
+            });
+
+            const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
+
+            res.json(workloadsDto);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    },
     async getAllDepartment(req, res){
         res.json(departments);
     },
@@ -33,7 +48,7 @@ export default {
         if (!n || isNaN(n) || n < 1) throw new Error('Укажите количество групп для разделения нагрузки');
 
         // Загружаем изначальную нагрузку
-        const originalWorkload = await Workload.findByPk(id);
+        const originalWorkload = await Workload.findByPk(id, { include: { model: Educator } });
         if (!originalWorkload) throw new Error('Workload not found');
 
         // Проверяем, разделена ли уже нагрузка
@@ -84,34 +99,34 @@ export default {
         // Реализация метода получения списка преподавателей
     },
 
-    async update({ params: { id }, body: { name, numberOfStudents, hours, comment } }, res) {
-        const workload = await Workload.findByPk(id, {
-            include: { model: Educator },
-        });
+    async update({ params: { id }, body: {numberOfStudents, hours, comment } }, res) {
+        try {
+            const workload = await Workload.findByPk(id, {
+                include: { model: Educator },
+            });
 
-        if (!id) throw new Error('Не указан ID');
-        if (!numberOfStudents && !hours && !comment) {
-            throw new Error('Не указаны обязательные поля');
+            if (!id) throw new Error('Не указан ID');
+            if (!workload) {
+                throw new Error('Нет такой нагрузки');
+            }
+
+            if(!numberOfStudents) numberOfStudents = workload.numberOfStudents;
+            if(!hours) hours = workload.hours;
+            if(!comment) comment = workload.comment;
+            // Обновляем запись в таблице Workload
+            await workload.update({
+                numberOfStudents,
+                hours,
+                comment
+            });
+
+            res.json({ status: 'OK' });
+        } catch (error) {
+            console.error('Error in update:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
         }
-
-        if (!workload) {
-            throw new Error('Нет такой нагрузки');
-        }
-
-        // Обновляем поля
-        numberOfStudents = numberOfStudents || workload.numberOfStudents;
-        hours = hours || workload.hours;
-        comment = comment || workload.comment;
-
-        // Обновляем запись в таблице Workload
-        await workload.update({
-            numberOfStudents,
-            hours,
-            comment,
-        });
-
-        res.json({ status: 'OK' });
     },
+
 
     async facultyEducator({ body: { educatorId, workloadId } }, res) {
         if (!educatorId) throw new AppErrorMissing('educatorId');
@@ -120,7 +135,6 @@ export default {
             { educatorId },
             {
                 where: { id: workloadId },
-                individualHooks: true,
             }
         );
         res.json({ status: 'OK' });
@@ -135,7 +149,7 @@ export default {
     },
 
     async mapRow({ body: { ids } }, res) {
-        const workloads = await Workload.findAll({ where: { id: ids } });
+        const workloads = await Workload.findAll({ where: { id: ids } }, { include: { model: Educator } });
 
         if (!ids) {
             throw new AppErrorMissing('id');
@@ -216,5 +230,4 @@ export default {
         res.status(200).json('Successfully deleted');
     },
 
-    // Нужен метод, который будет просчитывать часы у конкретного препода
 };
