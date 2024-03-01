@@ -72,7 +72,6 @@ function EditInput({ tableHeaders }) {
     if (query === "") {
       setSearchResults(tableHeaders.slice(3));
     }
-    console.log(isChecked);
   };
 
   return (

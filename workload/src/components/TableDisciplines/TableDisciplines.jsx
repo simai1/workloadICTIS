@@ -7,6 +7,7 @@ import ContextMenu from "../../ui/ContextMenu/ContextMenu";
 import { NotificationForm } from "../../ui/NotificationForm/NotificationForm";
 import { SamplePoints } from "../../ui/SamplePoints/SamplePoints";
 import DataContext from "../../context";
+import { Workload } from "../../api/services/ApiGetData";
 
 function TableDisciplines() {
   const [updatedHeader, setUpdatedHeader] = useState([]); //заголовок обновленный для Redux сортировки
@@ -24,10 +25,31 @@ function TableDisciplines() {
   const [isChecked, setChecked] = useState([]);
   const [showMenu, setShowMenu] = useState(false); //меню
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 }); //меню
+  const [tableData, setTableData] = useState([]); // соберем из аднных апи общие данные
+  const [filteredData, setFilteredData] = useState([]);
 
-  //данные вотащили из контекста
-  // const { educator } = React.useContext(DataContext);
-  // console.log(educator);
+  //данные вытянутые из контекста
+  const { appData } = React.useContext(DataContext);
+
+  // заносим данные о преподавателях в состояние
+  React.useEffect(() => {
+    Workload().then((data) => {
+      console.log(data);
+
+      const updatedWorkload = data.map((item) => ({
+        ...item,
+        educator: item.educator && item.educator.name,
+      }));
+      appData.setWorkload(updatedWorkload); //данные с апи нагрузки
+      setUpdatedData(updatedWorkload);
+      setFilteredData(updatedWorkload);
+    });
+    setTableData(appData.workload);
+  }, []);
+
+  React.useEffect(() => {
+    setTableData(appData.workload);
+  }, [appData.workload]);
 
   // закрытие модального окна при нажатии вне него
   const refSP = useRef(null);
@@ -108,131 +130,161 @@ function TableDisciplines() {
     },
   ];
 
-  const tableData = [
-    {
-      id: 1,
-      discipline: "Дисциплина 1",
-      workload: "Нагрузка 1",
-      group: "Группа 1",
-      block: "Блок 1",
-      semester: "Семестр 1",
-      period: "Период 1",
-      studyPlan: "Учебный план 1",
-      studyPlanUnit: "2одразделение учебного плана 1",
-      studyPlanUnitId: "Идентификатор 1С-ЗКГУ",
-      educationForm: "Форма обучения 1",
-      educationLevel: "Уровень подготовки 1",
-      trainingDirection: "Направление подготовки (специальность) 1",
-      profile: "Профиль 1",
-      educationalProgram: "Образовательная программа 1",
-      studentCount: "Количество студентов 1",
-      hours: "Часы 1",
-      classroomHours: "Аудиторные часы 1",
-      ratingControlHours: "Часы рейтинг-контроль 1",
-      zetCount: "Количество в ЗЕТ 1",
-      teacher: "Преподаватель 1",
-    },
-    {
-      id: 2,
-      discipline: "Дисциплина 1",
-      workload: "Нагрузка 2",
-      group: "Группа 2",
-      block: "Блок 2",
-      semester: "Семестр 2",
-      period: "Период 2",
-      studyPlan: "Учебный план 2",
-      studyPlanUnit: "Подразделение учебного плана 2",
-      studyPlanUnitId: "Идентификатор 1С-ЗКГУ ",
-      educationForm: "Форма обучения 2",
-      educationLevel: "Уровень подготовки 2",
-      trainingDirection: "Направление подготовки (специальность) 2",
-      profile: "Профиль 2",
-      educationalProgram: "Образовательная программа 2",
-      studentCount: "Количество студентов 2",
-      hours: "Часы 2",
-      classroomHours: "Аудиторные часы 2",
-      ratingControlHours: "Часы рейтинг-контроль 2",
-      zetCount: "Количество в ЗЕТ 2",
-      teacher: "Преподаватель 2",
-    },
-    {
-      id: 3,
-      discipline: "Дисциплина 3",
-      workload: "Нагрузка 3",
-      group: "Группа 1",
-      block: "Блок 3",
-      semester: "Семестр 3",
-      period: "Период 3",
-      studyPlan: "Учебный план 3",
-      studyPlanUnit: "Подразделение учебного плана 3",
-      studyPlanUnitId: "Идентификатор 1С-ЗКГУ ",
-      educationForm: "Форма обучения 3",
-      educationLevel: "Уровень подготовки 3",
-      trainingDirection: "Направление подготовки (специальность) 3",
-      profile: "Профиль 3",
-      educationalProgram: "Образовательная программа 3",
-      studentCount: "Количество студентов 3",
-      hours: "Часы 3",
-      classroomHours: "Аудиторные часы 3",
-      ratingControlHours: "Часы рейтинг-контроль 3",
-      zetCount: "Количество в ЗЕТ 3",
-      teacher: "Преподаватель 3",
-    },
-    {
-      id: 4,
-      discipline: "Дисциплина 4",
-      workload: "Нагрузка 4",
-      group: "Группа 2",
-      block: "Блок 4",
-      semester: "Семестр 4",
-      period: "Период 4",
-      studyPlan: "Учебный план 4",
-      studyPlanUnit: "Подразделение учебного плана 4",
-      studyPlanUnitId: "Идентификатор 1С-ЗКГУ ",
-      educationForm: "Форма обучения 4",
-      educationLevel: "Уровень подготовки 4",
-      trainingDirection: "Направление подготовки (специальность) 4",
-      profile: "Профиль 4",
-      educationalProgram: "Образовательная программа 4",
-      studentCount: "Количество студентов 4",
-      hours: "Часы 4",
-      classroomHours: "Аудиторные часы 4",
-      ratingControlHours: "Часы рейтинг-контроль 4",
-      zetCount: "Количество в ЗЕТ 4",
-      teacher: "Преподаватель 4",
-    },
-  ];
+  // const tableData = [
+  //   {
+  //     id: 1,
+  //     discipline: "Дисциплина 1",
+  //     workload: "Нагрузка 1",
+  //     group: "Группа 1",
+  //     block: "Блок 1",
+  //     semester: "Семестр 1",
+  //     period: "Период 1",
+  //     studyPlan: "Учебный план 1",
+  //     studyPlanUnit: "2одразделение учебного плана 1",
+  //     studyPlanUnitId: "Идентификатор 1С-ЗКГУ",
+  //     educationForm: "Форма обучения 1",
+  //     educationLevel: "Уровень подготовки 1",
+  //     trainingDirection: "Направление подготовки (специальность) 1",
+  //     profile: "Профиль 1",
+  //     educationalProgram: "Образовательная программа 1",
+  //     studentCount: "Количество студентов 1",
+  //     hours: "Часы 1",
+  //     classroomHours: "Аудиторные часы 1",
+  //     ratingControlHours: "Часы рейтинг-контроль 1",
+  //     zetCount: "Количество в ЗЕТ 1",
+  //     teacher: "Преподаватель 1",
+  //   },
+  //   {
+  //     id: 2,
+  //     discipline: "Дисциплина 1",
+  //     workload: "Нагрузка 2",
+  //     group: "Группа 2",
+  //     block: "Блок 2",
+  //     semester: "Семестр 2",
+  //     period: "Период 2",
+  //     studyPlan: "Учебный план 2",
+  //     studyPlanUnit: "Подразделение учебного плана 2",
+  //     studyPlanUnitId: "Идентификатор 1С-ЗКГУ ",
+  //     educationForm: "Форма обучения 2",
+  //     educationLevel: "Уровень подготовки 2",
+  //     trainingDirection: "Направление подготовки (специальность) 2",
+  //     profile: "Профиль 2",
+  //     educationalProgram: "Образовательная программа 2",
+  //     studentCount: "Количество студентов 2",
+  //     hours: "Часы 2",
+  //     classroomHours: "Аудиторные часы 2",
+  //     ratingControlHours: "Часы рейтинг-контроль 2",
+  //     zetCount: "Количество в ЗЕТ 2",
+  //     teacher: "Преподаватель 2",
+  //   },
+  //   {
+  //     id: 3,
+  //     discipline: "Дисциплина 3",
+  //     workload: "Нагрузка 3",
+  //     group: "Группа 1",
+  //     block: "Блок 3",
+  //     semester: "Семестр 3",
+  //     period: "Период 3",
+  //     studyPlan: "Учебный план 3",
+  //     studyPlanUnit: "Подразделение учебного плана 3",
+  //     studyPlanUnitId: "Идентификатор 1С-ЗКГУ ",
+  //     educationForm: "Форма обучения 3",
+  //     educationLevel: "Уровень подготовки 3",
+  //     trainingDirection: "Направление подготовки (специальность) 3",
+  //     profile: "Профиль 3",
+  //     educationalProgram: "Образовательная программа 3",
+  //     studentCount: "Количество студентов 3",
+  //     hours: "Часы 3",
+  //     classroomHours: "Аудиторные часы 3",
+  //     ratingControlHours: "Часы рейтинг-контроль 3",
+  //     zetCount: "Количество в ЗЕТ 3",
+  //     teacher: "Преподаватель 3",
+  //   },
+  //   {
+  //     id: 4,
+  //     discipline: "Дисциплина 4",
+  //     workload: "Нагрузка 4",
+  //     group: "Группа 2",
+  //     block: "Блок 4",
+  //     semester: "Семестр 4",
+  //     period: "Период 4",
+  //     studyPlan: "Учебный план 4",
+  //     studyPlanUnit: "Подразделение учебного плана 4",
+  //     studyPlanUnitId: "Идентификатор 1С-ЗКГУ ",
+  //     educationForm: "Форма обучения 4",
+  //     educationLevel: "Уровень подготовки 4",
+  //     trainingDirection: "Направление подготовки (специальность) 4",
+  //     profile: "Профиль 4",
+  //     educationalProgram: "Образовательная программа 4",
+  //     studentCount: "Количество студентов 4",
+  //     hours: "Часы 4",
+  //     classroomHours: "Аудиторные часы 4",
+  //     ratingControlHours: "Часы рейтинг-контроль 4",
+  //     zetCount: "Количество в ЗЕТ 4",
+  //     teacher: "Преподаватель 4",
+  //   },
+  // ];
+
+  // const tableHeaders = useMemo(() => {
+  //   return [
+  //     { key: "id", label: "№" },
+  //     { key: "discipline", label: "Дисциплина" },
+  //     { key: "workload", label: "Нагрузка" },
+  //     { key: "group", label: "Группа" },
+  //     { key: "block", label: "Блок" },
+  //     { key: "semester", label: "Семестр" },
+  //     { key: "period", label: "Период" },
+  //     { key: "studyPlan", label: "Учебный план" },
+  //     { key: "studyPlanUnit", label: "Подразделение учебного плана" },
+  //     { key: "studyPlanUnitId", label: "Идентификатор 1С-ЗКГУ" },
+  //     { key: "educationForm", label: "Форма обучения" },
+  //     { key: "educationLevel", label: "Уровень подготовки" },
+  //     {
+  //       key: "trainingDirection",
+  //       label: "Направление подготовки (специальность)",
+  //     },
+  //     { key: "profile", label: "Профиль" },
+  //     { key: "educationalProgram", label: "Образовательная программа" },
+  //     { key: "studentCount", label: "Количество студентов" },
+  //     { key: "hours", label: "Часы" },
+  //     { key: "classroomHours", label: "Аудиторные часы" },
+  //     { key: "ratingControlHours", label: "Часы рейтинг-контроль" },
+  //     { key: "zetCount", label: "Количество в ЗЕТ" },
+  //     { key: "teacher", label: "Преподаватель" },
+  //   ];
+  // }, []);
+
+  //выбор компонента
 
   const tableHeaders = useMemo(() => {
     return [
       { key: "id", label: "№" },
       { key: "discipline", label: "Дисциплина" },
       { key: "workload", label: "Нагрузка" },
-      { key: "group", label: "Группа" },
+      { key: "groups", label: "Группа" },
       { key: "block", label: "Блок" },
       { key: "semester", label: "Семестр" },
       { key: "period", label: "Период" },
-      { key: "studyPlan", label: "Учебный план" },
-      { key: "studyPlanUnit", label: "Подразделение учебного плана" },
+      { key: "curriculum", label: "Учебный план" },
+      { key: "curriculumUnit", label: "Подразделение учебного плана" },
       { key: "studyPlanUnitId", label: "Идентификатор 1С-ЗКГУ" },
-      { key: "educationForm", label: "Форма обучения" },
-      { key: "educationLevel", label: "Уровень подготовки" },
+      { key: "formOfEducation", label: "Форма обучения" },
+      { key: "levelOfTraining", label: "Уровень подготовки" },
       {
-        key: "trainingDirection",
+        key: "specialty",
         label: "Направление подготовки (специальность)",
       },
-      { key: "profile", label: "Профиль" },
+      { key: "core", label: "Профиль" },
       { key: "educationalProgram", label: "Образовательная программа" },
-      { key: "studentCount", label: "Количество студентов" },
+      { key: "numberOfStudents", label: "Количество студентов" },
       { key: "hours", label: "Часы" },
-      { key: "classroomHours", label: "Аудиторные часы" },
+      { key: "audienceHours", label: "Аудиторные часы" },
       { key: "ratingControlHours", label: "Часы рейтинг-контроль" },
-      { key: "zetCount", label: "Количество в ЗЕТ" },
-      { key: "teacher", label: "Преподаватель" },
+      { key: "comment", label: "Количество в ЗЕТ" },
+      { key: "educator", label: "Преподаватель" },
     ];
   }, []);
 
-  //выбор компонента
   const handleComponentChange = (component) => {
     setSelectedComponent(component);
   };
@@ -263,14 +315,33 @@ function TableDisciplines() {
 
   //поиск и фильтрация таблицы
   const handleSearch = (event) => {
-    setSearchTerm(event.target.value);
+    const searchTerm = event.target.value;
+    setSearchTerm(searchTerm);
+    let fd;
+    if (searchTerm === "") {
+      fd = updatedData;
+    } else {
+      fd = updatedData.filter((row) => {
+        return Object.values(row).some((value) =>
+          value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      });
+    }
+    setFilteredData(fd);
   };
-
-  const filteredData = updatedData.filter((row) => {
-    return Object.values(row).some((value) =>
-      value.toString().toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  });
+  React.useEffect(() => {
+    let fd;
+    if (searchTerm === "") {
+      fd = updatedData;
+    } else {
+      fd = updatedData.filter((row) => {
+        return Object.values(row).some((value) =>
+          value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      });
+    }
+    setFilteredData(fd);
+  }, [updatedData, searchTerm]);
 
   const EditTableData = (selectedComponent) => {
     console.log(selectedComponent);
@@ -300,7 +371,8 @@ function TableDisciplines() {
     // console.log(Left);
   }, []);
 
-  const arrLeft = [56, 126, 272];
+  console.log("filteredData ", filteredData);
+
   //------------
 
   // const tableCells = document.querySelectorAll("th:nth-child(-n+3)");
@@ -308,7 +380,13 @@ function TableDisciplines() {
   //   (cell) => cell.getBoundingClientRect().width
   // );
   // console.log(widths);
-  // const arrLeft = [widths[0], widths[2], widths[2]];
+  // const arrLeft = [
+  //   widths[0],
+  //   widths[0] + widths[1] + 0.5,
+  //   widths[0] + widths[1] + widths[2] + 0.5,
+  // ];
+  // const arrLeft = [56, 136, 272];
+  const arrLeft = 0;
 
   //содержимое
   return (
@@ -474,7 +552,8 @@ function TableDisciplines() {
                         }
                         style={{ left: arrLeft[index] }}
                       >
-                        {row[key]}{" "}
+                        {row[key]}
+                        {/* {JSON.stringify(row[key])} */}
                       </td>
                     ))}
                   </tr>

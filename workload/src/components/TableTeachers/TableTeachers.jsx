@@ -2,7 +2,11 @@ import styles from "./TableTeachers.module.scss";
 import React, { useState, useEffect } from "react";
 import EditInput from "../EditInput/EditInput";
 import { useDispatch, useSelector } from "react-redux";
-import { Educator, Positions } from "../../api/services/ApiGetData";
+import {
+  Educator,
+  Positions,
+  TypeOfEmployments,
+} from "../../api/services/ApiGetData";
 import DataContext from "../../context";
 
 function TableTeachers({ onNameChange }) {
@@ -11,20 +15,24 @@ function TableTeachers({ onNameChange }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [clickedName, setClickedName] = useState("");
   const [filteredData, setFilteredData] = useState([]);
+  const [tableData, setTableData] = useState([]); // соберем из аднных апи общие данные
 
-  const { setEducator, educator, positions, setPositions } =
-    React.useContext(DataContext);
+  const { appData } = React.useContext(DataContext);
   // заносим данные о преподавателях в состояние
   React.useEffect(() => {
     Educator().then((data) => {
-      setEducator(data);
+      appData.setEducator(data); //данные с апи о преподавателях
       setFilteredData(data);
       setUpdatedData(data);
     });
     Positions().then((data) => {
-      setPositions(data);
+      appData.setPositions(data); //данные с апи должность
+    });
+    TypeOfEmployments().then((data) => {
+      appData.setTypeOfEmployments(data); //данные с апи Вид занятости
     });
   }, []);
+  console.log(appData);
 
   // const tableData = [
   //   {
@@ -64,8 +72,8 @@ function TableTeachers({ onNameChange }) {
 
   const handleNameClick = (name, index) => {
     setClickedName(name);
-    let postClickTicher = educator[index].post;
-    let betClickTicher = educator[index].bet;
+    let postClickTicher = appData.educator[index].post;
+    let betClickTicher = appData.educator[index].bet;
     onNameChange(name, postClickTicher, betClickTicher);
   };
 
@@ -73,7 +81,7 @@ function TableTeachers({ onNameChange }) {
   const filters = useSelector((state) => state.filters);
 
   useEffect(() => {
-    addHeadersTable(filters, tableHeaders, educator);
+    addHeadersTable(filters, tableHeaders, appData.educator);
   }, [filters, dispatch]);
 
   function addHeadersTable(filters, tableHeaders, educator) {
@@ -160,7 +168,15 @@ function TableTeachers({ onNameChange }) {
                     );
                   } else {
                     return (
-                      <td key={key}>{key === "id" ? index + 1 : row[key]}</td>
+                      <td key={key}>
+                        {key === "id"
+                          ? index + 1
+                          : key === "position"
+                          ? appData.positions[row[key]]
+                          : key === "typeOfEmployment"
+                          ? appData.typeOfEmployments[row[key]]
+                          : row[key]}
+                      </td>
                     );
                   }
                 })}

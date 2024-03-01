@@ -6,10 +6,25 @@ import DataContext from "./context";
 function App() {
   const [educator, setEducator] = useState([]); // преподаватели
   const [positions, setPositions] = useState([]); // должности
+  const [typeOfEmployments, setTypeOfEmployments] = useState([]); // вид деятельности
+  const [workload, setWorkload] = useState([]); // данные о нагрузках
+
+  const appData = {
+    educator,
+    setEducator,
+    positions,
+    setPositions,
+    typeOfEmployments,
+    setTypeOfEmployments,
+    workload,
+    setWorkload,
+  };
 
   return (
     <DataContext.Provider
-      value={{ educator, setEducator, positions, setPositions }}
+      value={{
+        appData,
+      }}
     >
       <BrowserRouter>
         <div className="Container">

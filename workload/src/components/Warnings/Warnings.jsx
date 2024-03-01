@@ -2,7 +2,15 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from "./Warnings.module.scss";
 import arrow from "./../../img/arrow.svg";
 import WarningMessage from "../../ui/WarningMessage/WarningMessage";
+// import { socket } from "../../api/services/socket";
 function Warnings() {
+  //работа с сокетами
+  // useEffect(() => {
+  //   socket.on("connect", () => {
+  //     console.log("Подключено");
+  //   });
+  // }, []);
+
   const [isListOpen, setListOpen] = useState(false);
   const toggleList = () => {
     setListOpen(!isListOpen);
