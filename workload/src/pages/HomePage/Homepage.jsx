@@ -26,10 +26,6 @@ function HomePage() {
   const [post, setpost] = useState("");
   const [bet, setbet] = useState("");
 
-  // useEffect(() => {
-  //   console.log(name); // Этот код будет выполняться каждый раз, когда изменяется значение name
-  // }, [name]); // Указываем зависимость от переменной name
-
   const handleButtonClick = () => {
     setName("");
   };

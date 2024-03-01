@@ -258,13 +258,10 @@ function TableDisciplines() {
       });
       return updatedRow;
     });
-    const tableCells = document.querySelectorAll("th:nth-child(-n+3)");
-    const widths = Array.from(tableCells).map(
-      (cell) => cell.getBoundingClientRect().width
-    );
-    setLeft((Left) => [widths[0], widths[1], widths[2]]);
+    
     setUpdatedHeader(updatedHeader);
     setUpdatedData(updatedData);
+   
   }
 
   //поиск и фильтрация таблицы
@@ -294,20 +291,23 @@ function TableDisciplines() {
   const handleMenuClick = () => {
     setShowMenu(false);
   };
-
-
-  // исправить
-  const [Left, setLeft] = useState([]);
+  const trRef = useRef(null);
+  const [widthsTableHeader, SetWidthsTableHeader] = useState([]);
   useEffect(() => {
-    const tableCells = document.querySelectorAll("th:nth-child(-n+3)");
-    const widths = Array.from(tableCells).map(
-      (cell) => cell.getBoundingClientRect().width
-    );
-    setLeft((Left) => [widths[0], widths[1], widths[2]]);
-    // console.log(Left);
+    // Simulate an API call
+    setTimeout(() => {
+      SetWidthsTableHeader(SetHeaderWidths())    
+    }, 250);
   }, []);
-
-  const arrLeft = [56, 126, 272];
+  function SetHeaderWidths(){
+    const widths = []; 
+    for (let i = 0; i < 4; i++) {
+      widths.push(trRef.current.children[i].offsetWidth)
+    }
+    return widths;
+  }
+  console.log(widthsTableHeader)
+  const arrLeft = [widthsTableHeader[0],widthsTableHeader[0]+widthsTableHeader[1]+0.5,widthsTableHeader[0]+widthsTableHeader[1]+widthsTableHeader[2]+0.5];
  
   //содержимое
   return (
@@ -401,7 +401,7 @@ function TableDisciplines() {
         )}
         <table className={styles.taleDestiplinesMainTable} >
           <thead>
-            <tr>
+            <tr ref={trRef}>
               <th className={styles.checkboxHeader} style={{ left: "0" }}>
                 <input
                   type="checkbox"
