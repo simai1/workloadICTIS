@@ -2,6 +2,9 @@ import { AppErrorInvalid, AppErrorMissing } from '../utils/errors.js';
 import departments from '../config/departments.js';
 import Workload from '../models/workload.js';
 import Educator from '../models/educator.js';
+import mapValueToKey from '../utils/swapValue.js';
+import positions from '../config/position.js';
+import typeOfEmployments from '../config/type-of-employment.js';
 
 import WorkloadDto from '../dtos/workload-dto.js';
 
@@ -225,37 +228,6 @@ export default {
 
         res.status(200).json('Successfully deleted');
     },
-    // async getSummaryWorkload({ params: { id } }, res) {
-    //     try {
-    //         const summaryWorkload = await SummaryWorkload.findOne({
-    //             where: { id: id },
-    //             include: { model: Educator },
-    //         });
-    //
-    //         if (!summaryWorkload) {
-    //             throw new Error('Нет такой нагрузки');
-    //         }
-    //
-    //         // Получите данные о преподавателе, привязанном к этой нагрузке
-    //         const educatorData = {
-    //             id: summaryWorkload.Educator.id,
-    //             name: summaryWorkload.Educator.name,
-    //             // Добавьте другие необходимые поля преподавателя
-    //         };
-    //
-    //         // Добавьте данные о преподавателе к данным о нагрузке
-    //         const summaryWorkloadDto = {
-    //             ...summaryWorkload,
-    //             // Добавьте другие необходимые поля нагрузки
-    //             educator: educatorData,
-    //         };
-    //
-    //         res.json(summaryWorkloadDto);
-    //     } catch (error) {
-    //         console.error('Error fetching summary workload:', error);
-    //         res.status(500).json({ error: 'Internal Server Error' });
-    //     }
-    // }
 
 }
 

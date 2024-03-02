@@ -1,11 +1,11 @@
-import Educator from "../models/educator.js";
-import EducatorDto from "../dtos/educator-dto.js";
-import EducatorProfileDto from "../dtos/educator-profile-dto.js";
-import { AppErrorAlreadyExists, AppErrorMissing, AppErrorNotExist } from "../utils/errors.js";
-import { map as mapPositions } from "../config/position.js";
-import { map as mapTypeOfEmployments } from "../config/type-of-employment.js";
-import SummaryWorkload from "../models/summary-workload.js";
-import Workload from "../models/workload.js";
+import Educator from '../models/educator.js';
+import EducatorDto from '../dtos/educator-dto.js';
+import EducatorProfileDto from '../dtos/educator-profile-dto.js';
+import { AppErrorAlreadyExists, AppErrorMissing, AppErrorNotExist } from '../utils/errors.js';
+import { map as mapPositions } from '../config/position.js';
+import { map as mapTypeOfEmployments } from '../config/type-of-employment.js';
+import SummaryWorkload from '../models/summary-workload.js';
+import Workload from '../models/workload.js';
 
 export default {
   async getAll (params, res) {
