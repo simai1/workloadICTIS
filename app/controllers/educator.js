@@ -1,7 +1,7 @@
 import Educator from '../models/educator.js';
 import EducatorDto from '../dtos/educator-dto.js';
 import { AppErrorAlreadyExists, AppErrorMissing, AppErrorNotExist } from '../utils/errors.js';
-import { map as mapPositions} from '../config/position.js';
+import { map as mapPositions } from '../config/position.js';
 import { map as mapTypeOfEmployments } from '../config/type-of-employment.js';
 
 export default {
@@ -16,7 +16,7 @@ export default {
             // Если нет преподавателей, отправляем 404 и выходим из функции
             return res.status(404).json('Educator not found');
         }
-    
+
         res.json(educatorDtos);
     },
     async getOne({ params: { educatorId } }, res) {
@@ -84,8 +84,8 @@ export default {
             return res.status(404).json('Educator not found');
         }
 
-        await educator.destroy({force: true});
+        await educator.destroy({ force: true });
 
-        res.status(200).json('Successfully deleted');
-    }
+        res.json({ status: 'OK' });
+    },
 };
