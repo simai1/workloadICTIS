@@ -3,7 +3,6 @@ import Notification from '../models/notifications.js';
 import Educator from '../models/educator.js';
 import { EventEmitter } from 'events';
 import ioClient from 'socket.io-client';
-import { Op } from 'sequelize';
 import { notificationMessages } from '../const/messages.js';
 
 const eventEmitter = new EventEmitter();
