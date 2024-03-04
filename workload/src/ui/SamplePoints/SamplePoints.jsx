@@ -7,7 +7,8 @@ export function SamplePoints(props) {
   const handleInputChange = (event) => {
     setSearchText(event.target.value);
   };
-  const filteredData = props.isSamplePointsData.filter((el) => {
+
+  const filteredData = props.isSamplePointsData.td.filter((el) => {
     // Преобразовываем el в строку, если он является числом
     const elString = typeof el === "number" ? el.toString() : el;
     return elString.toLowerCase().includes(searchText.toLowerCase());
@@ -67,7 +68,9 @@ export function SamplePoints(props) {
                   onChange={() => onChecked(el, index)}
                   checked={!props.isChecked.includes(el)}
                 />
-                <p>{el}</p>
+                <p>
+                  {props.isSamplePointsData.keyTd === "id" ? index + 1 : el}
+                </p>
               </div>
             );
           })}

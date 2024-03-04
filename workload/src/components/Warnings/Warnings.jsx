@@ -4,7 +4,7 @@ import arrow from "./../../img/arrow.svg";
 import WarningMessage from "../../ui/WarningMessage/WarningMessage";
 // import { socket } from "../../api/services/socket";
 function Warnings() {
-  //работа с сокетами
+  // работа с сокетами
   // useEffect(() => {
   //   socket.on("connect", () => {
   //     console.log("Подключено");

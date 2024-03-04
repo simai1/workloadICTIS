@@ -41,12 +41,17 @@ function EditInput({ tableHeaders }) {
   const takeFunction = (index, value) => {
     handleItemClick(value.key);
     toggleChecked(index);
-    if (isChecked.includes(value)) {
+    console.log("isChecked ", isChecked);
+    if (isChecked.some((item) => item.key === value.key)) {
       // Если значение уже существует, удаляем его из массива
       setChecked(isChecked.filter((item) => item.key !== value.key));
+      console.log("существует ");
+      console.log("value ", value);
     } else {
       // Если значение уникально, добавляем его в массив
       setChecked((isChecked) => [...isChecked, value]);
+      console.log("уникально ");
+      console.log("value ", value);
     }
   };
 
@@ -62,6 +67,7 @@ function EditInput({ tableHeaders }) {
 
   const handleSearch = (el) => {
     const query = el.target.value;
+
     setSearchResults(
       tableHeaders
         .slice(3)
@@ -73,7 +79,6 @@ function EditInput({ tableHeaders }) {
       setSearchResults(tableHeaders.slice(3));
     }
   };
-
   return (
     <div ref={refLO} className={styles.EditInput}>
       {!isListOpen && (
@@ -103,7 +108,7 @@ function EditInput({ tableHeaders }) {
                   <input
                     type="checkbox"
                     onChange={() => takeFunction(index, row)}
-                    checked={isChecked.includes(row)}
+                    checked={isChecked.some((item) => item.key === row.key)}
                     className={styles.customInput}
                     id={`search3-${index}`}
                     name="search3"

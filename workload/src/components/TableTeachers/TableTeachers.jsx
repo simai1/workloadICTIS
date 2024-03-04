@@ -32,7 +32,7 @@ function TableTeachers({ onNameChange }) {
       appData.setTypeOfEmployments(data); //данные с апи Вид занятости
     });
   }, []);
-  console.log(appData);
+  // console.log(appData);
 
   // const tableData = [
   //   {
@@ -168,15 +168,7 @@ function TableTeachers({ onNameChange }) {
                     );
                   } else {
                     return (
-                      <td key={key}>
-                        {key === "id"
-                          ? index + 1
-                          : key === "position"
-                          ? appData.positions[row[key]]
-                          : key === "typeOfEmployment"
-                          ? appData.typeOfEmployments[row[key]]
-                          : row[key]}
-                      </td>
+                      <td key={key}>{key === "id" ? index + 1 : row[key]}</td>
                     );
                   }
                 })}

@@ -44,6 +44,20 @@ export const Workload = async () => {
   }
 };
 
+export const addEducatorWorkload = async (data) => {
+  // try {
+  //   const response = await axios.post(
+  //     "https://workload.sfedu.ru/workload/faculty",
+  //     data
+  //   );
+  //   return response.data;
+  // } catch (error) {
+  //   console.error("Error:", error);
+  //   throw error;
+  // }
+  console.log("Препод добавлен ", data);
+};
+
 // export function ApiGetData() {
 //   const [educator, setEducator] = useState(null);
 //   useEffect(() => {

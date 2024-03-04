@@ -115,7 +115,7 @@
       background-color: var(--white-color);
       background-color: #fff;
       box-sizing: border-box;
-      height: 61px;
+      height: 42px;
     }
   }
 
@@ -151,14 +151,10 @@
     .checkboxHeader {
       height: 106px;
     }
-    .checkbox {
-      height: 110px;
-    }
+    // .checkbox {
+    // }
     .checkbox,
     .checkboxHeader {
-      align-items: center;
-      display: flex;
-      justify-content: center;
       text-align: center;
       margin: 0;
       padding: 0;
@@ -215,20 +211,18 @@ table td {
   right: 0;
   top: 60px;
   border-radius: 0px 8px 8px 0px;
-  z-index: 10;
+  z-index: 2;
 }
 
 .taleDestiplinesMainTable {
   .stytic_th,
   .checkboxHeader {
     position: sticky !important;
-    // left: 0 !important;
     background-color: var(--gray-color) !important;
   }
   .stytic_td,
   .checkbox {
     position: sticky !important;
-    // left: 0 !important;
     background-color: #fff !important;
   }
 }
