@@ -1,4 +1,5 @@
 import EducatorDto from "./educator-dto.js";
+import { map as departmentsMap } from '../config/departments.js';
 
 export default class WorkloadDto {
     id;
@@ -25,7 +26,7 @@ export default class WorkloadDto {
 
     constructor(model) {
         this.id = model.id;
-        this.department = model.department;
+        this.department = departmentsMap[model.department];
         this.discipline = model.discipline;
         this.workload = model.workload;
         this.groups = model.groups;
