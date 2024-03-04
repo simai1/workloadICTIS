@@ -1,3 +1,4 @@
+import EducatorDto from "./educator-dto.js";
 
 export default class WorkloadDto {
     id;
@@ -43,6 +44,6 @@ export default class WorkloadDto {
         this.ratingControlHours = model.ratingControlHours;
         this.comment = model.comment;
         this.isSplit = model.isSplit;
-        this.educator = model.Educator;
+        this.educator = new EducatorDto(model.Educator);
     }
 }

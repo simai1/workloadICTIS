@@ -2,6 +2,9 @@ import { AppErrorInvalid, AppErrorMissing } from '../utils/errors.js';
 import departments from '../config/departments.js';
 import Workload from '../models/workload.js';
 import Educator from '../models/educator.js';
+import mapValueToKey from '../utils/swapValue.js';
+import positions from '../config/position.js';
+import typeOfEmployments from '../config/type-of-employment.js';
 
 import WorkloadDto from '../dtos/workload-dto.js';
 
@@ -21,6 +24,10 @@ export default {
             res.status(500).json({ error: 'Internal Server Error' });
         }
     },
+    async getAllDepartment(req, res){
+        res.json(departments);
+    },
+
     async getDepartment({ params: { department } }, res) {
         if (!department) throw new AppErrorMissing('department');
         if (typeof department !== 'number') department = parseInt(department);
@@ -100,12 +107,12 @@ export default {
             const workload = await Workload.findByPk(id, {
                 include: { model: Educator },
             });
-    
+
             if (!id) throw new Error('Не указан ID');
             if (!workload) {
                 throw new Error('Нет такой нагрузки');
             }
-    
+
             if(!numberOfStudents) numberOfStudents = workload.numberOfStudents;
             if(!hours) hours = workload.hours;
             if(!comment) comment = workload.comment;
@@ -115,14 +122,14 @@ export default {
                 hours,
                 comment
             });
-    
+
             res.json({ status: 'OK' });
         } catch (error) {
             console.error('Error in update:', error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     },
-    
+
 
     async facultyEducator({ body: { educatorId, workloadId } }, res) {
         if (!educatorId) throw new AppErrorMissing('educatorId');
@@ -226,4 +233,7 @@ export default {
         res.status(200).json('Successfully deleted');
     },
 
-};
+}
+
+
+
