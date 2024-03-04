@@ -2,9 +2,6 @@ import { AppErrorInvalid, AppErrorMissing } from '../utils/errors.js';
 import departments from '../config/departments.js';
 import Workload from '../models/workload.js';
 import Educator from '../models/educator.js';
-import mapValueToKey from '../utils/swapValue.js';
-import positions from '../config/position.js';
-import typeOfEmployments from '../config/type-of-employment.js';
 
 import WorkloadDto from '../dtos/workload-dto.js';
 

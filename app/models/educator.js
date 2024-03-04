@@ -4,6 +4,8 @@ import EnumTypeOfEmployment from '../config/type-of-employment.js';
 import EnumDepartment from '../config/departments.js';
 import { setHours } from '../utils/educators-hours.js';
 import createSummaryWorkload from '../utils/create-summary-workload.js';
+import SummaryWorkload from './summary-workload.js';
+import Workload from './workload.js';
 export default class Educator extends Model {
     static initialize(sequelize) {
          Educator.init(
