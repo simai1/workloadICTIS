@@ -44,6 +44,6 @@ export default class WorkloadDto {
         this.ratingControlHours = model.ratingControlHours;
         this.comment = model.comment;
         this.isSplit = model.isSplit;
-        this.educator = new EducatorDto(model.Educator);
+        this.educator = model.Educator ? new EducatorDto(model.Educator) : null;
     }
 }
