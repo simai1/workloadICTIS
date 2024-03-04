@@ -1,5 +1,4 @@
 import { DataTypes, Model } from 'sequelize';
-import checkHours from '../utils/notification.js';
 
 export default class SummaryWorkload extends Model {
     static initialize(sequelize) {
