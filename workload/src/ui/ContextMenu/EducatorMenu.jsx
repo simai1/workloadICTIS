@@ -38,10 +38,9 @@ export function EducatorMenu(props) {
       />
       <ul className={styles.educator_ul}>
         {filtredData.map((el, index) => (
-          <li className={styles.educator_li}>
+          <li key={index} className={styles.educator_li}>
             <p
               className={styles.educator}
-              key={index}
               onClick={() => props.selectedEducator(el.id)}
             >
               {el.name}

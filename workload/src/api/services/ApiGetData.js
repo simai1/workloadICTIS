@@ -1,5 +1,6 @@
 import axios from "axios";
 
+//! получаем преподов
 export const Educator = async () => {
   try {
     const response = await axios.get("https://workload.sfedu.ru/educator");
@@ -34,6 +35,7 @@ export const TypeOfEmployments = async () => {
   }
 };
 
+//! получаем нагрузки
 export const Workload = async () => {
   try {
     const response = await axios.get("https://workload.sfedu.ru/workload");
@@ -44,34 +46,66 @@ export const Workload = async () => {
   }
 };
 
+//! запрос на добавление преподавателя к нагрузке
 export const addEducatorWorkload = async (data) => {
-  // try {
-  //   const response = await axios.post(
-  //     "https://workload.sfedu.ru/workload/faculty",
-  //     data
-  //   );
-  //   return response.data;
-  // } catch (error) {
-  //   console.error("Error:", error);
-  //   throw error;
-  // }
-  console.log("Препод добавлен ", data);
+  console.log("Добавление преподавателя ", data);
+  try {
+    const response = await axios.patch(
+      "https://workload.sfedu.ru/workload/faculty",
+      data
+    );
+    console.log("response ", response);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
 };
 
-// export function ApiGetData() {
-//   const [educator, setEducator] = useState(null);
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       try {
-//         const response = await axios.get("https://workload.sfedu.ru/educator");
-//         setEducator(response.data);
-//       } catch (error) {
-//         console.log(error);
-//       }
-//     };
+//! запрос на разделение нагрузки
+export const splitWorkload = async (data) => {
+  console.log("Раздление нагрузки ", data);
+  try {
+    const response = await axios.post(
+      `https://workload.sfedu.ru/workload/${data.workloadId}/split`,
+      data
+    );
+    console.log("response ", response);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
 
-//     fetchData();
-//   }, []);
+//! запрос на разделение нагрузки
+export const joinWorkloads = async (data) => {
+  console.log("Раздление нагрузки ", data);
+  try {
+    const response = await axios.post(
+      "https://workload.sfedu.ru/workload/map",
+      data
+    );
+    console.log("response ", response);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
 
-//   return educator;
-// }
+//! запрос на удаление нагрузки
+export const deleteWorkload = async (data) => {
+  console.log("Нагрузка удалена ", data);
+  try {
+    const response = await axios.delete(
+      `https://workload.sfedu.ru/workload/delete/${data}`,
+      data
+    );
+    console.log("response ", response);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};

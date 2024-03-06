@@ -16,7 +16,7 @@ export function SubMenu(props) {
       <div>
         <button
           className={styles.activeStylePointer}
-          onClick={props.handleMenuClick}
+          onClick={() => props.handleSplitWorkload(2)}
         >
           На 2 потока
         </button>
@@ -24,7 +24,7 @@ export function SubMenu(props) {
       <div>
         <button
           className={styles.activeStylePointer}
-          onClick={props.handleMenuClick}
+          onClick={() => props.handleSplitWorkload(3)}
         >
           На 3 потока
         </button>
@@ -32,7 +32,7 @@ export function SubMenu(props) {
       <div>
         <button
           className={styles.activeStylePointer}
-          onClick={props.handleMenuClick}
+          onClick={() => props.handleSplitWorkload(4)}
         >
           На 4 потока
         </button>

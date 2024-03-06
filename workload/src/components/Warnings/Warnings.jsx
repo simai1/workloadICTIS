@@ -2,13 +2,35 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from "./Warnings.module.scss";
 import arrow from "./../../img/arrow.svg";
 import WarningMessage from "../../ui/WarningMessage/WarningMessage";
-// import { socket } from "../../api/services/socket";
+// import socket from "../../api/services/socket";
 function Warnings() {
   // работа с сокетами
   // useEffect(() => {
   //   socket.on("connect", () => {
   //     console.log("Подключено");
   //   });
+  // }, []);
+
+  // useEffect(() => {
+  //   // Ваш код обновления таблицы summaryWorkload здесь
+
+  //   // Ваш запрос на сервер
+  //   socket.emit("updateSummaryWorkload", {
+  //     /* ваша информация */
+  //   });
+  // }, []);
+
+  // useEffect(() => {
+  //   // Слушаем событие notificationCreated
+  //   socket.on("notificationCreated", (data) => {
+  //     console.log("Notification created:", data);
+  //     // Действия, которые нужно совершить при получении события
+  //   });
+
+  //   // Очистка события при размонтировании компонента
+  //   return () => {
+  //     socket.off("notificationCreated");
+  //   };
   // }, []);
 
   const [isListOpen, setListOpen] = useState(false);

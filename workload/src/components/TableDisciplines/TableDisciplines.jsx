@@ -7,12 +7,7 @@ import ContextMenu from "../../ui/ContextMenu/ContextMenu";
 import { NotificationForm } from "../../ui/NotificationForm/NotificationForm";
 import { SamplePoints } from "../../ui/SamplePoints/SamplePoints";
 import DataContext from "../../context";
-import {
-  Educator,
-  Workload,
-  addEducatorWorkload,
-  addTeacherWorkload,
-} from "../../api/services/ApiGetData";
+import { Workload } from "../../api/services/ApiGetData";
 
 function TableDisciplines() {
   const [updatedHeader, setUpdatedHeader] = useState([]); //заголовок обновленный для Redux сортировки
@@ -36,9 +31,9 @@ function TableDisciplines() {
   //данные вытянутые из контекста
   const { appData } = React.useContext(DataContext);
 
-  // заносим данные о преподавателях в состояние
-  useEffect(() => {
+  function getDataTable() {
     Workload().then((data) => {
+      console.log(data);
       const updatedWorkload = data.map((item) => {
         const { isSplit, ...rest } = item; // убираем isSplit из массива
         return {
@@ -51,8 +46,14 @@ function TableDisciplines() {
       setFilteredData(updatedWorkload);
     });
     setTableData(appData.workload);
+  }
+
+  // заносим данные о преподавателях в состояние
+  useEffect(() => {
+    getDataTable();
   }, []);
 
+  //! сортировака (по hedars) пришедших данных из апи
   useEffect(() => {
     const sortedArray = appData.workload.sort((a, b) => {
       const firstArrayKeys = tableHeaders.map((header) => header.key);
@@ -83,15 +84,25 @@ function TableDisciplines() {
   //чекбоксы
   const handleGlobalCheckboxChange = () => {
     setIsCheckedGlobal(!isCheckedGlobal);
-    setIndividualCheckboxes(filteredData.map(() => !isCheckedGlobal));
+    !isCheckedGlobal
+      ? setIndividualCheckboxes(filteredData.map((el) => el.id))
+      : setIndividualCheckboxes([]);
   };
 
   const handleIndividualCheckboxChange = (index) => {
-    const updatedCheckboxes = [...individualCheckboxes];
-    updatedCheckboxes[index] = !updatedCheckboxes[index];
-    setIndividualCheckboxes(updatedCheckboxes);
-    if (!isCheckedGlobal) {
-      setIsCheckedGlobal(!isCheckedGlobal);
+    let ic = [...individualCheckboxes];
+
+    if (ic.includes(filteredData[index].id)) {
+      ic = ic.filter((el) => el !== filteredData[index].id);
+    } else {
+      ic = [...ic, filteredData[index].id];
+    }
+    setIndividualCheckboxes(ic);
+
+    if (ic.length === filteredData.length) {
+      setIsCheckedGlobal(true);
+    } else {
+      setIsCheckedGlobal(false);
     }
   };
 
@@ -174,7 +185,7 @@ function TableDisciplines() {
     setSelectedComponent(component);
   };
 
-  //работа с таблицами через REDUX
+  //! работа с таблицами через REDUX
   const dispatch = useDispatch();
   const filters = useSelector((state) => state.filters);
   useEffect(() => {
@@ -199,7 +210,7 @@ function TableDisciplines() {
     setUpdatedData(updatedData);
   }
 
-  //поиск и фильтрация таблицы
+  //! поиск и фильтрация таблицы
   const handleSearch = (event) => {
     const searchTerm = event.target.value;
     setSearchTerm(searchTerm);
@@ -365,6 +376,16 @@ function TableDisciplines() {
             setChecked={setChecked}
           />
         )}
+        {showMenu && (
+          <ContextMenu
+            showMenu={showMenu}
+            menuPosition={menuPosition}
+            handleMenuClick={handleMenuClick}
+            setShowMenu={setShowMenu}
+            individualCheckboxes={individualCheckboxes}
+            getDataTable={getDataTable}
+          />
+        )}
         <table className={styles.taleDestiplinesMainTable}>
           <thead>
             <tr ref={trRef}>
@@ -390,7 +411,7 @@ function TableDisciplines() {
                       ? styles.stytic_th
                       : null
                   }
-                  style={{ left: arrLeft[index] }}
+                  style={{ left: arrLeft[index] || "0" }}
                 >
                   <div className={styles.th_inner}>
                     {header.label}
@@ -400,15 +421,8 @@ function TableDisciplines() {
               ))}
             </tr>
           </thead>
+
           <tbody>
-            {showMenu && (
-              <ContextMenu
-                showMenu={showMenu}
-                menuPosition={menuPosition}
-                handleMenuClick={handleMenuClick}
-                setShowMenu={setShowMenu}
-              />
-            )}
             {filteredData.map((row, index) => {
               const checkValues = Object.values(row).some((value) =>
                 isChecked.includes(value)
@@ -422,7 +436,11 @@ function TableDisciplines() {
                         className={styles.custom__checkbox}
                         name="dataRow"
                         id={`dataRow-${index}`}
-                        checked={individualCheckboxes[index] || false}
+                        checked={
+                          individualCheckboxes.includes(filteredData[index].id)
+                            ? true
+                            : false
+                        }
                         onChange={() => handleIndividualCheckboxChange(index)}
                       />
                       <label htmlFor={`dataRow-${index}`}></label>
@@ -437,7 +455,7 @@ function TableDisciplines() {
                             ? styles.stytic_td
                             : null
                         }
-                        style={{ left: arrLeft[ind] }}
+                        style={{ left: arrLeft[ind] || "0" }}
                       >
                         {row[updatedHeader[ind].key] === null
                           ? "0"
