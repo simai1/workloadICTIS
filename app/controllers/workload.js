@@ -33,7 +33,7 @@ export default {
             where: { department },
             include: { model: Educator },
         });
-        // res.json(workloads);
+        
         const workloadsDto = [];
         for (const workload of workloads) {
             const workloadDto = new WorkloadDto(workload);
@@ -93,10 +93,6 @@ export default {
         if (!workload) throw new Error('Нет такой нагрузки');
         const workloadDto = new WorkloadDto(workload);
         res.json(workloadDto);
-    },
-
-    async getEducators(res) {
-        // Реализация метода получения списка преподавателей
     },
 
     async update({ params: { id }, body: {numberOfStudents, hours, comment } }, res) {

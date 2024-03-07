@@ -68,7 +68,5 @@ export default class SummaryWorkload extends Model {
                 paranoid: true,
             }
         );
-
-        // При обновлении нагрузки просчитывать часы
     }
 }

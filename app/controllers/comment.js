@@ -43,7 +43,3 @@ export default {
         res.json(commentDtos);
     },
 };
-
-//Todo Check
-
-//ToDo getAll
