@@ -161,7 +161,9 @@ export default {
                 workload =>
                     workload.department !== firstWorkload.department ||
                     workload.workload !== firstWorkload.workload ||
-                    workload.discipline !== firstWorkload.discipline
+                    workload.discipline !== firstWorkload.discipline ||
+                    workload.core !== firstWorkload.core ||
+                    workload.specialty !== firstWorkload.specialty
             )
         ) {
             return res.status(400).json({
@@ -210,7 +212,7 @@ export default {
         });
 
         // Удаляем записи которые учавствовали в совмещении
-        await Promise.allSettled(workloads.map(workload => workload.destroy()));
+        await Promise.allSettled(workloads.map(workload => workload.destroy({force: true})));
 
         res.status(200).json('Successfully merged');
     },
