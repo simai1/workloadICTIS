@@ -9,6 +9,7 @@ import corsMiddleware from './middlewares/cors.js';
 import dbUtils from './utils/db.js';
 import testUtils from './utils/test-data.js';
 
+import commentRoute from './routes/comment.js';
 import authRoute from './routes/auth.js';
 import parserRoute from './routes/parser.js';
 import eduRoute from './routes/educator.js';
@@ -45,6 +46,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(corsMiddleware);
 
+app.use('/comment', commentRoute);
 app.use('/notification', notificationRoute);
 app.use('/educator', eduRoute);
 app.use('/parser', parserRoute);
