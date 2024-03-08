@@ -121,11 +121,13 @@ function TableDisciplines() {
     } else {
       setPositionFigth({ x: event.clientX - 50, y: event.clientY - 100 });
     }
-    const td = filteredData
-      .map((item) => item[Object.keys(item)[index]])
-      .filter((value, i, arr) => arr.indexOf(value) === i);
 
     const keyTd = tableHeaders[index].key;
+
+    const td = filteredData
+      .map((item) => item[keyTd])
+      .filter((value, i, arr) => arr.indexOf(value) === i);
+
     const data = { td, keyTd };
     setSamplePointsData(data);
   };
@@ -134,19 +136,19 @@ function TableDisciplines() {
   const notice = [
     {
       id: 0,
-      id_row: 1,
+      id_row: 0,
       name: "Данильченко Владислав Иванович",
       text: "Пары неверно назначены преподавателю, должен быть другой",
     },
     {
       id: 1,
-      id_row: 1,
+      id_row: 0,
       name: "Иванов Иван Иванович",
       text: "Пары неверно назначены преподавателю, должен быть другой",
     },
     {
       id: 2,
-      id_row: 3,
+      id_row: 1,
       name: "Смирнов Иван Николаевич",
       text: "Пары неверно назначены преподавателю, должен быть другой",
     },
@@ -262,22 +264,27 @@ function TableDisciplines() {
   const handleMenuClick = () => {
     console.log("handleMenuClick");
   };
+
   const trRef = useRef(null);
   const [widthsTableHeader, SetWidthsTableHeader] = useState([]);
-
   useEffect(() => {
-    // Simulate an API call
-    setTimeout(() => {
-      SetWidthsTableHeader(SetHeaderWidths());
-    }, 450);
-  }, [trRef]);
+    // setTimeout(() => {
+    //   SetWidthsTableHeader(SetHeaderWidths());
+    // }, 450);
+    SetWidthsTableHeader(SetHeaderWidths());
+
+    console.log("widthsTableHeader ", widthsTableHeader);
+  }, [filteredData]);
 
   function SetHeaderWidths() {
     const widths = [];
-    for (let i = 0; i < 4; i++) {
-      widths.push(trRef.current.children[i].offsetWidth);
+    if (trRef && trRef.current) {
+      for (let i = 0; i < 4; i++) {
+        if (trRef.current.children[i]) {
+          widths.push(trRef.current.children[i].offsetWidth);
+        }
+      }
     }
-
     return widths;
   }
   const arrLeft = [
@@ -299,7 +306,8 @@ function TableDisciplines() {
       />
       <div className={styles.ButtonCaf_gen}>
         <Button
-          Bg={selectedComponent === "cathedrals" ? "#DDDDDD" : "#ffffff"}
+          Bg={selectedComponent === "cathedrals" ? "#3B28CC" : "#efedf3"}
+          textColot={selectedComponent === "cathedrals" ? "#efedf3" : "#000000"}
           text="Кафедральные"
           onClick={() => {
             handleComponentChange("cathedrals");
@@ -307,7 +315,8 @@ function TableDisciplines() {
           }}
         />
         <Button
-          Bg={selectedComponent === "genInstitute" ? "#DDDDDD" : "#ffffff"}
+          Bg={selectedComponent === "genInstitute" ? "#3B28CC" : "#efedf3"}
+          textColot={selectedComponent === "cathedrals" ? "#000000" : "#efedf3"}
           text="Общеинститутские"
           onClick={() => {
             handleComponentChange("genInstitute");
@@ -388,7 +397,7 @@ function TableDisciplines() {
         )}
         <table className={styles.taleDestiplinesMainTable}>
           <thead>
-            <tr ref={trRef}>
+            <tr ref={trRef} className={styles.tr_thead}>
               <th className={styles.checkboxHeader} style={{ left: "0" }}>
                 <input
                   type="checkbox"
@@ -429,7 +438,11 @@ function TableDisciplines() {
               );
               if (!checkValues) {
                 return (
-                  <tr key={index} onContextMenu={handleContextMenu}>
+                  <tr
+                    key={index}
+                    onContextMenu={handleContextMenu}
+                    className={styles.table_tr}
+                  >
                     <td className={styles.checkbox} style={{ left: "0" }}>
                       <input
                         type="checkbox"

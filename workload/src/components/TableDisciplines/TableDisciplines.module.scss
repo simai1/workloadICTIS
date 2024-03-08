@@ -56,8 +56,12 @@
     width: 100%;
     border-collapse: collapse;
     font-size: 14px;
+
     thead {
       height: 58px;
+    }
+    .tr_thead {
+      background-color: #ddd;
     }
     th,
     td {
@@ -102,18 +106,20 @@
     top: -8px;
     width: 5px;
     height: 100%;
+    background-color: #efedf3 !important;
     td {
       font-size: 0;
       box-sizing: border-box;
-      // border: 1px solid red;
       height: 54.4px;
+      background-color: #efedf3 !important;
     }
     tr {
       height: 20px;
+      background-color: #efedf3 !important;
     }
     th {
-      background-color: var(--white-color);
-      background-color: #fff;
+      background-color: #efedf3 !important;
+
       box-sizing: border-box;
       height: 42px;
     }
@@ -148,11 +154,14 @@
   }
 
   .taleDestiplinesMainTable {
+    // .table_tr {
+    //   position: relative;
+    // }
+
     .checkboxHeader {
       height: 106px;
     }
-    // .checkbox {
-    // }
+
     .checkbox,
     .checkboxHeader {
       text-align: center;

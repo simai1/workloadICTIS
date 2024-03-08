@@ -34,7 +34,10 @@ function HomePage() {
         <div className={styles.button}>
           <div className={styles.button__inner}>
             <Button
-              Bg={selectedComponent === "Disciplines" ? "#DDDDDD" : "#ffffff"}
+              Bg={selectedComponent === "Disciplines" ? "#3B28CC" : "#efedf3"}
+              textColot={
+                selectedComponent === "Disciplines" ? "#efedf3" : "#000000"
+              }
               onClick={() => {
                 handleComponentChange("Disciplines");
                 handleButtonClick();
@@ -42,7 +45,10 @@ function HomePage() {
               text="Дисциплины"
             />
             <Button
-              Bg={selectedComponent === "Teachers" ? "#DDDDDD" : "#ffffff"}
+              Bg={selectedComponent === "Teachers" ? "#3B28CC" : "#efedf3"}
+              textColot={
+                selectedComponent === "Disciplines" ? "#000000" : "#efedf3"
+              }
               onClick={() => {
                 handleComponentChange("Teachers");
                 handleButtonClick();

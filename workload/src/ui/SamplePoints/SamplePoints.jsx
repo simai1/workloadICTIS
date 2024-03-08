@@ -20,14 +20,22 @@ export function SamplePoints(props) {
   };
 
   const onChecked = (el, index) => {
+    let len = props.isChecked.length;
     if (props.isChecked.includes(el)) {
       // Если значение уже существует, удаляем его из массива
       props.setChecked((prevChecked) =>
         prevChecked.filter((item) => item !== el)
       );
+      len = len - 1;
     } else {
       // Если значение уникально, добавляем его в массив
       props.setChecked((prevChecked) => [...prevChecked, el]);
+      len = len + 1;
+    }
+
+    if (len === 0) {
+      setAllChecked(true);
+    } else {
       setAllChecked(false);
     }
   };
