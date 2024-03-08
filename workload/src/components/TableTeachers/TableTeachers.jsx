@@ -131,13 +131,17 @@ function TableTeachers({ onNameChange }) {
 
   return (
     <div>
-      <input
-        id="searchTableTeachers"
-        type="text"
-        placeholder="Поиск"
-        value={searchTerm}
-        onChange={handleSearch}
-      />
+      <div className={styles.tabledisciplinesMain_search}>
+        <input
+          id="searchTableTeachers"
+          type="text"
+          placeholder="Поиск"
+          value={searchTerm}
+          onChange={handleSearch}
+          className={styles.search}
+        />
+        <img src="./img/search.svg"></img>
+      </div>
 
       <div className={styles.EditInput}>
         <EditInput tableHeaders={tableHeaders} />

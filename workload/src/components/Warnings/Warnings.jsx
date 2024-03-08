@@ -53,11 +53,13 @@ function Warnings() {
 
   return (
     <div ref={refLO} className={styles.Warnings}>
-      <button onClick={handleSoket}>Сокет</button>
+      {/* <button onClick={handleSoket}>Сокет</button> */}
       {!isListOpen && (
         <div onClick={toggleList} className={styles.WarningsButton}>
           <p className={styles.circlesbuttonWarn}>
-            <span>{arrMessage.length}</span>
+            <span className={styles.Warnings_count_circle}>
+              {arrMessage.length}
+            </span>
           </p>
           <p>Предупреждения</p>
           <img src={arrow} alt="arrow"></img>

@@ -8,8 +8,8 @@
     padding: 5px 0;
   }
   .blockMenu {
-    width: 232px;
-    height: 260px;
+    // width: 232px;
+    // height: 260px;
     padding: 16px;
     border-radius: 8px;
     background-color: var(--white-color);
@@ -20,8 +20,8 @@
     }
   }
   .blockMenuRight {
-    width: 123px;
-    height: 124px;
+    // width: 123px;
+    // height: 124px;
     padding: 16px;
     border-radius: 8px;
     background-color: var(--white-color);
@@ -41,6 +41,9 @@
   }
   .imgOpen {
     transform: rotate(-90deg);
+  }
+  .activeStylePointer {
+    text-align: left;
   }
 
   .activeStylePointer,

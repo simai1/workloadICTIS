@@ -8,6 +8,7 @@ import { NotificationForm } from "../../ui/NotificationForm/NotificationForm";
 import { SamplePoints } from "../../ui/SamplePoints/SamplePoints";
 import DataContext from "../../context";
 import { Workload } from "../../api/services/ApiGetData";
+import { TableNotice } from "./TableNotice";
 
 function TableDisciplines() {
   const [updatedHeader, setUpdatedHeader] = useState([]); //заголовок обновленный для Redux сортировки
@@ -25,7 +26,7 @@ function TableDisciplines() {
   const [isChecked, setChecked] = useState([]);
   const [showMenu, setShowMenu] = useState(false); //меню
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 }); //меню
-  const [tableData, setTableData] = useState([]); // соберем из аднных апи общие данные
+  const [tableData, setTableData] = useState([]); // соберем из данных апи общие для таблицы
   const [filteredData, setFilteredData] = useState([]);
 
   //данные вытянутые из контекста
@@ -107,7 +108,7 @@ function TableDisciplines() {
   };
 
   // при нажатии на кружок уведомления
-  const handleClic = (el, index) => {
+  const handleClicNotice = (el, index) => {
     setIsHovered(!isHovered);
     setPosition({ x: el.clientX - 40, y: el.clientY - 200 });
     setIdrow(index);
@@ -265,15 +266,11 @@ function TableDisciplines() {
     console.log("handleMenuClick");
   };
 
+  //! расчет left для статических блоков таблицы
   const trRef = useRef(null);
   const [widthsTableHeader, SetWidthsTableHeader] = useState([]);
   useEffect(() => {
-    // setTimeout(() => {
-    //   SetWidthsTableHeader(SetHeaderWidths());
-    // }, 450);
     SetWidthsTableHeader(SetHeaderWidths());
-
-    console.log("widthsTableHeader ", widthsTableHeader);
   }, [filteredData]);
 
   function SetHeaderWidths() {
@@ -293,17 +290,22 @@ function TableDisciplines() {
     widthsTableHeader[0] + widthsTableHeader[1] + widthsTableHeader[2],
   ];
 
-  //содержимое
+  //! содержимое
   return (
     <div className={styles.tabledisciplinesMain}>
-      <input
-        type="text"
-        placeholder="Поиск"
-        id="search"
-        name="search"
-        value={searchTerm}
-        onChange={handleSearch}
-      />
+      <div className={styles.tabledisciplinesMain_search}>
+        <input
+          type="text"
+          placeholder="Поиск"
+          id="search"
+          name="search"
+          value={searchTerm}
+          onChange={handleSearch}
+          className={styles.search}
+        />
+        <img src="./img/search.svg"></img>
+      </div>
+
       <div className={styles.ButtonCaf_gen}>
         <Button
           Bg={selectedComponent === "cathedrals" ? "#3B28CC" : "#efedf3"}
@@ -328,44 +330,14 @@ function TableDisciplines() {
         <EditInput tableHeaders={tableHeaders} />
       </div>
       <div className={styles.TableDisciplines__inner}>
-        <table className={styles.TableDisciplines_circle}>
-          <thead>
-            <tr>
-              <td></td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th></th>
-            </tr>
-            {filteredData.map((row, index) => {
-              const checkValues = Object.values(row).some((value) =>
-                isChecked.includes(value)
-              );
-              if (!checkValues) {
-                return (
-                  <tr className={styles.notice} key={index}>
-                    <td
-                      className={
-                        notice.some((item) => item.id_row === index)
-                          ? styles.notice_circle
-                          : null
-                      }
-                    >
-                      <div
-                        className={styles.notice_circle_inner}
-                        onClick={(el) => handleClic(el, index)}
-                      >
-                        {notice.filter((item) => item.id_row === index).length}
-                      </div>
-                    </td>
-                  </tr>
-                );
-              }
-              return null;
-            })}
-          </tbody>
-        </table>
+        {/* уведомления от преподавателей  */}
+        <TableNotice
+          filteredData={filteredData}
+          isChecked={isChecked}
+          notice={notice}
+          handleClicNotice={handleClicNotice}
+        />
+
         {isHovered && (
           <NotificationForm
             refHoverd={refHoverd}
@@ -442,6 +414,12 @@ function TableDisciplines() {
                     key={index}
                     onContextMenu={handleContextMenu}
                     className={styles.table_tr}
+                    onClick={() => handleIndividualCheckboxChange(index)}
+                    style={
+                      individualCheckboxes.includes(filteredData[index].id)
+                        ? { backgroundColor: "rgb(234, 234, 250)" }
+                        : null
+                    }
                   >
                     <td className={styles.checkbox} style={{ left: "0" }}>
                       <input
