@@ -1,12 +1,11 @@
 //уведомления
 .TableDisciplines_circle {
-  position: absolute;
-  left: -65px;
-  top: -8px;
-  width: 5px !important;
-  height: 100%;
+  // border: 1px solid red;
+  width: 64px !important;
+  z-index: 200;
   background-color: #efedf3 !important;
   td {
+    // border: 1px solid red;
     font-size: 0;
     box-sizing: border-box;
     height: 54.4px;
@@ -15,12 +14,14 @@
   tr {
     height: 20px;
     background-color: #efedf3 !important;
+    position: relative;
+    margin: 0 !important;
   }
   th {
     background-color: #efedf3 !important;
-
-    box-sizing: border-box;
-    height: 0px;
+    // box-sizing: border-box;
+    height: 106px !important;
+    // margin: 0 !important;
   }
 }
 
@@ -43,7 +44,7 @@
   .notice_circle_inner::after {
     content: "";
     position: absolute;
-
+    // right: -3px;
     right: -3px;
     width: 4px;
     height: 54px;

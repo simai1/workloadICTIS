@@ -1,10 +1,15 @@
 @import "./../../style/colors.scss";
 
 .tabledisciplinesMain {
+  .table_container {
+    display: flex;
+  }
   // td {
   //   background-color: rgb(234, 234, 250) !important;
   // }
+
   .tabledisciplinesMain_search {
+    left: 64px;
     margin-bottom: 10px;
     position: absolute;
     top: -92px;
@@ -50,6 +55,7 @@
   }
   .ButtonCaf_gen {
     margin-bottom: 16px;
+    padding: 0 64px;
   }
   .EditInput {
     position: absolute;
@@ -57,6 +63,7 @@
     top: 0;
   }
   .TableDisciplines__inner {
+    display: flex;
     flex-direction: row;
     overflow-x: scroll;
     border-radius: 8px;

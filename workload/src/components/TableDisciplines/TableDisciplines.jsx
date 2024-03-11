@@ -329,15 +329,8 @@ function TableDisciplines() {
       <div className={styles.EditInput}>
         <EditInput tableHeaders={tableHeaders} />
       </div>
-      <div className={styles.TableDisciplines__inner}>
-        {/* уведомления от преподавателей  */}
-        <TableNotice
-          filteredData={filteredData}
-          isChecked={isChecked}
-          notice={notice}
-          handleClicNotice={handleClicNotice}
-        />
-
+      <div>
+        {/* <div className={styles.TableDisciplines__inner}> */}
         {isHovered && (
           <NotificationForm
             refHoverd={refHoverd}
@@ -367,101 +360,116 @@ function TableDisciplines() {
             getDataTable={getDataTable}
           />
         )}
-        <table className={styles.taleDestiplinesMainTable}>
-          <thead>
-            <tr ref={trRef} className={styles.tr_thead}>
-              <th className={styles.checkboxHeader} style={{ left: "0" }}>
-                <input
-                  type="checkbox"
-                  className={styles.custom__checkbox}
-                  id="dataRowGlobal"
-                  name="dataRowGlobal"
-                  checked={isCheckedGlobal}
-                  onChange={handleGlobalCheckboxChange}
-                />
-                <label htmlFor="dataRowGlobal"></label>
-              </th>
-              {updatedHeader.map((header, index) => (
-                <th
-                  key={header.key}
-                  onClick={(event) => clickFigth(event, index)}
-                  className={
-                    header.key === "discipline" ||
-                    header.key === "id" ||
-                    header.key === "workload"
-                      ? styles.stytic_th
-                      : null
-                  }
-                  style={{ left: arrLeft[index] || "0" }}
-                >
-                  <div className={styles.th_inner}>
-                    {header.label}
-                    <img src="./img/th_fight.svg" alt=">"></img>
-                  </div>
-                </th>
-              ))}
-            </tr>
-          </thead>
+        <div className={styles.table_container}>
+          {/* уведомления от преподавателей  */}
+          <TableNotice
+            filteredData={filteredData}
+            isChecked={isChecked}
+            notice={notice}
+            handleClicNotice={handleClicNotice}
+          />
+          <div className={styles.TableDisciplines__inner}>
+            <table className={styles.taleDestiplinesMainTable}>
+              <thead>
+                <tr ref={trRef} className={styles.tr_thead}>
+                  <th className={styles.checkboxHeader} style={{ left: "0" }}>
+                    <input
+                      type="checkbox"
+                      className={styles.custom__checkbox}
+                      id="dataRowGlobal"
+                      name="dataRowGlobal"
+                      checked={isCheckedGlobal}
+                      onChange={handleGlobalCheckboxChange}
+                    />
+                    <label htmlFor="dataRowGlobal"></label>
+                  </th>
+                  {updatedHeader.map((header, index) => (
+                    <th
+                      key={header.key}
+                      onClick={(event) => clickFigth(event, index)}
+                      className={
+                        header.key === "discipline" ||
+                        header.key === "id" ||
+                        header.key === "workload"
+                          ? styles.stytic_th
+                          : null
+                      }
+                      style={{ left: arrLeft[index] || "0" }}
+                    >
+                      <div className={styles.th_inner}>
+                        {header.label}
+                        <img src="./img/th_fight.svg" alt=">"></img>
+                      </div>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
 
-          <tbody>
-            {filteredData.map((row, index) => {
-              const checkValues = Object.values(row).some((value) =>
-                isChecked.includes(value)
-              );
-              if (!checkValues) {
-                return (
-                  <tr
-                    key={index}
-                    onContextMenu={handleContextMenu}
-                    className={styles.table_tr}
-                    onClick={() => handleIndividualCheckboxChange(index)}
-                    style={
-                      individualCheckboxes.includes(filteredData[index].id)
-                        ? { backgroundColor: "rgb(234, 234, 250)" }
-                        : null
-                    }
-                  >
-                    <td className={styles.checkbox} style={{ left: "0" }}>
-                      <input
-                        type="checkbox"
-                        className={styles.custom__checkbox}
-                        name="dataRow"
-                        id={`dataRow-${index}`}
-                        checked={
+              <tbody>
+                {filteredData.map((row, index) => {
+                  const checkValues = Object.values(row).some((value) =>
+                    isChecked.includes(value)
+                  );
+                  if (!checkValues) {
+                    return (
+                      <tr
+                        key={index}
+                        onContextMenu={handleContextMenu}
+                        className={styles.table_tr}
+                        onClick={() => handleIndividualCheckboxChange(index)}
+                        style={
                           individualCheckboxes.includes(filteredData[index].id)
-                            ? true
-                            : false
-                        }
-                        onChange={() => handleIndividualCheckboxChange(index)}
-                      />
-                      <label htmlFor={`dataRow-${index}`}></label>
-                    </td>
-                    {updatedHeader.map((key, ind) => (
-                      <td
-                        key={updatedHeader[ind].key}
-                        className={
-                          updatedHeader[ind].key === "discipline" ||
-                          updatedHeader[ind].key === "id" ||
-                          updatedHeader[ind].key === "workload"
-                            ? styles.stytic_td
+                            ? { backgroundColor: "rgb(234, 234, 250)" }
                             : null
                         }
-                        style={{ left: arrLeft[ind] || "0" }}
                       >
-                        {row[updatedHeader[ind].key] === null
-                          ? "0"
-                          : updatedHeader[ind].key === "id"
-                          ? index + 1
-                          : row[updatedHeader[ind].key]}
-                      </td>
-                    ))}
-                  </tr>
-                );
-              }
-              return null;
-            })}
-          </tbody>
-        </table>
+                        <td className={styles.checkbox} style={{ left: "0" }}>
+                          <input
+                            type="checkbox"
+                            className={styles.custom__checkbox}
+                            name="dataRow"
+                            id={`dataRow-${index}`}
+                            checked={
+                              individualCheckboxes.includes(
+                                filteredData[index].id
+                              )
+                                ? true
+                                : false
+                            }
+                            onChange={() =>
+                              handleIndividualCheckboxChange(index)
+                            }
+                          />
+                          <label htmlFor={`dataRow-${index}`}></label>
+                        </td>
+                        {updatedHeader.map((key, ind) => (
+                          <td
+                            key={updatedHeader[ind].key}
+                            className={
+                              updatedHeader[ind].key === "discipline" ||
+                              updatedHeader[ind].key === "id" ||
+                              updatedHeader[ind].key === "workload"
+                                ? styles.stytic_td
+                                : null
+                            }
+                            style={{ left: arrLeft[ind] || "0" }}
+                          >
+                            {row[updatedHeader[ind].key] === null
+                              ? "0"
+                              : updatedHeader[ind].key === "id"
+                              ? index + 1
+                              : row[updatedHeader[ind].key]}
+                          </td>
+                        ))}
+                      </tr>
+                    );
+                  }
+                  return null;
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
       <div className={styles.Block__tables__shadow}></div>
     </div>

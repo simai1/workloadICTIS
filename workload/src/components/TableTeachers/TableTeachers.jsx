@@ -130,7 +130,7 @@ function TableTeachers({ onNameChange }) {
   }, [updatedData, searchTerm]);
 
   return (
-    <div>
+    <div className={styles.TableTeachers}>
       <div className={styles.tabledisciplinesMain_search}>
         <input
           id="searchTableTeachers"

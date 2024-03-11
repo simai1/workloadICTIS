@@ -4,13 +4,13 @@ export function TableNotice(props) {
     <table className={styles.TableDisciplines_circle}>
       <thead>
         <tr>
-          <td></td>
+          <th></th>
         </tr>
       </thead>
       <tbody>
-        <tr>
+        {/* <tr>
           <th></th>
-        </tr>
+        </tr>    */}
         {props.filteredData.map((row, index) => {
           const checkValues = Object.values(row).some((value) =>
             props.isChecked.includes(value)
