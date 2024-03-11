@@ -21,7 +21,7 @@ export default {
             res.status(500).json({ error: 'Internal Server Error' });
         }
     },
-    async getAllDepartment(req, res){
+    async getAllDepartment(req, res) {
         res.json(departments);
     },
 
@@ -80,8 +80,10 @@ export default {
             }
 
             // Помечаем изначальную нагрузку как разделенную
-            originalWorkload.isSplit = true;
-            await originalWorkload.save();
+
+            // удали изначальную нагрузку
+            await originalWorkload.destroy({ force: true });
+            // await originalWorkload.save();
 
             res.json(newWorkloads);
         }
@@ -99,7 +101,7 @@ export default {
         // Реализация метода получения списка преподавателей
     },
 
-    async update({ params: { id }, body: {numberOfStudents, hours, comment } }, res) {
+    async update({ params: { id }, body: { numberOfStudents, hours, comment } }, res) {
         try {
             const workload = await Workload.findByPk(id, {
                 include: { model: Educator },
@@ -110,14 +112,14 @@ export default {
                 throw new Error('Нет такой нагрузки');
             }
 
-            if(!numberOfStudents) numberOfStudents = workload.numberOfStudents;
-            if(!hours) hours = workload.hours;
-            if(!comment) comment = workload.comment;
+            if (!numberOfStudents) numberOfStudents = workload.numberOfStudents;
+            if (!hours) hours = workload.hours;
+            if (!comment) comment = workload.comment;
             // Обновляем запись в таблице Workload
             await workload.update({
                 numberOfStudents,
                 hours,
-                comment
+                comment,
             });
 
             res.json({ status: 'OK' });
@@ -126,7 +128,6 @@ export default {
             res.status(500).json({ error: 'Internal Server Error' });
         }
     },
-
 
     async facultyEducator({ body: { educatorId, workloadId } }, res) {
         if (!educatorId) throw new AppErrorMissing('educatorId');
@@ -161,7 +162,9 @@ export default {
                 workload =>
                     workload.department !== firstWorkload.department ||
                     workload.workload !== firstWorkload.workload ||
-                    workload.discipline !== firstWorkload.discipline
+                    workload.discipline !== firstWorkload.discipline ||
+                    workload.core !== firstWorkload.core ||
+                    workload.specialty !== firstWorkload.specialty
             )
         ) {
             return res.status(400).json({
@@ -210,7 +213,7 @@ export default {
         });
 
         // Удаляем записи которые учавствовали в совмещении
-        await Promise.allSettled(workloads.map(workload => workload.destroy()));
+        await Promise.allSettled(workloads.map(workload => workload.destroy({ force: true })));
 
         res.status(200).json('Successfully merged');
     },
@@ -229,8 +232,4 @@ export default {
 
         res.status(200).json('Successfully deleted');
     },
-
-}
-
-
-
+};
