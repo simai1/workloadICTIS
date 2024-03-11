@@ -1,4 +1,4 @@
-import EducatorDto from "./educator-dto.js";
+import EducatorDto from './educator-dto.js';
 export default class CommentDto {
     id;
     text;
