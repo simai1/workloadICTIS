@@ -2,18 +2,16 @@ import SummaryWorkload from '../models/summary-workload.js';
 import Notification from '../models/notifications.js';
 import Educator from '../models/educator.js';
 import { EventEmitter } from 'events';
-import ioClient from 'socket.io-client';
 import { notificationMessages } from '../const/messages.js';
 
 const eventEmitter = new EventEmitter();
 const eventQueue = [];
-const socket = ioClient('ws://workload.sfedu.ru');
+let isProcessing = false;
 
 async function createNotification(message, educatorId) {
     try {
         const notification = await Notification.create({ message, educatorId });
         eventEmitter.emit('notificationCreated', { notification });
-        socket.emit('notificationCreated', { notification });
     } catch (error) {
         console.error('Error creating notification:', error);
     }
@@ -72,11 +70,18 @@ export default async function checkHours(summaryWorkload) {
         console.error('Ошибка в checkHours:', error);
     }
 }
+
 eventEmitter.on('notificationCreated', eventData => {
-    eventQueue.push(eventData);
-    const messageValue = eventQueue.length;
-    socket.emit('notificationCreated', eventData);
-    console.log('Message Value:', messageValue);
+    if (!isProcessing) {
+        isProcessing = true;
+        eventQueue.push(eventData);
+        const messageValue = eventQueue.length;
+        // Отправка уведомлений на клиент через WebSocket
+        // Вам нужно заменить 'notificationCreated' на ваше событие, если оно имеет другое имя
+        eventEmitter.emit('notificationCreated', eventData);
+        console.log('Message Value:', messageValue);
+        isProcessing = false;
+    }
 });
 
 export { eventEmitter };
