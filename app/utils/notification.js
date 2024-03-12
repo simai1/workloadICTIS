@@ -7,7 +7,7 @@ import { notificationMessages } from '../const/messages.js';
 
 const eventEmitter = new EventEmitter();
 const eventQueue = [];
-const socket = ioClient('https://workload.sfedu.ru');
+const socket = ioClient('ws://workload.sfedu.ru');
 
 async function createNotification(message, educatorId) {
     try {
@@ -72,8 +72,7 @@ export default async function checkHours(summaryWorkload) {
         console.error('Ошибка в checkHours:', error);
     }
 }
-
-eventEmitter.on('notificationCreated', (eventData) => {
+eventEmitter.on('notificationCreated', eventData => {
     eventQueue.push(eventData);
     const messageValue = eventQueue.length;
     socket.emit('notificationCreated', eventData);
