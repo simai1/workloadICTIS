@@ -203,8 +203,8 @@
       cursor: pointer;
     }
     .custom__checkbox:checked + label::before {
-      border-color: var(--black-gray);
-      background-color: var(--black-gray);
+      border-color: var(--blue-color);
+      background-color: var(--blue-color);
     }
   }
 }

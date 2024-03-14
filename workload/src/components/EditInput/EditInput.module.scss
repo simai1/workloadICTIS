@@ -122,6 +122,6 @@ input[type="checkbox"] + p:before {
 }
 
 input[type="checkbox"]:checked + p:before {
-  background-color: var(--border-color);
-  border-color: var(--border-color);
+  border-color: var(--blue-color);
+  background-color: var(--blue-color);
 }

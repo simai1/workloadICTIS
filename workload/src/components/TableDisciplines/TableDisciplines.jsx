@@ -90,7 +90,6 @@ function TableDisciplines() {
   };
 
   const handleIndividualCheckboxChange = (el, index) => {
-    console.log(el.target.tagName);
     if (el.target.tagName !== "DIV") {
       let ic = [...individualCheckboxes];
 
