@@ -90,7 +90,8 @@ function TableDisciplines() {
   };
 
   const handleIndividualCheckboxChange = (el, index) => {
-    if (el.target.tagName === "TD") {
+    console.log(el.target.tagName);
+    if (el.target.tagName !== "DIV") {
       let ic = [...individualCheckboxes];
 
       if (ic.includes(filteredData[index].id)) {
