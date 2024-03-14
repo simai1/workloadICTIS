@@ -14,6 +14,10 @@
 //     console.log("event:", event);
 //   };
 
+//   socket.on("notificationCreated", (notification) => {
+//     console.log("Test", notification);
+//   });
+
 //   socket.onmessage("notificationCreated", (data) => {
 //     console.log("notificationCreated ", data);
 //   });
