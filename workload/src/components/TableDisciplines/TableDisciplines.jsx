@@ -90,20 +90,22 @@ function TableDisciplines() {
       : setIndividualCheckboxes([]);
   };
 
-  const handleIndividualCheckboxChange = (index) => {
-    let ic = [...individualCheckboxes];
+  const handleIndividualCheckboxChange = (el, index) => {
+    if (el.target.tagName === "TD") {
+      let ic = [...individualCheckboxes];
 
-    if (ic.includes(filteredData[index].id)) {
-      ic = ic.filter((el) => el !== filteredData[index].id);
-    } else {
-      ic = [...ic, filteredData[index].id];
-    }
-    setIndividualCheckboxes(ic);
+      if (ic.includes(filteredData[index].id)) {
+        ic = ic.filter((el) => el !== filteredData[index].id);
+      } else {
+        ic = [...ic, filteredData[index].id];
+      }
+      setIndividualCheckboxes(ic);
 
-    if (ic.length === filteredData.length) {
-      setIsCheckedGlobal(true);
-    } else {
-      setIsCheckedGlobal(false);
+      if (ic.length === filteredData.length) {
+        setIsCheckedGlobal(true);
+      } else {
+        setIsCheckedGlobal(false);
+      }
     }
   };
 
@@ -143,7 +145,7 @@ function TableDisciplines() {
     },
     {
       id: 1,
-      id_row: 0,
+      id_row: 1,
       name: "Иванов Иван Иванович",
       text: "Пары неверно назначены преподавателю, должен быть другой",
     },
@@ -362,12 +364,12 @@ function TableDisciplines() {
         )}
         <div className={styles.table_container}>
           {/* уведомления от преподавателей  */}
-          <TableNotice
+          {/* <TableNotice
             filteredData={filteredData}
             isChecked={isChecked}
             notice={notice}
             handleClicNotice={handleClicNotice}
-          />
+          /> */}
           <div className={styles.TableDisciplines__inner}>
             <table className={styles.taleDestiplinesMainTable}>
               <thead>
@@ -416,7 +418,9 @@ function TableDisciplines() {
                         key={index}
                         onContextMenu={handleContextMenu}
                         className={styles.table_tr}
-                        onClick={() => handleIndividualCheckboxChange(index)}
+                        onClick={(el) =>
+                          handleIndividualCheckboxChange(el, index)
+                        }
                         style={
                           individualCheckboxes.includes(filteredData[index].id)
                             ? { backgroundColor: "rgb(234, 234, 250)" }
@@ -424,6 +428,19 @@ function TableDisciplines() {
                         }
                       >
                         <td className={styles.checkbox} style={{ left: "0" }}>
+                          {notice.some((item) => item.id_row === index) && (
+                            <div
+                              key={index}
+                              className={styles.notice}
+                              onClick={(el) => handleClicNotice(el, index)}
+                            >
+                              {
+                                notice.filter((item) => item.id_row === index)
+                                  .length
+                              }
+                            </div>
+                          )}
+
                           <input
                             type="checkbox"
                             className={styles.custom__checkbox}
@@ -436,8 +453,8 @@ function TableDisciplines() {
                                 ? true
                                 : false
                             }
-                            onChange={() =>
-                              handleIndividualCheckboxChange(index)
+                            onChange={(el) =>
+                              handleIndividualCheckboxChange(el, index)
                             }
                           />
                           <label htmlFor={`dataRow-${index}`}></label>
