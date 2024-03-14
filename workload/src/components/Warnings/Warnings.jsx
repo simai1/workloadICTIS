@@ -2,29 +2,25 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from "./Warnings.module.scss";
 import arrow from "./../../img/arrow.svg";
 import WarningMessage from "../../ui/WarningMessage/WarningMessage";
-import socket from "../../api/services/socket";
+import socketConnect from "../../api/services/socket";
 function Warnings() {
   const handleSoket = () => {
-    socket.on("connect", console.log("Socket connected"));
-    console.log(socket);
-    socket.on("notificationCreated", (data) => {
-      console.log("Notification created:", data);
-    });
+    socketConnect();
   };
 
-  useEffect(() => {
-    socket.on("connect", () => {
-      console.log("Socket connected");
-    });
-    socket.on("notificationCreated", (data) => {
-      console.log("Notification created:", data);
-    });
-    return () => {
-      // Очистка обработчиков событий при размонтировании компонента
-      socket.off("connect");
-      socket.off("notificationCreated");
-    };
-  }, []);
+  // useEffect(() => {
+  //   socket.on("connect", () => {
+  //     console.log("Socket connected");
+  //   });
+  //   socket.on("notificationCreated", (data) => {
+  //     console.log("Notification created:", data);
+  //   });
+  //   return () => {
+  //     // Очистка обработчиков событий при размонтировании компонента
+  //     socket.off("connect");
+  //     socket.off("notificationCreated");
+  //   };
+  // }, []);
   const [isListOpen, setListOpen] = useState(false);
   const toggleList = () => {
     setListOpen(!isListOpen);
@@ -53,7 +49,7 @@ function Warnings() {
 
   return (
     <div ref={refLO} className={styles.Warnings}>
-      {/* <button onClick={handleSoket}>Сокет</button> */}
+      <button onClick={handleSoket}>Сокет</button>
       {!isListOpen && (
         <div onClick={toggleList} className={styles.WarningsButton}>
           <p className={styles.circlesbuttonWarn}>

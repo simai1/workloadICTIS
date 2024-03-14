@@ -20,7 +20,7 @@ export function NotificationForm(props) {
         className={styles.hovered_notice}
         style={{
           top: !isComment ? props.position.y : props.position.y - 180,
-          left: props.position.x,
+          left: props.position.x + 70,
         }}
       >
         <div className={styles.comment_top}>

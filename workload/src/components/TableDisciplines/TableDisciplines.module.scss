@@ -1,10 +1,15 @@
 @import "./../../style/colors.scss";
 
 .tabledisciplinesMain {
+  .table_container {
+    display: flex;
+  }
   // td {
   //   background-color: rgb(234, 234, 250) !important;
   // }
+
   .tabledisciplinesMain_search {
+    left: 64px;
     margin-bottom: 10px;
     position: absolute;
     top: -92px;
@@ -50,6 +55,7 @@
   }
   .ButtonCaf_gen {
     margin-bottom: 16px;
+    padding: 0 64px;
   }
   .EditInput {
     position: absolute;
@@ -57,12 +63,14 @@
     top: 0;
   }
   .TableDisciplines__inner {
+    padding-left: 64px;
+    display: flex;
     flex-direction: row;
     overflow-x: scroll;
     border-radius: 8px;
-    border-left: 1px solid var(--gray-color);
-    border-right: 1px solid var(--gray-color);
-    border-top: 1px solid var(--gray-color);
+    // border-left: 1px solid var(--gray-color);
+    // border-right: 1px solid var(--gray-color);
+    // border-top: 1px solid var(--gray-color);
 
     .TableDisciplines {
       width: 100%;
@@ -99,6 +107,7 @@
     .tr_thead {
       background-color: #ddd;
     }
+
     th,
     td {
       text-align: center;
@@ -139,6 +148,7 @@
     // .table_tr {
     //   position: relative;
     // }
+    overflow-y: scroll;
 
     .checkboxHeader {
       height: 106px;
@@ -150,6 +160,26 @@
       margin: 0;
       padding: 0;
     }
+    .notice {
+      position: absolute;
+      left: -40px;
+      width: 30px;
+      height: 30px;
+      background-color: red;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      transform: translateY(-4px);
+      cursor: pointer;
+    }
+    // .checkbox::before {
+    //   content: "1";
+    //   position: absolute;
+    //   left: -30px;
+    //   background-color: #efedf3;
+    // }
     .custom__checkbox {
       position: absolute;
       opacity: 0;
@@ -205,6 +235,15 @@ table td {
   z-index: 2;
 }
 
+.taleDestiplinesMainTable::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 64px;
+  height: 100%;
+  background-color: #efedf3;
+}
 .taleDestiplinesMainTable {
   .stytic_th,
   .checkboxHeader {
