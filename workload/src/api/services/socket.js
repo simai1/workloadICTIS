@@ -33,33 +33,42 @@
 
 // export default socketConnect;
 
-import { io } from "socket.io-client";
+// import { io } from "socket.io-client";
+
+// function socketConnect() {
+//   const socketUrl = "https://workload.sfedu.ru";
+//   const socket = io(socketUrl);
+//   socket.connect();
+
+//   socket.on("connect", () => {
+//     console.log("Socket connected");
+//   });
+//   socket.on("notificationCreated", (data) => {
+//     console.log("notificationCreated", data);
+//   });
+
+//   socket.on("event", (data) => {
+//     console.log("Received event:", data);
+//     // обрабатывайте полученные данные
+//   });
+//   console.log(socket);
+
+//   socket.on("connect_error", (error) => {
+//     console.error("Socket connection error:", error);
+//   });
+
+//   socket.on("disconnect", () => {
+//     console.log("Socket disconnected");
+//   });
+// }
+
+// export default socketConnect;
+
+import socketIO from "socket.io-client";
 
 function socketConnect() {
   const socketUrl = "https://workload.sfedu.ru";
-  const socket = io(socketUrl);
-  socket.connect();
-
-  socket.on("connect", () => {
-    console.log("Socket connected");
-  });
-  socket.on("notificationCreated", (data) => {
-    console.log("notificationCreated", data);
-  });
-
-  socket.on("event", (data) => {
-    console.log("Received event:", data);
-    // обрабатывайте полученные данные
-  });
-  console.log(socket);
-
-  socket.on("connect_error", (error) => {
-    console.error("Socket connection error:", error);
-  });
-
-  socket.on("disconnect", () => {
-    console.log("Socket disconnected");
-  });
+  const socket = socketIO.connect(socketUrl);
 }
 
 export default socketConnect;

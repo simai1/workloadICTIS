@@ -9,7 +9,7 @@ import {
 } from "../../api/services/ApiGetData";
 import DataContext from "../../context";
 
-function TableTeachers({ onNameChange }) {
+function TableTeachers({ onNameChange, setEducatorData }) {
   const [updatedHeader, setUpdatedHeader] = useState([]);
   const [updatedData, setUpdatedData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -21,6 +21,7 @@ function TableTeachers({ onNameChange }) {
   // заносим данные о преподавателях в состояние
   React.useEffect(() => {
     Educator().then((data) => {
+      console.log("teatcher ", data);
       appData.setEducator(data); //данные с апи о преподавателях
       setFilteredData(data);
       setUpdatedData(data);
@@ -72,9 +73,10 @@ function TableTeachers({ onNameChange }) {
 
   const handleNameClick = (name, index) => {
     setClickedName(name);
-    let postClickTicher = appData.educator[index].post;
-    let betClickTicher = appData.educator[index].bet;
+    let postClickTicher = appData.educator[index].department;
+    let betClickTicher = appData.educator[index].rate;
     onNameChange(name, postClickTicher, betClickTicher);
+    setEducatorData(appData.educator[index]);
   };
 
   const dispatch = useDispatch();

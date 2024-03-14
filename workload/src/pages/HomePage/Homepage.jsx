@@ -11,6 +11,7 @@ import DataContext from "../../context";
 
 function HomePage() {
   const [selectedComponent, setSelectedComponent] = useState("Disciplines");
+  const [educatorData, setEducatorData] = useState([]); // данные о преподавателе получаем в TableTeachers
   const handleComponentChange = (component) => {
     setSelectedComponent(component);
   };
@@ -65,9 +66,13 @@ function HomePage() {
           (name === "" || name !== "") ? (
             <TableDisciplines />
           ) : selectedComponent === "Teachers" && name === "" ? (
-            <TableTeachers onNameChange={handleNameChange} />
+            <TableTeachers
+              setEducatorData={setEducatorData}
+              onNameChange={handleNameChange}
+            />
           ) : selectedComponent === "Teachers" && name !== "" ? (
             <TableLks
+              educatorData={educatorData}
               delNameChange={handleNameChange}
               NameTeachers={{ name, post, bet }}
             />
