@@ -1,9 +1,9 @@
-
 body {
   margin: 0;
   font-size: 15px;
   line-height: 1.6;
   color: #333;
+  background-color: #efedf3;
 }
 
 *,
@@ -12,7 +12,12 @@ body {
   box-sizing: border-box;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin: 0;
 }
 
@@ -25,6 +30,7 @@ hr {
   background-color: #e5e5e5;
 }
 
-table th, table td{
+table th,
+table td {
   margin: 0;
 }

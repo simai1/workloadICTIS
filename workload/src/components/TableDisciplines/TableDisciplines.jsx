@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import styles from "./TableDisciplines.module.scss";
 import Button from "../../ui/Button/Button";
@@ -7,6 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import ContextMenu from "../../ui/ContextMenu/ContextMenu";
 import { NotificationForm } from "../../ui/NotificationForm/NotificationForm";
 import { SamplePoints } from "../../ui/SamplePoints/SamplePoints";
+import DataContext from "../../context";
+import { Workload } from "../../api/services/ApiGetData";
 
 function TableDisciplines() {
   const [updatedHeader, setUpdatedHeader] = useState([]); //заголовок обновленный для Redux сортировки
@@ -24,6 +25,42 @@ function TableDisciplines() {
   const [isChecked, setChecked] = useState([]);
   const [showMenu, setShowMenu] = useState(false); //меню
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 }); //меню
+  const [tableData, setTableData] = useState([]); // соберем из данных апи общие для таблицы
+  const [filteredData, setFilteredData] = useState([]);
+
+  //данные вытянутые из контекста
+  const { appData } = React.useContext(DataContext);
+
+  function getDataTable() {
+    Workload().then((data) => {
+      console.log(data);
+      const updatedWorkload = data.map((item) => {
+        const { isSplit, ...rest } = item; // убираем isSplit из массива
+        return {
+          ...rest,
+          educator: item.educator && item.educator.name,
+        };
+      });
+      appData.setWorkload(updatedWorkload); //данные с апи нагрузки
+      setUpdatedData(updatedWorkload);
+      setFilteredData(updatedWorkload);
+    });
+    setTableData(appData.workload);
+  }
+
+  // заносим данные о преподавателях в состояние
+  useEffect(() => {
+    getDataTable();
+  }, []);
+
+  //! сортировака (по hedars) пришедших данных из апи
+  useEffect(() => {
+    const sortedArray = appData.workload.sort((a, b) => {
+      const firstArrayKeys = tableHeaders.map((header) => header.key);
+      return firstArrayKeys.indexOf(a.key) - firstArrayKeys.indexOf(b.key);
+    });
+    setTableData(sortedArray);
+  }, [appData.workload]);
 
   // закрытие модального окна при нажатии вне него
   const refSP = useRef(null);
@@ -47,22 +84,33 @@ function TableDisciplines() {
   //чекбоксы
   const handleGlobalCheckboxChange = () => {
     setIsCheckedGlobal(!isCheckedGlobal);
-    setIndividualCheckboxes(filteredData.map(() => !isCheckedGlobal));
+    !isCheckedGlobal
+      ? setIndividualCheckboxes(filteredData.map((el) => el.id))
+      : setIndividualCheckboxes([]);
   };
 
-  const handleIndividualCheckboxChange = (index) => {
-    const updatedCheckboxes = [...individualCheckboxes];
-    updatedCheckboxes[index] = !updatedCheckboxes[index];
-    setIndividualCheckboxes(updatedCheckboxes);
-    if (!isCheckedGlobal) {
-      setIsCheckedGlobal(!isCheckedGlobal);
+  const handleIndividualCheckboxChange = (el, index) => {
+    if (el.target.tagName !== "DIV") {
+      let ic = [...individualCheckboxes];
+
+      if (ic.includes(filteredData[index].id)) {
+        ic = ic.filter((el) => el !== filteredData[index].id);
+      } else {
+        ic = [...ic, filteredData[index].id];
+      }
+      setIndividualCheckboxes(ic);
+
+      if (ic.length === filteredData.length) {
+        setIsCheckedGlobal(true);
+      } else {
+        setIsCheckedGlobal(false);
+      }
     }
   };
 
   // при нажатии на кружок уведомления
-  const handleClic = (el, index) => {
+  const handleClicNotice = (el, index) => {
     setIsHovered(!isHovered);
-    // setSamplePointsShow(false);
     setPosition({ x: el.clientX - 40, y: el.clientY - 200 });
     setIdrow(index);
   };
@@ -70,23 +118,27 @@ function TableDisciplines() {
   // клик на th, открытие МО фильтры к колонке
   const clickFigth = (event, index) => {
     setSamplePointsShow(!isSamplePointsShow);
-    // setIsHovered(false);
     if (event.clientX + 372 > window.innerWidth) {
       setPositionFigth({ x: window.innerWidth - 500, y: event.clientY - 100 });
     } else {
       setPositionFigth({ x: event.clientX - 50, y: event.clientY - 100 });
     }
+
+    const keyTd = tableHeaders[index].key;
+
     const td = filteredData
-      .map((item) => item[Object.keys(item)[index]])
+      .map((item) => item[keyTd])
       .filter((value, i, arr) => arr.indexOf(value) === i);
-    setSamplePointsData(td);
+
+    const data = { td, keyTd };
+    setSamplePointsData(data);
   };
 
   //данные сраницы "Поттом все будет подшгружаться из API"
   const notice = [
     {
       id: 0,
-      id_row: 1,
+      id_row: 0,
       name: "Данильченко Владислав Иванович",
       text: "Пары неверно назначены преподавателю, должен быть другой",
     },
@@ -98,142 +150,46 @@ function TableDisciplines() {
     },
     {
       id: 2,
-      id_row: 3,
+      id_row: 1,
       name: "Смирнов Иван Николаевич",
       text: "Пары неверно назначены преподавателю, должен быть другой",
     },
   ];
 
-  const tableData = [
-    {
-      id: 1,
-      discipline: "Дисциплина 1",
-      workload: "Нагрузка 1",
-      group: "Группа 1",
-      block: "Блок 1",
-      semester: "Семестр 1",
-      period: "Период 1",
-      studyPlan: "Учебный план 1",
-      studyPlanUnit: "2одразделение учебного плана 1",
-      studyPlanUnitId: "Идентификатор 1С-ЗКГУ",
-      educationForm: "Форма обучения 1",
-      educationLevel: "Уровень подготовки 1",
-      trainingDirection: "Направление подготовки (специальность) 1",
-      profile: "Профиль 1",
-      educationalProgram: "Образовательная программа 1",
-      studentCount: "Количество студентов 1",
-      hours: "Часы 1",
-      classroomHours: "Аудиторные часы 1",
-      ratingControlHours: "Часы рейтинг-контроль 1",
-      zetCount: "Количество в ЗЕТ 1",
-      teacher: "Преподаватель 1",
-    },
-    {
-      id: 2,
-      discipline: "Дисциплина 1",
-      workload: "Нагрузка 2",
-      group: "Группа 2",
-      block: "Блок 2",
-      semester: "Семестр 2",
-      period: "Период 2",
-      studyPlan: "Учебный план 2",
-      studyPlanUnit: "Подразделение учебного плана 2",
-      studyPlanUnitId: "Идентификатор 1С-ЗКГУ ",
-      educationForm: "Форма обучения 2",
-      educationLevel: "Уровень подготовки 2",
-      trainingDirection: "Направление подготовки (специальность) 2",
-      profile: "Профиль 2",
-      educationalProgram: "Образовательная программа 2",
-      studentCount: "Количество студентов 2",
-      hours: "Часы 2",
-      classroomHours: "Аудиторные часы 2",
-      ratingControlHours: "Часы рейтинг-контроль 2",
-      zetCount: "Количество в ЗЕТ 2",
-      teacher: "Преподаватель 2",
-    },
-    {
-      id: 3,
-      discipline: "Дисциплина 3",
-      workload: "Нагрузка 3",
-      group: "Группа 1",
-      block: "Блок 3",
-      semester: "Семестр 3",
-      period: "Период 3",
-      studyPlan: "Учебный план 3",
-      studyPlanUnit: "Подразделение учебного плана 3",
-      studyPlanUnitId: "Идентификатор 1С-ЗКГУ ",
-      educationForm: "Форма обучения 3",
-      educationLevel: "Уровень подготовки 3",
-      trainingDirection: "Направление подготовки (специальность) 3",
-      profile: "Профиль 3",
-      educationalProgram: "Образовательная программа 3",
-      studentCount: "Количество студентов 3",
-      hours: "Часы 3",
-      classroomHours: "Аудиторные часы 3",
-      ratingControlHours: "Часы рейтинг-контроль 3",
-      zetCount: "Количество в ЗЕТ 3",
-      teacher: "Преподаватель 3",
-    },
-    {
-      id: 4,
-      discipline: "Дисциплина 4",
-      workload: "Нагрузка 4",
-      group: "Группа 2",
-      block: "Блок 4",
-      semester: "Семестр 4",
-      period: "Период 4",
-      studyPlan: "Учебный план 4",
-      studyPlanUnit: "Подразделение учебного плана 4",
-      studyPlanUnitId: "Идентификатор 1С-ЗКГУ ",
-      educationForm: "Форма обучения 4",
-      educationLevel: "Уровень подготовки 4",
-      trainingDirection: "Направление подготовки (специальность) 4",
-      profile: "Профиль 4",
-      educationalProgram: "Образовательная программа 4",
-      studentCount: "Количество студентов 4",
-      hours: "Часы 4",
-      classroomHours: "Аудиторные часы 4",
-      ratingControlHours: "Часы рейтинг-контроль 4",
-      zetCount: "Количество в ЗЕТ 4",
-      teacher: "Преподаватель 4",
-    },
-  ];
+  //выбор компонента
 
   const tableHeaders = useMemo(() => {
     return [
       { key: "id", label: "№" },
       { key: "discipline", label: "Дисциплина" },
       { key: "workload", label: "Нагрузка" },
-      { key: "group", label: "Группа" },
+      { key: "groups", label: "Группа" },
+      { key: "department", label: "Кафедра" },
       { key: "block", label: "Блок" },
       { key: "semester", label: "Семестр" },
       { key: "period", label: "Период" },
-      { key: "studyPlan", label: "Учебный план" },
-      { key: "studyPlanUnit", label: "Подразделение учебного плана" },
-      { key: "studyPlanUnitId", label: "Идентификатор 1С-ЗКГУ" },
-      { key: "educationForm", label: "Форма обучения" },
-      { key: "educationLevel", label: "Уровень подготовки" },
+      { key: "curriculum", label: "Учебный план" },
+      { key: "curriculumUnit", label: "Подразделение учебного плана" },
+      { key: "formOfEducation", label: "Форма обучения" },
+      { key: "levelOfTraining", label: "Уровень подготовки" },
       {
-        key: "trainingDirection",
+        key: "specialty",
         label: "Направление подготовки (специальность)",
       },
-      { key: "profile", label: "Профиль" },
-      { key: "educationalProgram", label: "Образовательная программа" },
-      { key: "studentCount", label: "Количество студентов" },
+      { key: "core", label: "Профиль" },
+      { key: "numberOfStudents", label: "Количество студентов" },
       { key: "hours", label: "Часы" },
-      { key: "classroomHours", label: "Аудиторные часы" },
+      { key: "audienceHours", label: "Аудиторные часы" },
       { key: "ratingControlHours", label: "Часы рейтинг-контроль" },
-      { key: "zetCount", label: "Количество в ЗЕТ" },
-      { key: "teacher", label: "Преподаватель" },
+      { key: "educator", label: "Преподаватель" },
     ];
   }, []);
 
-  //выбор компонента
   const handleComponentChange = (component) => {
     setSelectedComponent(component);
   };
 
-  //работа с таплицами через REDUX
+  //! работа с таблицами через REDUX
   const dispatch = useDispatch();
   const filters = useSelector((state) => state.filters);
   useEffect(() => {
@@ -253,71 +209,108 @@ function TableDisciplines() {
       });
       return updatedRow;
     });
-    const tableCells = document.querySelectorAll("th:nth-child(-n+3)");
-    const widths = Array.from(tableCells).map(
-      (cell) => cell.getBoundingClientRect().width
-    );
-    setLeft((Left) => [widths[0], widths[1], widths[2]]);
+
     setUpdatedHeader(updatedHeader);
     setUpdatedData(updatedData);
   }
 
-  //поиск и фильтрация таблицы
+  //! поиск и фильтрация таблицы
   const handleSearch = (event) => {
-    setSearchTerm(event.target.value);
+    const searchTerm = event.target.value;
+    setSearchTerm(searchTerm);
+    let fd;
+    if (searchTerm === "") {
+      fd = updatedData;
+    } else {
+      fd = updatedData.filter((row) => {
+        return Object.values(row).some(
+          (value) =>
+            value !== null &&
+            value !== undefined &&
+            value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      });
+    }
+    setFilteredData(fd);
   };
-
-  const filteredData = updatedData.filter((row) => {
-    return Object.values(row).some((value) =>
-      value.toString().toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  });
+  useEffect(() => {
+    let fd;
+    if (searchTerm === "") {
+      fd = updatedData;
+    } else {
+      fd = updatedData.filter((row) => {
+        return Object.values(row).some(
+          (value) =>
+            value !== null &&
+            value !== undefined &&
+            value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      });
+    }
+    setFilteredData(fd);
+  }, [updatedData, searchTerm]);
 
   const EditTableData = (selectedComponent) => {
     console.log(selectedComponent);
     //тут написать функцию которая будет подгружать нужное содержимое tableData и tableHeaders
   };
 
-  //меню при нажатии пкм
-
+  //! меню при нажатии пкм
   const handleContextMenu = (e) => {
     e.preventDefault();
     setShowMenu(!showMenu);
     setMenuPosition({ x: e.clientX, y: e.clientY });
   };
 
+  //! добавление преподавателя на нагрузку
   const handleMenuClick = () => {
-    setShowMenu(false);
+    console.log("handleMenuClick");
   };
 
-
-  // исправить
-  const [Left, setLeft] = useState([]);
+  //! расчет left для статических блоков таблицы
+  const trRef = useRef(null);
+  const [widthsTableHeader, SetWidthsTableHeader] = useState([]);
   useEffect(() => {
-    const tableCells = document.querySelectorAll("th:nth-child(-n+3)");
-    const widths = Array.from(tableCells).map(
-      (cell) => cell.getBoundingClientRect().width
-    );
-    setLeft((Left) => [widths[0], widths[1], widths[2]]);
-    // console.log(Left);
-  }, []);
+    SetWidthsTableHeader(SetHeaderWidths());
+  }, [filteredData]);
 
-  const arrLeft = [56, 126, 272];
- 
-  //содержимое
+  function SetHeaderWidths() {
+    const widths = [];
+    if (trRef && trRef.current) {
+      for (let i = 0; i < 4; i++) {
+        if (trRef.current.children[i]) {
+          widths.push(trRef.current.children[i].offsetWidth);
+        }
+      }
+    }
+    return widths;
+  }
+  const arrLeft = [
+    widthsTableHeader[0],
+    widthsTableHeader[0] + widthsTableHeader[1],
+    widthsTableHeader[0] + widthsTableHeader[1] + widthsTableHeader[2],
+  ];
+
+  //! содержимое
   return (
     <div className={styles.tabledisciplinesMain}>
-      <input
-        type="text"
-        placeholder="Поиск"
-        id="search"
-        name="search"
-        value={searchTerm}
-        onChange={handleSearch}
-      />
+      <div className={styles.tabledisciplinesMain_search}>
+        <input
+          type="text"
+          placeholder="Поиск"
+          id="search"
+          name="search"
+          value={searchTerm}
+          onChange={handleSearch}
+          className={styles.search}
+        />
+        <img src="./img/search.svg"></img>
+      </div>
+
       <div className={styles.ButtonCaf_gen}>
         <Button
-          Bg={selectedComponent === "cathedrals" ? "#DDDDDD" : "#ffffff"}
+          Bg={selectedComponent === "cathedrals" ? "#3B28CC" : "#efedf3"}
+          textColot={selectedComponent === "cathedrals" ? "#efedf3" : "#000000"}
           text="Кафедральные"
           onClick={() => {
             handleComponentChange("cathedrals");
@@ -325,7 +318,8 @@ function TableDisciplines() {
           }}
         />
         <Button
-          Bg={selectedComponent === "genInstitute" ? "#DDDDDD" : "#ffffff"}
+          Bg={selectedComponent === "genInstitute" ? "#3B28CC" : "#efedf3"}
+          textColot={selectedComponent === "cathedrals" ? "#000000" : "#efedf3"}
           text="Общеинститутские"
           onClick={() => {
             handleComponentChange("genInstitute");
@@ -336,45 +330,8 @@ function TableDisciplines() {
       <div className={styles.EditInput}>
         <EditInput tableHeaders={tableHeaders} />
       </div>
-      <div className={styles.TableDisciplines__inner}>
-        <table className={styles.TableDisciplines_circle}>
-          <thead>
-            <tr>
-              <td></td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th></th>
-            </tr>
-            {filteredData.map((row, index) => {
-              const checkValues = Object.values(row).some((value) =>
-                isChecked.includes(value)
-              );
-              if (!checkValues) {
-                return (
-                  <tr className={styles.notice} key={index}>
-                    <td
-                      className={
-                        notice.some((item) => item.id_row === index)
-                          ? styles.notice_circle
-                          : null
-                      }
-                    >
-                      <div
-                        className={styles.notice_circle_inner}
-                        onClick={(el) => handleClic(el, index)}
-                      >
-                        {notice.filter((item) => item.id_row === index).length}
-                      </div>
-                    </td>
-                  </tr>
-                );
-              }
-              return null;
-            })}
-          </tbody>
-        </table>
+      <div>
+        {/* <div className={styles.TableDisciplines__inner}> */}
         {isHovered && (
           <NotificationForm
             refHoverd={refHoverd}
@@ -394,89 +351,141 @@ function TableDisciplines() {
             setChecked={setChecked}
           />
         )}
-        <table className={styles.taleDestiplinesMainTable} ref={tableRef}>
-          <thead>
-            <tr>
-              <th className={styles.checkboxHeader} style={{ left: "0" }}>
-                <input
-                  type="checkbox"
-                  className={styles.custom__checkbox}
-                  id="dataRowGlobal"
-                  name="dataRowGlobal"
-                  checked={isCheckedGlobal}
-                  onChange={handleGlobalCheckboxChange}
-                />
-                <label htmlFor="dataRowGlobal"></label>
-              </th>
-              {updatedHeader.map((header, index) => (
-                <th
-                  key={header.key}
-                  onClick={(event) => clickFigth(event, index)}
-                  className={
-                    header.key === "discipline" ||
-                    header.key === "id" ||
-                    header.key === "workload"
-                      ? styles.stytic_th
-                      : null
-                  }
-                  style={{ left: arrLeft[index] }}
-                >
-                  <div className={styles.th_inner}>
-                    {header.label}
-                    <img src="./img/th_fight.svg" alt=">"></img>
-                  </div>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {showMenu && (
-              <ContextMenu
-                showMenu={showMenu}
-                menuPosition={menuPosition}
-                handleMenuClick={handleMenuClick}
-              />
-            )}
-            {filteredData.map((row, index) => {
-              const checkValues = Object.values(row).some((value) =>
-                isChecked.includes(value)
-              );
-              if (!checkValues) {
-                return (
-                  <tr key={index} onContextMenu={handleContextMenu}>
-                    <td className={styles.checkbox} style={{ left: "0" }}>
-                      <input
-                        type="checkbox"
-                        className={styles.custom__checkbox}
-                        name="dataRow"
-                        id={`dataRow-${index}`}
-                        checked={individualCheckboxes[index] || false}
-                        onChange={() => handleIndividualCheckboxChange(index)}
-                      />
-                      <label htmlFor={`dataRow-${index}`}></label>
-                    </td>
-                    {Object.keys(row).map((key, index) => (
-                      <td
-                        key={key}
-                        className={
-                          key === "discipline" ||
-                          key === "id" ||
-                          key === "workload"
-                            ? styles.stytic_td
+        {showMenu && (
+          <ContextMenu
+            showMenu={showMenu}
+            menuPosition={menuPosition}
+            handleMenuClick={handleMenuClick}
+            setShowMenu={setShowMenu}
+            individualCheckboxes={individualCheckboxes}
+            getDataTable={getDataTable}
+          />
+        )}
+        <div className={styles.table_container}>
+          {/* уведомления от преподавателей  */}
+          {/* <TableNotice
+            filteredData={filteredData}
+            isChecked={isChecked}
+            notice={notice}
+            handleClicNotice={handleClicNotice}
+          /> */}
+          <div className={styles.TableDisciplines__inner}>
+            <table className={styles.taleDestiplinesMainTable}>
+              <thead>
+                <tr ref={trRef} className={styles.tr_thead}>
+                  <th className={styles.checkboxHeader} style={{ left: "0" }}>
+                    <input
+                      type="checkbox"
+                      className={styles.custom__checkbox}
+                      id="dataRowGlobal"
+                      name="dataRowGlobal"
+                      checked={isCheckedGlobal}
+                      onChange={handleGlobalCheckboxChange}
+                    />
+                    <label htmlFor="dataRowGlobal"></label>
+                  </th>
+                  {updatedHeader.map((header, index) => (
+                    <th
+                      key={header.key}
+                      onClick={(event) => clickFigth(event, index)}
+                      className={
+                        header.key === "discipline" ||
+                        header.key === "id" ||
+                        header.key === "workload"
+                          ? styles.stytic_th
+                          : null
+                      }
+                      style={{ left: arrLeft[index] || "0" }}
+                    >
+                      <div className={styles.th_inner}>
+                        {header.label}
+                        <img src="./img/th_fight.svg" alt=">"></img>
+                      </div>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+
+              <tbody>
+                {filteredData.map((row, index) => {
+                  const checkValues = Object.values(row).some((value) =>
+                    isChecked.includes(value)
+                  );
+                  if (!checkValues) {
+                    return (
+                      <tr
+                        key={index}
+                        onContextMenu={handleContextMenu}
+                        className={styles.table_tr}
+                        onClick={(el) =>
+                          handleIndividualCheckboxChange(el, index)
+                        }
+                        style={
+                          individualCheckboxes.includes(filteredData[index].id)
+                            ? { backgroundColor: "rgb(234, 234, 250)" }
                             : null
                         }
-                        style={{ left: arrLeft[index] }}
                       >
-                        {row[key]}{" "}
-                      </td>
-                    ))}
-                  </tr>
-                );
-              }
-              return null;
-            })}
-          </tbody>
-        </table>
+                        <td className={styles.checkbox} style={{ left: "0" }}>
+                          {notice.some((item) => item.id_row === index) && (
+                            <div
+                              key={index}
+                              className={styles.notice}
+                              onClick={(el) => handleClicNotice(el, index)}
+                            >
+                              {
+                                notice.filter((item) => item.id_row === index)
+                                  .length
+                              }
+                            </div>
+                          )}
+
+                          <input
+                            type="checkbox"
+                            className={styles.custom__checkbox}
+                            name="dataRow"
+                            id={`dataRow-${index}`}
+                            checked={
+                              individualCheckboxes.includes(
+                                filteredData[index].id
+                              )
+                                ? true
+                                : false
+                            }
+                            onChange={(el) =>
+                              handleIndividualCheckboxChange(el, index)
+                            }
+                          />
+                          <label htmlFor={`dataRow-${index}`}></label>
+                        </td>
+                        {updatedHeader.map((key, ind) => (
+                          <td
+                            key={updatedHeader[ind].key}
+                            className={
+                              updatedHeader[ind].key === "discipline" ||
+                              updatedHeader[ind].key === "id" ||
+                              updatedHeader[ind].key === "workload"
+                                ? styles.stytic_td
+                                : null
+                            }
+                            style={{ left: arrLeft[ind] || "0" }}
+                          >
+                            {row[updatedHeader[ind].key] === null
+                              ? "0"
+                              : updatedHeader[ind].key === "id"
+                              ? index + 1
+                              : row[updatedHeader[ind].key]}
+                          </td>
+                        ))}
+                      </tr>
+                    );
+                  }
+                  return null;
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
       <div className={styles.Block__tables__shadow}></div>
     </div>

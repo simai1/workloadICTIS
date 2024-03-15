@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import styles from "./Button.module.scss";
 
 function Button(props) {
@@ -9,7 +9,13 @@ function Button(props) {
   };
 
   return (
-    <button className={styles.Button} onClick={handleClick} style={{ backgroundColor: props.Bg}}>{props.text}</button>
+    <button
+      className={styles.Button}
+      onClick={handleClick}
+      style={{ backgroundColor: props.Bg, color: props.textColot }}
+    >
+      {props.text}
+    </button>
   );
 }
 
