@@ -1,31 +1,42 @@
 import React, { useEffect, useState } from "react";
 import styles from "./NotificationForm.module.scss";
 import DataContext from "../../context";
-import { Comment } from "../../api/services/ApiGetData";
+import { Comment, createComment } from "../../api/services/ApiGetData";
 
 export function NotificationForm(props) {
-  const [isNoticeIndex, setNoticeIndex] = useState(0);
   const [isCommentsSheetOpen, setCommentsSheetOpen] = useState(false);
-  const { appData } = React.useContext(DataContext);
   const [isError, setError] = useState(false);
+  const [isComment, setIsComment] = useState(false);
+  const [textarea, setTextarea] = useState("");
+  const [commentData, setCommentData] = useState([]);
 
   useEffect(() => {
     Comment().then((data) => {
       console.log("comment", data);
+      setCommentData(
+        data.filter((item) => item.workloadId === props.workloadId)
+      );
     });
   }, []);
   const onCheckmarkClick = () => {
-    // let a = isNoticeIndex + 1;
-    // if (a !== props.notice.length) {
-    //   setNoticeIndex(a);
-    // }
-    setError(true);
+    if (textarea === "") {
+      setError(true);
+    } else {
+      const data = {
+        educatorId: "3d3d0074-3697-42ea-90f4-e8c034376fcf",
+        workloadId: props.workloadId,
+        text: textarea,
+      };
+      createComment(data);
+    }
   };
 
-  const [isComment, setIsComment] = useState(false);
+  const onChangeTextarea = (event) => {
+    setError(false);
+    setTextarea(event.target.value);
+  };
   const handleClickComment = () => {
     setCommentsSheetOpen(false);
-
     setIsComment(!isComment);
   };
   return (
@@ -39,21 +50,21 @@ export function NotificationForm(props) {
       >
         <div className={styles.comment_top}>
           {/* открыть все комментарии */}
-          {isCommentsSheetOpen && props.notice.length > 1 ? (
+          {isCommentsSheetOpen && commentData.length > 1 ? (
             <div className={styles.CommentsSheet}>
               <div className={styles.container}>
-                {props.notice.map((item) => (
-                  <div key={item.id}>
-                    <h4>{item.name}</h4>
-                    <p>{item.text}</p>
+                {commentData.map((item) => (
+                  <div key={item?.id}>
+                    <h4>{item?.educator.name}</h4>
+                    <p>{item?.text}</p>
                   </div>
                 ))}
               </div>
             </div>
           ) : (
             <>
-              <h4>{props.notice[isNoticeIndex].name}</h4>
-              <p>{props.notice[isNoticeIndex].text}</p>
+              <h4>{commentData[0]?.educator.name}</h4>
+              <p>{commentData[0]?.text}</p>
             </>
           )}
           <div className={styles.hovered_notice_img}>
@@ -64,7 +75,7 @@ export function NotificationForm(props) {
                 setIsComment(false);
               }}
             >
-              <span>{props.notice.length}</span>
+              <span>{commentData.length}</span>
               <img
                 style={
                   isCommentsSheetOpen ? { transform: " rotate(180deg)" } : null
@@ -91,8 +102,13 @@ export function NotificationForm(props) {
 
         {
           <div className={isComment ? styles.comment : styles.comment_show}>
-            <textarea id="textareaNotificationForm" type="text" />
-            <span>Заполните текстовое поле</span>
+            <textarea
+              style={isError ? { borderColor: "red" } : null}
+              id="textareaNotificationForm"
+              type="text"
+              onChange={onChangeTextarea}
+            />
+            {isError && <span>Заполните текстовое поле</span>}
             <button onClick={onCheckmarkClick}>Отправать</button>
           </div>
         }

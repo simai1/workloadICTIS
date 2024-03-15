@@ -112,7 +112,7 @@ function TableDisciplines() {
   const handleClicNotice = (el, index) => {
     setIsHovered(!isHovered);
     setPosition({ x: el.clientX - 40, y: el.clientY - 200 });
-    setIdrow(index);
+    setIdrow(filteredData[index].id);
   };
 
   // клик на th, открытие МО фильтры к колонке
@@ -353,13 +353,11 @@ function TableDisciplines() {
         <EditInput tableHeaders={tableHeaders} />
       </div>
       <div>
-        {/* <div className={styles.TableDisciplines__inner}> */}
         {isHovered && (
           <NotificationForm
             refHoverd={refHoverd}
             position={position}
-            notice={notice.filter((item) => item.id_row === idRow)}
-            idRow={idRow}
+            workloadId={idRow}
           />
         )}
 

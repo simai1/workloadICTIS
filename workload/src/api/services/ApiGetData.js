@@ -122,3 +122,19 @@ export const deleteWorkload = async (data) => {
     throw error;
   }
 };
+
+//! запрос на добавление комментария
+export const createComment = async (data) => {
+  console.log("добавление комментария ", data);
+  try {
+    const response = await axios.post(
+      "https://workload.sfedu.ru/comment/createComment",
+      data
+    );
+    console.log("response ", response);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
