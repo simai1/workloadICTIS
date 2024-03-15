@@ -12,8 +12,7 @@ export default class Comment extends Model {
                 },
                 number: {
                     type: DataTypes.INTEGER,
-                    allowNull: false,
-                    autoIncrement: true,
+                    allowNull: true,
                 },
                 text: {
                     type: DataTypes.STRING,
