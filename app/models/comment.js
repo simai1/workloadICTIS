@@ -1,4 +1,4 @@
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, Model } from 'sequelize';
 
 export default class Comment extends Model {
     static initialize(sequelize) {
@@ -10,23 +10,27 @@ export default class Comment extends Model {
                     allowNull: false,
                     primaryKey: true,
                 },
+                nomer: {
+                    type: DataTypes.INTEGER,
+                    autoIncrement: true,
+                },
                 text: {
                     type: DataTypes.STRING,
-                    allowNull: false
+                    allowNull: false,
                 },
                 educatorId: {
                     type: DataTypes.UUID,
-                    allowNull: false
+                    allowNull: false,
                 },
                 workloadId: {
                     type: DataTypes.UUID,
-                    allowNull: false
+                    allowNull: false,
                 },
                 isChecked: {
                     type: DataTypes.BOOLEAN,
                     allowNull: false,
-                    defaultValue: false
-                }
+                    defaultValue: false,
+                },
             },
             {
                 sequelize,
@@ -38,4 +42,3 @@ export default class Comment extends Model {
         );
     }
 }
-

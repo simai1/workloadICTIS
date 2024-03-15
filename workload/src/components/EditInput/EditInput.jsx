@@ -4,7 +4,7 @@ import arrow from "./../../img/arrow.svg";
 import { useDispatch } from "react-redux";
 import { actions } from "./../../store/filter/filter.slice";
 
-function EditInput({ tableHeaders, setSamplePointsShow }) {
+function EditInput({ tableHeaders }) {
   const [searchResults, setSearchResults] = useState(tableHeaders.slice(3));
 
   const [isListOpen, setListOpen] = useState(false);
@@ -41,12 +41,17 @@ function EditInput({ tableHeaders, setSamplePointsShow }) {
   const takeFunction = (index, value) => {
     handleItemClick(value.key);
     toggleChecked(index);
-    if (isChecked.includes(value)) {
+    console.log("isChecked ", isChecked);
+    if (isChecked.some((item) => item.key === value.key)) {
       // Если значение уже существует, удаляем его из массива
       setChecked(isChecked.filter((item) => item.key !== value.key));
+      console.log("существует ");
+      console.log("value ", value);
     } else {
       // Если значение уникально, добавляем его в массив
       setChecked((isChecked) => [...isChecked, value]);
+      console.log("уникально ");
+      console.log("value ", value);
     }
   };
 
@@ -62,6 +67,7 @@ function EditInput({ tableHeaders, setSamplePointsShow }) {
 
   const handleSearch = (el) => {
     const query = el.target.value;
+
     setSearchResults(
       tableHeaders
         .slice(3)
@@ -72,11 +78,7 @@ function EditInput({ tableHeaders, setSamplePointsShow }) {
     if (query === "") {
       setSearchResults(tableHeaders.slice(3));
     }
-    console.log(
-      tableHeaders.filter((value, i, arr) => arr.indexOf(value) === 1)
-    );
   };
-
   return (
     <div ref={refLO} className={styles.EditInput}>
       {!isListOpen && (
@@ -106,8 +108,7 @@ function EditInput({ tableHeaders, setSamplePointsShow }) {
                   <input
                     type="checkbox"
                     onChange={() => takeFunction(index, row)}
-                    // checked={checkedItems[index]}
-                    checked={isChecked.includes(row)}
+                    checked={isChecked.some((item) => item.key === row.key)}
                     className={styles.customInput}
                     id={`search3-${index}`}
                     name="search3"
