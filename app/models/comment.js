@@ -10,9 +10,9 @@ export default class Comment extends Model {
                     allowNull: false,
                     primaryKey: true,
                 },
-                number: {
+                nomer: {
                     type: DataTypes.INTEGER,
-                    allowNull: true,
+                    autoIncrement: true,
                 },
                 text: {
                     type: DataTypes.STRING,
