@@ -8,6 +8,7 @@ function App() {
   const [positions, setPositions] = useState([]); // должности
   const [typeOfEmployments, setTypeOfEmployments] = useState([]); // вид деятельности
   const [workload, setWorkload] = useState([]); // данные о нагрузках
+  const [comment, setComment] = useState([]); // комментарии к нагрузкам
 
   const appData = {
     educator,
@@ -18,6 +19,8 @@ function App() {
     setTypeOfEmployments,
     workload,
     setWorkload,
+    comment,
+    setComment,
   };
 
   return (

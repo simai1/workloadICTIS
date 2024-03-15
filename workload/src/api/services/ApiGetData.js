@@ -46,6 +46,19 @@ export const Workload = async () => {
   }
 };
 
+//! получаем комментарии к нагрузкам от преподавателей
+export const Comment = async () => {
+  try {
+    const response = await axios.get(
+      "https://workload.sfedu.ru/comment/getAllComment"
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
 //! запрос на добавление преподавателя к нагрузке
 export const addEducatorWorkload = async (data) => {
   console.log("Добавление преподавателя ", data);
