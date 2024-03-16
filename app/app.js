@@ -1,6 +1,6 @@
 import express from 'express';
 import http from 'http'; // Добавьте этот импорт
-import { Server } from "socket.io";
+import { Server } from 'socket.io';
 import cookieParser from 'cookie-parser';
 import 'dotenv/config';
 
@@ -21,11 +21,16 @@ import { eventEmitter } from './utils/notification.js';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-
 const server = http.createServer(app); // Создайте сервер с использованием http
 
-const io = new Server(server);
-
+const io = new Server(server, {
+    cors: {
+        origin: '*',
+        allowedHeaders: '*',
+        credentials: true,
+        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    },
+});
 
 (async function initDb() {
     try {
@@ -53,24 +58,19 @@ app.use('/parser', parserRoute);
 app.use('/workload', workloadRoute);
 app.use('/auth', authRoute);
 
+io.on('connection', socket => {
+    console.log(`socket ${socket.id} connected`);
 
- io.on("connection", (socket) => {
-   console.log(`socket ${socket.id} connected`);
+    eventEmitter.on('notificationCreated', eventData => {
+        socket.emit('notificationCreated', eventData);
+        console.log('Уведомление отправилось клиенту', eventData);
+    });
 
-
-   eventEmitter.on('notificationCreated', eventData => {
-    socket.emit('notificationCreated', eventData);
-    console.log('Уведомление отправилось клиенту', eventData);
-})
-
-
-   // upon disconnection
-   socket.on("disconnect", (reason) => {
-     console.log(`socket ${socket.id} disconnected due to ${reason}`);
-   });
- });
-
-
+    // upon disconnection
+    socket.on('disconnect', reason => {
+        console.log(`socket ${socket.id} disconnected due to ${reason}`);
+    });
+});
 
 // app.use('/auth', authRoute);
 console.log(`Node env: ${process.env.NODE_ENV}`);

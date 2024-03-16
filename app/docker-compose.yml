@@ -1,0 +1,44 @@
+version: '3'
+services:
+  db:
+    container_name:
+      workload-ICTIS-db
+    image: postgres:15
+    restart: always
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PWD}
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    ports:
+      - "5432:5432"
+    networks:
+      - workload-ICTIS-network
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  server:
+    container_name: workload-ICTIS-server
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    depends_on:
+      - db
+    ports:
+      - '3010:3010'
+    environment:
+      - DB_NAME=${DB_NAME}
+      - DB_USERNAME=${DB_USER}
+      - DB_PASSWORD=${DB_PWD}
+      - DB_PORT=${DB_PORT}
+      - DB_HOST=${DB_HOST}
+    networks:
+      - workload-ICTIS-network
+
+networks:
+  workload-ICTIS-network:
+
+volumes:
+  pgdata:

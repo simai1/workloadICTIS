@@ -1,5 +1,37 @@
 @import "./../../style/colors.scss";
 
+.TableTeachers {
+  padding-left: 64px;
+}
+.tabledisciplinesMain_search {
+  margin-bottom: 10px;
+  position: absolute;
+  top: -92px;
+  width: 310px;
+  height: 45px;
+  align-items: center;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  padding: 9px 0px 9px 16px;
+  display: flex;
+  box-sizing: border-box;
+  img {
+    display: flex;
+    padding: 10px;
+  }
+  input {
+    display: flex;
+    position: relative !important;
+    top: 0 !important;
+    left: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    border: none !important;
+    outline: none;
+    margin: 0 !important;
+    background-color: #efedf3;
+  }
+}
 input[type="text"] {
   margin-bottom: 10px;
   position: absolute;
@@ -10,31 +42,29 @@ input[type="text"] {
   border: 1px solid var(--border-color);
   color: var(--black-color);
   padding: 9px 0px 9px 16px;
- 
-  
 }
 
-.ButtonCaf_gen{
+.ButtonCaf_gen {
   margin-bottom: 16px;
 }
 
-.EditInput{
-    position: absolute;
-    right: 0;
-    top: 0;
-  }
+.EditInput {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
 
-.TableTeachers__inner{
+.TableTeachers__inner {
   overflow-x: scroll;
-  border-radius: 8px; 
+  border-radius: 8px;
   border-left: 1px solid var(--gray-color);
-  border-right: 1px  solid var(--gray-color);
+  border-right: 1px solid var(--gray-color);
   border-top: 1px solid var(--gray-color);
   position: relative;
   top: 60px;
-  .TableTeachers{
+  .TableTeachers {
     width: 100%;
-  } 
+  }
 }
 .TableTeachers__inner::-webkit-scrollbar {
   background-color: #ffffff;
@@ -44,17 +74,16 @@ input[type="text"] {
 
 .TableTeachers__inner::-webkit-scrollbar-thumb {
   background-color: #cccccc;
-  border-radius: 8px; 
-  width: 200px!important;
+  border-radius: 8px;
+  width: 200px !important;
 }
-
 
 .TableTeachers__inner::-webkit-scrollbar-track {
   background-color: transparent;
   border-left: 1px solid var(--gray-color);
   border-right: 1px solid var(--gray-color);
   border-bottom: 1px solid var(--gray-color);
-  border-radius: 0px 0px 8px 8px; 
+  border-radius: 0px 0px 8px 8px;
 }
 
 table {
@@ -62,38 +91,37 @@ table {
   border-collapse: collapse;
   font-size: 14px;
 
-  thead{
+  thead {
     height: 58px;
   }
-  th, td {
+  th,
+  td {
     padding: 8px;
     text-align: center;
   }
   th {
-    background-color: var(--gray-color); 
+    background-color: var(--gray-color);
     padding: 8px;
-    
   }
-  th:first-child{
-    
+  th:first-child {
     border-radius: 8px 0px 0px 0px;
   }
-  th:last-child{
+  th:last-child {
     border-radius: 0px 8px 0px 0px;
   }
   tr {
     background-color: var(--white-color);
     margin: 17px 0;
-    .tdName{
+    .tdName {
       transition: 0.15s linear all;
     }
-    .tdName:hover{
+    .tdName:hover {
       cursor: pointer;
       opacity: 0.6;
     }
   }
 }
-  
+
 // .Block__tables__shadow{
 //     background: linear-gradient(270deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0) 100%);
 //     height:100%;
@@ -102,5 +130,5 @@ table {
 //     right: 0;
 //     top: 60px;
 //     border-radius: 0px 8px 8px 0px;
-    
+
 // }
