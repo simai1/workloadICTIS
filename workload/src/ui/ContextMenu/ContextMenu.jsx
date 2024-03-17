@@ -101,6 +101,14 @@ const ContextMenu = (props) => {
             onClick={addEducator}
           />
         </div>
+        <div>
+          <button
+            className={styles.activeStylePointer}
+            onClick={props.onAddComment}
+          >
+            Добавить комментарий
+          </button>
+        </div>
         <div onClick={handleMouseClickPop} className={styles.blockMenuPop}>
           <button className={styles.buttonDel}>Разделить</button>
 

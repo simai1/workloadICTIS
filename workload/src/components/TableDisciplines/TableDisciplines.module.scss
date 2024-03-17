@@ -175,6 +175,14 @@
       transform: translateY(-4px);
       cursor: pointer;
     }
+    .notice::after {
+      content: "";
+      width: 3px;
+      height: 53px;
+      background-color: red;
+      position: absolute;
+      right: -10px;
+    }
     // .checkbox::before {
     //   content: "1";
     //   position: absolute;
