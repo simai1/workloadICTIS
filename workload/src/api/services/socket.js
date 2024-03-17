@@ -69,6 +69,7 @@ import socketIO from "socket.io-client";
 function socketConnect() {
   const socketUrl = "https://workload.sfedu.ru";
   const socket = socketIO.connect(socketUrl);
+
   socket.on("connect", (data) => {
     console.log("Получен ответ от сервера:", data);
   });

@@ -16,6 +16,7 @@
     font-size: 14px;
     font-weight: 400;
   }
+
   .hovered_notice_img {
     display: flex;
     justify-content: space-between;
@@ -25,10 +26,20 @@
       align-items: center;
       cursor: pointer;
     }
+    .left:hover {
+      color: #3b28cc;
+      .logosvg * {
+        fill: #3b28cc;
+      }
+    }
+  }
+
+  .logosvg {
+    margin: 5px;
+    cursor: pointer;
   }
   img {
     margin: 5px;
-    cursor: pointer;
   }
   .comment_top {
     z-index: 3;

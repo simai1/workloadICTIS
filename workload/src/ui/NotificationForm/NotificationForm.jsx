@@ -3,6 +3,9 @@ import styles from "./NotificationForm.module.scss";
 import DataContext from "../../context";
 import { createComment } from "../../api/services/ApiGetData";
 
+import { ReactComponent as LogoAllComment } from "./../../img/arrow_down.svg";
+import { ReactComponent as commentsSvg } from "./../../img/comments.svg";
+
 export function NotificationForm(props) {
   const [isCommentsSheetOpen, setCommentsSheetOpen] = useState(false);
   const [isError, setError] = useState(false);
@@ -35,7 +38,6 @@ export function NotificationForm(props) {
   //! открытие textarea для ввода комментраия
   const handleClickComment = () => {
     setCommentsSheetOpen(false);
-    var y = 0;
     if (isComment) {
       setPositionMenu({ y: props.position.y, x: props.position.x });
     } else {
@@ -83,29 +85,33 @@ export function NotificationForm(props) {
               <p>{props.commentData[0]?.text}</p>
             </div>
           )}
-          {props.commentData.length > 0 && (
+          {props.commentData.length > 1 && (
             <div className={styles.hovered_notice_img}>
               <div className={styles.left} onClick={onClickAllComment}>
                 <span>{props.commentData.length}</span>
-                <img
+
+                <LogoAllComment
+                  className={styles.logosvg}
                   style={
                     isCommentsSheetOpen
-                      ? { transform: " rotate(180deg)" }
-                      : null
+                      ? {
+                          transform: " rotate(180deg)",
+                          transition: "transform 0.4s",
+                        }
+                      : { transition: "transform 0.3s" }
                   }
-                  src="./img/arrow_down.svg"
-                  alt="^"
-                ></img>
+                />
               </div>
 
               <div className={styles.left}>
-                <img
+                {/* <img
                   onClick={handleClickComment}
                   src={
                     isComment ? "./img/commentsOn.svg" : "./img/comments.svg"
                   }
                   alt="comments"
-                ></img>
+                ></img> */}
+                <commentsSvg onClick={handleClickComment} />
                 <img
                   onClick={onCheckmarkClick}
                   src="./img/checkmark.svg"
@@ -116,24 +122,22 @@ export function NotificationForm(props) {
           )}
         </div>
 
-        {
-          <div
-            className={
-              isComment || props.commentData.length === 0
-                ? styles.comment
-                : styles.comment_show
-            }
-          >
-            <textarea
-              style={isError ? { borderColor: "red" } : null}
-              id="textareaNotificationForm"
-              type="text"
-              onChange={onChangeTextarea}
-            />
-            {isError && <span>Заполните текстовое поле</span>}
-            <button onClick={onCheckmarkClick}>Отправать</button>
-          </div>
-        }
+        <div
+          className={
+            isComment || props.commentData.length === 0
+              ? styles.comment
+              : styles.comment_show
+          }
+        >
+          <textarea
+            style={isError ? { borderColor: "red" } : null}
+            id="textareaNotificationForm"
+            type="text"
+            onChange={onChangeTextarea}
+          />
+          {isError && <span>Заполните текстовое поле</span>}
+          <button onClick={onCheckmarkClick}>Отправать</button>
+        </div>
       </div>
     </main>
   );
