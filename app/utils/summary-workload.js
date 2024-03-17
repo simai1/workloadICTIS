@@ -17,7 +17,7 @@ async function setHours(workload) {
         totalOidHours: 0,
         totalHours: 0,
     };
-
+    workload.hours = parseFloat(workload.hours);
     // Проверяем предмет на общеинститутский ли он и период и устанавливаем часы для кафедральных или институтских дисциплин
     if (workload.isOid === false && workload.period === 1) hours.kafedralAutumnWorkload += workload.hours;
     if (workload.isOid === false && workload.period === 2) hours.kafedralSpringWorkload += workload.hours;

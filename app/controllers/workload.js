@@ -136,6 +136,7 @@ export default {
             { educatorId },
             {
                 where: { id: workloadId },
+                individualHooks: true,
             }
         );
         res.json({ status: 'OK' });
