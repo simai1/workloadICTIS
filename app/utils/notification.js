@@ -1,4 +1,3 @@
-import SummaryWorkload from '../models/summary-workload.js';
 import Notification from '../models/notifications.js';
 import Educator from '../models/educator.js';
 import { EventEmitter } from 'events';
@@ -26,15 +25,9 @@ function getNotificationMessage(totalHours, minHours, maxHours, recommendedMaxHo
 
 export default async function checkHours(summaryWorkload) {
     try {
-        console.log('Туть');
         const educator = await Educator.findByPk(summaryWorkload.educatorId);
         const { maxHours, recommendedMaxHours, minHours } = educator;
         const totalHours = summaryWorkload.totalHours;
-
-        console.log('Max Hours:', maxHours);
-        console.log('Recommended Max Hours:', recommendedMaxHours);
-        console.log('Min Hours:', minHours);
-        console.log('Total Hours:', totalHours);
 
         const existingNotification = await Notification.findOne({
             where: { educatorId: summaryWorkload.educatorId },
@@ -46,7 +39,6 @@ export default async function checkHours(summaryWorkload) {
             // Если есть уведомление и условия не соблюдаются, удаляем его
             if (!notificationMessage) {
                 await existingNotification.destroy({ force: true });
-                console.log('Уведомление удалено', existingNotification);
             }
         } else {
             // Если нет уведомления и условия не соблюдаются, создаем новое уведомление
@@ -62,7 +54,6 @@ export default async function checkHours(summaryWorkload) {
             if (existingMessage !== notificationMessage) {
                 existingNotification.message = notificationMessage;
                 await existingNotification.save();
-                console.log('Уведомление обновлено', existingNotification);
                 eventEmitter.emit('notificationCreated', { existingNotification });
             }
         }
