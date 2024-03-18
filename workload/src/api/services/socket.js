@@ -64,11 +64,11 @@
 
 // export default socketConnect;
 
-import socketIO from "socket.io-client";
+// import socketIO from "socket.io-client";
 
-function socketConnect() {
-  const socketUrl = "https://workload.sfedu.ru";
-  const socket = socketIO.connect(socketUrl);
-}
+// function socketConnect() {
+//   const socketUrl = "https://workload.sfedu.ru";
+//   const socket = socketIO.connect(socketUrl);
+// }
 
-export default socketConnect;
+// export default socketConnect;
