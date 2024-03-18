@@ -6,49 +6,18 @@ import Button from "../../ui/Button/Button";
 import Layout from "../../ui/Layout/Layout";
 import Warnings from "../../components/Warnings/Warnings";
 import TableLks from "../../components/TableLks/TableLks";
-import axios from "axios";
+import { ApiGetData } from "../../api/services/ApiGetData";
+import DataContext from "../../context";
 
 function HomePage() {
   const [selectedComponent, setSelectedComponent] = useState("Disciplines");
+  const [educatorData, setEducatorData] = useState([]); // данные о преподавателе получаем в TableTeachers
   const handleComponentChange = (component) => {
     setSelectedComponent(component);
   };
   const [name, setName] = useState("");
   const [post, setpost] = useState("");
   const [bet, setbet] = useState("");
-
-  // useEffect(() => {
-  //   console.log(name); // Этот код будет выполняться каждый раз, когда изменяется значение name
-  // }, [name]); // Указываем зависимость от переменной name
-
-  // обращение к API
-
-  const [data, setData] = useState(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          "https://8f38-95-174-102-182.ngrok-free.app/educator",
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        console.log(response);
-        setData(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  //console.log(data);
-
-  //----------------
 
   const handleButtonClick = () => {
     setName("");
@@ -66,7 +35,10 @@ function HomePage() {
         <div className={styles.button}>
           <div className={styles.button__inner}>
             <Button
-              Bg={selectedComponent === "Disciplines" ? "#DDDDDD" : "#ffffff"}
+              Bg={selectedComponent === "Disciplines" ? "#3B28CC" : "#efedf3"}
+              textColot={
+                selectedComponent === "Disciplines" ? "#efedf3" : "#000000"
+              }
               onClick={() => {
                 handleComponentChange("Disciplines");
                 handleButtonClick();
@@ -74,7 +46,10 @@ function HomePage() {
               text="Дисциплины"
             />
             <Button
-              Bg={selectedComponent === "Teachers" ? "#DDDDDD" : "#ffffff"}
+              Bg={selectedComponent === "Teachers" ? "#3B28CC" : "#efedf3"}
+              textColot={
+                selectedComponent === "Disciplines" ? "#000000" : "#efedf3"
+              }
               onClick={() => {
                 handleComponentChange("Teachers");
                 handleButtonClick();
@@ -91,9 +66,13 @@ function HomePage() {
           (name === "" || name !== "") ? (
             <TableDisciplines />
           ) : selectedComponent === "Teachers" && name === "" ? (
-            <TableTeachers onNameChange={handleNameChange} />
+            <TableTeachers
+              setEducatorData={setEducatorData}
+              onNameChange={handleNameChange}
+            />
           ) : selectedComponent === "Teachers" && name !== "" ? (
             <TableLks
+              educatorData={educatorData}
               delNameChange={handleNameChange}
               NameTeachers={{ name, post, bet }}
             />

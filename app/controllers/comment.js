@@ -26,11 +26,9 @@ export default {
 
     async getAllComments(req, res) {
         const comments = await Comment.findAll({
-             include: [
-                { model: Educator }
-            ]
+            include: [{ model: Educator }],
         });
-        
+
         const commentDtos = [];
 
         for (const comment of comments) {
@@ -38,12 +36,11 @@ export default {
             commentDtos.push(commentsDto);
         }
 
-
         // console.log(comments);
         res.json(commentDtos);
     },
 };
 
-//Todo Check
+// Todo Check
 
-//ToDo getAll
+// ToDo getAll
