@@ -38,6 +38,7 @@ export default async function checkHours(summaryWorkload) {
         if (existingNotification) {
             // Если есть уведомление и условия не соблюдаются, удаляем его
             if (!notificationMessage) {
+                eventEmitter.emit('notificationCreated', 'Уведомление удалено');
                 await existingNotification.destroy({ force: true });
             }
         } else {
