@@ -78,7 +78,7 @@ function socketConnect() {
     name: " alex",
   });
 
-  socket.on("response", (data) => {
+  socket.on("notificationCreated", (data) => {
     console.log("Получен ответ от сервера:", data);
   });
   console.log(socket);
