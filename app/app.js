@@ -66,6 +66,10 @@ io.on('connection', socket => {
         console.log('Уведомление отправилось клиенту', eventData);
     });
 
+    socket.on('response', data => {
+        socket.emit('response', 'data received');
+    });
+
     // upon disconnection
     socket.on('disconnect', reason => {
         console.log(`socket ${socket.id} disconnected due to ${reason}`);
