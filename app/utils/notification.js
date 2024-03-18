@@ -4,8 +4,8 @@ import { EventEmitter } from 'events';
 import { notificationMessages } from '../const/messages.js';
 
 const eventEmitter = new EventEmitter();
-const eventQueue = [];
-let isProcessing = false;
+// const eventQueue = [];
+// let isProcessing = false;
 
 async function createNotification(message, educatorId) {
     try {
@@ -62,17 +62,16 @@ export default async function checkHours(summaryWorkload) {
     }
 }
 
-eventEmitter.on('notificationCreated', eventData => {
-    if (!isProcessing) {
-        isProcessing = true;
-        eventQueue.push(eventData);
-        const messageValue = eventQueue.length;
-        // Отправка уведомлений на клиент через WebSocket
-        // Вам нужно заменить 'notificationCreated' на ваше событие, если оно имеет другое имя
-        eventEmitter.emit('notificationCreated', eventData);
-        console.log('Message Value:', messageValue);
-        isProcessing = false;
-    }
-});
+// Отправка уведомлений на клиент через WebSocket
+// eventEmitter.on('notificationCreated', eventData => {
+//     if (!isProcessing) {
+//         isProcessing = true;
+//         eventQueue.push(eventData);
+//         const messageValue = eventQueue.length;
+//         eventEmitter.emit('notificationCreated', eventData);
+//         console.log('Message Value:', messageValue);
+//         isProcessing = false;
+//     }
+// });
 
 export { eventEmitter };

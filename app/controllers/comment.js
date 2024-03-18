@@ -36,11 +36,6 @@ export default {
             commentDtos.push(commentsDto);
         }
 
-        // console.log(comments);
         res.json(commentDtos);
     },
 };
-
-// Todo Check
-
-// ToDo getAll
