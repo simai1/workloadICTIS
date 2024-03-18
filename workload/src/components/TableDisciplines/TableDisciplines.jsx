@@ -287,6 +287,13 @@ function TableDisciplines() {
     widthsTableHeader[0] + widthsTableHeader[1] + widthsTableHeader[2],
   ];
 
+  //! функция изменения значения td при двойном клике
+  const [cellNumber, setCellNumber] = useState([]);
+  const changeValueTd = (index, ind) => {
+    console.log("изменить ", index, ind);
+    setCellNumber(index, ind);
+  };
+
   //! содержимое
   return (
     <div className={styles.tabledisciplinesMain}>
@@ -411,6 +418,7 @@ function TableDisciplines() {
                         key={index}
                         onContextMenu={handleContextMenu}
                         className={styles.table_tr}
+                        // клик на строку выделяет ее
                         onClick={(el) =>
                           handleIndividualCheckboxChange(el, index)
                         }
@@ -468,11 +476,16 @@ function TableDisciplines() {
                             }
                             style={{ left: arrLeft[ind] || "0" }}
                           >
-                            {row[updatedHeader[ind].key] === null
-                              ? "0"
-                              : updatedHeader[ind].key === "id"
-                              ? index + 1
-                              : row[updatedHeader[ind].key]}
+                            <div
+                              className={styles.td_inner}
+                              onDoubleClick={() => changeValueTd(index, ind)}
+                            >
+                              {row[updatedHeader[ind].key] === null
+                                ? "0"
+                                : updatedHeader[ind].key === "id"
+                                ? index + 1
+                                : row[updatedHeader[ind].key]}
+                            </div>
                           </td>
                         ))}
                       </tr>

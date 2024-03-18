@@ -23,6 +23,7 @@ export function NotificationForm(props) {
         workloadId: props.workloadId,
         text: textarea,
       };
+      console.log(data);
       createComment(data).then(() => props.getDataAllComment());
       setIsComment(false);
       setPositionMenu({ y: props.position.y, x: props.position.x });
