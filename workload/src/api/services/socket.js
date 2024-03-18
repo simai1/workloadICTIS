@@ -67,8 +67,13 @@
 import socketIO from "socket.io-client";
 
 function socketConnect() {
+<<<<<<< HEAD
   const socketUrll = "https://workload.sfedu.ru";
   const socket = socketIO.connect(socketUrll);
+=======
+  const socketUrl = "https://workload.sfedu.ru";
+  const socket = socketIO.connect(socketUrl);
+>>>>>>> parent of a836730 (Revert "Merge branch 'Artur'")
 
   socket.on("connect", (data) => {
     console.log("Получен ответ от сервера:", data);
@@ -78,10 +83,16 @@ function socketConnect() {
     name: " alex",
   });
 
+<<<<<<< HEAD
   socket.on("response", (data) => {
     console.log("Получен ответ от сервера:", data);
   });
 
+=======
+  socket.on("notificationCreated", (data) => {
+    console.log("Получен ответ от сервера:", data);
+  });
+>>>>>>> parent of a836730 (Revert "Merge branch 'Artur'")
   console.log(socket);
 }
 
