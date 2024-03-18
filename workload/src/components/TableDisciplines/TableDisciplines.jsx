@@ -7,7 +7,7 @@ import ContextMenu from "../../ui/ContextMenu/ContextMenu";
 import { NotificationForm } from "../../ui/NotificationForm/NotificationForm";
 import { SamplePoints } from "../../ui/SamplePoints/SamplePoints";
 import DataContext from "../../context";
-import { Comment, Workload } from "../../api/services/ApiGetData";
+import { Workload } from "../../api/services/ApiGetData";
 
 function TableDisciplines() {
   const [updatedHeader, setUpdatedHeader] = useState([]); //заголовок обновленный для Redux сортировки
@@ -27,7 +27,6 @@ function TableDisciplines() {
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 }); //меню
   const [tableData, setTableData] = useState([]); // соберем из данных апи общие для таблицы
   const [filteredData, setFilteredData] = useState([]);
-  const [commentAllData, setCommentAllData] = useState([]);
 
   //данные вытянутые из контекста
   const { appData } = React.useContext(DataContext);
@@ -49,17 +48,9 @@ function TableDisciplines() {
     setTableData(appData.workload);
   }
 
-  function getDataAllComment() {
-    Comment().then((data) => {
-      console.log("comment", data);
-      setCommentAllData(data);
-    });
-  }
-
   // заносим данные о преподавателях в состояние
   useEffect(() => {
     getDataTable();
-    getDataAllComment();
   }, []);
 
   //! сортировака (по hedars) пришедших данных из апи
@@ -117,23 +108,14 @@ function TableDisciplines() {
     }
   };
 
-  //! при нажатии на кружок уведомления
+  // при нажатии на кружок уведомления
   const handleClicNotice = (el, index) => {
     setIsHovered(!isHovered);
     setPosition({ x: el.clientX - 40, y: el.clientY - 200 });
-    setIdrow(filteredData[index].id);
+    setIdrow(index);
   };
 
-  //! добавить комментарий к нагрузке из контекстного меню
-  const onAddComment = () => {
-    setShowMenu(false);
-    setIdrow(individualCheckboxes[0]);
-    setIsHovered(true);
-    // setPosition({ x: menuPosition.x + 210, y: menuPosition.y - 125 });
-    setPosition({ x: menuPosition.x - 60, y: menuPosition.y - 125 });
-  };
-
-  //! клик на th, открытие МО фильтры к колонке
+  // клик на th, открытие МО фильтры к колонке
   const clickFigth = (event, index) => {
     setSamplePointsShow(!isSamplePointsShow);
     if (event.clientX + 372 > window.innerWidth) {
@@ -151,6 +133,28 @@ function TableDisciplines() {
     const data = { td, keyTd };
     setSamplePointsData(data);
   };
+
+  //данные сраницы "Поттом все будет подшгружаться из API"
+  const notice = [
+    {
+      id: 0,
+      id_row: 0,
+      name: "Данильченко Владислав Иванович",
+      text: "Пары неверно назначены преподавателю, должен быть другой",
+    },
+    {
+      id: 1,
+      id_row: 1,
+      name: "Иванов Иван Иванович",
+      text: "Пары неверно назначены преподавателю, должен быть другой",
+    },
+    {
+      id: 2,
+      id_row: 1,
+      name: "Смирнов Иван Николаевич",
+      text: "Пары неверно назначены преподавателю, должен быть другой",
+    },
+  ];
 
   //выбор компонента
 
@@ -287,13 +291,6 @@ function TableDisciplines() {
     widthsTableHeader[0] + widthsTableHeader[1] + widthsTableHeader[2],
   ];
 
-  //! функция изменения значения td при двойном клике
-  const [cellNumber, setCellNumber] = useState([]);
-  const changeValueTd = (index, ind) => {
-    console.log("изменить ", index, ind);
-    setCellNumber(index, ind);
-  };
-
   //! содержимое
   return (
     <div className={styles.tabledisciplinesMain}>
@@ -334,16 +331,13 @@ function TableDisciplines() {
         <EditInput tableHeaders={tableHeaders} />
       </div>
       <div>
+        {/* <div className={styles.TableDisciplines__inner}> */}
         {isHovered && (
           <NotificationForm
             refHoverd={refHoverd}
             position={position}
-            setPosition={setPosition}
-            workloadId={idRow}
-            getDataAllComment={getDataAllComment}
-            commentData={commentAllData
-              .filter((item) => item.workloadId === idRow)
-              .reverse()}
+            notice={notice.filter((item) => item.id_row === idRow)}
+            idRow={idRow}
           />
         )}
 
@@ -365,11 +359,16 @@ function TableDisciplines() {
             setShowMenu={setShowMenu}
             individualCheckboxes={individualCheckboxes}
             getDataTable={getDataTable}
-            onAddComment={onAddComment}
           />
         )}
         <div className={styles.table_container}>
           {/* уведомления от преподавателей  */}
+          {/* <TableNotice
+            filteredData={filteredData}
+            isChecked={isChecked}
+            notice={notice}
+            handleClicNotice={handleClicNotice}
+          /> */}
           <div className={styles.TableDisciplines__inner}>
             <table className={styles.taleDestiplinesMainTable}>
               <thead>
@@ -418,7 +417,6 @@ function TableDisciplines() {
                         key={index}
                         onContextMenu={handleContextMenu}
                         className={styles.table_tr}
-                        // клик на строку выделяет ее
                         onClick={(el) =>
                           handleIndividualCheckboxChange(el, index)
                         }
@@ -429,19 +427,15 @@ function TableDisciplines() {
                         }
                       >
                         <td className={styles.checkbox} style={{ left: "0" }}>
-                          {commentAllData.some(
-                            (item) => item.workloadId === filteredData[index].id
-                          ) && (
+                          {notice.some((item) => item.id_row === index) && (
                             <div
                               key={index}
                               className={styles.notice}
                               onClick={(el) => handleClicNotice(el, index)}
                             >
                               {
-                                commentAllData.filter(
-                                  (item) =>
-                                    item.workloadId === filteredData[index].id
-                                ).length
+                                notice.filter((item) => item.id_row === index)
+                                  .length
                               }
                             </div>
                           )}
@@ -476,16 +470,11 @@ function TableDisciplines() {
                             }
                             style={{ left: arrLeft[ind] || "0" }}
                           >
-                            <div
-                              className={styles.td_inner}
-                              onDoubleClick={() => changeValueTd(index, ind)}
-                            >
-                              {row[updatedHeader[ind].key] === null
-                                ? "0"
-                                : updatedHeader[ind].key === "id"
-                                ? index + 1
-                                : row[updatedHeader[ind].key]}
-                            </div>
+                            {row[updatedHeader[ind].key] === null
+                              ? "0"
+                              : updatedHeader[ind].key === "id"
+                              ? index + 1
+                              : row[updatedHeader[ind].key]}
                           </td>
                         ))}
                       </tr>
