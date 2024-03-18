@@ -67,8 +67,8 @@
 import socketIO from "socket.io-client";
 
 function socketConnect() {
-  const socketUrll = "https://workload.sfedu.ru";
-  const socket = socketIO.connect(socketUrll);
+  const socketUrl = "https://workload.sfedu.ru";
+  const socket = socketIO.connect(socketUrl);
 
   socket.on("connect", (data) => {
     console.log("Получен ответ от сервера:", data);
@@ -82,6 +82,12 @@ function socketConnect() {
     console.log("Получен ответ от сервера:", data);
   });
 
+  socket.on("notificationCreated", (data) => {
+    console.log("notificationCreated", data);
+  });
+  socket.on("disconnect", () => {
+    console.log("Socket disconnected");
+  });
   console.log(socket);
 }
 
