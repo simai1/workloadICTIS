@@ -1,7 +1,7 @@
 FROM node:20.9.0
-WORKDIR /workload-client
+WORKDIR /app
 COPY package.json .
 RUN npm install
 COPY . .
-EXPOSE 4010
+EXPOSE 3000
 CMD ["npm", "run", "start"]
