@@ -231,4 +231,19 @@ export default {
 
         res.status(200).json('Successfully deleted');
     },
+
+    async getDepartmentWorkload({ body: { department } }, res) {
+        // Если department = 6, то нужно выввести все нагрузки, у которых department = 6
+        let departmentFilter = {};
+        if (department >= 1 && department <= 11) {
+            departmentFilter = { department };
+        }
+        const workloads = await Workload.findAll({
+            where: departmentFilter,
+            include: { model: Educator },
+        });
+
+        const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
+        res.json(workloadsDto);
+    },
 };
