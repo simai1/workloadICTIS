@@ -4,11 +4,13 @@ import CommentDto from '../dtos/comment-dto.js';
 import Educator from '../models/educator.js';
 
 export default {
-    async createComment({ body: { workloadId, text } }, res) {
+    async createComment({ body: { educatorId, workloadId, text } }, res) {
+        if (!educatorId) throw new AppErrorMissing('educatorId');
         if (!workloadId) throw new AppErrorMissing('workloadId');
         if (!text) throw new AppErrorMissing('text');
 
         const comment = await Comment.create({
+            educatorId,
             workloadId,
             text,
         });
@@ -23,7 +25,9 @@ export default {
     },
 
     async getAllComments(req, res) {
-        const comments = await Comment.findAll({});
+        const comments = await Comment.findAll({
+            include: [{ model: Educator }],
+        });
 
         const commentDtos = [];
 

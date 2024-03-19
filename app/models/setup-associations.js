@@ -19,4 +19,7 @@ export default function () {
 
     Workload.hasMany(Comment);
     Comment.belongsTo(Workload);
+
+    Educator.hasMany(Comment);
+    Comment.belongsTo(Educator);
 }

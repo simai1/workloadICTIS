@@ -1,13 +1,16 @@
+import EducatorDto from './educator-dto.js';
 export default class CommentDto {
     id;
     text;
-    workloadId;
+    educator;
     isChecked;
+    workloadId;
 
     constructor(model) {
         this.id = model.id;
         this.text = model.text;
-        this.workloadId = model.workloadId;
+        this.educator = new EducatorDto(model.Educator);
         this.isChecked = model.isChecked;
+        this.workloadId = model.workloadId;
     }
 }
