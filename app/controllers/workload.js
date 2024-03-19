@@ -72,11 +72,8 @@ export default {
             newWorkloads.push(newWorkload);
         }
 
-        // Помечаем изначальную нагрузку как разделенную
-
         // удали изначальную нагрузку
         await originalWorkload.destroy({ force: true });
-        // await originalWorkload.save();
 
         res.json(newWorkloads);
     },
@@ -87,10 +84,6 @@ export default {
         if (!workload) throw new Error('Нет такой нагрузки');
         const workloadDto = new WorkloadDto(workload);
         res.json(workloadDto);
-    },
-
-    async getEducators(res) {
-        // Реализация метода получения списка преподавателей
     },
 
     async update({ params: { id }, body: { numberOfStudents, hours, comment } }, res) {
