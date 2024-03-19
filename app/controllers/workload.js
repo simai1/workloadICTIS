@@ -46,7 +46,7 @@ export default {
         // Проверяем, что параметры корректны
         if (!id) throw new Error('Укажите айди нагрузки');
         if (!n || isNaN(n) || n < 1) throw new Error('Укажите количество групп для разделения нагрузки');
-
+        if (n > 4) throw new Error('Максимальное количество групп для разделения нагрузки - 4');
         // Загружаем изначальную нагрузку
         const originalWorkload = await Workload.findByPk(id, { include: { model: Educator } });
         if (!originalWorkload) throw new Error('Workload not found');
