@@ -14,10 +14,6 @@ export default class Comment extends Model {
                     type: DataTypes.STRING,
                     allowNull: false,
                 },
-                educatorId: {
-                    type: DataTypes.UUID,
-                    allowNull: false,
-                },
                 workloadId: {
                     type: DataTypes.UUID,
                     allowNull: false,
