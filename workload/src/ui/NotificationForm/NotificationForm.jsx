@@ -4,7 +4,9 @@ import DataContext from "../../context";
 import { createComment } from "../../api/services/ApiGetData";
 
 import { ReactComponent as LogoAllComment } from "./../../img/arrow_down.svg";
-import { ReactComponent as commentsSvg } from "./../../img/comments.svg";
+import { ReactComponent as CommentsSvg } from "./../../img/comments.svg";
+import { ReactComponent as CommentsSvgActive } from "./../../img/commentsOn.svg";
+import { ReactComponent as Checkmark } from "./../../img/checkmark.svg";
 
 export function NotificationForm(props) {
   const [isCommentsSheetOpen, setCommentsSheetOpen] = useState(false);
@@ -19,7 +21,7 @@ export function NotificationForm(props) {
       setError(true);
     } else {
       const data = {
-        educatorId: "3d3d0074-3697-42ea-90f4-e8c034376fcf",
+        educatorId: "ca05e456-0cc0-4b57-b656-729dc3412412",
         workloadId: props.workloadId,
         text: textarea,
       };
@@ -74,7 +76,7 @@ export function NotificationForm(props) {
               <div className={styles.container}>
                 {props.commentData.map((item) => (
                   <div key={item?.id}>
-                    <h4>{item?.educator.name}</h4>
+                    <h4>{item?.educator?.name}</h4>
                     <p>{item?.text}</p>
                   </div>
                 ))}
@@ -82,7 +84,7 @@ export function NotificationForm(props) {
             </div>
           ) : (
             <div className={styles.headComment}>
-              <h4>{props.commentData[0]?.educator.name}</h4>
+              <h4>{props.commentData[0]?.educator?.name}</h4>
               <p>{props.commentData[0]?.text}</p>
             </div>
           )}
@@ -104,20 +106,23 @@ export function NotificationForm(props) {
                 />
               </div>
 
-              <div className={styles.left}>
-                {/* <img
-                  onClick={handleClickComment}
-                  src={
-                    isComment ? "./img/commentsOn.svg" : "./img/comments.svg"
-                  }
-                  alt="comments"
-                ></img> */}
-                <commentsSvg onClick={handleClickComment} />
-                <img
+              <div className={styles.left_2}>
+                {isComment ? (
+                  <CommentsSvgActive
+                    className={styles.logosvg}
+                    onClick={handleClickComment}
+                  />
+                ) : (
+                  <CommentsSvg
+                    className={styles.logosvg}
+                    onClick={handleClickComment}
+                  />
+                )}
+
+                <Checkmark
+                  className={styles.logosvg}
                   onClick={onCheckmarkClick}
-                  src="./img/checkmark.svg"
-                  alt="checkmark"
-                ></img>
+                />
               </div>
             </div>
           )}

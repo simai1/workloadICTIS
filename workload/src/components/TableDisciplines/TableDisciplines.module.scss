@@ -118,12 +118,35 @@
       height: 100%;
       padding: 10px;
     }
+
     .td_inner:hover {
       background-color: #dedeed;
       border-radius: 8px;
     }
     td {
       padding: 7px 20px !important;
+
+      .textarea {
+        width: 140px;
+        height: 60px;
+        resize: none !important;
+        border: none;
+        box-shadow: 0px 0px 7px #b3b0b0;
+        border-radius: 8px;
+        padding: 5px;
+      }
+      .textarea::-webkit-scrollbar {
+        width: 5px; /* ширина scrollbar */
+      }
+      .textarea::-webkit-scrollbar-track {
+        background: #fff; /* цвет дорожки */
+      }
+      .textarea::-webkit-scrollbar-thumb,
+      .textarea::-webkit-scrollbar-thumb {
+        background-color: #a6a6a6;
+        border-radius: 5px;
+        border: 3px solid #a6a6a6;
+      }
     }
     .th_inner {
       display: flex;

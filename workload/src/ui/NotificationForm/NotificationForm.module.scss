@@ -32,6 +32,14 @@
         fill: #3b28cc;
       }
     }
+    .left_2 {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      .logosvg:hover * {
+        fill: #3b28cc;
+      }
+    }
   }
 
   .logosvg {

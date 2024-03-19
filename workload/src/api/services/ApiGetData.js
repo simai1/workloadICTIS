@@ -138,3 +138,19 @@ export const createComment = async (data) => {
     throw error;
   }
 };
+
+//! запрос на изменени данных нагрузки
+export const workloadUpdata = async (id, data) => {
+  console.log("изменение данных нагрузки ", id, data);
+  try {
+    const response = await axios.patch(
+      `https://workload.sfedu.ru/workload/${id}/update`,
+      data
+    );
+    console.log("response ", response);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};

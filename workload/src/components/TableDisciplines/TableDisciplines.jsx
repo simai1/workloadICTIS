@@ -7,7 +7,11 @@ import ContextMenu from "../../ui/ContextMenu/ContextMenu";
 import { NotificationForm } from "../../ui/NotificationForm/NotificationForm";
 import { SamplePoints } from "../../ui/SamplePoints/SamplePoints";
 import DataContext from "../../context";
-import { Comment, Workload } from "../../api/services/ApiGetData";
+import {
+  Comment,
+  Workload,
+  workloadUpdata,
+} from "../../api/services/ApiGetData";
 
 function TableDisciplines() {
   const [updatedHeader, setUpdatedHeader] = useState([]); //заголовок обновленный для Redux сортировки
@@ -99,7 +103,12 @@ function TableDisciplines() {
   };
 
   const handleIndividualCheckboxChange = (el, index) => {
-    if (el.target.tagName !== "DIV") {
+    // console.log(el.target.tagName);
+    if (
+      el.target.tagName !== "DIV" &&
+      el.target.tagName !== "TEXTAREA" &&
+      el.target.tagName !== "BUTTON"
+    ) {
       let ic = [...individualCheckboxes];
 
       if (ic.includes(filteredData[index].id)) {
@@ -291,7 +300,22 @@ function TableDisciplines() {
   const [cellNumber, setCellNumber] = useState([]);
   const changeValueTd = (index, ind) => {
     console.log("изменить ", index, ind);
-    setCellNumber(index, ind);
+    setCellNumber({ index, ind });
+    console.log(cellNumber);
+  };
+  const [textareaTd, setTextareaTd] = useState("");
+  const onChangeTextareaTd = (event) => {
+    setTextareaTd(event.target.value);
+  };
+
+  const onClickButton = (id, key) => {
+    console.log(id, { [key.key]: textareaTd });
+    const parsedValue = Number(textareaTd);
+    const numberValue = isNaN(parsedValue) ? textareaTd : parsedValue;
+    // отпрака запроса на изменение данных
+    textareaTd &&
+      workloadUpdata(id, { [key.key]: numberValue }).then(() => getDataTable());
+    setCellNumber([]);
   };
 
   //! содержимое
@@ -480,11 +504,29 @@ function TableDisciplines() {
                               className={styles.td_inner}
                               onDoubleClick={() => changeValueTd(index, ind)}
                             >
-                              {row[updatedHeader[ind].key] === null
-                                ? "0"
-                                : updatedHeader[ind].key === "id"
-                                ? index + 1
-                                : row[updatedHeader[ind].key]}
+                              {cellNumber &&
+                              cellNumber.index === index &&
+                              cellNumber.ind === ind ? (
+                                <div className={styles.textarea_title}>
+                                  <textarea
+                                    className={styles.textarea}
+                                    type="text"
+                                    defaultValue={row[updatedHeader[ind].key]}
+                                    onChange={onChangeTextareaTd}
+                                  ></textarea>
+                                  <button
+                                    onClick={() => onClickButton(row.id, key)}
+                                  >
+                                    Сохранить
+                                  </button>
+                                </div>
+                              ) : row[updatedHeader[ind].key] === null ? (
+                                "0"
+                              ) : updatedHeader[ind].key === "id" ? (
+                                index + 1
+                              ) : (
+                                row[updatedHeader[ind].key]
+                              )}
                             </div>
                           </td>
                         ))}
