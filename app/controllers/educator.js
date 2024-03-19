@@ -61,7 +61,7 @@ export default {
             rate,
         });
 
-        res.json({ status: 'OK' });
+        res.json(educator);
     },
     // Создаем преподователя
     async create({ body: { name, position, typeOfEmployment, rate, department } }, res) {

@@ -14,7 +14,7 @@ export default {
             workloadId,
             text,
         });
-        res.status(200).json('Okay');
+        res.json(comment);
     },
 
     async deleteComment({ params: { commentId } }, res) {
