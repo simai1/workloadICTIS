@@ -8,7 +8,7 @@ export default class CommentDto {
     constructor(model) {
         this.id = model.id;
         this.text = model.text;
-        this.educator = new EducatorDto(model.Educator);
+        this.educator = model.Educator ? new EducatorDto(model.Educator) : null;
         this.workloadId = model.workloadId;
     }
 }
