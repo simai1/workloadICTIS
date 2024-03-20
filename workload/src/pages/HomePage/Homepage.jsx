@@ -78,6 +78,15 @@ function HomePage() {
             />
           ) : null}
         </div>
+        <a href="#">
+          <div className={styles.rocket}>
+            <img
+              className={styles.rocket_img}
+              src="./img/rocket.png"
+              alt="up"
+            />
+          </div>
+        </a>
       </div>
     </Layout>
   );

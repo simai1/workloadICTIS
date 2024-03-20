@@ -3,35 +3,22 @@ import styles from "./Warnings.module.scss";
 import arrow from "./../../img/arrow.svg";
 import WarningMessage from "../../ui/WarningMessage/WarningMessage";
 import socketConnect from "../../api/services/socket";
+import DataContext from "../../context";
 function Warnings() {
-  const handleSoket = () => {
-    socketConnect();
-  };
+  const { appData } = React.useContext(DataContext);
 
-  // useEffect(() => {
-  //   socket.on("connect", () => {
-  //     console.log("Socket connected");
-  //   });
-  //   socket.on("notificationCreated", (data) => {
-  //     console.log("Notification created:", data);
-  //   });
-  //   return () => {
-  //     // Очистка обработчиков событий при размонтировании компонента
-  //     socket.off("connect");
-  //     socket.off("notificationCreated");
-  //   };
-  // }, []);
   const [isListOpen, setListOpen] = useState(false);
+  const [arrMessage, setMessage] = useState(appData.allWarningMessage);
   const toggleList = () => {
     setListOpen(!isListOpen);
   };
-  const [arrMessage, setMessage] = useState([
-    { id: "1", name: "Бабулинко А А", hours: "98" },
-    { id: "2", name: "Бабулинко А А", hours: "98" },
-    { id: "3", name: "Бабулинко А А", hours: "98" },
-    { id: "4", name: "Бабулинко А А", hours: "98" },
-    { id: "5", name: "Бабулинко А А", hours: "98" },
-  ]);
+
+  useEffect(() => {
+    socketConnect().then((data) => {
+      data && setMessage(data.existingNotification); //!!! исправить
+      console.log("socketConnect", data);
+    });
+  }, []);
 
   // закрытие модального окна при нажатии вне него
   const refLO = useRef(null);
@@ -46,15 +33,13 @@ function Warnings() {
       document.removeEventListener("click", handler);
     };
   }, []);
-
   return (
     <div ref={refLO} className={styles.Warnings}>
-      <button onClick={handleSoket}>Сокет</button>
       {!isListOpen && (
         <div onClick={toggleList} className={styles.WarningsButton}>
           <p className={styles.circlesbuttonWarn}>
-            <span className={styles.Warnings_count_circle}>
-              {arrMessage.length}
+            <span className={styles.span_length}>
+              {appData.allWarningMessage?.length}
             </span>
           </p>
           <p>Предупреждения</p>
@@ -65,16 +50,26 @@ function Warnings() {
         <div className={styles.WarningsOpen}>
           <div onClick={toggleList} className={styles.WarningsButtonOpen}>
             <p className={styles.circlesbuttonWarn}>
-              <span>{arrMessage.length}</span>
+              <span className={styles.span_length}>
+                {appData.allWarningMessage?.length}
+              </span>
             </p>
             <p>Предупреждения</p>
-            <img src={arrow} alt="arrow"></img>
+            <img
+              src={arrow}
+              alt="arrow"
+              style={{
+                padding: "11px",
+                transform: " rotate(180deg)",
+                transition: "transform 0.4s",
+              }}
+            ></img>
           </div>
           <div className={styles.WarningsList}>
             <ul>
-              {arrMessage.map((el, index) => {
+              {appData.allWarningMessage?.map((el, index) => {
                 return (
-                  <WarningMessage key={index} arrMessage={el} id={index + 1} />
+                  <WarningMessage key={el.id} arrMessage={el} id={index + 1} />
                 );
               })}
             </ul>

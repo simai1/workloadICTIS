@@ -81,7 +81,11 @@ const ContextMenu = (props) => {
   };
 
   return (
-    <div onContextMenu={handleContextMenu} className={styles.ContextMenu}>
+    <div
+      ref={props.refContextMenu}
+      onContextMenu={handleContextMenu}
+      className={styles.ContextMenu}
+    >
       <div
         style={{
           position: "fixed",
@@ -104,11 +108,12 @@ const ContextMenu = (props) => {
         <div>
           <button
             className={styles.activeStylePointer}
-            onClick={props.onAddComment}
+            onClick={props.handleMenuClick}
           >
-            Добавить комментарий
+            Удалить преподавателя
           </button>
         </div>
+
         <div onClick={handleMouseClickPop} className={styles.blockMenuPop}>
           <button className={styles.buttonDel}>Разделить</button>
 
@@ -118,6 +123,14 @@ const ContextMenu = (props) => {
           {!showSubMenu && (
             <img src={arrow} alt=">" className={styles.imgClose} />
           )}
+        </div>
+        <div>
+          <button
+            className={styles.activeStylePointer}
+            onClick={props.onAddComment}
+          >
+            Оставить комментарий
+          </button>
         </div>
         <div>
           <button
@@ -132,9 +145,10 @@ const ContextMenu = (props) => {
             className={styles.activeStylePointer}
             onClick={props.handleMenuClick}
           >
-            Копировать
+            Предложить
           </button>
         </div>
+
         <div>
           <button
             className={styles.activeStylePointer}
@@ -143,14 +157,7 @@ const ContextMenu = (props) => {
             Согласовать
           </button>
         </div>
-        <div>
-          <button
-            className={styles.activeStylePointer}
-            onClick={props.handleMenuClick}
-          >
-            Предложить
-          </button>
-        </div>
+
         <div>
           <button
             className={styles.activeStylePointer}

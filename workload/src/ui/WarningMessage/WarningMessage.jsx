@@ -8,11 +8,13 @@ const WarningMessage = (props) => {
         <p className={styles.circlesbuttonWarn}>
           <span>{props.id}</span>
         </p>
-        <p>{props.arrMessage.name}</p>
+        {/* <p>{props.arrMessage.name}</p> */}
+        <p>Бабуленко И В</p>
       </div>
       <div className={styles.buttonWarnBlock}>
         <p>
-          Перегрузка - <span>{props.arrMessage.hours}</span> ч
+          {/* Перегрузка - <span>{props.arrMessage.hours}</span> ч */}
+          {props.arrMessage.message}
         </p>
         <img className={styles.arrowButton} src={arrow} alt="arrow" />
       </div>

@@ -25,6 +25,9 @@
       display: flex;
       align-items: center;
       cursor: pointer;
+      span {
+        font-size: 16px;
+      }
     }
     .left:hover {
       color: #3b28cc;
@@ -43,7 +46,7 @@
   }
 
   .logosvg {
-    margin: 5px;
+    margin: 4px;
     cursor: pointer;
   }
   img {

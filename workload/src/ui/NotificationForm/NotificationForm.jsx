@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "./NotificationForm.module.scss";
 import DataContext from "../../context";
-import { createComment } from "../../api/services/ApiGetData";
+import { createComment, deleteComment } from "../../api/services/ApiGetData";
 
 import { ReactComponent as LogoAllComment } from "./../../img/arrow_down.svg";
 import { ReactComponent as CommentsSvg } from "./../../img/comments.svg";
@@ -41,11 +41,11 @@ export function NotificationForm(props) {
   //! открытие textarea для ввода комментраия
   const handleClickComment = () => {
     setCommentsSheetOpen(false);
-    if (isComment) {
-      setPositionMenu({ y: props.position.y, x: props.position.x });
-    } else {
-      setPositionMenu({ y: props.position.y - 150, x: props.position.x });
-    }
+    // if (isComment) {
+    //   setPositionMenu({ y: props.position.y, x: props.position.x });
+    // } else {
+    //   setPositionMenu({ y: props.position.y - 150, x: props.position.x });
+    // }
     setIsComment(!isComment);
   };
 
@@ -53,11 +53,18 @@ export function NotificationForm(props) {
   const onClickAllComment = () => {
     setCommentsSheetOpen(!isCommentsSheetOpen);
     setIsComment(false);
-    if (isCommentsSheetOpen) {
-      setPositionMenu({ y: props.position.y, x: props.position.x });
-    } else {
-      setPositionMenu({ y: props.position.y - 168, x: props.position.x });
-    }
+    // if (isCommentsSheetOpen) {
+    //   setPositionMenu({ y: props.position.y, x: props.position.x });
+    // } else {
+    //   setPositionMenu({ y: props.position.y - 168, x: props.position.x });
+    // }
+  };
+
+  //! нажатие галочки удаление комментариев
+  const onCheckmarkClickDelet = (data) => {
+    console.log(data[0].id);
+    //удаление коммента по id
+    deleteComment(data[0].id).then(() => props.getDataAllComment());
   };
 
   return (
@@ -65,7 +72,7 @@ export function NotificationForm(props) {
       <div
         className={styles.hovered_notice}
         style={{
-          top: positionMenu.y - 90,
+          top: positionMenu.y + 65,
           left: positionMenu.x + 70,
         }}
       >
@@ -88,22 +95,27 @@ export function NotificationForm(props) {
               <p>{props.commentData[0]?.text}</p>
             </div>
           )}
-          {props.commentData.length > 1 && (
+          {props.commentData.length > 0 && (
             <div className={styles.hovered_notice_img}>
               <div className={styles.left} onClick={onClickAllComment}>
-                <span>{props.commentData.length}</span>
+                {props.commentData.length > 1 && (
+                  <>
+                    <span>{props.commentData.length}</span>
 
-                <LogoAllComment
-                  className={styles.logosvg}
-                  style={
-                    isCommentsSheetOpen
-                      ? {
-                          transform: " rotate(180deg)",
-                          transition: "transform 0.4s",
-                        }
-                      : { transition: "transform 0.3s" }
-                  }
-                />
+                    <LogoAllComment
+                      height={8}
+                      className={styles.logosvg}
+                      style={
+                        isCommentsSheetOpen
+                          ? {
+                              transform: " rotate(180deg)",
+                              transition: "transform 0.4s",
+                            }
+                          : { transition: "transform 0.3s" }
+                      }
+                    />
+                  </>
+                )}
               </div>
 
               <div className={styles.left_2}>
@@ -121,7 +133,7 @@ export function NotificationForm(props) {
 
                 <Checkmark
                   className={styles.logosvg}
-                  onClick={onCheckmarkClick}
+                  onClick={() => onCheckmarkClickDelet(props.commentData)}
                 />
               </div>
             </div>

@@ -7,9 +7,14 @@ import ContextMenu from "../../ui/ContextMenu/ContextMenu";
 import { NotificationForm } from "../../ui/NotificationForm/NotificationForm";
 import { SamplePoints } from "../../ui/SamplePoints/SamplePoints";
 import DataContext from "../../context";
+
+import { ReactComponent as SvgChackmark } from "./../../img/checkmark.svg";
+import { ReactComponent as SvgCross } from "./../../img/cross.svg";
+
 import {
   Comment,
   Workload,
+  getAllWarningMessage,
   workloadUpdata,
 } from "../../api/services/ApiGetData";
 
@@ -53,6 +58,7 @@ function TableDisciplines() {
     setTableData(appData.workload);
   }
 
+  //! функция получения всех комментариев на странице
   function getDataAllComment() {
     Comment().then((data) => {
       console.log("comment", data);
@@ -60,10 +66,18 @@ function TableDisciplines() {
     });
   }
 
-  // заносим данные о преподавателях в состояние
+  //! функция получения всех предупреждений
+  function getAllWarnin() {
+    getAllWarningMessage().then((data) => {
+      console.log("Warning ", data);
+      appData.setAllWarningMessage(data);
+    });
+  }
+  //! заносим данные о преподавателях в состояние
   useEffect(() => {
     getDataTable();
     getDataAllComment();
+    getAllWarnin();
   }, []);
 
   //! сортировака (по hedars) пришедших данных из апи
@@ -75,9 +89,10 @@ function TableDisciplines() {
     setTableData(sortedArray);
   }, [appData.workload]);
 
-  // закрытие модального окна при нажатии вне него
+  //! закрытие модального окна при нажатии вне него
   const refSP = useRef(null);
   const refHoverd = useRef(null);
+  const refContextMenu = useRef(null);
   useEffect(() => {
     const handler = (event) => {
       if (refSP.current && !refSP.current.contains(event.target)) {
@@ -85,6 +100,12 @@ function TableDisciplines() {
       }
       if (refHoverd.current && !refHoverd.current.contains(event.target)) {
         setIsHovered(false);
+      }
+      if (
+        refContextMenu.current &&
+        !refContextMenu.current.contains(event.target)
+      ) {
+        setShowMenu(false);
       }
     };
 
@@ -94,7 +115,7 @@ function TableDisciplines() {
     };
   }, []);
 
-  //чекбоксы
+  //! чекбоксы
   const handleGlobalCheckboxChange = () => {
     setIsCheckedGlobal(!isCheckedGlobal);
     !isCheckedGlobal
@@ -107,7 +128,8 @@ function TableDisciplines() {
     if (
       el.target.tagName !== "DIV" &&
       el.target.tagName !== "TEXTAREA" &&
-      el.target.tagName !== "BUTTON"
+      el.target.tagName !== "svg" &&
+      el.target.tagName !== "path"
     ) {
       let ic = [...individualCheckboxes];
 
@@ -299,9 +321,11 @@ function TableDisciplines() {
   //! функция изменения значения td при двойном клике
   const [cellNumber, setCellNumber] = useState([]);
   const changeValueTd = (index, ind) => {
-    console.log("изменить ", index, ind);
-    setCellNumber({ index, ind });
-    console.log(cellNumber);
+    // console.log("изменить ", index, ind);
+    if (ind === 15 || ind == 14) {
+      setCellNumber({ index, ind });
+    }
+    // console.log(cellNumber);
   };
   const [textareaTd, setTextareaTd] = useState("");
   const onChangeTextareaTd = (event) => {
@@ -383,6 +407,7 @@ function TableDisciplines() {
         )}
         {showMenu && (
           <ContextMenu
+            refContextMenu={refContextMenu}
             showMenu={showMenu}
             menuPosition={menuPosition}
             handleMenuClick={handleMenuClick}
@@ -514,11 +539,17 @@ function TableDisciplines() {
                                     defaultValue={row[updatedHeader[ind].key]}
                                     onChange={onChangeTextareaTd}
                                   ></textarea>
-                                  <button
-                                    onClick={() => onClickButton(row.id, key)}
-                                  >
-                                    Сохранить
-                                  </button>
+                                  <div className={styles.svg_textarea}>
+                                    <SvgChackmark
+                                      className={styles.SvgChackmark_green}
+                                      onClick={() => onClickButton(row.id, key)}
+                                    />
+                                    <SvgCross
+                                      onClick={() => {
+                                        setCellNumber([]);
+                                      }}
+                                    />
+                                  </div>
                                 </div>
                               ) : row[updatedHeader[ind].key] === null ? (
                                 "0"

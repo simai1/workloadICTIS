@@ -59,6 +59,17 @@ export const Comment = async () => {
   }
 };
 
+//! получение предупреждений о перегрузках
+export const getAllWarningMessage = async () => {
+  try {
+    const response = await axios.get("https://workload.sfedu.ru/notification");
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
 //! запрос на добавление преподавателя к нагрузке
 export const addEducatorWorkload = async (data) => {
   console.log("Добавление преподавателя ", data);
@@ -91,9 +102,9 @@ export const splitWorkload = async (data) => {
   }
 };
 
-//! запрос на разделение нагрузки
+//! запрос на соединение нагрузки
 export const joinWorkloads = async (data) => {
-  console.log("Раздление нагрузки ", data);
+  console.log("Соединение нагрузки ", data);
   try {
     const response = await axios.post(
       "https://workload.sfedu.ru/workload/map",
@@ -145,6 +156,22 @@ export const workloadUpdata = async (id, data) => {
   try {
     const response = await axios.patch(
       `https://workload.sfedu.ru/workload/${id}/update`,
+      data
+    );
+    console.log("response ", response);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
+//! запрос на удаление нагрузки
+export const deleteComment = async (data) => {
+  console.log("Коммент удален ", data);
+  try {
+    const response = await axios.delete(
+      `https://workload.sfedu.ru/comment/delete/${data}`,
       data
     );
     console.log("response ", response);
