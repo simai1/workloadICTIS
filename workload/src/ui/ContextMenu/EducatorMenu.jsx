@@ -24,11 +24,19 @@ export function EducatorMenu(props) {
   return (
     <div
       className={styles.EducatorMenu}
-      style={{
-        position: "fixed",
-        top: props.menuPosition.y,
-        left: props.menuPosition.x + 280,
-      }}
+      style={
+        props.propose
+          ? {
+              position: "fixed",
+              top: props.menuPosition.y + 200,
+              left: props.menuPosition.x + 280,
+            }
+          : {
+              position: "fixed",
+              top: props.menuPosition.y,
+              left: props.menuPosition.x + 280,
+            }
+      }
     >
       <input
         type="text"

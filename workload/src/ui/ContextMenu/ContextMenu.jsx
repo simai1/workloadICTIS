@@ -13,17 +13,32 @@ const ContextMenu = (props) => {
   const [menuPosition, setMenuPosition] = useState(props.menuPosition);
   const [showSubMenu, setShowSubMenu] = useState(false);
   const [educatorMenuShow, setEducatorMenuShow] = useState(false);
+  const [propose, setPropose] = useState(false);
 
   const handleContextMenu = (e) => {
     e.preventDefault();
     setMenuPosition({ x: e.clientX, y: e.clientY });
   };
+
+  //! нажатие на разделить
   const handleMouseClickPop = () => {
     setShowSubMenu(!showSubMenu);
+    setEducatorMenuShow(false);
+    setPropose(false);
   };
 
+  //! нажатие на добавить преподавателя
   const addEducator = () => {
+    setPropose(false);
+    setShowSubMenu(false);
     setEducatorMenuShow(!educatorMenuShow);
+  };
+
+  //! нажатие на предложить
+  const onClickPropose = () => {
+    setEducatorMenuShow(false);
+    setShowSubMenu(false);
+    setPropose(!propose);
   };
 
   //! Выбор преподавателя
@@ -33,13 +48,17 @@ const ContextMenu = (props) => {
       workloadId: props.individualCheckboxes[0],
       educatorId: id,
     };
-    // отправка запроса на добавление преподавателя
-    props.individualCheckboxes[0]
-      ? addEducatorWorkload(data).then((response) => {
-          props.getDataTable();
-        })
-      : console.error("не выбранно ни одной строки");
-    // запросим данные таблицы
+    if (educatorMenuShow) {
+      // отправка запроса на добавление преподавателя
+      props.individualCheckboxes[0]
+        ? addEducatorWorkload(data).then((response) => {
+            props.getDataTable();
+          })
+        : console.error("не выбранно ни одной строки");
+      // запросим данные таблицы
+    } else if (propose) {
+      console.log("Предложение ", data);
+    }
   };
 
   //! Деление нагрузки на count
@@ -94,15 +113,14 @@ const ContextMenu = (props) => {
         }}
         className={styles.blockMenu}
       >
-        <div className={styles.blockMenuPop}>
-          <button onClick={addEducator} className={styles.activeStylePointer}>
+        <div className={styles.blockMenuPop} onClick={addEducator}>
+          <button className={styles.activeStylePointer}>
             Добавить преподователя
           </button>
           <img
             src={arrow}
             alt=">"
             className={educatorMenuShow ? styles.imgOpen : styles.imgClose}
-            onClick={addEducator}
           />
         </div>
         <div>
@@ -140,13 +158,13 @@ const ContextMenu = (props) => {
             Объеденить
           </button>
         </div>
-        <div>
-          <button
-            className={styles.activeStylePointer}
-            onClick={props.handleMenuClick}
-          >
-            Предложить
-          </button>
+        <div className={styles.blockMenuPop} onClick={onClickPropose}>
+          <button className={styles.activeStylePointer}>Предложить</button>
+          <img
+            src={arrow}
+            alt=">"
+            className={propose ? styles.imgOpen : styles.imgClose}
+          />
         </div>
 
         <div>
@@ -174,8 +192,9 @@ const ContextMenu = (props) => {
           handleSplitWorkload={handleSplitWorkload}
         />
       )}
-      {educatorMenuShow && (
+      {(educatorMenuShow || propose) && (
         <EducatorMenu
+          propose={propose}
           menuPosition={menuPosition}
           selectedEducator={selectedEducator}
         />
