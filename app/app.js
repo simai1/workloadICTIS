@@ -15,6 +15,7 @@ import parserRoute from './routes/parser.js';
 import eduRoute from './routes/educator.js';
 import workloadRoute from './routes/workload.js';
 import notificationRoute from './routes/notification.js';
+import offerRoute from './routes/offers.js';
 
 import { eventEmitter } from './utils/notification.js';
 
@@ -57,6 +58,7 @@ app.use('/educator', eduRoute);
 app.use('/parser', parserRoute);
 app.use('/workload', workloadRoute);
 app.use('/auth', authRoute);
+app.use('/offers', offerRoute);
 
 io.on('connection', socket => {
     console.log(`socket ${socket.id} connected`);
