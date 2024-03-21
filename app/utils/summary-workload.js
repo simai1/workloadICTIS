@@ -126,7 +126,6 @@ async function deleteHours(newWorkload) {
         summaryWorkload.instituteManagementWorkload - hours.instituteManagementWorkload
     );
 
-    console.log('Удалился');
     await summaryWorkload.save();
 }
 
