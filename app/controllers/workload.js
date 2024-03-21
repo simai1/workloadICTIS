@@ -18,7 +18,6 @@ export default {
 
             res.json(workloadsDto);
         } catch (error) {
-            console.error(error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     },
@@ -110,7 +109,6 @@ export default {
 
             res.json(workload);
         } catch (error) {
-            console.error('Error in update:', error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     },
