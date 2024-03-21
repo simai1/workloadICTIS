@@ -2,15 +2,16 @@ import Notification from '../models/notifications.js';
 import Educator from '../models/educator.js';
 import { EventEmitter } from 'events';
 import { notificationMessages } from '../const/messages.js';
+import EducatorDto from '../dtos/educator-dto.js';
 
 const eventEmitter = new EventEmitter();
 // const eventQueue = [];
 // let isProcessing = false;
 
-async function createNotification(message, educatorId) {
+async function createNotification(message, educator) {
     try {
-        const notification = await Notification.create({ message, educatorId });
-        eventEmitter.emit('notificationCreated', { notification });
+        const notification = await Notification.create({ message, educatorId: educator.id });
+        eventEmitter.emit('notificationCreated', { notification, educator: new EducatorDto(educator) });
     } catch (error) {
         console.error('Error creating notification:', error);
     }
@@ -44,7 +45,7 @@ export default async function checkHours(summaryWorkload) {
         } else {
             // Если нет уведомления и условия не соблюдаются, создаем новое уведомление
             if (notificationMessage) {
-                createNotification(notificationMessage, summaryWorkload.educatorId);
+                createNotification(notificationMessage, educator);
             }
         }
 
@@ -55,7 +56,7 @@ export default async function checkHours(summaryWorkload) {
             if (existingMessage !== notificationMessage) {
                 existingNotification.message = notificationMessage;
                 await existingNotification.save();
-                eventEmitter.emit('notificationCreated', { existingNotification });
+                eventEmitter.emit('notificationCreated', { existingNotification, educator: new EducatorDto(educator) });
             }
         }
     } catch (error) {
