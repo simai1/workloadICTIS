@@ -64,16 +64,4 @@ export default async function checkHours(summaryWorkload) {
     }
 }
 
-// Отправка уведомлений на клиент через WebSocket
-// eventEmitter.on('notificationCreated', eventData => {
-//     if (!isProcessing) {
-//         isProcessing = true;
-//         eventQueue.push(eventData);
-//         const messageValue = eventQueue.length;
-//         eventEmitter.emit('notificationCreated', eventData);
-//         console.log('Message Value:', messageValue);
-//         isProcessing = false;
-//     }
-// });
-
 export { eventEmitter };
