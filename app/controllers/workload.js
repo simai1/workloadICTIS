@@ -11,6 +11,7 @@ export default {
         try {
             const workloads = await Workload.findAll({
                 include: { model: Educator },
+                order: [['id', 'ASC']],
             });
 
             const workloadsDto = workloads.map(workload => new WorkloadDto(workload));

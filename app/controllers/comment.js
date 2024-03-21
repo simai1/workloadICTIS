@@ -2,12 +2,22 @@ import { AppErrorAlreadyExists, AppErrorMissing } from '../utils/errors.js';
 import Comment from '../models/comment.js';
 import CommentDto from '../dtos/comment-dto.js';
 import Educator from '../models/educator.js';
+import Workload from '../models/workload.js';
 
 export default {
     async createComment({ body: { educatorId, workloadId, text } }, res) {
         if (!educatorId) throw new AppErrorMissing('educatorId');
         if (!workloadId) throw new AppErrorMissing('workloadId');
         if (!text) throw new AppErrorMissing('text');
+
+        const educatorInWorkload = await Workload.findOne({
+            where: { id: workloadId },
+            include: { model: Educator, where: { id: educatorId } },
+        });
+
+        if (!educatorInWorkload) {
+            throw new AppErrorMissing('Преподаватель не связан с этой нагрузкой');
+        }
 
         const comment = await Comment.create({
             educatorId,
