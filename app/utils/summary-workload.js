@@ -62,8 +62,6 @@ async function setHours(workload) {
         summaryWorkload.instituteManagementWorkload + hours.instituteManagementWorkload
     );
 
-    console.log("Total hours in swrk", summaryWorkload.totalHours);
-    console.log("Total hours in hours", hours.totalHours);
     await summaryWorkload.save();
 
     await checkHours(summaryWorkload);
@@ -128,7 +126,6 @@ async function deleteHours(newWorkload) {
         summaryWorkload.instituteManagementWorkload - hours.instituteManagementWorkload
     );
 
-    console.log('Удалился')
     await summaryWorkload.save();
 }
 

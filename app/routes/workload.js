@@ -18,4 +18,5 @@ router.route('/').get(asyncRoute(workloadController.getAllWorkload));
 router.route('/getSummaryWorkload/:id').get(asyncRoute(workloadController.getSummaryWorkload));
 // router.route('/hours/:id').get(asyncRoute(workloadController.getHours));
 router.route('/get/departments').get(asyncRoute(workloadController.getAllDepartment));
+router.route('/get/department').get(asyncRoute(workloadController.getDepartmentWorkload));
 export default router;

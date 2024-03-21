@@ -23,6 +23,3 @@ export default function () {
     Educator.hasMany(Comment);
     Comment.belongsTo(Educator);
 }
-
-
-

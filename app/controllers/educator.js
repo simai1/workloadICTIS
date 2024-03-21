@@ -6,6 +6,7 @@ import { map as mapPositions } from '../config/position.js';
 import { map as mapTypeOfEmployments } from '../config/type-of-employment.js';
 import Workload from '../models/workload.js';
 import SummaryWorkload from '../models/summary-workload.js';
+import WorkloadDto from "../dtos/workload-dto.js";
 
 export default {
     async getAll(params, res) {
@@ -38,7 +39,11 @@ export default {
                 educatorId,
             },
         });
-        educatorProfileDto.workloads.push(workloads);
+        const workloadsDto = []
+        for (const workload of workloads) {
+            workloadsDto.push(new WorkloadDto(workload))
+        }
+        educatorProfileDto.workloads.push(workloadsDto);
         res.json(educatorProfileDto);
     },
 
@@ -61,7 +66,7 @@ export default {
             rate,
         });
 
-        res.json({ status: 'OK' });
+        res.json(educator);
     },
     // Создаем преподователя
     async create({ body: { name, position, typeOfEmployment, rate, department } }, res) {
