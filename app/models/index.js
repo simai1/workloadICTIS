@@ -7,7 +7,7 @@ import User from './user.js';
 import SummaryWorkload from './summary-workload.js';
 import TokenSchema from './token-model.js';
 import Comment from './comment.js';
-
+import History from "./history.js";
 
 const { DB_USER, DB_PWD, DB_HOST, DB_PORT, DB_NAME } = process.env;
 
@@ -19,6 +19,7 @@ export const models = {
     User,
     TokenSchema,
     Comment,
+    History
 };
 export const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PWD, {
     host: DB_HOST,
