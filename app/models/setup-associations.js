@@ -2,7 +2,7 @@ import { models } from './index.js';
 import Notification from './notifications.js';
 import SummaryWorkload from './summary-workload.js';
 
-const { Educator, Workload, User, TokenSchema, Comment } = models;
+const { Educator, Workload, User, TokenSchema, Comment, Offers } = models;
 
 export default function () {
     Educator.hasMany(Workload);
@@ -22,4 +22,7 @@ export default function () {
 
     Educator.hasMany(Comment);
     Comment.belongsTo(Educator);
+
+    Educator.hasOne(Offers);
+    Offers.belongsTo(Educator);
 }
