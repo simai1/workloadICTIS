@@ -6,7 +6,7 @@ import { AppErrorInvalid, AppErrorMissing } from '../utils/errors.js';
 
 export default {
     async getAllOffers(req, res) {
-        const offers = await Offer.findAll();
+        const offers = await Offer.findAll({ include: { model: Educator }, attributes: { exclude: ['EducatorId'] } });
         res.json(offers);
     },
 
