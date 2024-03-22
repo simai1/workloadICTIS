@@ -48,4 +48,17 @@ export default {
 
         res.json(commentDtos);
     },
+
+    async deleteAllComments({ params: { workloadId } }, res) {
+        if (!workloadId) throw new AppErrorMissing('workloadId');
+        const comments = await Comment.findAll({ where: { workloadId } });
+        if (comments.length === 0) {
+            res.send('No comments found for the specified workload');
+            return;
+        }
+        for (const comment of comments) {
+            await comment.destroy({ force: true });
+        }
+        res.send('All comments deleted');
+    },
 };
