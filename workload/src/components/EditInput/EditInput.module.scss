@@ -1,0 +1,127 @@
+@import "./../../style/colors.scss";
+
+.EditInput button {
+  width: 271px;
+  height: 44px;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: none;
+  transition: 0.15s linear opacity;
+  p {
+    font-size: 18px;
+  }
+  img {
+    padding-left: 11px;
+  }
+}
+.EditInput button:hover {
+  cursor: pointer;
+  opacity: 0.6;
+}
+.EditInputOpen {
+  border-radius: 8px;
+
+  background-color: #fff;
+  z-index: 50;
+  width: 271px;
+  color: var(--black-color);
+  position: relative;
+  box-shadow: 4px 4px 20px 0px #00000026;
+
+  .edit_input {
+    width: 84% !important;
+    position: relative !important;
+    top: 0 !important;
+    box-sizing: border-box;
+    margin-left: 8%;
+    padding: 10px !important;
+    font-size: 14px !important;
+  }
+  ul {
+    overflow-y: scroll;
+    position: relative;
+    left: -17px;
+    list-style: none;
+    font-size: 16px;
+    height: 65vh;
+    padding-right: 10px;
+    li {
+      position: relative;
+      margin-top: -10px;
+      align-items: center;
+      display: flex;
+    }
+  }
+  button {
+    width: 271px;
+    background-color: #fff;
+    p {
+      font-size: 18px;
+    }
+  }
+}
+ul::-webkit-scrollbar {
+  background-color: #ffffff;
+  width: 4px;
+  margin-bottom: 8px;
+  border: none;
+}
+
+ul::-webkit-scrollbar-thumb {
+  background-color: #cccccc;
+  border-radius: 8px;
+}
+
+ul::-webkit-scrollbar-track {
+  background-color: transparent;
+  border-radius: 0px 0px 8px 8px;
+  background-color: #ffffff;
+  border: none;
+}
+
+.customInput {
+  position: absolute;
+  margin-bottom: 10px;
+  margin-left: -2px;
+  opacity: 0;
+  width: 25px;
+  height: 30px;
+  top: 9px;
+  left: 0;
+}
+.customInput:nth-child(13) {
+  margin-bottom: 30px;
+}
+.customInput input[type="checkbox"] {
+  padding-right: 10px;
+  cursor: pointer;
+}
+.customInput p {
+  margin: 0;
+  line-height: 1.5;
+}
+input[type="checkbox"] + p {
+  position: relative;
+  padding-left: 25px;
+  line-height: 1.5;
+  pointer-events: none;
+}
+
+input[type="checkbox"] + p:before {
+  content: "";
+  position: absolute;
+  left: 0px;
+  top: 5px;
+  width: 14px;
+  height: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+input[type="checkbox"]:checked + p:before {
+  border-color: var(--blue-color);
+  background-color: var(--blue-color);
+}

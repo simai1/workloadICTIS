@@ -1,0 +1,291 @@
+@import "./../../style/colors.scss";
+
+.tabledisciplinesMain {
+  .table_container {
+    display: flex;
+  }
+  // td {
+  //   background-color: rgb(234, 234, 250) !important;
+  // }
+
+  .tabledisciplinesMain_search {
+    left: 64px;
+    margin-bottom: 10px;
+    position: absolute;
+    top: -92px;
+    width: 310px;
+    height: 45px;
+    align-items: center;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    padding: 9px 0px 9px 16px;
+    display: flex;
+    box-sizing: border-box;
+    margin-left: 0;
+
+    img {
+      display: flex;
+
+      padding: 10px;
+    }
+    input {
+      display: flex;
+      position: relative !important;
+      top: 0 !important;
+      left: 0 !important;
+      padding: 0 !important;
+      width: 100% !important;
+      border: none !important;
+      outline: none;
+      margin: 0 !important;
+    }
+  }
+  .search {
+    background-color: #efedf3;
+  }
+  input[type="text"] {
+    margin-bottom: 10px;
+    position: absolute;
+    top: -92px;
+    width: 310px;
+    font-size: 18px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    color: var(--black-color);
+    padding: 9px 0px 9px 16px;
+  }
+  .ButtonCaf_gen {
+    margin-bottom: 16px;
+    padding: 0 64px;
+  }
+  .EditInput {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  .TableDisciplines__inner {
+    padding-left: 64px;
+    display: flex;
+    flex-direction: row;
+    overflow-x: scroll;
+    border-radius: 8px;
+    // border-left: 1px solid var(--gray-color);
+    // border-right: 1px solid var(--gray-color);
+    // border-top: 1px solid var(--gray-color);
+
+    .TableDisciplines {
+      width: 100%;
+    }
+  }
+  .TableDisciplines__inner::-webkit-scrollbar {
+    background-color: var(--white-color);
+    height: 5px;
+    margin-bottom: 8px;
+  }
+
+  .TableDisciplines__inner::-webkit-scrollbar-thumb {
+    background-color: var(--formBg-color);
+    border-radius: 8px;
+    width: 200px !important;
+  }
+
+  .TableDisciplines__inner::-webkit-scrollbar-track {
+    background-color: transparent;
+    border-left: 1px solid var(--gray-color);
+    border-right: 1px solid var(--gray-color);
+    border-bottom: 1px solid var(--gray-color);
+    border-radius: 0px 0px 8px 8px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+
+    thead {
+      height: 58px;
+    }
+    .tr_thead {
+      background-color: #ddd;
+    }
+
+    th,
+    td {
+      text-align: center;
+    }
+    .td_inner {
+      width: 100%;
+      height: 100%;
+      padding: 10px;
+    }
+    .td_inner:hover {
+      background-color: #dedeed;
+      border-radius: 8px;
+    }
+    td {
+      padding: 7px 20px !important;
+    }
+    .th_inner {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      img {
+        padding-left: 4px;
+        padding-top: 3px;
+        cursor: pointer;
+      }
+    }
+    th {
+      background-color: var(--gray-color);
+      padding: 15px 20px !important;
+      cursor: pointer;
+    }
+    th:first-child {
+      border-radius: 8px 0px 0px 0px;
+    }
+    th:last-child {
+      border-radius: 0px 8px 0px 0px;
+    }
+    tr {
+      background-color: var(--white-color);
+    }
+    tr:hover {
+      background-color: #f1f1fd;
+    }
+  }
+  .table {
+    display: flex;
+  }
+
+  .taleDestiplinesMainTable {
+    // .table_tr {
+    //   position: relative;
+    // }
+    overflow-y: scroll;
+
+    .checkboxHeader {
+      height: 106px;
+    }
+
+    .checkbox,
+    .checkboxHeader {
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+    .notice {
+      position: absolute;
+      left: -40px;
+      width: 30px;
+      height: 30px;
+      background-color: red;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      transform: translateY(-4px);
+      cursor: pointer;
+    }
+    .notice::after {
+      content: "";
+      width: 3px;
+      height: 53px;
+      background-color: red;
+      position: absolute;
+      right: -10px;
+    }
+    // .checkbox::before {
+    //   content: "1";
+    //   position: absolute;
+    //   left: -30px;
+    //   background-color: #efedf3;
+    // }
+    .custom__checkbox {
+      position: absolute;
+      opacity: 0;
+    }
+    .custom__checkbox + label {
+      display: inline-flex;
+      align-items: center;
+      user-select: none;
+    }
+    .custom__checkbox + label::before {
+      content: "";
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 1px solid var(--black-gray);
+      border-radius: 4px;
+      pointer-events: none;
+    }
+    .custom__checkbox:hover {
+      cursor: pointer;
+    }
+    .custom__checkbox:checked + label::before {
+      border-color: var(--blue-color);
+      background-color: var(--blue-color);
+    }
+  }
+}
+
+.Block__tables__shadow {
+  background: linear-gradient(
+    270deg,
+    rgba(0, 0, 0, 0.2) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  height: calc((100%) - (60px));
+}
+
+table td {
+  padding: 17px 20px !important;
+}
+.Block__tables__shadow {
+  background: linear-gradient(
+    270deg,
+    rgba(0, 0, 0, 0.2) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  height: calc((100%) - (60px));
+  width: 20px;
+  position: absolute;
+  right: 0;
+  top: 60px;
+  border-radius: 0px 8px 8px 0px;
+  z-index: 2;
+}
+
+.taleDestiplinesMainTable::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 64px;
+  height: 100%;
+  background-color: #efedf3;
+}
+.taleDestiplinesMainTable {
+  .stytic_th,
+  .checkboxHeader {
+    position: sticky !important;
+    background-color: var(--gray-color) !important;
+  }
+  .stytic_td,
+  .checkbox {
+    position: sticky !important;
+    // background-color: #fff !important;
+    background-color: inherit;
+  }
+}
+
+.closer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #b3b0b0;
+  opacity: 60%;
+  z-index: 10;
+}

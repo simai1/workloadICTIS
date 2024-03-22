@@ -1,10 +1,11 @@
 import SummaryWorkload from '../models/summary-workload.js';
 import Workload from '../models/workload.js';
+import checkHours from './notification.js';
 
 // Устанавливаем итоговые часы
 async function setHours(workload) {
     const summaryWorkload = await SummaryWorkload.findOne({ where: { educatorId: workload.educatorId } });
-
+    if (!summaryWorkload) return;
     const hours = {
         kafedralAutumnWorkload: 0,
         kafedralSpringWorkload: 0,
@@ -16,7 +17,7 @@ async function setHours(workload) {
         totalOidHours: 0,
         totalHours: 0,
     };
-
+    workload.hours = parseFloat(workload.hours);
     // Проверяем предмет на общеинститутский ли он и период и устанавливаем часы для кафедральных или институтских дисциплин
     if (workload.isOid === false && workload.period === 1) hours.kafedralAutumnWorkload += workload.hours;
     if (workload.isOid === false && workload.period === 2) hours.kafedralSpringWorkload += workload.hours;
@@ -62,6 +63,8 @@ async function setHours(workload) {
     );
 
     await summaryWorkload.save();
+
+    await checkHours(summaryWorkload);
 }
 
 async function deleteHours(newWorkload) {
@@ -122,6 +125,7 @@ async function deleteHours(newWorkload) {
         'instituteManagementWorkload',
         summaryWorkload.instituteManagementWorkload - hours.instituteManagementWorkload
     );
+
     await summaryWorkload.save();
 }
 

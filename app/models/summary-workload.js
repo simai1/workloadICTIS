@@ -15,7 +15,7 @@ export default class SummaryWorkload extends Model {
                     allowNull: false,
                     defaultValue: 0,
                 },
-                totalOidHours : {
+                totalOidHours: {
                     type: DataTypes.REAL,
                     allowNull: false,
                     defaultValue: 0,

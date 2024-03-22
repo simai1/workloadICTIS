@@ -1,0 +1,85 @@
+@import "./../../style/colors.scss";
+
+.Warnings {
+  width: 251px;
+  height: 44px;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  .WarningsButton {
+    display: flex;
+    transition: 0.15s linear all;
+    img {
+      padding-left: 11px;
+    }
+  }
+
+  .WarningsButton:hover {
+    cursor: pointer;
+    opacity: 0.6;
+  }
+  .WarningsOpen {
+    position: absolute;
+    top: 0px;
+    z-index: 50;
+    background-color: var(--white-color);
+    box-shadow: 4px 4px 20px 0px #00000026;
+    border-radius: 4px;
+    width: 251px;
+    .WarningsButtonOpen {
+      display: flex;
+      align-items: center;
+      border-radius: 8px;
+      height: 44px;
+      padding: 0px 16px;
+      background-color: var(--white-color);
+      transition: 0.15s linear opacity;
+    }
+    img {
+      padding-left: 11px;
+    }
+  }
+  .WarningsButtonOpen:hover {
+    cursor: pointer;
+    opacity: 0.6;
+  }
+}
+.WarningsList ul {
+  list-style: none;
+  margin-left: 0;
+  padding: 0;
+  width: 219px;
+  height: 60vh;
+}
+.WarningsList {
+  display: flex;
+  justify-content: center;
+  padding-left: 16px 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.WarningsList::-webkit-scrollbar {
+  width: 5px; /* ширина scrollbar */
+}
+.WarningsList::-webkit-scrollbar-track {
+  background: #fff; /* цвет дорожки */
+}
+.WarningsList::-webkit-scrollbar-thumb,
+.WarningsList ::-webkit-scrollbar-thumb {
+  background-color: #a6a6a6;
+  border-radius: 5px;
+  border: 3px solid #a6a6a6;
+}
+
+.circlesbuttonWarn {
+  width: 24px;
+  height: 24px;
+  color: var(--white-color);
+  border-radius: 50%;
+  margin-right: 8px;
+  align-items: center;
+  text-align: center;
+  background-color: #e81414;
+}

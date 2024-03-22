@@ -6,6 +6,25 @@ import Educator from '../models/educator.js';
 import WorkloadDto from '../dtos/workload-dto.js';
 
 export default {
+    // Получение нагрузки
+    async getAllWorkload(req, res) {
+        try {
+            const workloads = await Workload.findAll({
+                include: { model: Educator },
+                order: [['id', 'ASC']],
+            });
+
+            const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
+
+            res.json(workloadsDto);
+        } catch (error) {
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    },
+    async getAllDepartment(req, res) {
+        res.json(departments);
+    },
+
     async getDepartment({ params: { department } }, res) {
         if (!department) throw new AppErrorMissing('department');
         if (typeof department !== 'number') department = parseInt(department);
@@ -27,48 +46,39 @@ export default {
         // Проверяем, что параметры корректны
         if (!id) throw new Error('Укажите айди нагрузки');
         if (!n || isNaN(n) || n < 1) throw new Error('Укажите количество групп для разделения нагрузки');
-
+        if (n > 4) throw new Error('Максимальное количество групп для разделения нагрузки - 4');
         // Загружаем изначальную нагрузку
-        const originalWorkload = await Workload.findByPk(id);
+        const originalWorkload = await Workload.findByPk(id, { include: { model: Educator } });
         if (!originalWorkload) throw new Error('Workload not found');
 
-        // Проверяем, разделена ли уже нагрузка
-        if (originalWorkload.isSplit === true) {
-            throw new Error('Нагрузка уже разделена по группам или ее нельзя делить');
-        } else {
-            // Распределяем время равномерно между каждой из новых нагрузок
-            const newWorkloads = [];
-            const newHours = originalWorkload.hours / n;
+        const newWorkloads = [];
 
-            // Создаем и сохраняем новые нагрузки в базу данных
-            for (let i = 0; i < n; i++) {
-                // Копируем изначальную нагрузку со всеми полями
-                const copyWorkload = { ...originalWorkload.get() };
+        // Создаем и сохраняем новые нагрузки в базу данных
+        for (let i = 0; i < n; i++) {
+            // Копируем изначальную нагрузку со всеми полями
+            const copyWorkload = { ...originalWorkload.get() };
 
-                // Устанавливаем новое время и флаг разделения для каждой новой нагрузки
-                copyWorkload.hours = newHours;
-                copyWorkload.isSplit = true;
-                copyWorkload.originalId = originalWorkload.id;
+            // Устанавливаем оригинальный айдишник флаг разделения для каждой новой нагрузки
+            copyWorkload.isSplit = true;
+            copyWorkload.originalId = originalWorkload.id;
 
-                // Удаляем уникальный идентификатор для создания нового
-                delete copyWorkload.id;
+            // Удаляем уникальный идентификатор для создания нового
+            delete copyWorkload.id;
 
-                // Сохраняем новую нагрузку в базу данных
-                const newWorkload = await Workload.create(copyWorkload);
+            // Сохраняем новую нагрузку в базу данных
+            const newWorkload = await Workload.create(copyWorkload);
 
-                // Добавляем новую нагрузку в массив новых нагрузок
-                newWorkloads.push(newWorkload);
-            }
-
-            // Помечаем изначальную нагрузку как разделенную
-            originalWorkload.isSplit = true;
-            await originalWorkload.save();
-
-            res.json(newWorkloads);
+            // Добавляем новую нагрузку в массив новых нагрузок
+            newWorkloads.push(newWorkload);
         }
+
+        // удали изначальную нагрузку
+        await originalWorkload.destroy({ force: true });
+
+        res.json(newWorkloads);
     },
 
-    //Получение нагрузки
+    // Получение нагрузки
     async getOne({ params: { id } }, res) {
         const workload = await Workload.findByPk(id);
         if (!workload) throw new Error('Нет такой нагрузки');
@@ -76,37 +86,31 @@ export default {
         res.json(workloadDto);
     },
 
-    async getEducators(res) {
-        // Реализация метода получения списка преподавателей
-    },
+    async update({ params: { id }, body: { numberOfStudents, hours, comment } }, res) {
+        try {
+            const workload = await Workload.findByPk(id, {
+                include: { model: Educator },
+            });
 
-    async update({ params: { id }, body: { name, numberOfStudents, hours, comment } }, res) {
-        const workload = await Workload.findByPk(id, {
-            include: { model: Educator },
-        });
+            if (!id) throw new Error('Не указан ID');
+            if (!workload) {
+                throw new Error('Нет такой нагрузки');
+            }
 
-        if (!id) throw new Error('Не указан ID');
-        if (!numberOfStudents && !hours && !comment) {
-            throw new Error('Не указаны обязательные поля');
+            if (!numberOfStudents) numberOfStudents = workload.numberOfStudents;
+            if (!hours) hours = workload.hours;
+            if (!comment) comment = workload.comment;
+            // Обновляем запись в таблице Workload
+            await workload.update({
+                numberOfStudents,
+                hours,
+                comment,
+            });
+
+            res.json(workload);
+        } catch (error) {
+            res.status(500).json({ error: 'Internal Server Error' });
         }
-
-        if (!workload) {
-            throw new Error('Нет такой нагрузки');
-        }
-
-        // Обновляем поля
-        numberOfStudents = numberOfStudents || workload.numberOfStudents;
-        hours = hours || workload.hours;
-        comment = comment || workload.comment;
-
-        // Обновляем запись в таблице Workload
-        await workload.update({
-            numberOfStudents,
-            hours,
-            comment,
-        });
-
-        res.json({ status: 'OK' });
     },
 
     async facultyEducator({ body: { educatorId, workloadId } }, res) {
@@ -122,20 +126,31 @@ export default {
         res.json({ status: 'OK' });
     },
 
+    async unfacultyEducator({ body: { workloadId } }, res) {
+        if (!workloadId) throw new AppErrorMissing('workloadId');
+        const workload = await Workload.findByPk(workloadId);
+        if (!workload) throw new AppErrorInvalid('workload');
+        workload.update({ educatorId: null });
+        res.json({ status: 'OK' });
+    },
+
     async mapRow({ body: { ids } }, res) {
-        const workloads = await Workload.findAll({ where: { id: ids } });
+        const workloads = await Workload.findAll({ where: { id: ids } }, { include: { model: Educator } });
 
         if (!ids) {
             throw new AppErrorMissing('id');
         }
-        //Проверка массива нагрузок на идентичность полей для соединения
+        // Проверка массива нагрузок на идентичность полей для соединения
         const firstWorkload = workloads[0];
         if (
             workloads.some(
                 workload =>
                     workload.department !== firstWorkload.department ||
                     workload.workload !== firstWorkload.workload ||
-                    workload.discipline !== firstWorkload.discipline
+                    workload.discipline !== firstWorkload.discipline ||
+                    workload.core !== firstWorkload.core ||
+                    workload.specialty !== firstWorkload.specialty ||
+                    workload.hours !== firstWorkload.hours
             )
         ) {
             return res.status(400).json({
@@ -143,7 +158,7 @@ export default {
             });
         }
 
-        //Совмещаем часы
+        // Совмещаем часы
         let totalStudents = 0;
         let totalHours = 0;
 
@@ -152,8 +167,8 @@ export default {
             totalHours += workload.hours;
         });
 
-        //Создаем совмещенную нагрузку
-        const mergeWorkload = await Workload.create({
+        // Создаем совмещенную нагрузку
+        const mergeWorkload = {
             department: firstWorkload.get('department'),
             discipline: firstWorkload.get('discipline'),
             workload: firstWorkload.get('workload'),
@@ -181,12 +196,17 @@ export default {
             instituteAutumnWorkload: firstWorkload.get('instituteAutumnWorkload'),
             instituteSpringWorkload: firstWorkload.get('instituteSpringWorkload'),
             instituteManagementWorkload: firstWorkload.get('instituteManagementWorkload'),
-        });
+        };
 
-        //Удаляем записи которые учавствовали в совмещении
-        await Promise.allSettled(workloads.map(workload => workload.destroy()));
+        const createdWorkload = await Workload.create(mergeWorkload);
+        // Удаляем записи которые учавствовали в совмещении
+        await Promise.allSettled(workloads.map(workload => workload.destroy({ force: true })));
 
-        res.status(200).json('Successfully merged');
+        const responseData = {
+            id: createdWorkload.id,
+            ...mergeWorkload,
+        };
+        res.json(responseData);
     },
 
     async deleteWorkload({ params: { id } }, res) {
@@ -199,10 +219,26 @@ export default {
         }
 
         // Delete the instance from the database
-        await workload.destroy({force: true});
+        await workload.destroy({ force: true });
 
         res.status(200).json('Successfully deleted');
     },
 
-    // Нужен метод, который будет просчитывать часы у конкретного препода
+    async getDepartmentWorkload({ body: { department } }, res) {
+        if (!department) throw new AppErrorMissing('department');
+        if (typeof department !== 'number') department = parseInt(department);
+        if (!Object.values(departments).includes(department)) throw new AppErrorInvalid(department);
+        // Если department = 6, то нужно выввести все нагрузки, у которых department = 6
+        let departmentFilter = {};
+        if (department >= 1 && department <= 11) {
+            departmentFilter = { department };
+        }
+        const workloads = await Workload.findAll({
+            where: departmentFilter,
+            include: { model: Educator },
+        });
+
+        const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
+        res.json(workloadsDto);
+    },
 };
