@@ -23,7 +23,6 @@ import OfferModalWindow from "../OfferModalWindow/OfferModalWindow";
 function TableDisciplines(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]); //заголовок обновленный для Redux сортировки
   const [updatedData, setUpdatedData] = useState([]); //массив обновленный для Redux сортировки
-  const [searchTerm, setSearchTerm] = useState(""); //поиск по таблице
   const [selectedComponent, setSelectedComponent] = useState("cathedrals"); //выбранный компонент
   const [isHovered, setIsHovered] = useState(false); // флаг открытия уведомлений от преподавателей
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -250,28 +249,34 @@ function TableDisciplines(props) {
     setUpdatedData(updatedData);
   }
 
-  //! поиск и фильтрация таблицы
-  const handleSearch = (event) => {
-    const searchTerm = event.target.value;
-    setSearchTerm(searchTerm);
-    let fd;
-    if (searchTerm === "") {
-      fd = updatedData;
-    } else {
-      fd = updatedData.filter((row) => {
-        return Object.values(row).some(
-          (value) =>
-            value !== null &&
-            value !== undefined &&
-            value.toString().toLowerCase().includes(searchTerm.toLowerCase())
-        );
-      });
-    }
-    setFilteredData(fd);
-  };
+  // //! поиск и фильтрация таблицы
+  // const handleSearch = (event) => {
+  //   const searchTerm = event.target.value;
+  //   props.setSearchTerm(searchTerm);
+  //   let fd;
+  //   if (searchTerm === "") {
+  //     fd = updatedData;
+  //   } else {
+  //     fd = updatedData.filter((row) => {
+  //       return Object.values(row).some(
+  //         (value) =>
+  //           value !== null &&
+  //           value !== undefined &&
+  //           value
+  //             .toString()
+  //             .toLowerCase()
+  //             .includes(props.searchTerm.toLowerCase())
+  //       );
+  //     });
+  //   }
+  //   setFilteredData(fd);
+  // };
+
+  //! компонет поиска выведен в родительский
+  //! useEffect следит за изменение searchTerm
   useEffect(() => {
     let fd;
-    if (searchTerm === "") {
+    if (props.searchTerm === "") {
       fd = updatedData;
     } else {
       fd = updatedData.filter((row) => {
@@ -279,12 +284,15 @@ function TableDisciplines(props) {
           (value) =>
             value !== null &&
             value !== undefined &&
-            value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+            value
+              .toString()
+              .toLowerCase()
+              .includes(props.searchTerm.toLowerCase())
         );
       });
     }
     setFilteredData(fd);
-  }, [updatedData, searchTerm]);
+  }, [updatedData, props.searchTerm]);
 
   const EditTableData = (selectedComponent) => {
     console.log(selectedComponent);
@@ -356,7 +364,7 @@ function TableDisciplines(props) {
   //! содержимое
   return (
     <div className={styles.tabledisciplinesMain}>
-      <div className={styles.tabledisciplinesMain_search}>
+      {/* <div className={styles.tabledisciplinesMain_search}>
         <input
           type="text"
           placeholder="Поиск"
@@ -367,7 +375,7 @@ function TableDisciplines(props) {
           className={styles.search}
         />
         <img src="./img/search.svg"></img>
-      </div>
+      </div> */}
 
       <div className={styles.ButtonCaf_gen}>
         <Button

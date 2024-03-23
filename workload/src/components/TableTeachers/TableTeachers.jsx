@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import DataContext from "../../context";
 import { Educator } from "../../api/services/ApiRequest";
 
-function TableTeachers({ onNameChange, setEducatorData }) {
+function TableTeachers(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]);
   const [updatedData, setUpdatedData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -71,8 +71,8 @@ function TableTeachers({ onNameChange, setEducatorData }) {
     // setClickedName(name);
     let postClickTicher = appData.educator[index].department;
     let betClickTicher = appData.educator[index].rate;
-    onNameChange(name, postClickTicher, betClickTicher);
-    setEducatorData(appData.educator[index]);
+    props.onNameChange(name, postClickTicher, betClickTicher);
+    props.setEducatorData(appData.educator[index]);
   };
 
   const dispatch = useDispatch();
@@ -98,38 +98,41 @@ function TableTeachers({ onNameChange, setEducatorData }) {
     setUpdatedHeader(updatedHeader);
     setUpdatedData(updatedData);
   }
-  const handleSearch = (event) => {
-    const searchTerm = event.target.value;
-    setSearchTerm(searchTerm);
-    let fd;
-    if (searchTerm === "") {
-      fd = updatedData;
-    } else {
-      fd = updatedData.filter((row) => {
-        return Object.values(row).some((value) =>
-          value.toString().toLowerCase().includes(searchTerm.toLowerCase())
-        );
-      });
-    }
-    setFilteredData(fd);
-  };
+  // const handleSearch = (event) => {
+  //   const searchTerm = event.target.value;
+  //   setSearchTerm(searchTerm);
+  //   let fd;
+  //   if (searchTerm === "") {
+  //     fd = updatedData;
+  //   } else {
+  //     fd = updatedData.filter((row) => {
+  //       return Object.values(row).some((value) =>
+  //         value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+  //       );
+  //     });
+  //   }
+  //   setFilteredData(fd);
+  // };
   React.useEffect(() => {
     let fd;
-    if (searchTerm === "") {
+    if (props.searchTerm === "") {
       fd = updatedData;
     } else {
       fd = updatedData.filter((row) => {
         return Object.values(row).some((value) =>
-          value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+          value
+            .toString()
+            .toLowerCase()
+            .includes(props.searchTerm.toLowerCase())
         );
       });
     }
     setFilteredData(fd);
-  }, [updatedData, searchTerm]);
+  }, [updatedData, props.searchTerm]);
 
   return (
     <div className={styles.TableTeachers}>
-      <div className={styles.tabledisciplinesMain_search}>
+      {/* <div className={styles.tabledisciplinesMain_search}>
         <input
           id="searchTableTeachers"
           type="text"
@@ -139,7 +142,7 @@ function TableTeachers({ onNameChange, setEducatorData }) {
           className={styles.search}
         />
         <img src="./img/search.svg"></img>
-      </div>
+      </div> */}
 
       <div className={styles.EditInput}>
         <EditInput tableHeaders={tableHeaders} />

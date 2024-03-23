@@ -9,6 +9,54 @@ body {
   margin: 0px;
 }
 .HomePage {
+  .header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 32px 64px;
+    margin-bottom: 20px;
+
+    .header_button {
+      display: flex;
+    }
+    .header_search {
+      display: flex;
+      align-items: center;
+      width: 310px;
+      height: 45px;
+      box-sizing: border-box;
+      padding: 10px;
+      border: 1px solid #b0b0b0;
+      border-radius: 8px;
+      color: #b0b0b0;
+
+      .hedaer_search_inner {
+        width: 100%;
+        display: flex;
+        position: relative;
+        padding: 0;
+        border: none;
+        outline: none;
+        margin: 0;
+        background-color: #efedf3;
+        font-size: 18px;
+        font-weight: 500;
+        color: #929292;
+      }
+      .hedaer_search::-webkit-input-placeholder {
+        color: #b0b0b0;
+      }
+    }
+    .header_left_component {
+      display: flex;
+      .Warnings {
+        width: 45px;
+        margin-right: 12px;
+      }
+      // .Profile {
+      // }
+    }
+  }
   width: 100%;
   padding-bottom: 130px;
   .button {
@@ -19,13 +67,7 @@ body {
     padding: 32px 64px;
     padding-bottom: 0;
   }
-  .Warnings {
-    position: absolute;
-    top: 32px;
-    right: 336px;
-    width: 45px;
-    margin-right: 12px;
-  }
+
   .Block__tables {
     height: auto;
     position: relative;

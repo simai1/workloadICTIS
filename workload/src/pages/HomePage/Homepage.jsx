@@ -12,15 +12,18 @@ import Profile from "../../components/Profile/Profile";
 function HomePage() {
   const [selectedComponent, setSelectedComponent] = useState("Disciplines");
   const [educatorData, setEducatorData] = useState([]); // данные о преподавателе получаем в TableTeachers
-  const handleComponentChange = (component) => {
-    setSelectedComponent(component);
-  };
+  const [searchTerm, setSearchTerm] = useState(""); //поиск по таблице
+  const [onenModalWind, setOpenModalWind] = useState(false); // переменная закрытия модального окна профиля
+  const refProfile = React.useRef(null); // ссылка на модальное окно профиля
   const [name, setName] = useState("");
   const [post, setpost] = useState("");
   const [bet, setbet] = useState("");
 
   const handleButtonClick = () => {
     setName("");
+  };
+  const handleComponentChange = (component) => {
+    setSelectedComponent(component);
   };
 
   const handleNameChange = (nameTeacher, postTeacher, betTeacher) => {
@@ -29,14 +32,25 @@ function HomePage() {
     setbet(betTeacher);
   };
 
-  const [onenModalWind, setOpenModalWind] = useState(false); // переменная закрытия модального окна профиля
-  const refProfile = React.useRef(null); // ссылка на модальное окно профиля
-
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
   return (
     <Layout>
       <div className={styles.HomePage}>
-        <div className={styles.button}>
-          <div className={styles.button__inner}>
+        <div className={styles.header}>
+          <div className={styles.header_search}>
+            <input
+              type="text"
+              placeholder="Поиск"
+              id="search"
+              name="search"
+              onChange={handleSearch}
+              className={styles.hedaer_search_inner}
+            />
+            <img src="./img/search.svg"></img>
+          </div>
+          <div className={styles.header_button}>
             <Button
               Bg={selectedComponent === "Disciplines" ? "#3B28CC" : "#efedf3"}
               textColot={
@@ -60,28 +74,35 @@ function HomePage() {
               text="Преподователи"
             />
           </div>
+          <div className={styles.header_left_component}>
+            <Warnings
+              className={styles.Warnings}
+              setSelectedComponent={setSelectedComponent}
+              handleNameChange={handleNameChange}
+              setEducatorData={setEducatorData}
+            />
+            <Profile
+              className={styles.Profile}
+              setOpenModalWind={setOpenModalWind}
+              onenModalWind={onenModalWind}
+              refProfile={refProfile}
+            />
+          </div>
         </div>
-        <div className={styles.Warnings}>
-          <Warnings
-            setSelectedComponent={setSelectedComponent}
-            handleNameChange={handleNameChange}
-            setEducatorData={setEducatorData}
-          />
-        </div>
-        <Profile
-          setOpenModalWind={setOpenModalWind}
-          onenModalWind={onenModalWind}
-          refProfile={refProfile}
-        />
+
         <div className={styles.Block__tables}>
           {selectedComponent === "Disciplines" &&
           (name === "" || name !== "") ? (
             <TableDisciplines
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
               refProfile={refProfile}
               setOpenModalWind={setOpenModalWind}
             />
           ) : selectedComponent === "Teachers" && name === "" ? (
             <TableTeachers
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
               setEducatorData={setEducatorData}
               onNameChange={handleNameChange}
             />
