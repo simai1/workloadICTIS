@@ -7,6 +7,6 @@ const router = Router();
 router.route('/createComment').post(asyncRoute(commentContorller.createComment));
 router.route('/delete/:commentId').delete(asyncRoute(commentContorller.deleteComment));
 router.route('/getAllComment').get(asyncRoute(commentContorller.getAllComments));
+router.route('/deleteAllComments/:workloadId').delete(asyncRoute(commentContorller.deleteAllComments));
 
 export default router;
-        

@@ -42,38 +42,44 @@ export default {
         res.json(workloadsDto);
     },
 
-    async splitRow({ params: { id }, body: { n } }, res) {
-        // Проверяем, что параметры корректны
-        if (!id) throw new Error('Укажите айди нагрузки');
-        if (!n || isNaN(n) || n < 1) throw new Error('Укажите количество групп для разделения нагрузки');
-        if (n > 4) throw new Error('Максимальное количество групп для разделения нагрузки - 4');
-        // Загружаем изначальную нагрузку
-        const originalWorkload = await Workload.findByPk(id, { include: { model: Educator } });
-        if (!originalWorkload) throw new Error('Workload not found');
-
-        const newWorkloads = [];
-
-        // Создаем и сохраняем новые нагрузки в базу данных
-        for (let i = 0; i < n; i++) {
-            // Копируем изначальную нагрузку со всеми полями
-            const copyWorkload = { ...originalWorkload.get() };
-
-            // Устанавливаем оригинальный айдишник флаг разделения для каждой новой нагрузки
-            copyWorkload.isSplit = true;
-            copyWorkload.originalId = originalWorkload.id;
-
-            // Удаляем уникальный идентификатор для создания нового
-            delete copyWorkload.id;
-
-            // Сохраняем новую нагрузку в базу данных
-            const newWorkload = await Workload.create(copyWorkload);
-
-            // Добавляем новую нагрузку в массив новых нагрузок
-            newWorkloads.push(newWorkload);
+    async splitRow({ body: { ids, n } }, res) {
+        if (!ids || !Array.isArray(ids) || ids.length === 0) {
+            throw new Error('Укажите идентификаторы нагрузок для разделения');
+        }
+        if (!n || isNaN(n) || n < 1) {
+            throw new Error('Укажите количество групп для разделения нагрузки');
+        }
+        if (n > 4) {
+            throw new Error('Максимальное количество групп для разделения нагрузки - 4');
         }
 
-        // удали изначальную нагрузку
-        await originalWorkload.destroy({ force: true });
+        // Проверяем существование всех нагрузок
+        const existingWorkloads = await Workload.findAll({ where: { id: ids } });
+
+        if (existingWorkloads.length !== ids.length) {
+            const existingIds = existingWorkloads.map(workload => workload.id);
+            const nonExistingIds = ids.filter(id => !existingIds.includes(id));
+            res.status(404).json({ error: `Нагрузки с идентификаторами ${nonExistingIds.join(', ')} не найдены` });
+            return;
+        }
+
+        // Разделяем нагрузки
+        const newWorkloads = [];
+
+        for (const workload of existingWorkloads) {
+            // Создаем и сохраняем новые нагрузки в базу данных
+            for (let i = 0; i < n; i++) {
+                const copyWorkload = { ...workload.get() };
+                copyWorkload.isSplit = true;
+                copyWorkload.originalId = workload.id;
+                delete copyWorkload.id;
+                const newWorkload = await Workload.create(copyWorkload);
+                newWorkloads.push(newWorkload);
+            }
+
+            // Удаляем изначальную нагрузку
+            await workload.destroy({ force: true });
+        }
 
         res.json(newWorkloads);
     },
@@ -220,6 +226,26 @@ export default {
 
         // Delete the instance from the database
         await workload.destroy({ force: true });
+
+        res.status(200).json('Successfully deleted');
+    },
+    async deleteSeveralWorkloads({ body: { ids } }, res) {
+        if (!ids || !Array.isArray(ids) || ids.length === 0) {
+            throw new Error('Укажите идентификаторы нагрузок для удаления');
+        }
+
+        // Проверяем существование всех нагрузок
+        const existingWorkloads = await Workload.findAll({ where: { id: ids } });
+
+        if (existingWorkloads.length !== ids.length) {
+            const existingIds = existingWorkloads.map(workload => workload.id);
+            const nonExistingIds = ids.filter(id => !existingIds.includes(id));
+            res.status(404).json({ error: `Нагрузки с идентификаторами ${nonExistingIds.join(', ')} не найдены` });
+            return;
+        }
+
+        // Удаляем нагрузки
+        await Promise.allSettled(existingWorkloads.map(workload => workload.destroy({ force: true })));
 
         res.status(200).json('Successfully deleted');
     },

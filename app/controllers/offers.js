@@ -6,14 +6,14 @@ import { AppErrorInvalid, AppErrorMissing } from '../utils/errors.js';
 
 export default {
     async getAllOffers(req, res) {
-        const offers = await Offer.findAll();
+        const offers = await Offer.findAll({ include: { model: Educator }, attributes: { exclude: ['EducatorId'] } });
         res.json(offers);
     },
 
     async createOffer({ body: { educatorId, workloadId } }, res) {
         try {
             // Получение информации о преподавателе
-            const educator = await Educator.findByPk(educatorId);
+            const educator = await Educator.findByPk(educatorId, { attributes: { exclude: ['id'] } });
 
             if (!educator) {
                 throw new AppErrorMissing('Educator not found');
