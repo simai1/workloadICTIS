@@ -11,13 +11,14 @@ import DataContext from "../../context";
 import { ReactComponent as SvgChackmark } from "./../../img/checkmark.svg";
 import { ReactComponent as SvgCross } from "./../../img/cross.svg";
 
+import { workloadUpdata } from "../../api/services/ApiRequest";
 import {
-  Comment,
-  Workload,
-  getAllWarningMessage,
-  getOffers,
-  workloadUpdata,
-} from "../../api/services/ApiGetData";
+  getAllOffers,
+  getAllWarnin,
+  getDataAllComment,
+  getDataTable,
+} from "../../api/services/AssignApiData";
+import OfferModalWindow from "../OfferModalWindow/OfferModalWindow";
 
 function TableDisciplines(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]); //заголовок обновленный для Redux сортировки
@@ -37,56 +38,34 @@ function TableDisciplines(props) {
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 }); //меню
   const [tableData, setTableData] = useState([]); // соберем из данных апи общие для таблицы
   const [filteredData, setFilteredData] = useState([]);
-  const [commentAllData, setCommentAllData] = useState([]);
+  const [commentAllData, setCommentAllData] = useState([]); // все комментарии
+  const [allOffersData, setAllOffersData] = useState([]);
+  const [modalWindowOffer, setModalWindowOffer] = useState({
+    id: null,
+    flag: false,
+  });
 
-  //данные вытянутые из контекста
+  //! данные вытянутые из контекста
   const { appData } = React.useContext(DataContext);
 
-  function getDataTable() {
-    Workload().then((data) => {
-      console.log(data);
-      const updatedWorkload = data.map((item) => {
-        const { isSplit, ...rest } = item; // убираем isSplit из массива
-        return {
-          ...rest,
-          educator: item.educator && item.educator.name,
-        };
-      });
-      appData.setWorkload(updatedWorkload); //данные с апи нагрузки
-      setUpdatedData(updatedWorkload);
-      setFilteredData(updatedWorkload);
+  const getDataTableAll = () => {
+    getDataTable().then((data) => {
+      appData.setWorkload(data);
+      setUpdatedData(data);
+      setFilteredData(data);
+      getAllOffers(setAllOffersData);
+      setIndividualCheckboxes([]);
+      console.log("Таблица обноленна");
     });
-    setTableData(appData.workload);
-  }
+  };
 
-  //! функция получения всех комментариев на странице
-  function getDataAllComment() {
-    Comment().then((data) => {
-      console.log("comment", data);
-      setCommentAllData(data);
-    });
-  }
-
-  //! функция получения всех предупреждений
-  function getAllWarnin() {
-    getAllWarningMessage().then((data) => {
-      console.log("Warning ", data);
-      appData.setAllWarningMessage(data);
-    });
-  }
-
-  //! функция получения всех предложений
-  function getAllOffers() {
-    getOffers().then((data) => {
-      console.log("Предложения", data);
-    });
-  }
   //! заносим данные о преподавателях в состояние
   useEffect(() => {
-    getDataTable(); // получение нагрузок
-    getDataAllComment(); // получение комментариев
-    getAllWarnin(); // предложения
-    getAllOffers(); // предложения
+    getDataTableAll();
+    setTableData(appData.workload);
+    getDataAllComment(setCommentAllData); // получение комментариев
+    getAllWarnin(appData.setAllWarningMessage); // предупреждения
+    getAllOffers(setAllOffersData); // предложения
   }, []);
 
   //! сортировака (по hedars) пришедших данных из апи
@@ -101,11 +80,15 @@ function TableDisciplines(props) {
   //! закрытие модального окна при нажатии вне него
   const refSP = useRef(null);
   const refHoverd = useRef(null);
+  const refOffer = useRef(null);
   const refContextMenu = useRef(null);
   useEffect(() => {
     const handler = (event) => {
       if (refSP.current && !refSP.current.contains(event.target)) {
         setSamplePointsShow(false);
+      }
+      if (refOffer.current && !refOffer.current.contains(event.target)) {
+        setModalWindowOffer({ id: modalWindowOffer.id, flag: false });
       }
       if (
         props.refProfile.current &&
@@ -166,8 +149,18 @@ function TableDisciplines(props) {
   //! при нажатии на кружок уведомления
   const handleClicNotice = (el, index) => {
     setIsHovered(!isHovered);
-    setPosition({ x: el.clientX - 40, y: el.clientY - 200 });
+    setPosition({ x: el.pageX - 40, y: el.pageY - 200 });
     setIdrow(filteredData[index].id);
+  };
+
+  //! при нажатии на кружо предложения
+  const handleClicOffer = (el, index) => {
+    console.log("id", index, allOffersData[index - 1]);
+    setModalWindowOffer({
+      id: allOffersData[index - 1].id,
+      flag: !modalWindowOffer.flag,
+    });
+    setPosition({ x: el.pageX - 40, y: el.pageY - 200 });
   };
 
   //! добавить комментарий к нагрузке из контекстного меню
@@ -200,6 +193,7 @@ function TableDisciplines(props) {
 
   //выбор компонента
 
+  // ! заголовки
   const tableHeaders = useMemo(() => {
     return [
       { key: "id", label: "№" },
@@ -353,7 +347,9 @@ function TableDisciplines(props) {
     const numberValue = isNaN(parsedValue) ? textareaTd : parsedValue;
     // отпрака запроса на изменение данных
     textareaTd &&
-      workloadUpdata(id, { [key.key]: numberValue }).then(() => getDataTable());
+      workloadUpdata(id, { [key.key]: numberValue }).then(() =>
+        getDataTableAll()
+      );
     setCellNumber([]);
   };
 
@@ -403,10 +399,20 @@ function TableDisciplines(props) {
             position={position}
             setPosition={setPosition}
             workloadId={idRow}
+            setCommentAllData={setCommentAllData}
             getDataAllComment={getDataAllComment}
             commentData={commentAllData
               .filter((item) => item.workloadId === idRow)
               .reverse()}
+          />
+        )}
+
+        {modalWindowOffer.flag && (
+          <OfferModalWindow
+            position={position}
+            refOffer={refOffer}
+            workloadId={modalWindowOffer.id}
+            getDataTableAll={getDataTableAll}
           />
         )}
 
@@ -428,7 +434,7 @@ function TableDisciplines(props) {
             handleMenuClick={handleMenuClick}
             setShowMenu={setShowMenu}
             individualCheckboxes={individualCheckboxes}
-            getDataTable={getDataTable}
+            getDataTableAll={getDataTableAll}
             onAddComment={onAddComment}
           />
         )}
@@ -493,6 +499,7 @@ function TableDisciplines(props) {
                         }
                       >
                         <td className={styles.checkbox} style={{ left: "0" }}>
+                          {/* //!вывод комментарие  */}
                           {commentAllData.some(
                             (item) => item.workloadId === filteredData[index].id
                           ) && (
@@ -503,6 +510,25 @@ function TableDisciplines(props) {
                             >
                               {
                                 commentAllData.filter(
+                                  (item) =>
+                                    item.workloadId === filteredData[index].id
+                                ).length
+                              }
+                            </div>
+                          )}
+
+                          {/* //! вывод предложений */}
+                          {allOffersData.some(
+                            (item) => item.workloadId === filteredData[index].id
+                          ) && (
+                            <div
+                              key={index}
+                              className={styles.notice}
+                              style={{ backgroundColor: "#FFD600" }}
+                              onClick={(el, item) => handleClicOffer(el, index)}
+                            >
+                              {
+                                allOffersData.filter(
                                   (item) =>
                                     item.workloadId === filteredData[index].id
                                 ).length
@@ -544,6 +570,7 @@ function TableDisciplines(props) {
                               className={styles.td_inner}
                               onDoubleClick={() => changeValueTd(index, ind)}
                             >
+                              {/* редактирование поля нагрузки при двойном клике на нее */}
                               {cellNumber &&
                               cellNumber.index === index &&
                               cellNumber.ind === ind ? (

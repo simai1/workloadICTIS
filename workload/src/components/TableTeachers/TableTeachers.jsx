@@ -2,12 +2,8 @@ import styles from "./TableTeachers.module.scss";
 import React, { useState, useEffect } from "react";
 import EditInput from "../EditInput/EditInput";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  Educator,
-  Positions,
-  TypeOfEmployments,
-} from "../../api/services/ApiGetData";
 import DataContext from "../../context";
+import { Educator } from "../../api/services/ApiRequest";
 
 function TableTeachers({ onNameChange, setEducatorData }) {
   const [updatedHeader, setUpdatedHeader] = useState([]);

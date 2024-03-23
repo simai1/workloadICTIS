@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./ContextMenu.module.scss";
-import { Educator } from "../../api/services/ApiGetData";
+import { Educator } from "../../api/services/ApiRequest";
 
 export function EducatorMenu(props) {
   const [educator, setEductor] = useState([]); //преподы с бд

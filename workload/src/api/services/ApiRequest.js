@@ -1,3 +1,5 @@
+//? Здесь все запросы к апи, присвоение этих данных состояниями в AssingApiData
+
 import axios from "axios";
 
 //! получаем преподов
@@ -102,7 +104,7 @@ export const splitWorkload = async (data) => {
   console.log("Раздление нагрузки ", data);
   try {
     const response = await axios.post(
-      `https://workload.sfedu.ru/workload/${data.workloadId}/split`,
+      `https://workload.sfedu.ru/workload/split`,
       data
     );
     console.log("response ", response);
@@ -120,6 +122,22 @@ export const joinWorkloads = async (data) => {
     const response = await axios.post(
       "https://workload.sfedu.ru/workload/map",
       data
+    );
+    console.log("response ", response);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
+//! запрос на принятие предложения
+export const AcceptOffer = async (data) => {
+  console.log("Предложение принято ", data);
+  try {
+    const response = await axios.post(
+      `https://workload.sfedu.ru/offers/confirmOrReject/${data}`,
+      { status: "принято" }
     );
     console.log("response ", response);
     return response.data;
@@ -152,6 +170,21 @@ export const removeEducatorinWorkload = async (data) => {
     const response = await axios.delete(
       "https://workload.sfedu.ru/workload/faculty",
       { data: data }
+    );
+    console.log("response ", response);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
+//! запрос на удаление коммента
+export const deleteComment = async (data) => {
+  console.log("Комменты удалены ", data);
+  try {
+    const response = await axios.delete(
+      `https://workload.sfedu.ru/comment/deleteAllComments/${data}`
     );
     console.log("response ", response);
     return response.data;
@@ -199,22 +232,6 @@ export const workloadUpdata = async (id, data) => {
   try {
     const response = await axios.patch(
       `https://workload.sfedu.ru/workload/${id}/update`,
-      data
-    );
-    console.log("response ", response);
-    return response.data;
-  } catch (error) {
-    console.error("Error:", error);
-    throw error;
-  }
-};
-
-//! запрос на удаление коммента
-export const deleteComment = async (data) => {
-  console.log("Коммент удален ", data);
-  try {
-    const response = await axios.delete(
-      `https://workload.sfedu.ru/comment/delete/${data}`,
       data
     );
     console.log("response ", response);

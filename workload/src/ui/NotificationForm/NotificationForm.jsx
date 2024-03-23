@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
 import styles from "./NotificationForm.module.scss";
 import DataContext from "../../context";
-import { createComment, deleteComment } from "../../api/services/ApiGetData";
+import {
+  Educator,
+  createComment,
+  deleteComment,
+} from "../../api/services/ApiRequest";
 
 import { ReactComponent as LogoAllComment } from "./../../img/arrow_down.svg";
 import { ReactComponent as CommentsSvg } from "./../../img/comments.svg";
@@ -20,15 +24,21 @@ export function NotificationForm(props) {
     if (textarea.trim() === "") {
       setError(true);
     } else {
-      const data = {
-        educatorId: "ca05e456-0cc0-4b57-b656-729dc3412412",
-        workloadId: props.workloadId,
-        text: textarea,
-      };
-      console.log(data);
-      createComment(data).then(() => props.getDataAllComment());
+      Educator().then((item) => {
+        //удалить, заменить id пользователя
+        const data = {
+          educatorId: item[1].id,
+          workloadId: props.workloadId,
+          text: textarea,
+        };
+        console.log(item);
+        createComment(data).then(() =>
+          props.getDataAllComment(props.setCommentAllData)
+        );
+      });
       setIsComment(false);
-      setPositionMenu({ y: props.position.y, x: props.position.x });
+
+      // setPositionMenu({ y: props.position.y, x: props.position.x });
       //обновление модального окна комментариев
     }
   };
@@ -62,9 +72,11 @@ export function NotificationForm(props) {
 
   //! нажатие галочки удаление комментариев
   const onCheckmarkClickDelet = (data) => {
-    console.log(data[0].id);
+    console.log(props.workloadId);
     //удаление коммента по id
-    deleteComment(data[0].id).then(() => props.getDataAllComment());
+    deleteComment(props.workloadId).then(() =>
+      props.getDataAllComment(props.setCommentAllData)
+    );
   };
 
   return (

@@ -6,7 +6,6 @@ import Button from "../../ui/Button/Button";
 import Layout from "../../ui/Layout/Layout";
 import Warnings from "../../components/Warnings/Warnings";
 import TableLks from "../../components/TableLks/TableLks";
-import { ApiGetData } from "../../api/services/ApiGetData";
 import DataContext from "../../context";
 import Profile from "../../components/Profile/Profile";
 

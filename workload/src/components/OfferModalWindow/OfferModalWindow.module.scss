@@ -1,0 +1,49 @@
+.OfferModalWindow {
+  position: absolute;
+  width: 260px;
+  //   height: 148px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 4px 4px 20px 0px #00000026;
+  z-index: 100;
+
+  padding: 16px;
+
+  .container {
+    span {
+      display: flex;
+      margin: 8px 0;
+    }
+    .name_top .name_bottom {
+      font-size: 16px;
+      font-weight: 400;
+    }
+    .inner {
+      color: #5a5a5a;
+      font-size: 14px;
+      font-weight: 400;
+    }
+    button {
+      padding: 10px 16px;
+      width: 100px;
+      height: 40px;
+      border-radius: 8px;
+    }
+    button:hover {
+      opacity: 75%;
+    }
+    .button_left {
+      background-color: #fff;
+      border: 1px solid #000;
+    }
+    .button_rigth {
+      background-color: #3b28cc;
+      color: #fff;
+      border: none;
+    }
+    .button_box {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+}

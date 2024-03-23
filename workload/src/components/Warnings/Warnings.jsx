@@ -1,11 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./Warnings.module.scss";
-import arrow from "./../../img/arrow.svg";
 import WarningMessage from "../../ui/WarningMessage/WarningMessage";
 import socketConnect from "../../api/services/socket";
 import DataContext from "../../context";
-import { Educator } from "../../api/services/ApiGetData";
 import { ReactComponent as SvgNotification } from "./../../img/notification.svg";
+import { Educator } from "../../api/services/ApiRequest";
 function Warnings(props) {
   const { appData } = React.useContext(DataContext);
 

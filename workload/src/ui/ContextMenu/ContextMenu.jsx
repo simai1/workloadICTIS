@@ -10,7 +10,7 @@ import {
   joinWorkloads,
   removeEducatorinWorkload,
   splitWorkload,
-} from "../../api/services/ApiGetData";
+} from "../../api/services/ApiRequest";
 const ContextMenu = (props) => {
   const [menuPosition, setMenuPosition] = useState(props.menuPosition);
   const [showSubMenu, setShowSubMenu] = useState(false);
@@ -52,18 +52,16 @@ const ContextMenu = (props) => {
     };
     if (educatorMenuShow) {
       // отправка запроса на добавление преподавателя
-      props.individualCheckboxes[0]
-        ? addEducatorWorkload(data).then((response) => {
-            props.getDataTable();
-          })
-        : console.error("не выбранно ни одной строки");
+      addEducatorWorkload(data).then(() => {
+        props.getDataTableAll();
+      });
       // запросим данные таблицы
     } else if (propose) {
-      // отправляем запрос на добавление предложения
+      //! отправляем запрос на добавление предложения
       createOffer(data).then(() => {
-        props.getDataTable();
+        props.getDataTableAll();
+        console.log("Предложение отправленно ", data);
       });
-      console.log("Предложение ", data);
     }
   };
 
@@ -71,12 +69,12 @@ const ContextMenu = (props) => {
   const handleSplitWorkload = (count) => {
     console.log("Разделить на ", count, props.individualCheckboxes);
     const data = {
-      workloadId: props.individualCheckboxes[0],
+      ids: props.individualCheckboxes,
       n: count,
     };
     props.individualCheckboxes[0]
-      ? splitWorkload(data).then((response) => {
-          props.getDataTable();
+      ? splitWorkload(data).then(() => {
+          props.getDataTableAll();
         })
       : console.error("не выбранно ни одной нагрузки");
   };
@@ -89,7 +87,7 @@ const ContextMenu = (props) => {
     };
     props.individualCheckboxes.length === 2
       ? joinWorkloads(data).then((response) => {
-          props.getDataTable();
+          props.getDataTableAll();
         })
       : console.error("Выберите 2 нагрузки");
   };
@@ -99,7 +97,7 @@ const ContextMenu = (props) => {
     console.log("удалить ", props.individualCheckboxes);
     const data = { ids: props.individualCheckboxes };
     deleteWorkload(data).then(() => {
-      props.getDataTable();
+      props.getDataTableAll();
     });
   };
 
@@ -110,7 +108,7 @@ const ContextMenu = (props) => {
       workloadId: props.individualCheckboxes[0],
     };
     removeEducatorinWorkload(data).then(() => {
-      props.getDataTable();
+      props.getDataTableAll();
     });
   };
 
