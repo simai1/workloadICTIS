@@ -64,7 +64,7 @@ export default {
                 // Отправка сообщения об успешном принятии предложения
             } else if (status === 'отклонено') {
                 // Удаление предложения, если оно отклонено
-                await offer.destroy();
+                await offer.destroy({ force: true });
                 res.send('Предложение отклонено');
             }
 
