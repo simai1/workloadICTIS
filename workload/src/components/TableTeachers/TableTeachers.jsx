@@ -13,7 +13,7 @@ function TableTeachers({ onNameChange, setEducatorData }) {
   const [updatedHeader, setUpdatedHeader] = useState([]);
   const [updatedData, setUpdatedData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [clickedName, setClickedName] = useState("");
+  // const [clickedName, setClickedName] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [tableData, setTableData] = useState([]); // соберем из аднных апи общие данные
 
@@ -26,12 +26,12 @@ function TableTeachers({ onNameChange, setEducatorData }) {
       setFilteredData(data);
       setUpdatedData(data);
     });
-    Positions().then((data) => {
-      appData.setPositions(data); //данные с апи должность
-    });
-    TypeOfEmployments().then((data) => {
-      appData.setTypeOfEmployments(data); //данные с апи Вид занятости
-    });
+    // Positions().then((data) => {
+    //   appData.setPositions(data); //данные с апи должность
+    // });
+    // TypeOfEmployments().then((data) => {
+    //   appData.setTypeOfEmployments(data); //данные с апи Вид занятости
+    // });
   }, []);
   // console.log(appData);
 
@@ -72,7 +72,7 @@ function TableTeachers({ onNameChange, setEducatorData }) {
   ];
 
   const handleNameClick = (name, index) => {
-    setClickedName(name);
+    // setClickedName(name);
     let postClickTicher = appData.educator[index].department;
     let betClickTicher = appData.educator[index].rate;
     onNameChange(name, postClickTicher, betClickTicher);

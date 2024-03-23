@@ -4,13 +4,40 @@ import arrow from "./../../img/arrow.svg";
 import WarningMessage from "../../ui/WarningMessage/WarningMessage";
 import socketConnect from "../../api/services/socket";
 import DataContext from "../../context";
-function Warnings() {
+import { Educator } from "../../api/services/ApiGetData";
+import { ReactComponent as SvgNotification } from "./../../img/notification.svg";
+function Warnings(props) {
   const { appData } = React.useContext(DataContext);
 
   const [isListOpen, setListOpen] = useState(false);
   const [arrMessage, setMessage] = useState(appData.allWarningMessage);
   const toggleList = () => {
     setListOpen(!isListOpen);
+  };
+
+  //! клина на предупреждение
+  const directLks = (index) => {
+    //получаем преподавателей с бд
+    Educator().then((data) => {
+      console.log("teatcher ", data);
+      console.log("переход", appData.allWarningMessage[index - 1].EducatorId);
+      props.setSelectedComponent("Teachers"); // переходим к компоненту с преподавателями
+      props.handleNameChange(
+        "Алексеев Кирилл Николаевич",
+        "postTeacher",
+        "betTeacher"
+      ); //!!! исправить
+      console.log(
+        data.filter(
+          (el) => el.id === appData.allWarningMessage[index - 1].EducatorId
+        )
+      );
+      props.setEducatorData(
+        data.filter(
+          (el) => el.id === appData.allWarningMessage[index - 1].EducatorId
+        )[0]
+      );
+    });
   };
 
   useEffect(() => {
@@ -35,41 +62,33 @@ function Warnings() {
   }, []);
   return (
     <div ref={refLO} className={styles.Warnings}>
-      {!isListOpen && (
-        <div onClick={toggleList} className={styles.WarningsButton}>
-          <p className={styles.circlesbuttonWarn}>
-            <span className={styles.span_length}>
-              {appData.allWarningMessage?.length}
-            </span>
-          </p>
-          <p>Предупреждения</p>
-          <img src={arrow} alt="arrow"></img>
-        </div>
-      )}
+      <div onClick={toggleList} className={styles.WarningsButton}>
+        {appData.allWarningMessage.length > 0 && (
+          <div className={styles.red_circle}></div>
+        )}
+        <SvgNotification className={styles.svg_notice} />
+      </div>
       {isListOpen && (
         <div className={styles.WarningsOpen}>
-          <div onClick={toggleList} className={styles.WarningsButtonOpen}>
+          <div className={styles.triangle}></div>
+          <div className={styles.WarningsButtonOpen}>
             <p className={styles.circlesbuttonWarn}>
               <span className={styles.span_length}>
                 {appData.allWarningMessage?.length}
               </span>
             </p>
             <p>Предупреждения</p>
-            <img
-              src={arrow}
-              alt="arrow"
-              style={{
-                padding: "11px",
-                transform: " rotate(180deg)",
-                transition: "transform 0.4s",
-              }}
-            ></img>
           </div>
           <div className={styles.WarningsList}>
             <ul>
               {appData.allWarningMessage?.map((el, index) => {
                 return (
-                  <WarningMessage key={el.id} arrMessage={el} id={index + 1} />
+                  <WarningMessage
+                    key={el.id}
+                    arrMessage={el}
+                    id={index + 1}
+                    directLks={directLks}
+                  />
                 );
               })}
             </ul>

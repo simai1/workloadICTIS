@@ -8,6 +8,7 @@ import Warnings from "../../components/Warnings/Warnings";
 import TableLks from "../../components/TableLks/TableLks";
 import { ApiGetData } from "../../api/services/ApiGetData";
 import DataContext from "../../context";
+import Profile from "../../components/Profile/Profile";
 
 function HomePage() {
   const [selectedComponent, setSelectedComponent] = useState("Disciplines");
@@ -28,6 +29,9 @@ function HomePage() {
     setpost(postTeacher);
     setbet(betTeacher);
   };
+
+  const [onenModalWind, setOpenModalWind] = useState(false); // переменная закрытия модального окна профиля
+  const refProfile = React.useRef(null); // ссылка на модальное окно профиля
 
   return (
     <Layout>
@@ -59,12 +63,24 @@ function HomePage() {
           </div>
         </div>
         <div className={styles.Warnings}>
-          <Warnings />
+          <Warnings
+            setSelectedComponent={setSelectedComponent}
+            handleNameChange={handleNameChange}
+            setEducatorData={setEducatorData}
+          />
         </div>
+        <Profile
+          setOpenModalWind={setOpenModalWind}
+          onenModalWind={onenModalWind}
+          refProfile={refProfile}
+        />
         <div className={styles.Block__tables}>
           {selectedComponent === "Disciplines" &&
           (name === "" || name !== "") ? (
-            <TableDisciplines />
+            <TableDisciplines
+              refProfile={refProfile}
+              setOpenModalWind={setOpenModalWind}
+            />
           ) : selectedComponent === "Teachers" && name === "" ? (
             <TableTeachers
               setEducatorData={setEducatorData}

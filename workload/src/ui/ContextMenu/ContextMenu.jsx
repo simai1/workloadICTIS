@@ -5,8 +5,10 @@ import { SubMenu } from "./SubMenu";
 import { EducatorMenu } from "./EducatorMenu";
 import {
   addEducatorWorkload,
+  createOffer,
   deleteWorkload,
   joinWorkloads,
+  removeEducatorinWorkload,
   splitWorkload,
 } from "../../api/services/ApiGetData";
 const ContextMenu = (props) => {
@@ -57,6 +59,10 @@ const ContextMenu = (props) => {
         : console.error("не выбранно ни одной строки");
       // запросим данные таблицы
     } else if (propose) {
+      // отправляем запрос на добавление предложения
+      createOffer(data).then(() => {
+        props.getDataTable();
+      });
       console.log("Предложение ", data);
     }
   };
@@ -90,13 +96,22 @@ const ContextMenu = (props) => {
 
   //! удаление нагрузки
   const handleDeletWorkload = () => {
-    console.log("удалить ", props.individualCheckboxes[0]);
-    const data = props.individualCheckboxes[0];
-    props.individualCheckboxes[0]
-      ? deleteWorkload(data).then((response) => {
-          props.getDataTable();
-        })
-      : console.error("Выберите 1 нагрузку");
+    console.log("удалить ", props.individualCheckboxes);
+    const data = { ids: props.individualCheckboxes };
+    deleteWorkload(data).then(() => {
+      props.getDataTable();
+    });
+  };
+
+  //! удалить преподавателя у нагрузки
+  const removeEducator = () => {
+    console.log(props.individualCheckboxes);
+    const data = {
+      workloadId: props.individualCheckboxes[0],
+    };
+    removeEducatorinWorkload(data).then(() => {
+      props.getDataTable();
+    });
   };
 
   return (
@@ -126,7 +141,7 @@ const ContextMenu = (props) => {
         <div>
           <button
             className={styles.activeStylePointer}
-            onClick={props.handleMenuClick}
+            onClick={removeEducator}
           >
             Удалить преподавателя
           </button>
@@ -142,30 +157,37 @@ const ContextMenu = (props) => {
             <img src={arrow} alt=">" className={styles.imgClose} />
           )}
         </div>
-        <div>
-          <button
-            className={styles.activeStylePointer}
-            onClick={props.onAddComment}
-          >
-            Оставить комментарий
-          </button>
-        </div>
-        <div>
-          <button
-            className={styles.activeStylePointer}
-            onClick={handleJoinWorkloads}
-          >
-            Объеденить
-          </button>
-        </div>
-        <div className={styles.blockMenuPop} onClick={onClickPropose}>
-          <button className={styles.activeStylePointer}>Предложить</button>
-          <img
-            src={arrow}
-            alt=">"
-            className={propose ? styles.imgOpen : styles.imgClose}
-          />
-        </div>
+        {props.individualCheckboxes.length === 1 && (
+          <div>
+            <button
+              className={styles.activeStylePointer}
+              onClick={props.onAddComment}
+            >
+              Оставить комментарий
+            </button>
+          </div>
+        )}
+
+        {props.individualCheckboxes.length > 1 && (
+          <div>
+            <button
+              className={styles.activeStylePointer}
+              onClick={handleJoinWorkloads}
+            >
+              Объеденить
+            </button>
+          </div>
+        )}
+        {props.individualCheckboxes.length === 1 && (
+          <div className={styles.blockMenuPop} onClick={onClickPropose}>
+            <button className={styles.activeStylePointer}>Предложить</button>
+            <img
+              src={arrow}
+              alt=">"
+              className={propose ? styles.imgOpen : styles.imgClose}
+            />
+          </div>
+        )}
 
         <div>
           <button
@@ -193,6 +215,7 @@ const ContextMenu = (props) => {
         />
       )}
       {(educatorMenuShow || propose) && (
+        // меню с выбором преподавалетля
         <EducatorMenu
           propose={propose}
           menuPosition={menuPosition}

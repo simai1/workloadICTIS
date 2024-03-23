@@ -15,10 +15,11 @@ import {
   Comment,
   Workload,
   getAllWarningMessage,
+  getOffers,
   workloadUpdata,
 } from "../../api/services/ApiGetData";
 
-function TableDisciplines() {
+function TableDisciplines(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]); //заголовок обновленный для Redux сортировки
   const [updatedData, setUpdatedData] = useState([]); //массив обновленный для Redux сортировки
   const [searchTerm, setSearchTerm] = useState(""); //поиск по таблице
@@ -73,11 +74,19 @@ function TableDisciplines() {
       appData.setAllWarningMessage(data);
     });
   }
+
+  //! функция получения всех предложений
+  function getAllOffers() {
+    getOffers().then((data) => {
+      console.log("Предложения", data);
+    });
+  }
   //! заносим данные о преподавателях в состояние
   useEffect(() => {
-    getDataTable();
-    getDataAllComment();
-    getAllWarnin();
+    getDataTable(); // получение нагрузок
+    getDataAllComment(); // получение комментариев
+    getAllWarnin(); // предложения
+    getAllOffers(); // предложения
   }, []);
 
   //! сортировака (по hedars) пришедших данных из апи
@@ -97,6 +106,12 @@ function TableDisciplines() {
     const handler = (event) => {
       if (refSP.current && !refSP.current.contains(event.target)) {
         setSamplePointsShow(false);
+      }
+      if (
+        props.refProfile.current &&
+        !props.refProfile.current.contains(event.target)
+      ) {
+        props.setOpenModalWind(false);
       }
       if (refHoverd.current && !refHoverd.current.contains(event.target)) {
         setIsHovered(false);

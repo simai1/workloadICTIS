@@ -70,6 +70,17 @@ export const getAllWarningMessage = async () => {
   }
 };
 
+//! получение предложений
+export const getOffers = async () => {
+  try {
+    const response = await axios.get("https://workload.sfedu.ru/offers");
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
 //! запрос на добавление преподавателя к нагрузке
 export const addEducatorWorkload = async (data) => {
   console.log("Добавление преподавателя ", data);
@@ -120,11 +131,27 @@ export const joinWorkloads = async (data) => {
 
 //! запрос на удаление нагрузки
 export const deleteWorkload = async (data) => {
-  console.log("Нагрузка удалена ", data);
+  console.log("Нагрузки удалены ", data);
   try {
     const response = await axios.delete(
-      `https://workload.sfedu.ru/workload/delete/${data}`,
-      data
+      "https://workload.sfedu.ru/workload/deleteSeveralWorkloads",
+      { data: data }
+    );
+    console.log("response ", response);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
+// ! запрос на удаление преподавателя с нагрузки
+export const removeEducatorinWorkload = async (data) => {
+  console.log("Преподаватель удален с нагрузки ", data);
+  try {
+    const response = await axios.delete(
+      "https://workload.sfedu.ru/workload/faculty",
+      { data: data }
     );
     console.log("response ", response);
     return response.data;
@@ -140,6 +167,22 @@ export const createComment = async (data) => {
   try {
     const response = await axios.post(
       "https://workload.sfedu.ru/comment/createComment",
+      data
+    );
+    console.log("response ", response);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
+//! запрос на добавление предложения преподавателя к нагрузке
+export const createOffer = async (data) => {
+  console.log("Предложение ", data);
+  try {
+    const response = await axios.post(
+      "https://workload.sfedu.ru/offers/createOffer",
       data
     );
     console.log("response ", response);
@@ -166,7 +209,7 @@ export const workloadUpdata = async (id, data) => {
   }
 };
 
-//! запрос на удаление нагрузки
+//! запрос на удаление коммента
 export const deleteComment = async (data) => {
   console.log("Коммент удален ", data);
   try {

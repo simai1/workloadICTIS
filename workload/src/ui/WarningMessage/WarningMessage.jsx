@@ -9,13 +9,13 @@ const WarningMessage = (props) => {
           <span>{props.id}</span>
         </p>
         {/* <p>{props.arrMessage.name}</p> */}
-        <p>Бабуленко И В</p>
+        <p>Алексеев К Н</p>
       </div>
-      <div className={styles.buttonWarnBlock}>
-        <p>
-          {/* Перегрузка - <span>{props.arrMessage.hours}</span> ч */}
-          {props.arrMessage.message}
-        </p>
+      <div
+        className={styles.buttonWarnBlock}
+        onClick={() => props.directLks(props.id)}
+      >
+        <p>{props.arrMessage.message}</p>
         <img className={styles.arrowButton} src={arrow} alt="arrow" />
       </div>
     </li>
