@@ -32,6 +32,7 @@ export default async function checkHours(summaryWorkload) {
 
         const existingNotification = await Notification.findOne({
             where: { educatorId: summaryWorkload.educatorId },
+            attributes: { exclude: ['EducatorId'] },
         });
 
         const notificationMessage = getNotificationMessage(totalHours, minHours, maxHours, recommendedMaxHours);
