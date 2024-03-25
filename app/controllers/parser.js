@@ -4,9 +4,10 @@ import {DataTypes} from "sequelize";
 import EnumDepartments from "../config/departments.js";
 import {AppErrorNotExist} from "../utils/errors.js";
 import Workload from "../models/workload.js";
-import EducatorForWorkload from "../models/educator-for-workload.js";
 
 export default {
+    //departmen
+    //
     async parseFromXlsx(fileLocation, res){
         let workbook = XLSX.readFile(fileLocation);
         const workload = [];
@@ -18,6 +19,8 @@ export default {
 
         const dataWorkload = workload[0].data;
         for (const element of dataWorkload) {
+            console.log("--------------------------------------------------------")
+            console.log(element)
             const id = element[0];
             if(Number(id)) {
                 try {
@@ -40,6 +43,7 @@ export default {
                     const nameEducator = element[21];
                     //
                     const department = 2;
+                    const isSplit = false;
 
                     console.log('nameEducator')
                     console.log(nameEducator)
@@ -68,18 +72,17 @@ export default {
                         hours,
                         audienceHours,
                         ratingControlHours,
+                        isSplit,
                     })
+                    console.log(newWorkload.dataValues)
 
-                    await EducatorForWorkload.create({
-                        EducatorId: existEducator.id,
-                        WorkloadId: newWorkload.id,
-                    })
 
                 } catch (e) {
                     console.log(e)
                 }
 
             }
+            console.log("--------------------------------------------------------")
         }
 
         return res.json(dataWorkload);
