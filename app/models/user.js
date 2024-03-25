@@ -1,5 +1,5 @@
-import { DataTypes, Model } from "sequelize";
-import bcrypt from 'bcrypt';
+import { DataTypes, Model } from 'sequelize';
+import EnumRoles from '../config/roles.js';
 
 export default class User extends Model {
     static initialize(sequelize) {
@@ -17,8 +17,18 @@ export default class User extends Model {
                     unique: 'login',
                     validate: { isEmail: { msg: 'Must be a valid email address' } },
                 },
-                password: { type: DataTypes.STRING, allowNull: false },
-                name: { type: DataTypes.STRING, allowNull: false },
+                role: {
+                    type: DataTypes.SMALLINT,
+                    allowNull: false,
+                    validate: {
+                        isIn: [Object.values(EnumRoles)],
+                    },
+                    defaultValue: EnumRoles.LECTURER,
+                },
+                name: {
+                    type: DataTypes.STRING,
+                    allowNull: false,
+                },
             },
             {
                 sequelize,
@@ -28,16 +38,6 @@ export default class User extends Model {
                 paranoid: true,
             }
         );
-
-        function beforeCU(user){
-            user.set('password', bcrypt.hashSync(user.password, bcrypt.genSaltSync()));
-        }
-
-        User.beforeCreate(beforeCU);
-    }
-
-    validatePassword(password) {
-        return bcrypt.compareSync(password, this.password);
     }
 }
 
