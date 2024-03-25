@@ -10,7 +10,7 @@ export default class TokenModel extends Model {
                     allowNull: false,
                     primaryKey: true,
                 },
-                refreshToken: { type: DataTypes.STRING(500), allowNull: false },
+                refreshToken: { type: DataTypes.STRING(1500), allowNull: false },
                 userId: {
                     type: DataTypes.UUID,
                     allowNull: false,
