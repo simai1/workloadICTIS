@@ -1,4 +1,4 @@
-const Roles = require('../config/roles.js');
+import roles from "../config/roles.js";
 
 const checkRole = (allowedRoles) => {
     return (req, res, next) => {
@@ -6,7 +6,7 @@ const checkRole = (allowedRoles) => {
 
         console.log('User Roles:', userRoles); // Добавим эту строку для отладки
 
-        if (userRoles && (allowedRoles.some(role => userRoles.includes(role)) || userRoles.includes(Roles.ADMIN))) {
+        if (userRoles && (allowedRoles.some(role => userRoles.includes(role)) || userRoles.includes(roles.ADMIN))) {
             next();
         } else {
             res.status(403).json({ error: 'Access forbidden' });

@@ -1,8 +1,10 @@
 import { Router } from 'express';
 import eduController from '../controllers/educator.js';
 import { asyncRoute } from '../utils/errors.js';
+import verify from '../middlewares/verify-token.js';
 
 const router = Router();
+router.use(verify.general);
 
 router
     .route('/:educatorId')

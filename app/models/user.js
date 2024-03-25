@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import EnumRoles from '../config/roles.js';
+import associateEducator from "../utils/associate-educator.js";
 
 export default class User extends Model {
     static initialize(sequelize) {
@@ -38,6 +39,9 @@ export default class User extends Model {
                 paranoid: true,
             }
         );
+      User.afterCreate(async user => {
+        await associateEducator(user);
+      });
     }
 }
 
