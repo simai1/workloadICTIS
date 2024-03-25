@@ -153,13 +153,15 @@ function TableDisciplines(props) {
   };
 
   //! при нажатии на кружо предложения
-  const handleClicOffer = (el, index) => {
-    console.log("id", index, allOffersData[index - 1]);
+  const handleClicOffer = (el, id_workload, index) => {
+    console.log("id", index, id_workload, allOffersData[index]);
     setModalWindowOffer({
-      id: allOffersData[index - 1].id,
+      id: allOffersData.find(
+        (item) => item.workloadId === filteredData[index].id
+      ).id,
       flag: !modalWindowOffer.flag,
     });
-    setPosition({ x: el.pageX - 40, y: el.pageY - 200 });
+    setPosition({ x: el.pageX - 40, y: el.pageY - 260 });
   };
 
   //! добавить комментарий к нагрузке из контекстного меню
@@ -412,6 +414,11 @@ function TableDisciplines(props) {
 
         {modalWindowOffer.flag && (
           <OfferModalWindow
+            allOffersDataItem={allOffersData.filter(
+              (item) => item.id === modalWindowOffer.id
+            )}
+            modalWindowOffer={modalWindowOffer}
+            setModalWindowOffer={setModalWindowOffer}
             position={position}
             refOffer={refOffer}
             workloadId={modalWindowOffer.id}
@@ -521,6 +528,7 @@ function TableDisciplines(props) {
                           )}
 
                           {/* //! вывод предложений */}
+
                           {allOffersData.some(
                             (item) => item.workloadId === filteredData[index].id
                           ) && (
@@ -528,7 +536,13 @@ function TableDisciplines(props) {
                               key={index}
                               className={styles.notice}
                               style={{ backgroundColor: "#FFD600" }}
-                              onClick={(el, item) => handleClicOffer(el, index)}
+                              onClick={(el, item) =>
+                                handleClicOffer(
+                                  el,
+                                  filteredData[index].id,
+                                  index
+                                )
+                              }
                             >
                               {
                                 allOffersData.filter(

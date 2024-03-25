@@ -14,12 +14,17 @@ function EditInput({ tableHeaders }) {
 
   const [isChecked, setChecked] = useState(tableHeaders.slice(3));
 
+  useEffect(() => {
+    setSearchResults(tableHeaders.slice(3));
+    setChecked(tableHeaders.slice(3));
+  }, [tableHeaders]);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(actions.initializeFilters(tableHeaders));
-  }, []);
-
+  }, [tableHeaders]);
+  // console.log("EditInput", tableHeaders);
   // закрытие модального окна при нажатии вне него
   const refLO = useRef(null);
   useEffect(() => {

@@ -1,11 +1,11 @@
 //? Здесь все запросы к апи, присвоение этих данных состояниями в AssingApiData
 
 import axios from "axios";
-
+const server = "https://workload.sfedu.ru";
 //! получаем преподов
 export const Educator = async () => {
   try {
-    const response = await axios.get("https://workload.sfedu.ru/educator");
+    const response = await axios.get(`${server}/educator`);
     return response.data;
   } catch (error) {
     console.error("Error:", error);
@@ -15,9 +15,7 @@ export const Educator = async () => {
 
 export const Positions = async () => {
   try {
-    const response = await axios.get(
-      "https://workload.sfedu.ru/educator/get/positions"
-    );
+    const response = await axios.get(`${server}/educatorget/positions`);
     return response.data;
   } catch (error) {
     console.error("Error:", error);
@@ -28,7 +26,7 @@ export const Positions = async () => {
 export const TypeOfEmployments = async () => {
   try {
     const response = await axios.get(
-      "https://workload.sfedu.ru/educator/get/typeOfEmployments"
+      `${server}/educator/get/typeOfEmployments`
     );
     return response.data;
   } catch (error) {
@@ -40,7 +38,7 @@ export const TypeOfEmployments = async () => {
 //! получаем нагрузки
 export const Workload = async () => {
   try {
-    const response = await axios.get("https://workload.sfedu.ru/workload");
+    const response = await axios.get(`${server}/workload`);
     return response.data;
   } catch (error) {
     console.error("Error:", error);
@@ -51,9 +49,7 @@ export const Workload = async () => {
 //! получаем комментарии к нагрузкам от преподавателей
 export const Comment = async () => {
   try {
-    const response = await axios.get(
-      "https://workload.sfedu.ru/comment/getAllComment"
-    );
+    const response = await axios.get(`${server}/comment/getAllComment`);
     return response.data;
   } catch (error) {
     console.error("Error:", error);
@@ -64,7 +60,7 @@ export const Comment = async () => {
 //! получение предупреждений о перегрузках
 export const getAllWarningMessage = async () => {
   try {
-    const response = await axios.get("https://workload.sfedu.ru/notification");
+    const response = await axios.get(`${server}/notification`);
     return response.data;
   } catch (error) {
     console.error("Error:", error);
@@ -75,7 +71,7 @@ export const getAllWarningMessage = async () => {
 //! получение предложений
 export const getOffers = async () => {
   try {
-    const response = await axios.get("https://workload.sfedu.ru/offers");
+    const response = await axios.get(`${server}/offers`);
     return response.data;
   } catch (error) {
     console.error("Error:", error);
@@ -87,10 +83,7 @@ export const getOffers = async () => {
 export const addEducatorWorkload = async (data) => {
   console.log("Добавление преподавателя ", data);
   try {
-    const response = await axios.patch(
-      "https://workload.sfedu.ru/workload/faculty",
-      data
-    );
+    const response = await axios.patch(`${server}/workload/faculty`, data);
     console.log("response ", response);
     return response.data;
   } catch (error) {
@@ -103,10 +96,7 @@ export const addEducatorWorkload = async (data) => {
 export const splitWorkload = async (data) => {
   console.log("Раздление нагрузки ", data);
   try {
-    const response = await axios.post(
-      `https://workload.sfedu.ru/workload/split`,
-      data
-    );
+    const response = await axios.post(`${server}/workload/split`, data);
     console.log("response ", response);
     return response.data;
   } catch (error) {
@@ -119,10 +109,7 @@ export const splitWorkload = async (data) => {
 export const joinWorkloads = async (data) => {
   console.log("Соединение нагрузки ", data);
   try {
-    const response = await axios.post(
-      "https://workload.sfedu.ru/workload/map",
-      data
-    );
+    const response = await axios.post(`${server}/workload/map`, data);
     console.log("response ", response);
     return response.data;
   } catch (error) {
@@ -136,7 +123,7 @@ export const AcceptOffer = async (data) => {
   console.log("Предложение принято ", data);
   try {
     const response = await axios.post(
-      `https://workload.sfedu.ru/offers/confirmOrReject/${data}`,
+      `${server}/offers/confirmOrReject/${data}`,
       { status: "принято" }
     );
     console.log("response ", response);
@@ -152,7 +139,7 @@ export const deleteWorkload = async (data) => {
   console.log("Нагрузки удалены ", data);
   try {
     const response = await axios.delete(
-      "https://workload.sfedu.ru/workload/deleteSeveralWorkloads",
+      `${server}/workload/deleteSeveralWorkloads`,
       { data: data }
     );
     console.log("response ", response);
@@ -167,10 +154,9 @@ export const deleteWorkload = async (data) => {
 export const removeEducatorinWorkload = async (data) => {
   console.log("Преподаватель удален с нагрузки ", data);
   try {
-    const response = await axios.delete(
-      "https://workload.sfedu.ru/workload/faculty",
-      { data: data }
-    );
+    const response = await axios.delete(`${server}/workload/faculty`, {
+      data: data,
+    });
     console.log("response ", response);
     return response.data;
   } catch (error) {
@@ -184,7 +170,7 @@ export const deleteComment = async (data) => {
   console.log("Комменты удалены ", data);
   try {
     const response = await axios.delete(
-      `https://workload.sfedu.ru/comment/deleteAllComments/${data}`
+      `${server}/comment/deleteAllComments/${data}`
     );
     console.log("response ", response);
     return response.data;
@@ -198,10 +184,7 @@ export const deleteComment = async (data) => {
 export const createComment = async (data) => {
   console.log("добавление комментария ", data);
   try {
-    const response = await axios.post(
-      "https://workload.sfedu.ru/comment/createComment",
-      data
-    );
+    const response = await axios.post(`${server}/comment/createComment`, data);
     console.log("response ", response);
     return response.data;
   } catch (error) {
@@ -214,10 +197,7 @@ export const createComment = async (data) => {
 export const createOffer = async (data) => {
   console.log("Предложение ", data);
   try {
-    const response = await axios.post(
-      "https://workload.sfedu.ru/offers/createOffer",
-      data
-    );
+    const response = await axios.post(`${server}/offers/createOffer`, data);
     console.log("response ", response);
     return response.data;
   } catch (error) {
@@ -230,10 +210,7 @@ export const createOffer = async (data) => {
 export const workloadUpdata = async (id, data) => {
   console.log("изменение данных нагрузки ", id, data);
   try {
-    const response = await axios.patch(
-      `https://workload.sfedu.ru/workload/${id}/update`,
-      data
-    );
+    const response = await axios.patch(`${server}/workload/${id}/update`, data);
     console.log("response ", response);
     return response.data;
   } catch (error) {

@@ -24,8 +24,24 @@ function HomePage() {
   const handleButtonClick = () => {
     setName("");
   };
+  const tableHeaders2 = [
+    { key: "id", label: "№" },
+    { key: "name", label: "Преподователь" },
+    { key: "position", label: "Должность" },
+    { key: "typeOfEmployment", label: "Вид занятости" },
+    { key: "department", label: "Кафедра" },
+    { key: "rate", label: "Ставка" },
+    { key: "maxHours", label: "Максимум часов" },
+    { key: "recommendedMaxHours", label: "Рекомендуемый максимум часов" },
+    { key: "minHours", label: "Минимум часов" },
+  ];
   const handleComponentChange = (component) => {
     setSelectedComponent(component);
+    if (component === "Disciplines") {
+      setTableHeaders(tableHeaders);
+    } else {
+      setTableHeaders(tableHeaders2);
+    }
   };
 
   const handleNameChange = (nameTeacher, postTeacher, betTeacher) => {
@@ -42,45 +58,31 @@ function HomePage() {
     console.log(selectedComponent);
     //тут написать функцию которая будет подгружать нужное содержимое tableData и tableHeaders
   };
-
-  const tableHeaders = React.useMemo(() => {
-    return [
-      { key: "id", label: "№" },
-      { key: "discipline", label: "Дисциплина" },
-      { key: "workload", label: "Нагрузка" },
-      { key: "groups", label: "Группа" },
-      { key: "department", label: "Кафедра" },
-      { key: "block", label: "Блок" },
-      { key: "semester", label: "Семестр" },
-      { key: "period", label: "Период" },
-      { key: "curriculum", label: "Учебный план" },
-      { key: "curriculumUnit", label: "Подразделение учебного плана" },
-      { key: "formOfEducation", label: "Форма обучения" },
-      { key: "levelOfTraining", label: "Уровень подготовки" },
-      {
-        key: "specialty",
-        label: "Направление подготовки (специальность)",
-      },
-      { key: "core", label: "Профиль" },
-      { key: "numberOfStudents", label: "Количество студентов" },
-      { key: "hours", label: "Часы" },
-      { key: "audienceHours", label: "Аудиторные часы" },
-      { key: "ratingControlHours", label: "Часы рейтинг-контроль" },
-      { key: "educator", label: "Преподаватель" },
-    ];
-  }, []);
-
-  const tableHeaders2 = [
+  const tableHeaders = [
     { key: "id", label: "№" },
-    { key: "name", label: "Преподователь" },
-    { key: "position", label: "Должность" },
-    { key: "typeOfEmployment", label: "Вид занятости" },
+    { key: "discipline", label: "Дисциплина" },
+    { key: "workload", label: "Нагрузка" },
+    { key: "groups", label: "Группа" },
     { key: "department", label: "Кафедра" },
-    { key: "rate", label: "Ставка" },
-    { key: "maxHours", label: "Максимум часов" },
-    { key: "recommendedMaxHours", label: "Рекомендуемый максимум часов" },
-    { key: "minHours", label: "Минимум часов" },
+    { key: "block", label: "Блок" },
+    { key: "semester", label: "Семестр" },
+    { key: "period", label: "Период" },
+    { key: "curriculum", label: "Учебный план" },
+    { key: "curriculumUnit", label: "Подразделение учебного плана" },
+    { key: "formOfEducation", label: "Форма обучения" },
+    { key: "levelOfTraining", label: "Уровень подготовки" },
+    {
+      key: "specialty",
+      label: "Направление подготовки (специальность)",
+    },
+    { key: "core", label: "Профиль" },
+    { key: "numberOfStudents", label: "Количество студентов" },
+    { key: "hours", label: "Часы" },
+    { key: "audienceHours", label: "Аудиторные часы" },
+    { key: "ratingControlHours", label: "Часы рейтинг-контроль" },
+    { key: "educator", label: "Преподаватель" },
   ];
+  const [tableHeadersTeacher, setTableHeaders] = useState(tableHeaders);
 
   return (
     <Layout>
@@ -159,7 +161,17 @@ function HomePage() {
               />
             </div>
             <div className={styles.EditInput}>
-              <EditInput tableHeaders={tableHeaders} />
+              {selectedComponent === "Disciplines" ? (
+                <EditInput
+                  tableHeaders={tableHeadersTeacher}
+                  selectedComponent={selectedComponent}
+                />
+              ) : (
+                <EditInput
+                  tableHeaders={tableHeadersTeacher}
+                  selectedComponent={selectedComponent}
+                />
+              )}
             </div>
           </div>
         </div>
@@ -176,6 +188,8 @@ function HomePage() {
             />
           ) : selectedComponent === "Teachers" && name === "" ? (
             <TableTeachers
+              setTableHeaders={setTableHeaders}
+              tableHeaders={tableHeadersTeacher}
               searchTerm={searchTerm}
               setSearchTerm={setSearchTerm}
               setEducatorData={setEducatorData}

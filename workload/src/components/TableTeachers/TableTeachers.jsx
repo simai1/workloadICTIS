@@ -143,8 +143,8 @@ function TableTeachers(props) {
         />
         <img src="./img/search.svg"></img>
       </div> */}
-
-      {/* <div className={styles.EditInput}>
+      {/* 
+      <div className={styles.EditInput}>
         <EditInput tableHeaders={tableHeaders} />
       </div> */}
 
