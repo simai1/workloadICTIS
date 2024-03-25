@@ -1,5 +1,6 @@
 import Educator from '../models/educator.js';
 import Notification from '../models/notifications.js';
+import NotificationDto from '../dtos/notification-dto.js';
 
 export default {
     async getAllNotifications(req, res) {
@@ -8,7 +9,10 @@ export default {
                 include: { model: Educator },
                 attributes: { exclude: ['EducatorId'] }, // Исключаем EducatorId из результата
             });
-            res.json(notifications);
+
+            const notificationDto = notifications.map(notification => new NotificationDto(notification));
+
+            res.json(notificationDto);
         } catch (error) {
             res.status(500).json({ error: 'Internal Server Error' });
         }
