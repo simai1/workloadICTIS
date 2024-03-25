@@ -21,6 +21,7 @@ router.get('/login', passport.authenticate('azure_ad_oauth2'),(req, res) => {
 })
 
 router.get('/logout', (req, res) => {
-  res.send('logging out');
+  req.logout();
+  res.redirect('/');
 })
 export default router;
