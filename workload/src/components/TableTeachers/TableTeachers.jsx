@@ -144,9 +144,9 @@ function TableTeachers(props) {
         <img src="./img/search.svg"></img>
       </div> */}
 
-      <div className={styles.EditInput}>
+      {/* <div className={styles.EditInput}>
         <EditInput tableHeaders={tableHeaders} />
-      </div>
+      </div> */}
 
       <div className={styles.TableTeachers__inner}>
         <table className={styles.TableTeachers}>

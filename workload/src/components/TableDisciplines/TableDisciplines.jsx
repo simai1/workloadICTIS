@@ -294,11 +294,6 @@ function TableDisciplines(props) {
     setFilteredData(fd);
   }, [updatedData, props.searchTerm]);
 
-  const EditTableData = (selectedComponent) => {
-    console.log(selectedComponent);
-    //тут написать функцию которая будет подгружать нужное содержимое tableData и tableHeaders
-  };
-
   //! меню при нажатии пкм
   const handleContextMenu = (e) => {
     e.preventDefault();
@@ -377,7 +372,7 @@ function TableDisciplines(props) {
         <img src="./img/search.svg"></img>
       </div> */}
 
-      <div className={styles.ButtonCaf_gen}>
+      {/* <div className={styles.ButtonCaf_gen}>
         <Button
           Bg={selectedComponent === "cathedrals" ? "#3B28CC" : "#efedf3"}
           textColot={selectedComponent === "cathedrals" ? "#efedf3" : "#000000"}
@@ -399,7 +394,7 @@ function TableDisciplines(props) {
       </div>
       <div className={styles.EditInput}>
         <EditInput tableHeaders={tableHeaders} />
-      </div>
+      </div> */}
       <div>
         {isHovered && (
           <NotificationForm
