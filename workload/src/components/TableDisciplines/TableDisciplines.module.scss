@@ -28,41 +28,41 @@
 
       padding: 10px;
     }
-    input {
-      display: flex;
-      position: relative !important;
-      top: 0 !important;
-      left: 0 !important;
-      padding: 0 !important;
-      width: 100% !important;
-      border: none !important;
-      outline: none;
-      margin: 0 !important;
-    }
+    // input {
+    //   display: flex;
+    //   position: relative !important;
+    //   top: 0 !important;
+    //   left: 0 !important;
+    //   padding: 0 !important;
+    //   width: 100% !important;
+    //   border: none !important;
+    //   outline: none;
+    //   margin: 0 !important;
+    // }
   }
   .search {
     background-color: #efedf3;
   }
-  input[type="text"] {
-    margin-bottom: 10px;
-    position: absolute;
-    top: -92px;
-    width: 310px;
-    font-size: 18px;
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-    color: var(--black-color);
-    padding: 9px 0px 9px 16px;
-  }
+  // input[type="text"] {
+  //   margin-bottom: 10px;
+  //   position: absolute;
+  //   top: -92px;
+  //   width: 310px;
+  //   font-size: 18px;
+  //   border-radius: 8px;
+  //   border: 1px solid var(--border-color);
+  //   color: var(--black-color);
+  //   padding: 9px 0px 9px 16px;
+  // }
   .ButtonCaf_gen {
     margin-bottom: 16px;
     padding: 0 64px;
   }
-  .EditInput {
-    position: absolute;
-    right: 0;
-    top: 0;
-  }
+  // .EditInput {
+  //   position: absolute;
+  //   right: 0;
+  //   top: 0;
+  // }
   .TableDisciplines__inner {
     padding-left: 64px;
     display: flex;
@@ -118,12 +118,47 @@
       height: 100%;
       padding: 10px;
     }
+
     .td_inner:hover {
       background-color: #dedeed;
       border-radius: 8px;
     }
     td {
       padding: 7px 20px !important;
+
+      .textarea {
+        width: 140px;
+        height: 60px;
+        resize: none !important;
+        border: none;
+        box-shadow: 0px 0px 7px #b3b0b0;
+        border-radius: 8px;
+        padding: 5px;
+      }
+      .svg_textarea {
+        display: flex;
+        justify-content: end;
+        svg {
+          margin: 3px;
+          cursor: pointer;
+        }
+
+        svg:hover * {
+          fill: #3b28cc;
+        }
+      }
+      .textarea::-webkit-scrollbar {
+        width: 5px; /* ширина scrollbar */
+      }
+      .textarea::-webkit-scrollbar-track {
+        background: #fff; /* цвет дорожки */
+      }
+      .textarea::-webkit-scrollbar-thumb,
+      .textarea::-webkit-scrollbar-thumb {
+        background-color: #a6a6a6;
+        border-radius: 5px;
+        border: 3px solid #a6a6a6;
+      }
     }
     .th_inner {
       display: flex;
@@ -191,7 +226,7 @@
       content: "";
       width: 3px;
       height: 53px;
-      background-color: red;
+      background-color: inherit;
       position: absolute;
       right: -10px;
     }
@@ -247,11 +282,11 @@ table td {
     rgba(0, 0, 0, 0.2) 0%,
     rgba(0, 0, 0, 0) 100%
   );
-  height: calc((100%) - (60px));
+  height: calc((100%));
   width: 20px;
   position: absolute;
   right: 0;
-  top: 60px;
+  top: 0;
   border-radius: 0px 8px 8px 0px;
   z-index: 2;
 }

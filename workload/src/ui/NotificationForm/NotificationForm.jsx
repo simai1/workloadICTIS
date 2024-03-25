@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from "react";
 import styles from "./NotificationForm.module.scss";
 import DataContext from "../../context";
-import { createComment } from "../../api/services/ApiGetData";
+import {
+  Educator,
+  createComment,
+  deleteComment,
+} from "../../api/services/ApiRequest";
 
 import { ReactComponent as LogoAllComment } from "./../../img/arrow_down.svg";
-import { ReactComponent as commentsSvg } from "./../../img/comments.svg";
+import { ReactComponent as CommentsSvg } from "./../../img/comments.svg";
+import { ReactComponent as CommentsSvgActive } from "./../../img/commentsOn.svg";
+import { ReactComponent as Checkmark } from "./../../img/checkmark.svg";
 
 export function NotificationForm(props) {
   const [isCommentsSheetOpen, setCommentsSheetOpen] = useState(false);
@@ -18,15 +24,21 @@ export function NotificationForm(props) {
     if (textarea.trim() === "") {
       setError(true);
     } else {
-      const data = {
-        educatorId: "3d3d0074-3697-42ea-90f4-e8c034376fcf",
-        workloadId: props.workloadId,
-        text: textarea,
-      };
-      console.log(data);
-      createComment(data).then(() => props.getDataAllComment());
+      Educator().then((item) => {
+        //удалить, заменить id пользователя
+        const data = {
+          educatorId: item[1].id,
+          workloadId: props.workloadId,
+          text: textarea,
+        };
+        console.log(item);
+        createComment(data).then(() =>
+          props.getDataAllComment(props.setCommentAllData)
+        );
+      });
       setIsComment(false);
-      setPositionMenu({ y: props.position.y, x: props.position.x });
+
+      // setPositionMenu({ y: props.position.y, x: props.position.x });
       //обновление модального окна комментариев
     }
   };
@@ -39,11 +51,11 @@ export function NotificationForm(props) {
   //! открытие textarea для ввода комментраия
   const handleClickComment = () => {
     setCommentsSheetOpen(false);
-    if (isComment) {
-      setPositionMenu({ y: props.position.y, x: props.position.x });
-    } else {
-      setPositionMenu({ y: props.position.y - 150, x: props.position.x });
-    }
+    // if (isComment) {
+    //   setPositionMenu({ y: props.position.y, x: props.position.x });
+    // } else {
+    //   setPositionMenu({ y: props.position.y - 150, x: props.position.x });
+    // }
     setIsComment(!isComment);
   };
 
@@ -51,11 +63,20 @@ export function NotificationForm(props) {
   const onClickAllComment = () => {
     setCommentsSheetOpen(!isCommentsSheetOpen);
     setIsComment(false);
-    if (isCommentsSheetOpen) {
-      setPositionMenu({ y: props.position.y, x: props.position.x });
-    } else {
-      setPositionMenu({ y: props.position.y - 168, x: props.position.x });
-    }
+    // if (isCommentsSheetOpen) {
+    //   setPositionMenu({ y: props.position.y, x: props.position.x });
+    // } else {
+    //   setPositionMenu({ y: props.position.y - 168, x: props.position.x });
+    // }
+  };
+
+  //! нажатие галочки удаление комментариев
+  const onCheckmarkClickDelet = (data) => {
+    console.log(props.workloadId);
+    //удаление коммента по id
+    deleteComment(props.workloadId).then(() =>
+      props.getDataAllComment(props.setCommentAllData)
+    );
   };
 
   return (
@@ -63,7 +84,7 @@ export function NotificationForm(props) {
       <div
         className={styles.hovered_notice}
         style={{
-          top: positionMenu.y - 90,
+          top: positionMenu.y + 65,
           left: positionMenu.x + 70,
         }}
       >
@@ -74,7 +95,7 @@ export function NotificationForm(props) {
               <div className={styles.container}>
                 {props.commentData.map((item) => (
                   <div key={item?.id}>
-                    <h4>{item?.educator.name}</h4>
+                    <h4>{item?.educator?.name}</h4>
                     <p>{item?.text}</p>
                   </div>
                 ))}
@@ -82,42 +103,50 @@ export function NotificationForm(props) {
             </div>
           ) : (
             <div className={styles.headComment}>
-              <h4>{props.commentData[0]?.educator.name}</h4>
+              <h4>{props.commentData[0]?.educator?.name}</h4>
               <p>{props.commentData[0]?.text}</p>
             </div>
           )}
-          {props.commentData.length > 1 && (
+          {props.commentData.length > 0 && (
             <div className={styles.hovered_notice_img}>
               <div className={styles.left} onClick={onClickAllComment}>
-                <span>{props.commentData.length}</span>
+                {props.commentData.length > 1 && (
+                  <>
+                    <span>{props.commentData.length}</span>
 
-                <LogoAllComment
-                  className={styles.logosvg}
-                  style={
-                    isCommentsSheetOpen
-                      ? {
-                          transform: " rotate(180deg)",
-                          transition: "transform 0.4s",
-                        }
-                      : { transition: "transform 0.3s" }
-                  }
-                />
+                    <LogoAllComment
+                      height={8}
+                      className={styles.logosvg}
+                      style={
+                        isCommentsSheetOpen
+                          ? {
+                              transform: " rotate(180deg)",
+                              transition: "transform 0.4s",
+                            }
+                          : { transition: "transform 0.3s" }
+                      }
+                    />
+                  </>
+                )}
               </div>
 
-              <div className={styles.left}>
-                {/* <img
-                  onClick={handleClickComment}
-                  src={
-                    isComment ? "./img/commentsOn.svg" : "./img/comments.svg"
-                  }
-                  alt="comments"
-                ></img> */}
-                <commentsSvg onClick={handleClickComment} />
-                <img
-                  onClick={onCheckmarkClick}
-                  src="./img/checkmark.svg"
-                  alt="checkmark"
-                ></img>
+              <div className={styles.left_2}>
+                {isComment ? (
+                  <CommentsSvgActive
+                    className={styles.logosvg}
+                    onClick={handleClickComment}
+                  />
+                ) : (
+                  <CommentsSvg
+                    className={styles.logosvg}
+                    onClick={handleClickComment}
+                  />
+                )}
+
+                <Checkmark
+                  className={styles.logosvg}
+                  onClick={() => onCheckmarkClickDelet(props.commentData)}
+                />
               </div>
             </div>
           )}

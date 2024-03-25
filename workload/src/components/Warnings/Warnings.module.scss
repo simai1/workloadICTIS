@@ -1,19 +1,47 @@
 @import "./../../style/colors.scss";
 
 .Warnings {
-  width: 251px;
-  height: 44px;
+  position: relative;
+  height: 45px;
+  width: 45px;
+  margin-right: 24px;
   background-color: #fff;
-  display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 8px;
+  .span_length {
+    display: flex;
+    font-size: 14px;
+    justify-content: center;
+    align-items: center;
+    transform: translateX(0.5px);
+    transform: translateY(0.5px);
+  }
   .WarningsButton {
     display: flex;
-    transition: 0.15s linear all;
-    img {
-      padding-left: 11px;
+    width: 45px;
+    height: 45px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    // font-size: 17px;
+    .red_circle {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      top: 13px;
+      right: 12px;
+      border-radius: 8px;
+      background-color: red;
     }
+    .svg_notice {
+      display: flex;
+      height: 19px;
+    }
+    // transition: 0.15s linear all;
+    // img {
+    //   padding-left: 11px;
+    // }
   }
 
   .WarningsButton:hover {
@@ -22,28 +50,37 @@
   }
   .WarningsOpen {
     position: absolute;
-    top: 0px;
+    top: 65px;
+    left: 0;
     z-index: 50;
     background-color: var(--white-color);
     box-shadow: 4px 4px 20px 0px #00000026;
-    border-radius: 4px;
+    border-radius: 8px;
     width: 251px;
     .WarningsButtonOpen {
       display: flex;
       align-items: center;
+      font-size: 18px;
+      font-weight: 500;
       border-radius: 8px;
       height: 44px;
       padding: 0px 16px;
       background-color: var(--white-color);
-      transition: 0.15s linear opacity;
     }
     img {
       padding-left: 11px;
     }
   }
-  .WarningsButtonOpen:hover {
-    cursor: pointer;
-    opacity: 0.6;
+  .triangle {
+    position: absolute;
+    top: -15px;
+    left: 10px;
+    width: 26px;
+    height: 14px;
+    border-left: 11px solid transparent;
+    border-right: 11px solid transparent;
+    border-bottom: 24px solid #fff;
+    border-radius: 100%;
   }
 }
 .WarningsList ul {
@@ -51,7 +88,7 @@
   margin-left: 0;
   padding: 0;
   width: 219px;
-  height: 60vh;
+  max-height: 60vh;
 }
 .WarningsList {
   display: flex;
