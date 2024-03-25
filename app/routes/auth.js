@@ -1,10 +1,26 @@
 import { Router } from 'express';
 import authController from '../controllers/auth.js';
 import { asyncRoute } from '../utils/errors.js';
+import passport from "passport";
 
 const router = Router();
 
-router.route('/login').get(asyncRoute(authController.login));
-router.route('/test').post(asyncRoute(authController.test));
-router.route('/loginSfedu').post(asyncRoute(authController.loginSfedu));
+router.route('/test').get(asyncRoute(authController.test));
+router.get('/loginSfedu', passport.authenticate('azure_ad_oauth2', {
+    failureRedirect: '/',
+    scope: ['profile']
+  }),
+  (req, res) => {
+    console.log('1234')
+    res.redirect('/');
+  });
+
+router.get('/login', passport.authenticate('azure_ad_oauth2'),(req, res) => {
+  // res.send('redirect URI')
+  res.redirect('/');
+})
+
+router.get('/logout', (req, res) => {
+  res.send('logging out');
+})
 export default router;
