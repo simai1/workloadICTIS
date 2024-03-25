@@ -14,6 +14,9 @@ export default function () {
     User.hasOne(TokenSchema, { foreignKey: 'userId' });
     TokenSchema.belongsTo(User, { foreignKey: 'userId' });
 
+    User.hasOne(Educator, { foreignKey: 'userId' });
+    Educator.belongsTo(User, { foreignKey: 'userId' });
+
     Educator.hasMany(Notification);
     Notification.belongsTo(Educator);
 
