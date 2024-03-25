@@ -7,7 +7,14 @@ function OfferModalWindow(props) {
   const [itemIndex, setItemIndex] = useState(0); // изменять при листании
   const onClickAcceptOffer = () => {
     console.log("Принято", props.workloadId);
-    AcceptOffer(props.workloadId).then(() => {
+    AcceptOffer(props.workloadId, "принято").then(() => {
+      props.getDataTableAll();
+    });
+    props.setModalWindowOffer({ id: props.modalWindowOffer.id, flag: false });
+  };
+  const onClickAcceptOfferRejected = () => {
+    console.log("Отклонено", props.workloadId);
+    AcceptOffer(props.workloadId, "отклонено").then(() => {
       props.getDataTableAll();
     });
     props.setModalWindowOffer({ id: props.modalWindowOffer.id, flag: false });
@@ -31,7 +38,12 @@ function OfferModalWindow(props) {
           {props.allOffersDataItem[itemIndex].educatorId}
         </span>
         <div className={styles.button_box}>
-          <button className={styles.button_left}>Отклонить</button>
+          <button
+            className={styles.button_left}
+            onClick={onClickAcceptOfferRejected}
+          >
+            Отклонить
+          </button>
           <button className={styles.button_rigth} onClick={onClickAcceptOffer}>
             Принять
           </button>

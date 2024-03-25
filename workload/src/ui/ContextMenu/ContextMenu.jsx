@@ -190,15 +190,6 @@ const ContextMenu = (props) => {
         <div>
           <button
             className={styles.activeStylePointer}
-            onClick={props.handleMenuClick}
-          >
-            Согласовать
-          </button>
-        </div>
-
-        <div>
-          <button
-            className={styles.activeStylePointer}
             onClick={handleDeletWorkload}
           >
             Удалить

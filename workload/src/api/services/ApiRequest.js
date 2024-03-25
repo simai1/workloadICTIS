@@ -119,12 +119,12 @@ export const joinWorkloads = async (data) => {
 };
 
 //! запрос на принятие предложения
-export const AcceptOffer = async (data) => {
+export const AcceptOffer = async (data, status) => {
   console.log("Предложение принято ", data);
   try {
     const response = await axios.post(
       `${server}/offers/confirmOrReject/${data}`,
-      { status: "принято" }
+      { status: status }
     );
     console.log("response ", response);
     return response.data;
