@@ -1,37 +1,50 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./Warnings.module.scss";
-import arrow from "./../../img/arrow.svg";
 import WarningMessage from "../../ui/WarningMessage/WarningMessage";
 import socketConnect from "../../api/services/socket";
-function Warnings() {
-  const handleSoket = () => {
-    socketConnect();
-  };
+import DataContext from "../../context";
+import { ReactComponent as SvgNotification } from "./../../img/notification.svg";
+import { Educator } from "../../api/services/ApiRequest";
+function Warnings(props) {
+  const { appData } = React.useContext(DataContext);
 
-  // useEffect(() => {
-  //   socket.on("connect", () => {
-  //     console.log("Socket connected");
-  //   });
-  //   socket.on("notificationCreated", (data) => {
-  //     console.log("Notification created:", data);
-  //   });
-  //   return () => {
-  //     // Очистка обработчиков событий при размонтировании компонента
-  //     socket.off("connect");
-  //     socket.off("notificationCreated");
-  //   };
-  // }, []);
   const [isListOpen, setListOpen] = useState(false);
+  const [arrMessage, setMessage] = useState(appData.allWarningMessage);
   const toggleList = () => {
     setListOpen(!isListOpen);
   };
-  const [arrMessage, setMessage] = useState([
-    { id: "1", name: "Бабулинко А А", hours: "98" },
-    { id: "2", name: "Бабулинко А А", hours: "98" },
-    { id: "3", name: "Бабулинко А А", hours: "98" },
-    { id: "4", name: "Бабулинко А А", hours: "98" },
-    { id: "5", name: "Бабулинко А А", hours: "98" },
-  ]);
+
+  //! клина на предупреждение
+  const directLks = (index) => {
+    //получаем преподавателей с бд
+    Educator().then((data) => {
+      console.log("teatcher ", data);
+      console.log("переход", appData.allWarningMessage[index - 1].EducatorId);
+      props.setSelectedComponent("Teachers"); // переходим к компоненту с преподавателями
+      props.handleNameChange(
+        "Алексеев Кирилл Николаевич",
+        "postTeacher",
+        "betTeacher"
+      ); //!!! исправить
+      console.log(
+        data.filter(
+          (el) => el.id === appData.allWarningMessage[index - 1].EducatorId
+        )
+      );
+      props.setEducatorData(
+        data.filter(
+          (el) => el.id === appData.allWarningMessage[index - 1].EducatorId
+        )[0]
+      );
+    });
+  };
+
+  useEffect(() => {
+    socketConnect().then((data) => {
+      data && setMessage(data.existingNotification); //!!! исправить
+      console.log("socketConnect", data);
+    });
+  }, []);
 
   // закрытие модального окна при нажатии вне него
   const refLO = useRef(null);
@@ -46,35 +59,35 @@ function Warnings() {
       document.removeEventListener("click", handler);
     };
   }, []);
-
   return (
     <div ref={refLO} className={styles.Warnings}>
-      <button onClick={handleSoket}>Сокет</button>
-      {!isListOpen && (
-        <div onClick={toggleList} className={styles.WarningsButton}>
-          <p className={styles.circlesbuttonWarn}>
-            <span className={styles.Warnings_count_circle}>
-              {arrMessage.length}
-            </span>
-          </p>
-          <p>Предупреждения</p>
-          <img src={arrow} alt="arrow"></img>
-        </div>
-      )}
+      <div onClick={toggleList} className={styles.WarningsButton}>
+        {appData.allWarningMessage.length > 0 && (
+          <div className={styles.red_circle}></div>
+        )}
+        <SvgNotification className={styles.svg_notice} />
+      </div>
       {isListOpen && (
         <div className={styles.WarningsOpen}>
-          <div onClick={toggleList} className={styles.WarningsButtonOpen}>
+          <div className={styles.triangle}></div>
+          <div className={styles.WarningsButtonOpen}>
             <p className={styles.circlesbuttonWarn}>
-              <span>{arrMessage.length}</span>
+              <span className={styles.span_length}>
+                {appData.allWarningMessage?.length}
+              </span>
             </p>
             <p>Предупреждения</p>
-            <img src={arrow} alt="arrow"></img>
           </div>
           <div className={styles.WarningsList}>
             <ul>
-              {arrMessage.map((el, index) => {
+              {appData.allWarningMessage?.map((el, index) => {
                 return (
-                  <WarningMessage key={index} arrMessage={el} id={index + 1} />
+                  <WarningMessage
+                    key={el.id}
+                    arrMessage={el}
+                    id={index + 1}
+                    directLks={directLks}
+                  />
                 );
               })}
             </ul>

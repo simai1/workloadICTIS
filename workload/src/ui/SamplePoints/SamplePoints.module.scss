@@ -2,7 +2,7 @@
   position: absolute;
   height: 280px;
   background-color: #fff;
-  width: 340px;
+  max-width: 340px;
   //   top: 100px;
   //   left: 200px;
   box-shadow: 9px 3px 18px rgba(0, 0, 0, 0.2);
@@ -12,11 +12,14 @@
   justify-content: center;
   border-radius: 8px;
   .search {
-    padding: 0;
-    top: 0 !important;
-    position: relative !important;
-    cursor: pointer;
-    margin-left: 0;
+    width: 95%;
+    position: relative;
+    box-sizing: border-box;
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 8px;
+    border: 1px solid #757575;
+    outline: none;
   }
   .points {
     position: relative;

@@ -57,9 +57,14 @@ export default {
                     { body: { educatorId: offer.educatorId, workloadId: offer.workloadId } },
                     res
                 );
+
+                // Удаление предложения, если оно принято
+                await offer.destroy({ force: true });
+
+                // Отправка сообщения об успешном принятии предложения
             } else if (status === 'отклонено') {
                 // Удаление предложения, если оно отклонено
-                await offer.destroy();
+                await offer.destroy({ force: true });
                 res.send('Предложение отклонено');
             }
 
