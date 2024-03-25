@@ -44,6 +44,10 @@ function HomePage() {
     }
   };
 
+  const changeInput = () => {
+    setTableHeaders(tableHeaders2);
+  };
+
   const handleNameChange = (nameTeacher, postTeacher, betTeacher) => {
     setName(nameTeacher);
     setpost(postTeacher);
@@ -82,6 +86,7 @@ function HomePage() {
     { key: "ratingControlHours", label: "Часы рейтинг-контроль" },
     { key: "educator", label: "Преподаватель" },
   ];
+
   const [tableHeadersTeacher, setTableHeaders] = useState(tableHeaders);
 
   return (
@@ -160,16 +165,12 @@ function HomePage() {
                 }}
               />
             </div>
+
             <div className={styles.EditInput}>
-              {selectedComponent === "Disciplines" ? (
+              {name === "" && (
                 <EditInput
+                  selectedComponent={selectedComponent} //! исправить не обновляется
                   tableHeaders={tableHeadersTeacher}
-                  selectedComponent={selectedComponent}
-                />
-              ) : (
-                <EditInput
-                  tableHeaders={tableHeadersTeacher}
-                  selectedComponent={selectedComponent}
                 />
               )}
             </div>
@@ -188,6 +189,7 @@ function HomePage() {
             />
           ) : selectedComponent === "Teachers" && name === "" ? (
             <TableTeachers
+              changeInput={changeInput}
               setTableHeaders={setTableHeaders}
               tableHeaders={tableHeadersTeacher}
               searchTerm={searchTerm}
@@ -197,6 +199,8 @@ function HomePage() {
             />
           ) : selectedComponent === "Teachers" && name !== "" ? (
             <TableLks
+              changeInput={changeInput}
+              searchTerm={searchTerm}
               educatorData={educatorData}
               delNameChange={handleNameChange}
               NameTeachers={{ name, post, bet }}

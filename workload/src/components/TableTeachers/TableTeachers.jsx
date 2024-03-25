@@ -12,8 +12,11 @@ function TableTeachers(props) {
   // const [clickedName, setClickedName] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [tableData, setTableData] = useState([]); // соберем из аднных апи общие данные
-
   const { appData } = React.useContext(DataContext);
+
+  useEffect(() => {
+    props.changeInput();
+  }, []);
   // заносим данные о преподавателях в состояние
   React.useEffect(() => {
     Educator().then((data) => {

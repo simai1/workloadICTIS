@@ -8,8 +8,7 @@ const WarningMessage = (props) => {
         <p className={styles.circlesbuttonWarn}>
           <span>{props.id}</span>
         </p>
-        {/* <p>{props.arrMessage.name}</p> */}
-        <p>Алексеев К Н</p>
+        <p className={styles.name}>{props.name}</p>
       </div>
       <div
         className={styles.buttonWarnBlock}

@@ -5,44 +5,32 @@ import socketConnect from "../../api/services/socket";
 import DataContext from "../../context";
 import { ReactComponent as SvgNotification } from "./../../img/notification.svg";
 import { Educator } from "../../api/services/ApiRequest";
+import { getAllWarnin } from "../../api/services/AssignApiData";
 function Warnings(props) {
   const { appData } = React.useContext(DataContext);
 
   const [isListOpen, setListOpen] = useState(false);
-  const [arrMessage, setMessage] = useState(appData.allWarningMessage);
+  // const [arrMessage, setMessage] = useState(appData.allWarningMessage);
   const toggleList = () => {
     setListOpen(!isListOpen);
   };
 
   //! клина на предупреждение
   const directLks = (index) => {
-    //получаем преподавателей с бд
-    Educator().then((data) => {
-      console.log("teatcher ", data);
-      console.log("переход", appData.allWarningMessage[index - 1].EducatorId);
-      props.setSelectedComponent("Teachers"); // переходим к компоненту с преподавателями
-      props.handleNameChange(
-        "Алексеев Кирилл Николаевич",
-        "postTeacher",
-        "betTeacher"
-      ); //!!! исправить
-      console.log(
-        data.filter(
-          (el) => el.id === appData.allWarningMessage[index - 1].EducatorId
-        )
-      );
-      props.setEducatorData(
-        data.filter(
-          (el) => el.id === appData.allWarningMessage[index - 1].EducatorId
-        )[0]
-      );
-    });
+    props.setSelectedComponent("Teachers"); // переходим к компоненту с преподавателями
+    props.handleNameChange(
+      appData.allWarningMessage[index - 1].Educator.name,
+      "postTeacher",
+      "betTeacher"
+    );
+    props.setEducatorData(appData.allWarningMessage[index - 1].Educator);
   };
 
   useEffect(() => {
     socketConnect().then((data) => {
-      data && setMessage(data.existingNotification); //!!! исправить
+      // data && setMessage(data.existingNotification); //!!! исправить
       console.log("socketConnect", data);
+      getAllWarnin(appData.setAllWarningMessage);
     });
   }, []);
 
@@ -83,6 +71,7 @@ function Warnings(props) {
               {appData.allWarningMessage?.map((el, index) => {
                 return (
                   <WarningMessage
+                    name={appData.allWarningMessage[index].Educator.name}
                     key={el.id}
                     arrMessage={el}
                     id={index + 1}

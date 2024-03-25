@@ -4,10 +4,14 @@ import EditInput from "../EditInput/EditInput";
 import ArrowBack from "./../../img/arrow-back.svg";
 import { useDispatch, useSelector } from "react-redux";
 
-function TableLks({ delNameChange, NameTeachers, educatorData }) {
+function TableLks(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]); // State to hold the updated table headers
   const [updatedData, setUpdatedData] = useState([]); // State to hold the updated table headers
   const [searchTerm, setSearchTerm] = useState(""); // State to hold the search term
+
+  useEffect(() => {
+    setSearchTerm(props.searchTerm);
+  }, [props.searchTerm]);
 
   const tableHeaders = useMemo(() => {
     return [
@@ -35,7 +39,7 @@ function TableLks({ delNameChange, NameTeachers, educatorData }) {
         division: "ИКТИБ ИРТСУ",
         direction: "Направление подготовки",
         hours: "50",
-        hours_period_1: "25",
+        hours_period_1: "26",
         hours_period_2: "25",
         hours_without_a_period: "0",
         classroom_hours: "3",
@@ -57,8 +61,10 @@ function TableLks({ delNameChange, NameTeachers, educatorData }) {
     []
   );
 
+  //! клик на стрелку назад
   const handleNameClick = (name) => {
-    delNameChange(name);
+    props.delNameChange(name);
+    props.changeInput();
   };
 
   const dispatch = useDispatch();
@@ -84,9 +90,6 @@ function TableLks({ delNameChange, NameTeachers, educatorData }) {
     setUpdatedHeader(updatedHeader);
     setUpdatedData(updatedData);
   }
-  const handleSearch = (event) => {
-    setSearchTerm(event.target.value);
-  };
 
   const filteredData = updatedData.filter((row) => {
     return Object.values(row).some((value) =>
@@ -115,19 +118,6 @@ function TableLks({ delNameChange, NameTeachers, educatorData }) {
 
   return (
     <div>
-      <div className={styles.tabledisciplinesMain_search}>
-        <input
-          type="text"
-          placeholder="Поиск"
-          id="search"
-          name="search"
-          value={searchTerm}
-          onChange={handleSearch}
-          className={styles.search}
-        />
-        <img src="./img/search.svg"></img>
-      </div>
-
       <button className={styles.buttonBack} onClick={() => handleNameClick("")}>
         <img src={ArrowBack} alt="arrow"></img>
         <p>Назад</p>
@@ -136,7 +126,7 @@ function TableLks({ delNameChange, NameTeachers, educatorData }) {
       <div className={styles.DataLks}>
         <div className={styles.DataLksInner}>
           <div className={styles.DataLksHead}>
-            <h1>{educatorData.name}</h1>
+            <h1>{props.educatorData.name}</h1>
             <div
               className={styles.DataLksHeadSchet}
               style={{ backgroundColor: BackgroundColorHours }}
@@ -147,9 +137,9 @@ function TableLks({ delNameChange, NameTeachers, educatorData }) {
             </div>
           </div>
 
-          <p>{educatorData.department}</p>
-          <p>{educatorData.position}</p>
-          <p>Ставка: {educatorData.rate}</p>
+          <p>{props.educatorData.department}</p>
+          <p>{props.educatorData.position}</p>
+          <p>Ставка: {props.educatorData.rate}</p>
         </div>
         <div className={styles.EditInput}>
           <EditInput tableHeaders={tableHeaders} top={60.3} h={64} />
@@ -176,7 +166,6 @@ function TableLks({ delNameChange, NameTeachers, educatorData }) {
           </tbody>
         </table>
       </div>
-      {/* <div className={styles.Block__tables__shadow}></div> */}
     </div>
   );
 }

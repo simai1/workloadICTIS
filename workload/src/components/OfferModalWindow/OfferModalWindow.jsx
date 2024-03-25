@@ -34,7 +34,6 @@ function OfferModalWindow(props) {
         </span>
         <span className={styles.inner}>Предложил</span>
         <span className={styles.name_bottom}>
-          {" "}
           {props.allOffersDataItem[itemIndex].educatorId}
         </span>
         <div className={styles.button_box}>
