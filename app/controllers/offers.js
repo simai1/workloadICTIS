@@ -18,24 +18,24 @@ export default {
             });
 
             // Создание нового массива предложений с добавлением информации о преподавателе и инициаторе
-            const offersWithDetails = await Promise.all(
-                offers.map(async offer => {
-                    const educator = await Educator.findByPk(offer.educatorId, { attributes: { exclude: ['id'] } });
-                    const proposer = await Educator.findByPk(offer.proposerId, { attributes: { exclude: ['id'] } });
+            const offersWithDetails = [];
+            for (const offer of offers) {
+                const educator = await Educator.findByPk(offer.educatorId, { attributes: { exclude: ['id'] } });
+                const proposer = await Educator.findByPk(offer.proposerId, { attributes: { exclude: ['id'] } });
 
-                    // Создаем DTO для предложения
-                    const offerDto = new OfferDto(offer);
+                // Создаем DTO для предложения
+                const offerDto = new OfferDto(offer);
 
-                    return {
-                        message: 'Offer created successfully',
-                        offer: {
-                            ...offerDto,
-                            educator: new EducatorDto(educator),
-                            proposer: new EducatorDto(proposer),
-                        },
-                    };
-                })
-            );
+                // Добавляем информацию о преподавателе и инициаторе к объекту предложения
+                offerDto.educator = new EducatorDto(educator);
+                offerDto.proposer = new EducatorDto(proposer);
+
+                // Добавляем предложение с информацией о преподавателе и инициаторе в массив
+                offersWithDetails.push({
+                    message: 'Offer created successfully',
+                    offer: offerDto,
+                });
+            }
 
             // Отправка массива предложений с информацией о преподавателе и инициаторе
             res.json(offersWithDetails);
