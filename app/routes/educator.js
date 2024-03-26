@@ -15,7 +15,7 @@ router
     .delete(asyncRoute(eduController.deleteEducator));
 router
     .route('/')
-    .get(asyncRoute(checkRole([role.LECTURER, role.DIRECTORATE])), asyncRoute(eduController.getAll))
+    .get(asyncRoute(checkRole([role.METHODIST])), asyncRoute(eduController.getAll))
     .post(asyncRoute(eduController.create));
 router.route('/get/positions').get(asyncRoute(eduController.getPositions));
 router.route('/get/typeOfEmployments').get(asyncRoute(eduController.getTypeOfEmployments));

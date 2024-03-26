@@ -250,19 +250,17 @@ export default {
         res.status(200).json('Successfully deleted');
     },
 
-    async getDepartmentWorkload({ body: { department } }, res) {
-        if (!department) throw new AppErrorMissing('department');
-        if (typeof department !== 'number') department = parseInt(department);
-        if (!Object.values(departments).includes(department)) throw new AppErrorInvalid(department);
-        // Если department = 6, то нужно выввести все нагрузки, у которых department = 6
-        let departmentFilter = {};
-        if (department >= 1 && department <= 11) {
-            departmentFilter = { department };
-        }
+    async getDepartmentWorkload(req, res) {
+        const userId = req.user;
+        const educator = await Educator.findOne({ where: { userId } });
+        // if (!educator) throw new AppErrorInvalid(userId);
+
+        const department = educator.department;
         const workloads = await Workload.findAll({
-            where: departmentFilter,
+            where: { department },
             include: { model: Educator },
         });
+        console.log(workloads);
 
         const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
         res.json(workloadsDto);
