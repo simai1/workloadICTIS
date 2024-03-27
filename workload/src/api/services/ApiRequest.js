@@ -2,10 +2,22 @@
 
 import axios from "axios";
 const server = "https://workload.sfedu.ru";
+
 //! получаем преподов
 export const Educator = async () => {
   try {
     const response = await axios.get(`${server}/educator`);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
+//! получаем данных личного кабинета преподавателя
+export const EducatorLK = async (data) => {
+  try {
+    const response = await axios.get(`${server}/educator/${data}`);
     return response.data;
   } catch (error) {
     console.error("Error:", error);

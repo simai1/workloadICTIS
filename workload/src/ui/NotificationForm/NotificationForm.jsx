@@ -84,7 +84,7 @@ export function NotificationForm(props) {
       <div
         className={styles.hovered_notice}
         style={{
-          top: positionMenu.y + 65,
+          top: positionMenu.y,
           left: positionMenu.x + 70,
         }}
       >

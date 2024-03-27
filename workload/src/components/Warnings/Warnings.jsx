@@ -10,31 +10,25 @@ function Warnings(props) {
   const { appData } = React.useContext(DataContext);
 
   const [isListOpen, setListOpen] = useState(false);
-  // const [arrMessage, setMessage] = useState(appData.allWarningMessage);
+
   const toggleList = () => {
     setListOpen(!isListOpen);
   };
 
   //! клина на предупреждение
-  const directLks = (index) => {
+  const directLks = (id) => {
     props.setSelectedComponent("Teachers"); // переходим к компоненту с преподавателями
-    props.handleNameChange(
-      appData.allWarningMessage[index - 1].Educator.name,
-      "postTeacher",
-      "betTeacher"
-    );
-    props.setEducatorData(appData.allWarningMessage[index - 1].Educator);
+    props.setEducatorIdforLk(id);
   };
 
   useEffect(() => {
     socketConnect().then((data) => {
-      // data && setMessage(data.existingNotification); //!!! исправить
       console.log("socketConnect", data);
       getAllWarnin(appData.setAllWarningMessage);
     });
   }, []);
 
-  // закрытие модального окна при нажатии вне него
+  //! закрытие модального окна при нажатии вне него
   const refLO = useRef(null);
   useEffect(() => {
     const handler = (event) => {
@@ -68,13 +62,12 @@ function Warnings(props) {
           </div>
           <div className={styles.WarningsList}>
             <ul>
-              {appData.allWarningMessage?.map((el, index) => {
+              {appData.allWarningMessage?.map((item, index) => {
                 return (
                   <WarningMessage
-                    name={appData.allWarningMessage[index].Educator.name}
-                    key={el.id}
-                    arrMessage={el}
-                    id={index + 1}
+                    item={item}
+                    key={item.id}
+                    index={index}
                     directLks={directLks}
                   />
                 );

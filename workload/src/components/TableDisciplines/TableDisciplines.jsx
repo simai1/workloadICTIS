@@ -152,7 +152,7 @@ function TableDisciplines(props) {
     setIdrow(filteredData[index].id);
   };
 
-  //! при нажатии на кружо предложения
+  //! при нажатии на кружок предложения
   const handleClicOffer = (el, id_workload, index) => {
     console.log("id", index, id_workload, allOffersData[index]);
     setModalWindowOffer({

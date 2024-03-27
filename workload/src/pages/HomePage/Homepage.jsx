@@ -17,13 +17,13 @@ function HomePage() {
   const [searchTerm, setSearchTerm] = useState(""); //поиск по таблице
   const [onenModalWind, setOpenModalWind] = useState(false); // переменная закрытия модального окна профиля
   const refProfile = React.useRef(null); // ссылка на модальное окно профиля
-  const [name, setName] = useState("");
-  const [post, setpost] = useState("");
-  const [bet, setbet] = useState("");
+
+  const [educatorIdforLk, setEducatorIdforLk] = useState(""); // id для вывода LK, если пустое то LK не отображается
 
   const handleButtonClick = () => {
-    setName("");
+    setEducatorIdforLk("");
   };
+
   const tableHeaders2 = [
     { key: "id", label: "№" },
     { key: "name", label: "Преподователь" },
@@ -46,12 +46,6 @@ function HomePage() {
 
   const changeInput = () => {
     setTableHeaders(tableHeaders2);
-  };
-
-  const handleNameChange = (nameTeacher, postTeacher, betTeacher) => {
-    setName(nameTeacher);
-    setpost(postTeacher);
-    setbet(betTeacher);
   };
 
   const handleSearch = (event) => {
@@ -131,9 +125,10 @@ function HomePage() {
             </div>
             <div className={styles.header_left_component}>
               <Warnings
+                setEducatorIdforLk={setEducatorIdforLk}
+                educatorIdforLk={educatorIdforLk}
                 className={styles.Warnings}
                 setSelectedComponent={setSelectedComponent}
-                handleNameChange={handleNameChange}
                 setEducatorData={setEducatorData}
               />
               <Profile
@@ -167,7 +162,7 @@ function HomePage() {
             </div>
 
             <div className={styles.EditInput}>
-              {name === "" && (
+              {educatorIdforLk === "" && (
                 <EditInput
                   selectedComponent={selectedComponent} //! исправить не обновляется
                   tableHeaders={tableHeadersTeacher}
@@ -178,8 +173,7 @@ function HomePage() {
         </div>
 
         <div className={styles.Block__tables}>
-          {selectedComponent === "Disciplines" &&
-          (name === "" || name !== "") ? (
+          {selectedComponent === "Disciplines" ? (
             <TableDisciplines
               tableHeaders={tableHeaders}
               searchTerm={searchTerm}
@@ -187,23 +181,23 @@ function HomePage() {
               refProfile={refProfile}
               setOpenModalWind={setOpenModalWind}
             />
-          ) : selectedComponent === "Teachers" && name === "" ? (
+          ) : selectedComponent === "Teachers" && educatorIdforLk === "" ? (
             <TableTeachers
+              setEducatorIdforLk={setEducatorIdforLk}
               changeInput={changeInput}
               setTableHeaders={setTableHeaders}
               tableHeaders={tableHeadersTeacher}
               searchTerm={searchTerm}
               setSearchTerm={setSearchTerm}
               setEducatorData={setEducatorData}
-              onNameChange={handleNameChange}
             />
-          ) : selectedComponent === "Teachers" && name !== "" ? (
+          ) : selectedComponent === "Teachers" && educatorIdforLk !== "" ? (
             <TableLks
+              setEducatorIdforLk={setEducatorIdforLk}
+              educatorIdforLk={educatorIdforLk}
               changeInput={changeInput}
               searchTerm={searchTerm}
               educatorData={educatorData}
-              delNameChange={handleNameChange}
-              NameTeachers={{ name, post, bet }}
             />
           ) : null}
         </div>

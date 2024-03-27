@@ -3,12 +3,25 @@ import styles from "./TableLks.module.scss";
 import EditInput from "../EditInput/EditInput";
 import ArrowBack from "./../../img/arrow-back.svg";
 import { useDispatch, useSelector } from "react-redux";
+import { getDataEducatorLK } from "../../api/services/AssignApiData";
 
 function TableLks(props) {
-  const [updatedHeader, setUpdatedHeader] = useState([]); // State to hold the updated table headers
-  const [updatedData, setUpdatedData] = useState([]); // State to hold the updated table headers
-  const [searchTerm, setSearchTerm] = useState(""); // State to hold the search term
+  const [updatedHeader, setUpdatedHeader] = useState([]);
+  const [updatedData, setUpdatedData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [EducatorLkData, setEducatorLkData] = useState([]);
 
+  const [tableData, setTableData] = useState([]);
+
+  //! получаем данные личного кабинета преподавателя
+  useEffect(() => {
+    getDataEducatorLK(props.educatorIdforLk, setEducatorLkData, setTableData);
+  }, [props.educatorIdforLk]);
+
+  console.log("EducatorLkData", EducatorLkData);
+  console.log("tableData", tableData);
+
+  //! то что введено в поисковую строку, обновляет данные компонента
   useEffect(() => {
     setSearchTerm(props.searchTerm);
   }, [props.searchTerm]);
@@ -18,52 +31,29 @@ function TableLks(props) {
       { key: "id", label: "№" },
       { key: "discipline", label: "Дисциплина" },
       { key: "workload", label: "Нагрузка" },
-      { key: "type", label: "Тип" },
-      { key: "division", label: "Подразделение учебного плана" },
-      { key: "direction", label: "Направление подготовки" },
+      { key: "groups", label: "Группа" },
+      { key: "department", label: "Кафедра" },
+      { key: "block", label: "Блок" },
+      { key: "semester", label: "Семестр" },
+      { key: "period", label: "Период" },
+      { key: "curriculum", label: "Учебный план" },
+      { key: "curriculumUnit", label: "Подразделение учебного плана" },
+      { key: "formOfEducation", label: "Форма обучения" },
+      { key: "levelOfTraining", label: "Уровень подготовки" },
+      {
+        key: "specialty",
+        label: "Направление подготовки (специальность)",
+      },
+      { key: "core", label: "Профиль" },
+      { key: "numberOfStudents", label: "Количество студентов" },
       { key: "hours", label: "Часы" },
-      { key: "hours_period_1", label: "Часы период 1" },
-      { key: "hours_period_2", label: "Часы период 2" },
-      { key: "hours_without_a_period", label: "Часы без периода" },
-      { key: "classroom_hours", label: "Ауд. часы" },
+      { key: "audienceHours", label: "Аудиторные часы" },
     ];
   }, []);
 
-  const tableData = useMemo(
-    () => [
-      {
-        id: 1,
-        discipline: "Технологии программирования",
-        workload: "Лекционные",
-        type: "ОИД",
-        division: "ИКТИБ ИРТСУ",
-        direction: "Направление подготовки",
-        hours: "50",
-        hours_period_1: "26",
-        hours_period_2: "25",
-        hours_without_a_period: "0",
-        classroom_hours: "3",
-      },
-      {
-        id: 2,
-        discipline: "Методы оптимизации",
-        workload: "Практические",
-        type: "ОИД",
-        division: "ИКТИБ ИРТСУ",
-        direction: "Направление подготовки",
-        hours: "50",
-        hours_period_1: "30",
-        hours_period_2: "20",
-        hours_without_a_period: "0",
-        classroom_hours: "3",
-      },
-    ],
-    []
-  );
-
   //! клик на стрелку назад
-  const handleNameClick = (name) => {
-    props.delNameChange(name);
+  const handleNameClick = () => {
+    props.setEducatorIdforLk("");
     props.changeInput();
   };
 
@@ -97,8 +87,8 @@ function TableLks(props) {
     );
   });
 
-  const AllHours = "405";
-  const OgranHours = "800";
+  const AllHours = EducatorLkData?.totalHours;
+  const OgranHours = "700";
   var BackgroundColorHours = WhyColor(AllHours, OgranHours);
 
   // Функция для определения цвета фона
@@ -118,7 +108,7 @@ function TableLks(props) {
 
   return (
     <div>
-      <button className={styles.buttonBack} onClick={() => handleNameClick("")}>
+      <button className={styles.buttonBack} onClick={handleNameClick}>
         <img src={ArrowBack} alt="arrow"></img>
         <p>Назад</p>
       </button>
@@ -126,7 +116,7 @@ function TableLks(props) {
       <div className={styles.DataLks}>
         <div className={styles.DataLksInner}>
           <div className={styles.DataLksHead}>
-            <h1>{props.educatorData.name}</h1>
+            <h1>{EducatorLkData?.name}</h1>
             <div
               className={styles.DataLksHeadSchet}
               style={{ backgroundColor: BackgroundColorHours }}
@@ -137,9 +127,9 @@ function TableLks(props) {
             </div>
           </div>
 
-          <p>{props.educatorData.department}</p>
-          <p>{props.educatorData.position}</p>
-          <p>Ставка: {props.educatorData.rate}</p>
+          <p>{EducatorLkData?.department}</p>
+          <p>{EducatorLkData?.position}</p>
+          <p>Ставка: {EducatorLkData?.rate}</p>
         </div>
         <div className={styles.EditInput}>
           <EditInput tableHeaders={tableHeaders} top={60.3} h={64} />
@@ -159,7 +149,7 @@ function TableLks(props) {
             {filteredData.map((row, index) => (
               <tr key={index}>
                 {Object.keys(row).map((key) => (
-                  <td key={key}>{row[key]}</td>
+                  <td key={key}>{key === "id" ? index + 1 : row[key]}</td>
                 ))}
               </tr>
             ))}
