@@ -4,6 +4,7 @@ import {DataTypes} from "sequelize";
 import EnumDepartments from "../config/departments.js";
 import {AppErrorNotExist} from "../utils/errors.js";
 import Workload from "../models/workload.js";
+import FullNameDepartments from "../config/full-name-departments.js"
 
 export default {
     //departmen
@@ -19,11 +20,10 @@ export default {
 
         const dataWorkload = workload[0].data;
         for (const element of dataWorkload) {
-            console.log("--------------------------------------------------------")
-            console.log(element)
             const id = element[0];
             if(Number(id)) {
                 try {
+                    let department = element[1];
                     const discipline = element[2];
                     const workload = element[3];
                     const groups = element[4];
@@ -41,19 +41,17 @@ export default {
                     const audienceHours = parseFloat(element[18].replace(',','.'));
                     const ratingControlHours = hours - audienceHours;
                     const nameEducator = element[21];
-                    //
-                    const department = 2;
                     const isSplit = false;
 
-                    console.log('nameEducator')
-                    console.log(nameEducator)
+                    department = FullNameDepartments[department];
+
                     const existEducator = await Educator.findOne({
                         where: {
                             name: nameEducator,
                         }
                     });
-                    console.log(existEducator?.dataValues)
-                    if(!existEducator) throw new AppErrorNotExist('educator');
+                    const educatorId = existEducator ? existEducator.id : null;
+
                     const newWorkload = await Workload.create({
                         discipline,
                         department,
@@ -73,18 +71,17 @@ export default {
                         audienceHours,
                         ratingControlHours,
                         isSplit,
+                        educatorId,
                     })
-                    console.log(newWorkload.dataValues)
-
 
                 } catch (e) {
                     console.log(e)
+                    return res.status(400).json({status: "error", message: e.message});
                 }
 
             }
-            console.log("--------------------------------------------------------")
         }
 
-        return res.json(dataWorkload);
+        return res.json({status: "ok"});
     }
 }
