@@ -22,27 +22,28 @@ export default {
         for (const element of dataWorkload) {
             const id = element[0];
             if(Number(id)) {
+                console.log(id)
                 try {
                     let department = element[1];
-                    const discipline = element[2];
+                    const discipline = element[2] ?? '-';
                     const workload = element[3];
                     const groups = element[4];
-                    const block = element[5];
-                    const semester = element[6];
-                    const period = element[7];
-                    const curriculum = element[8];
-                    const curriculumUnit = element[9];
-                    const formOfEducation = element[11];
-                    const levelOfTraining = element[12];
-                    const specialty = element[13];
-                    const core = element[14];
-                    const numberOfStudents = Number(element[16].replace(',00',''));
+                    const block = element[5] ?? '-';
+                    const semester = element[6] ?? '-';
+                    const period = element[7] ?? 0;
+                    const curriculum = element[8] ?? '-';
+                    const curriculumUnit = element[9] ?? '-';
+                    const formOfEducation = element[11] ?? '-';
+                    const levelOfTraining = element[12] ?? '-';
+                    const specialty = element[13] ?? '-';
+                    const core = element[14] ?? '-';
+                    const numberOfStudents = element[16] ? Number(element[16].replace(',00','')) : 0;
                     const hours = parseFloat(element[17].replace(',','.'));
-                    const audienceHours = parseFloat(element[18].replace(',','.'));
+                    const audienceHours = element[18] ? parseFloat(element[18].replace(',','.')): 0.00;
                     const ratingControlHours = hours - audienceHours;
-                    const nameEducator = element[21];
+                    const nameEducator = element[21] ?? '-';
                     const isSplit = false;
-
+                    console.log(nameEducator)
                     department = FullNameDepartments[department];
 
                     const existEducator = await Educator.findOne({
@@ -80,6 +81,7 @@ export default {
                 }
 
             }
+            else console.log(id);
         }
 
         return res.json({status: "ok"});
