@@ -30,6 +30,7 @@ async function fillWorkload() {
                 audienceHours: x.audienceHours,
                 isSplit: x.isSplit,
                 educatorId: null,
+                isOid: x.isOid,
                 kafedralAutumnWorkload: x.kafedralAutumnWorkload,
                 kafedralSpringWorkload: x.kafedralSpringWorkload,
                 kafedralAdditionalWorkload: x.kafedralAdditionalWorkload,
