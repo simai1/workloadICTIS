@@ -1,21 +1,29 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./ContextMenu.module.scss";
 import arrow from "./../../img/arrow.svg";
 import { SubMenu } from "./SubMenu";
 import { EducatorMenu } from "./EducatorMenu";
-import {
-  addEducatorWorkload,
-  createOffer,
-  deleteWorkload,
-  joinWorkloads,
-  removeEducatorinWorkload,
-  splitWorkload,
-} from "../../api/services/ApiRequest";
+// import {
+//   addEducatorWorkload,
+//   createOffer,
+//   deleteWorkload,
+//   joinWorkloads,
+//   removeEducatorinWorkload,
+//   splitWorkload,
+// } from "../../api/services/ApiRequest";
+import DataContext from "../../context";
+import { EducatorLK } from "../../api/services/ApiRequest";
+// import { addDataBuffer } from "../../bufferFunction";
 const ContextMenu = (props) => {
   const [menuPosition, setMenuPosition] = useState(props.menuPosition);
   const [showSubMenu, setShowSubMenu] = useState(false);
   const [educatorMenuShow, setEducatorMenuShow] = useState(false);
   const [propose, setPropose] = useState(false);
+
+  const { appData } = React.useContext(DataContext);
+  useEffect(() => {
+    console.log("bufferAction", appData.bufferAction);
+  }, []);
 
   const handleContextMenu = (e) => {
     e.preventDefault();
@@ -51,17 +59,61 @@ const ContextMenu = (props) => {
       educatorId: id,
     };
     if (educatorMenuShow) {
-      // отправка запроса на добавление преподавателя
-      addEducatorWorkload(data).then(() => {
-        props.getDataTableAll();
+      // получаем преподавателей и изменяем данные в таблице предваритеольно до сохранения
+      EducatorLK(id).then((dataReq) => {
+        let prevState = null;
+        const newFilteredData = props.updatedData.map((object) => {
+          if (object.id === props.individualCheckboxes[0]) {
+            prevState = object.educator;
+            return { ...object, educator: dataReq.name };
+          }
+          return object;
+        });
+        // newFilteredData.map((item) => console.log("name", item.educator));
+        props.setUpdatedData(newFilteredData);
+        //! буфер
+        appData.setBufferAction([
+          { request: "addEducatorWorkload", data: data, prevState: prevState },
+          ...appData.bufferAction,
+        ]);
       });
+
+      //! отправка запроса на добавление преподавателя
+      // addEducatorWorkload(data).then(() => {
+      //   props.getDataTableAll();
+      // });
       // запросим данные таблицы
     } else if (propose) {
       //! отправляем запрос на добавление предложения
-      createOffer(data).then(() => {
-        props.getDataTableAll();
-        console.log("Предложение отправленно ", data);
+      EducatorLK(id).then((Educator) => {
+        console.log("allOffersData", props.allOffersData);
+        console.log("data", data);
+
+        const offer = {
+          Educator: appData.myProfile,
+          workloadId: props.individualCheckboxes[0],
+          educatorId: Educator.id,
+        };
+        props.setAllOffersData([...props.allOffersData, offer]);
+
+        console.log("offer", offer);
+
+        //! буфер
+        appData.setBufferAction([
+          {
+            request: "createOffer",
+            data: {
+              workloadId: props.individualCheckboxes[0],
+              educatorId: appData.myProfile.id,
+            },
+          },
+          ...appData.bufferAction,
+        ]);
       });
+      // createOffer(data).then(() => {
+      //   props.getDataTableAll();
+      //   console.log("Предложение отправленно ", data);
+      // });
     }
   };
 
@@ -72,11 +124,35 @@ const ContextMenu = (props) => {
       ids: props.individualCheckboxes,
       n: count,
     };
-    props.individualCheckboxes[0]
-      ? splitWorkload(data).then(() => {
-          props.getDataTableAll();
-        })
-      : console.error("не выбранно ни одной нагрузки");
+    console.log("filteredData", props.filteredData);
+    const newFilteredData = [...props.filteredData]; // копирование исходного массива
+
+    props.individualCheckboxes.forEach((targetId, index) => {
+      const elementIndex = newFilteredData.findIndex(
+        (object) => object.id === targetId
+      ); // поиск индекса элемента по id
+      const targetElement = newFilteredData.find(
+        (object) => object.id === targetId
+      ); // найденный элемент
+
+      if (elementIndex !== -1) {
+        // если элемент с заданным id найден
+        newFilteredData.splice(elementIndex + index + 1, 0, {
+          ...targetElement,
+        }); // вставка нового элемента после выбранного элемента
+      }
+    });
+    console.log("newFilteredData", newFilteredData);
+    props.setFilteredData(newFilteredData);
+    //! буфер
+    appData.setBufferAction([
+      { request: "splitWorkload", data: data },
+      ...appData.bufferAction,
+    ]);
+    //! запрос на деление нагрузки
+    // splitWorkload(data).then(() => {
+    //   props.getDataTableAll();
+    // });
   };
 
   //! соеденить 2 нагрузки
@@ -85,20 +161,36 @@ const ContextMenu = (props) => {
     const data = {
       ids: props.individualCheckboxes,
     };
-    props.individualCheckboxes.length === 2
-      ? joinWorkloads(data).then((response) => {
-          props.getDataTableAll();
-        })
-      : console.error("Выберите 2 нагрузки");
+
+    //! буфер
+    appData.setBufferAction([
+      { request: "joinWorkloads", data: data },
+      ...appData.bufferAction,
+    ]);
+
+    //! запрос на соединение нагрузок
+    // joinWorkloads(data).then((response) => {
+    //   props.getDataTableAll();
+    // });
   };
 
   //! удаление нагрузки
   const handleDeletWorkload = () => {
     console.log("удалить ", props.individualCheckboxes);
     const data = { ids: props.individualCheckboxes };
-    deleteWorkload(data).then(() => {
-      props.getDataTableAll();
-    });
+    const newFilteredData = props.filteredData.filter(
+      (item) => !props.individualCheckboxes.includes(item.id)
+    );
+    props.setFilteredData(newFilteredData);
+    //! буфер
+    appData.setBufferAction([
+      { request: "deleteWorkload", data: data },
+      ...appData.bufferAction,
+    ]);
+    //! запрос на удаление нагрузки
+    // deleteWorkload(data).then(() => {
+    //   props.getDataTableAll();
+    // });
   };
 
   //! удалить преподавателя у нагрузки
@@ -107,9 +199,24 @@ const ContextMenu = (props) => {
     const data = {
       workloadId: props.individualCheckboxes[0],
     };
-    removeEducatorinWorkload(data).then(() => {
-      props.getDataTableAll();
+    const newFilteredData = props.filteredData.map((object) => {
+      if (object.id === props.individualCheckboxes[0]) {
+        return { ...object, educator: null };
+      }
+      return object;
     });
+    // newFilteredData.map((item) => console.log("name", item.educator));
+    props.setFilteredData(newFilteredData);
+
+    //! буфер
+    appData.setBufferAction([
+      { request: "removeEducatorinWorkload", data: data },
+      ...appData.bufferAction,
+    ]);
+    //! запрос на удаление преподавателя с нагрузки
+    // removeEducatorinWorkload(data).then(() => {
+    //   props.getDataTableAll();
+    // });
   };
 
   return (
@@ -198,7 +305,6 @@ const ContextMenu = (props) => {
       </div>
       {showSubMenu && (
         <SubMenu
-          handleMenuClick={props.handleMenuClick}
           menuPosition={menuPosition}
           handleSplitWorkload={handleSplitWorkload}
         />

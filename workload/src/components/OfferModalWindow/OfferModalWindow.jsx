@@ -1,22 +1,38 @@
 //? модальное окно предложений
 import { AcceptOffer } from "../../api/services/ApiRequest";
+import DataContext from "../../context";
 import styles from "./OfferModalWindow.module.scss";
 import React, { useState } from "react";
 function OfferModalWindow(props) {
   console.log(props.allOffersDataItem);
   const [itemIndex, setItemIndex] = useState(0); // изменять при листании
+
+  const { appData } = React.useContext(DataContext);
+
   const onClickAcceptOffer = () => {
     console.log("Принято", props.workloadId);
-    AcceptOffer(props.workloadId, "принято").then(() => {
-      props.getDataTableAll();
-    });
+    //! буфер
+    const data = { id: props.workloadId, status: "принято" };
+    appData.setBufferAction([
+      { request: "AcceptOffer", data: data },
+      ...appData.bufferAction,
+    ]);
+    // AcceptOffer(props.workloadId, "принято").then(() => {
+    //   props.getDataTableAll();
+    // });
     props.setModalWindowOffer({ id: props.modalWindowOffer.id, flag: false });
   };
   const onClickAcceptOfferRejected = () => {
     console.log("Отклонено", props.workloadId);
-    AcceptOffer(props.workloadId, "отклонено").then(() => {
-      props.getDataTableAll();
-    });
+    //! буфер
+    const data = { id: props.workloadId, status: "отклонено" };
+    appData.setBufferAction([
+      { request: "AcceptOffer", data: data },
+      ...appData.bufferAction,
+    ]);
+    // AcceptOffer(props.workloadId, "отклонено").then(() => {
+    //   props.getDataTableAll();
+    // });
     props.setModalWindowOffer({ id: props.modalWindowOffer.id, flag: false });
   };
   return (

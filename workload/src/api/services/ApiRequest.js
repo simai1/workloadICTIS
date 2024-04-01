@@ -131,12 +131,12 @@ export const joinWorkloads = async (data) => {
 };
 
 //! запрос на принятие предложения
-export const AcceptOffer = async (data, status) => {
+export const AcceptOffer = async (data) => {
   console.log("Предложение принято ", data);
   try {
     const response = await axios.post(
-      `${server}/offers/confirmOrReject/${data}`,
-      { status: status }
+      `${server}/offers/confirmOrReject/${data.id}`,
+      { status: data.status }
     );
     console.log("response ", response);
     return response.data;
@@ -219,10 +219,12 @@ export const createOffer = async (data) => {
 };
 
 //! запрос на изменени данных нагрузки
-export const workloadUpdata = async (id, data) => {
-  console.log("изменение данных нагрузки ", id, data);
+export const workloadUpdata = async (data) => {
+  console.log("изменение данных нагрузки ", data);
   try {
-    const response = await axios.patch(`${server}/workload/${id}/update`, data);
+    const response = await axios.patch(`${server}/workload/${data.id}/update`, {
+      [data.key]: data.value,
+    });
     console.log("response ", response);
     return response.data;
   } catch (error) {

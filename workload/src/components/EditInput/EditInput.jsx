@@ -92,7 +92,7 @@ function EditInput({ tableHeaders, selectedComponent }) {
         </button>
       )}
       {isListOpen && (
-        <div className={styles.EditInputOpen}>
+        <div className={`${styles.EditInputOpen} ${styles.fadein}`}>
           <button onClick={toggleList}>
             <p>Редактирование полей</p>
             <img src={arrow} alt="arrow"></img>
@@ -106,7 +106,7 @@ function EditInput({ tableHeaders, selectedComponent }) {
             name="search2"
           />
           <div className={styles.EditInputList}>
-            <ul>
+            <ul className={styles.fadeinul}>
               {searchResults.map((row, index) => (
                 <li key={index}>
                   <input

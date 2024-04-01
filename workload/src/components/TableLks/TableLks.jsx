@@ -131,31 +131,35 @@ function TableLks(props) {
           <p>{EducatorLkData?.position}</p>
           <p>Ставка: {EducatorLkData?.rate}</p>
         </div>
-        <div className={styles.EditInput}>
-          <EditInput tableHeaders={tableHeaders} top={60.3} h={64} />
-        </div>
+        {tableData[0] && (
+          <div className={styles.EditInput}>
+            <EditInput tableHeaders={tableHeaders} top={60.3} h={64} />
+          </div>
+        )}
       </div>
 
-      <div className={styles.TableLks__inner}>
-        <table className={styles.TableLks}>
-          <thead>
-            <tr>
-              {updatedHeader.map((header) => (
-                <th key={header.key}>{header.label}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {filteredData.map((row, index) => (
-              <tr key={index}>
-                {Object.keys(row).map((key) => (
-                  <td key={key}>{key === "id" ? index + 1 : row[key]}</td>
+      {tableData[0] && (
+        <div className={styles.TableLks__inner}>
+          <table className={styles.TableLks}>
+            <thead>
+              <tr>
+                {updatedHeader.map((header) => (
+                  <th key={header.key}>{header.label}</th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {filteredData.map((row, index) => (
+                <tr key={index}>
+                  {Object.keys(row).map((key) => (
+                    <td key={key}>{key === "id" ? index + 1 : row[key]}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }

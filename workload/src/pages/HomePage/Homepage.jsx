@@ -8,8 +8,12 @@ import Warnings from "../../components/Warnings/Warnings";
 import TableLks from "../../components/TableLks/TableLks";
 import Profile from "../../components/Profile/Profile";
 import EditInput from "../../components/EditInput/EditInput";
+import DataContext from "../../context";
+import { bufferRequestToApi } from "../../bufferFunction";
 
 function HomePage() {
+  const { appData } = React.useContext(DataContext);
+
   const [selectedComponent, setSelectedComponent] = useState("Disciplines");
   const [tableMode, setTableMode] = useState("cathedrals"); //выбранный компонент
 
@@ -83,11 +87,34 @@ function HomePage() {
 
   const [tableHeadersTeacher, setTableHeaders] = useState(tableHeaders);
 
+  const onSaveClick = () => {
+    //! отправляем все запросы на обработку
+    console.log("Сохранено", appData.bufferAction);
+    bufferRequestToApi(appData.bufferAction).then(() => {
+      appData.setBufferAction([0]);
+    });
+    console.log("выполнено и очищено", appData.bufferAction);
+  };
+
   return (
     <Layout>
       <div className={styles.HomePage}>
         <div className={styles.header}>
           <div className={styles.header_top}>
+            <div>
+              <button
+                style={{
+                  height: "45px",
+                  backgroundColor: "#3b28cc",
+                  color: "#fff",
+                  borderRadius: " 8px",
+                  border: "none",
+                }}
+                onClick={onSaveClick}
+              >
+                Сохранить
+              </button>
+            </div>
             <div className={styles.header_search}>
               <input
                 type="text"
