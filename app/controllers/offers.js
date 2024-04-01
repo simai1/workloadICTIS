@@ -7,6 +7,7 @@ import User from '../models/user.js';
 import EducatorDto from '../dtos/educator-dto.js';
 import OfferDto from '../dtos/offer-dto.js';
 import status from '../config/status.js';
+import role from '../config/roles.js';
 
 export default {
     async getAllOffers(req, res) {
@@ -16,7 +17,6 @@ export default {
                 include: { model: Educator },
                 attributes: { exclude: ['EducatorId'] },
             });
-
             // Создание нового массива предложений с добавлением информации о преподавателе и инициаторе
             const offersWithDetails = [];
             for (const offer of offers) {
@@ -25,7 +25,6 @@ export default {
 
                 // Создаем DTO для предложения
                 const offerDto = new OfferDto(offer);
-
                 // Добавляем информацию о преподавателе и инициаторе к объекту предложения
                 offerDto.educator = new EducatorDto(educator);
                 offerDto.proposer = new EducatorDto(proposer);
@@ -80,43 +79,60 @@ export default {
         }
     },
 
-    async confirmOrReject({ params: { offerId }, body: { status: newStatus } }, res) {
+    async introducedOrDeclined({ params: { offerId }, body: { status: newStatus } }, res) {
         try {
             const offer = await Offer.findByPk(offerId);
             if (!offer) throw new AppErrorMissing('Offer not found');
-
             if (!newStatus) throw new AppErrorMissing('status');
 
-            // Сравниваем статусы из тела запроса с определенными статусами
-            if (newStatus === status.accepted) {
-                // Установка статуса предложения на "принято"
-                await offer.update({ status: status.accepted });
-
-                // Если статус "принято", обработаем предложение
-                await WorkloadController.facultyEducator(
-                    { body: { educatorId: offer.educatorId, workloadId: offer.workloadId } },
-                    res
-                );
-
-                // Удаление предложения, если оно принято
-                await offer.destroy({ force: true });
-
-                // Отправка сообщения об успешном принятии предложения
-            } else if (newStatus === status.reject) {
-                // Установка статуса предложения на "отклонено"
-                await offer.update({ status: status.reject });
-
-                // Удаление предложения, если оно отклонено
-                await offer.destroy({ force: true });
-
-                // Отправка сообщения об успешном отклонении предложения
-                res.send('Предложение отклонено');
+            // Проверка, что значение newStatus соответствует значениям из status.js
+            if (!Object.values(status).includes(newStatus)) {
+                throw new AppErrorInvalid('Invalid status');
+            }
+            if (newStatus !== status.introduced && newStatus !== status.decline) {
+                throw new AppErrorInvalid('Invalid status, need introduced or decline');
             }
 
-            res.end();
+            await offer.update({ status: newStatus });
+            if (newStatus === status.decline) {
+                res.json({ message: 'Offer declined' });
+            } else {
+                res.json({ message: 'Offer introduced' });
+            }
         } catch (error) {
-            console.error('Error confirming or rejecting offer:', error);
+            console.error('Error updating offer status:', error);
             res.status(500).json({ error: 'Internal server error' });
         }
+    },
+
+    // Финальная проверка предложения директором
+    async confirmOrReject({ params: { offerId }, body: { status: newStatus } }, res) {
+        const offer = await Offer.findByPk(offerId);
+        if (!offer) throw new AppErrorMissing('Offer not found');
+
+        if (!newStatus) throw new AppErrorMissing('status');
+
+        // Проверка, что значение newStatus соответствует значениям из status.js
+        if (!Object.values(status).includes(newStatus)) {
+            throw new AppErrorInvalid('Invalid status');
+        }
+        if (newStatus !== status.confirmed && newStatus !== status.reject) {
+            throw new AppErrorInvalid('Invalid status for introducedOrDeclined method');
+        }
+
+        // Сравниваем статусы из тела запроса с определенными статусами
+        if (newStatus === status.confirmed) {
+            await offer.update({ status: status.accepted });
+            await WorkloadController.facultyEducator(
+                { body: { educatorId: offer.educatorId, workloadId: offer.workloadId } },
+                res
+            );
+        } else if (newStatus === status.reject) {
+            await offer.update({ status: status.reject });
+            res.send('Offer rejected');
+        }
+
+        // Удаление предложения
+        await offer.destroy({ force: true });
     },
 };

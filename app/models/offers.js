@@ -25,7 +25,7 @@ export default class Offer extends Model {
                 },
                 status: {
                     type: DataTypes.SMALLINT,
-                    defaultValue: 3,
+                    defaultValue: 1,
                     allowNull: false,
                     validate: {
                         isIn: [Object.values(EnumStatus)],

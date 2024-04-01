@@ -1,7 +1,9 @@
 const status = {
-    accepted: 1,
-    reject: 2,
-    pending: 3,
+    pending: 1,
+    introduced: 2,
+    decline: 3,
+    confirmed: 4,
+    reject: 5,
 };
 
 export default status;

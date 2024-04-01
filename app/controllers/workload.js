@@ -67,12 +67,24 @@ export default {
         const newWorkloads = [];
 
         for (const workload of existingWorkloads) {
+            const studentsCount = workload.numberOfStudents;
+            const studentsPerGroup = Math.floor(studentsCount / n);
+            const remainder = studentsCount % n;
             // Создаем и сохраняем новые нагрузки в базу данных
             for (let i = 0; i < n; i++) {
                 const copyWorkload = { ...workload.get() };
                 copyWorkload.isSplit = true;
                 copyWorkload.originalId = workload.id;
                 delete copyWorkload.id;
+                // Распределение студентов между группами
+                if (i < remainder) {
+                    // Если индекс группы меньше остатка, добавляем по одному студенту
+                    copyWorkload.numberOfStudents = studentsPerGroup + 1;
+                } else {
+                    // В остальных случаях добавляем студентов равномерно
+                    copyWorkload.numberOfStudents = studentsPerGroup;
+                }
+
                 const newWorkload = await Workload.create(copyWorkload);
                 newWorkloads.push(newWorkload);
             }

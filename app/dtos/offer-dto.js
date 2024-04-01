@@ -9,7 +9,7 @@ export default class OfferDto {
 
     constructor(model) {
         this.id = model.id;
-        this.status = statusMap[model.statusMap];
+        this.status = statusMap[model.status];
         this.educatorId = model.educatorId;
         this.workloadId = model.workloadId;
         this.educator = model.educator;

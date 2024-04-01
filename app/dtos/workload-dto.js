@@ -1,4 +1,4 @@
-import EducatorDto from "./educator-dto.js";
+import EducatorDto from './educator-dto.js';
 import { map as departmentsMap } from '../config/departments.js';
 
 export default class WorkloadDto {
@@ -21,6 +21,7 @@ export default class WorkloadDto {
     audienceHours;
     ratingControlHours;
     comment;
+    isOid;
     isSplit;
     educator;
 
@@ -44,6 +45,7 @@ export default class WorkloadDto {
         this.audienceHours = model.audienceHours;
         this.ratingControlHours = model.ratingControlHours;
         this.comment = model.comment;
+        this.isOid = model.isOid;
         this.isSplit = model.isSplit;
         this.educator = model.Educator ? new EducatorDto(model.Educator) : null;
     }
