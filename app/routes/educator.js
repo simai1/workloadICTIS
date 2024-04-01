@@ -6,7 +6,7 @@ import checkRole from '../middlewares/checkRoles.js';
 import role from '../config/roles.js';
 
 const router = Router();
-router.use(verify.general);
+// router.use(verify.general);
 
 router
     .route('/:educatorId')
@@ -15,7 +15,8 @@ router
     .delete(asyncRoute(eduController.deleteEducator));
 router
     .route('/')
-    .get(asyncRoute(checkRole([role.LECTURER, role.DIRECTORATE])), asyncRoute(eduController.getAll))
+    // .get(asyncRoute(checkRole([role.LECTURER, role.DIRECTORATE])), asyncRoute(eduController.getAll))
+    .get(asyncRoute(eduController.getAll))
     .post(asyncRoute(eduController.create));
 router.route('/get/positions').get(asyncRoute(eduController.getPositions));
 router.route('/get/typeOfEmployments').get(asyncRoute(eduController.getTypeOfEmployments));
