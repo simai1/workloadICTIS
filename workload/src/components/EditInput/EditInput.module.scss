@@ -1,5 +1,25 @@
 @import "./../../style/colors.scss";
 
+@keyframes fadeIn {
+  from {
+    max-height: 0;
+  }
+  to {
+    max-height: 60vh;
+  }
+}
+@keyframes fadeInUl {
+  from {
+    max-height: 0;
+  }
+  to {
+    max-height: 60vh;
+  }
+}
+
+.EditInput {
+  position: relative;
+}
 .EditInput button {
   width: 271px;
   height: 44px;
@@ -21,24 +41,35 @@
   cursor: pointer;
   opacity: 0.6;
 }
-.EditInputOpen {
-  border-radius: 8px;
 
+.fadein {
+  animation: fadeIn 0.1s ease-in-out;
+}
+.fadeinul {
+  animation: fadeIn 0.2s ease-in-out;
+}
+.EditInputOpen {
+  position: absolute;
+
+  right: 0;
+  border-radius: 8px;
   background-color: #fff;
   z-index: 50;
   width: 271px;
   color: var(--black-color);
-  position: relative;
   box-shadow: 4px 4px 20px 0px #00000026;
 
   .edit_input {
-    width: 84% !important;
-    position: relative !important;
-    top: 0 !important;
+    width: 84%;
+    position: relative;
+    top: 0;
     box-sizing: border-box;
     margin-left: 8%;
-    padding: 10px !important;
-    font-size: 14px !important;
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 8px;
+    border: 1px solid #757575;
+    outline: none;
   }
   ul {
     overflow-y: scroll;
@@ -46,7 +77,8 @@
     left: -17px;
     list-style: none;
     font-size: 16px;
-    height: 70vh;
+    max-height: 60vh;
+
     padding-right: 10px;
     li {
       position: relative;
