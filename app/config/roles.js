@@ -1,3 +1,5 @@
+import { mapObjectKeys } from '../utils/map.js';
+
 const roles = {
     METHODIST: 1,
     LECTURER: 2,
@@ -7,10 +9,5 @@ const roles = {
 };
 
 export default roles;
-export const map = Object.keys(roles).reduce(
-    (acc, k) => ({
-        ...acc,
-        [roles[k]]: k,
-    }),
-    {}
-);
+
+export const map = mapObjectKeys(roles);

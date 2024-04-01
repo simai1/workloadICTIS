@@ -1,3 +1,5 @@
+import { mapObjectKeys } from '../utils/map.js';
+
 const typeOfEmployments = {
     'Внешнее совместительство': 1,
     'Внутреннее совместительство': 2,
@@ -6,10 +8,5 @@ const typeOfEmployments = {
 };
 
 export default typeOfEmployments;
-export const map = Object.keys(typeOfEmployments).reduce(
-    (acc, k) => ({
-        ...acc,
-        [typeOfEmployments[k]]: k,
-    }),
-    {}
-);
+
+export const map = mapObjectKeys(typeOfEmployments);

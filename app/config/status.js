@@ -1,3 +1,5 @@
+import { mapObjectKeys } from '../utils/map.js';
+
 const status = {
     pending: 1,
     introduced: 2,
@@ -7,10 +9,5 @@ const status = {
 };
 
 export default status;
-export const map = Object.keys(status).reduce(
-    (acc, k) => ({
-        ...acc,
-        [status[k]]: k,
-    }),
-    {}
-);
+
+export const map = mapObjectKeys(status);
