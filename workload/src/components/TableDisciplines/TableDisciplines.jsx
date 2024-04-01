@@ -69,7 +69,13 @@ function TableDisciplines(props) {
     }
     const handleKeyDown = (event) => {
       //! следим за нажатием ctrl + z для отмены последнего действияы
-      if (event.ctrlKey && (event.key === "z" || event.key === "я")) {
+      if (
+        event.ctrlKey &&
+        (event.key === "z" ||
+          event.key === "я" ||
+          event.key === "Z" ||
+          event.key === "Я")
+      ) {
         console.log("отеменено последнее действие", appData.bufferAction);
         //! отмена последнего действия
         returnPrevState(appData.bufferAction, updatedData).then((data) => {

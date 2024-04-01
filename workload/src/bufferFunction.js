@@ -84,11 +84,13 @@ export async function bufferRequestToApi(buffer) {
 export async function returnPrevState(buffer, data) {
   console.log("пред сост буфера", buffer[0]);
   if ("removeEducatorinWorkload") {
-    let prevState = null;
+    let prev = buffer[0].prevState;
+    if (buffer[0].prevState === "null") {
+      prev = 0;
+    }
     const newFilteredData = data.map((item) => {
-      if (item.id === buffer.data.workloadId) {
-        prevState = item.educator;
-        return { ...item, educator: buffer.prevState };
+      if (item.id === buffer[0].data.workloadId) {
+        return { ...item, educator: buffer[0].prevState };
       }
       return item;
     });
