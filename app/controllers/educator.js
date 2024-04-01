@@ -6,21 +6,25 @@ import { map as mapPositions } from '../config/position.js';
 import { map as mapTypeOfEmployments } from '../config/type-of-employment.js';
 import Workload from '../models/workload.js';
 import SummaryWorkload from '../models/summary-workload.js';
-import WorkloadDto from "../dtos/workload-dto.js";
+import WorkloadProfileDto from "../dtos/workload-profile-dto.js";
+import EducatorListDto from "../dtos/educator-list-dto.js";
 
 export default {
     async getAll(params, res) {
-        const educators = await Educator.findAll();
+        const educators = await Educator.findAll({
+            include: [{
+                model: SummaryWorkload,
+            }]
+        });
         const educatorDtos = [];
         for (const educator of educators) {
-            const educatorDto = new EducatorDto(educator);
+            const educatorDto = new EducatorListDto(educator);
             educatorDtos.push(educatorDto);
         }
         if (!educatorDtos.length) {
             // Если нет преподавателей, отправляем 404 и выходим из функции
             return res.status(404).json('Educator not found');
         }
-
         res.json(educatorDtos);
     },
     async getOne({ params: { educatorId } }, res) {
@@ -41,7 +45,7 @@ export default {
         });
         const workloadsDto = []
         for (const workload of workloads) {
-            workloadsDto.push(new WorkloadDto(workload))
+            workloadsDto.push(new WorkloadProfileDto(workload))
         }
         educatorProfileDto.workloads.push(workloadsDto);
         res.json(educatorProfileDto);
