@@ -62,15 +62,15 @@ const ContextMenu = (props) => {
       // получаем преподавателей и изменяем данные в таблице предваритеольно до сохранения
       EducatorLK(id).then((dataReq) => {
         let prevState = null;
-        const newFilteredData = props.updatedData.map((object) => {
+        const newUpdatedData = props.updatedData.map((object) => {
           if (object.id === props.individualCheckboxes[0]) {
             prevState = object.educator;
             return { ...object, educator: dataReq.name };
           }
           return object;
         });
-        // newFilteredData.map((item) => console.log("name", item.educator));
-        props.setUpdatedData(newFilteredData);
+        // newUpdatedData.map((item) => console.log("name", item.educator));
+        props.setUpdatedData(newUpdatedData);
         //! буфер
         appData.setBufferAction([
           { request: "addEducatorWorkload", data: data, prevState: prevState },
@@ -124,26 +124,26 @@ const ContextMenu = (props) => {
       ids: props.individualCheckboxes,
       n: count,
     };
-    console.log("filteredData", props.filteredData);
-    const newFilteredData = [...props.filteredData]; // копирование исходного массива
+    console.log("updatedData", props.updatedData);
+    const newUpdatedData = [...props.updatedData]; // копирование исходного массива
 
     props.individualCheckboxes.forEach((targetId, index) => {
-      const elementIndex = newFilteredData.findIndex(
+      const elementIndex = newUpdatedData.findIndex(
         (object) => object.id === targetId
       ); // поиск индекса элемента по id
-      const targetElement = newFilteredData.find(
+      const targetElement = newUpdatedData.find(
         (object) => object.id === targetId
       ); // найденный элемент
 
       if (elementIndex !== -1) {
         // если элемент с заданным id найден
-        newFilteredData.splice(elementIndex + index + 1, 0, {
+        newUpdatedData.splice(elementIndex + index + 1, 0, {
           ...targetElement,
         }); // вставка нового элемента после выбранного элемента
       }
     });
-    console.log("newFilteredData", newFilteredData);
-    props.setFilteredData(newFilteredData);
+    console.log("newUpdatedData", newUpdatedData);
+    props.setUpdatedData(newUpdatedData);
     //! буфер
     appData.setBufferAction([
       { request: "splitWorkload", data: data },
@@ -178,10 +178,10 @@ const ContextMenu = (props) => {
   const handleDeletWorkload = () => {
     console.log("удалить ", props.individualCheckboxes);
     const data = { ids: props.individualCheckboxes };
-    const newFilteredData = props.filteredData.filter(
+    const newUpdatedData = props.updatedData.filter(
       (item) => !props.individualCheckboxes.includes(item.id)
     );
-    props.setFilteredData(newFilteredData);
+    props.setUpdatedData(newUpdatedData);
     //! буфер
     appData.setBufferAction([
       { request: "deleteWorkload", data: data },
@@ -199,18 +199,19 @@ const ContextMenu = (props) => {
     const data = {
       workloadId: props.individualCheckboxes[0],
     };
-    const newFilteredData = props.filteredData.map((object) => {
+    let prevState = null;
+    const newUpdatedData = props.updatedData.map((object) => {
       if (object.id === props.individualCheckboxes[0]) {
+        prevState = object.educator;
         return { ...object, educator: null };
       }
       return object;
     });
-    // newFilteredData.map((item) => console.log("name", item.educator));
-    props.setFilteredData(newFilteredData);
+    props.setUpdatedData(newUpdatedData);
 
     //! буфер
     appData.setBufferAction([
-      { request: "removeEducatorinWorkload", data: data },
+      { request: "removeEducatorinWorkload", data: data, prevState: prevState },
       ...appData.bufferAction,
     ]);
     //! запрос на удаление преподавателя с нагрузки

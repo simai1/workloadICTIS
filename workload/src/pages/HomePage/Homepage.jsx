@@ -87,6 +87,7 @@ function HomePage() {
 
   const [tableHeadersTeacher, setTableHeaders] = useState(tableHeaders);
 
+  //! сохранение буфера
   const onSaveClick = () => {
     //! отправляем все запросы на обработку
     console.log("Сохранено", appData.bufferAction);

@@ -78,10 +78,25 @@ function TableDisciplines(props) {
       ) {
         console.log("отеменено последнее действие", appData.bufferAction);
         //! отмена последнего действия
-        returnPrevState(appData.bufferAction, updatedData).then((data) => {
-          setUpdatedData(data);
-          appData.setBufferAction((prevItems) => prevItems.slice(1));
-        });
+        if (appData.bufferAction.length > 0) {
+          if (appData.bufferAction[0].request !== "deleteComment") {
+            returnPrevState(appData.bufferAction, updatedData).then((data) => {
+              setUpdatedData(data);
+              appData.setBufferAction((prevItems) => prevItems.slice(1));
+            });
+          } else if (appData.bufferAction[0].request === "deleteComment") {
+            setCommentAllData([
+              ...commentAllData,
+              ...appData.bufferAction[0].prevState,
+            ]);
+            console.log([
+              ...commentAllData,
+              ...appData.bufferAction[0].prevState,
+            ]);
+            appData.setBufferAction((prevItems) => prevItems.slice(1));
+          }
+        }
+
         //функция отмены последенего действия находится в TableDisciplines
       }
       //! следим за нажатием ctrl + s для сохранения изменений
@@ -353,15 +368,24 @@ function TableDisciplines(props) {
   };
 
   const onClickButton = (id, key) => {
-    console.log(id, { [key.key]: textareaTd });
     const parsedValue = Number(textareaTd);
     const numberValue = isNaN(parsedValue) ? textareaTd : parsedValue;
-    // отпрака запроса на изменение данных
+    //! отпрака запроса на изменение данных
     const data = { id: id, key: key.key, value: numberValue };
+    console.log("Изменение данных таблицы", data);
+    const item = updatedData.find((item) => item.id === id);
+    const updatedArray = updatedData.map((item) => {
+      if (item.id === id) {
+        return { ...item, [key.key]: numberValue };
+      }
+      return item;
+    });
+    setUpdatedData(updatedArray);
+
     textareaTd &&
       //! буфер
       appData.setBufferAction([
-        { request: "workloadUpdata", data: data },
+        { request: "workloadUpdata", data: data, prevState: item[key.key] },
         ...appData.bufferAction,
       ]);
     // workloadUpdata(id, { [key.key]: numberValue }).then(() =>
@@ -379,8 +403,10 @@ function TableDisciplines(props) {
             position={position}
             setPosition={setPosition}
             workloadId={idRow}
+            commentAllData={commentAllData}
             setCommentAllData={setCommentAllData}
             getDataAllComment={getDataAllComment}
+            setIsHovered={setIsHovered}
             commentData={commentAllData
               .filter((item) => item.workloadId === idRow)
               .reverse()}
