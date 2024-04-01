@@ -65,13 +65,6 @@ router
         asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST])),
         asyncRoute(workloadController.getAllWorkload)
     );
-// Этого метода нет (getSummaryWorkload)
-router
-    .route('/getSummaryWorkload/:id')
-    .get(
-        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST])),
-        asyncRoute(workloadController.getSummaryWorkload)
-    );
 router
     .route('/get/departments')
     .get(
