@@ -10,8 +10,8 @@ body {
 }
 .HomePage {
   .header {
-    // position: fixed;
-    z-index: 200;
+    position: relative;
+    z-index: 200 !important;
     background-color: #efedf3;
     width: 100%;
     display: flex;
@@ -75,7 +75,8 @@ body {
     }
   }
   width: 100%;
-  padding-bottom: 130px;
+  //отступ снизу страницы
+  padding-bottom: 10px;
   .button {
     margin-bottom: 48px;
     display: flex;
@@ -89,6 +90,7 @@ body {
     height: auto;
     position: relative;
     margin-right: 64px;
+    z-index: 100;
   }
 
   .rocket {
