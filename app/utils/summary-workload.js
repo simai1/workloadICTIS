@@ -1,11 +1,11 @@
 import SummaryWorkload from '../models/summary-workload.js';
-import Workload from '../models/workload.js';
 import checkHours from './notification.js';
 
 // Устанавливаем итоговые часы
-async function setHours(workload) {
-    const summaryWorkload = await SummaryWorkload.findOne({ where: { educatorId: workload.educatorId } });
+async function setHours(newWorkload) {
+    const summaryWorkload = await SummaryWorkload.findOne({where: {educatorId: newWorkload.educatorId}});
     if (!summaryWorkload) return;
+
     const hours = {
         kafedralAutumnWorkload: 0,
         kafedralSpringWorkload: 0,
@@ -16,61 +16,40 @@ async function setHours(workload) {
         totalKafedralHours: 0,
         totalOidHours: 0,
         totalHours: 0,
-    };
-    workload.hours = parseFloat(workload.hours);
+    }
+
     // Проверяем предмет на общеинститутский ли он и период и устанавливаем часы для кафедральных или институтских дисциплин
-    if (workload.isOid === false && workload.period === 1) hours.kafedralAutumnWorkload += workload.hours;
-    if (workload.isOid === false && workload.period === 2) hours.kafedralSpringWorkload += workload.hours;
-    if (workload.isOid === false && !workload.period) hours.kafedralAdditionalWorkload += workload.hours;
-    if (workload.isOid === true && workload.period === 1) hours.instituteAutumnWorkload += workload.hours;
-    if (workload.isOid === true && workload.period === 2) hours.instituteSpringWorkload += workload.hours;
-    if (workload.isOid === true && !workload.period) hours.instituteManagementWorkload += workload.hours;
+    if (!newWorkload.isOid && newWorkload.period === 1) hours.kafedralAutumnWorkload += parseFloat(newWorkload.hours);
+    if (!newWorkload.isOid && newWorkload.period === 2) hours.kafedralSpringWorkload += parseFloat(newWorkload.hours);
+    if (!newWorkload.isOid && !newWorkload.period) hours.kafedralAdditionalWorkload += parseFloat(newWorkload.hours);
+    if (newWorkload.isOid && newWorkload.period === 1) hours.instituteAutumnWorkload += parseFloat(newWorkload.hours);
+    if (newWorkload.isOid && newWorkload.period === 2) hours.instituteSpringWorkload += parseFloat(newWorkload.hours);
+    if (newWorkload.isOid && !newWorkload.period) hours.instituteManagementWorkload += parseFloat(newWorkload.hours);
 
-    // Итоговые часы для кафедральных, общеинститутских предметов и общей нагрузки
-    hours.totalKafedralHours =
+    hours.totalKafedralHours +=
         hours.kafedralAutumnWorkload + hours.kafedralSpringWorkload + hours.kafedralAdditionalWorkload;
-    hours.totalOidHours =
+    hours.totalOidHours +=
         hours.instituteAutumnWorkload + hours.instituteSpringWorkload + hours.instituteManagementWorkload;
-    hours.totalHours = hours.totalKafedralHours + hours.totalOidHours;
+    hours.totalHours += hours.totalKafedralHours + hours.totalOidHours;
 
-    // Заполняем бд этими данными
-    summaryWorkload.set('totalKafedralHours', summaryWorkload.totalKafedralHours + hours.totalKafedralHours);
-    summaryWorkload.set('totalOidHours', summaryWorkload.totalOidHours + hours.totalOidHours);
-    summaryWorkload.set('totalHours', summaryWorkload.totalHours + hours.totalHours);
-    summaryWorkload.set(
-        'kafedralAutumnWorkload',
-        summaryWorkload.kafedralAutumnWorkload + hours.kafedralAutumnWorkload
-    );
-    summaryWorkload.set(
-        'kafedralSpringWorkload',
-        summaryWorkload.kafedralSpringWorkload + hours.kafedralSpringWorkload
-    );
-    summaryWorkload.set(
-        'kafedralAdditionalWorkload',
-        summaryWorkload.kafedralAdditionalWorkload + hours.kafedralAdditionalWorkload
-    );
-    summaryWorkload.set(
-        'instituteAutumnWorkload',
-        summaryWorkload.instituteAutumnWorkload + hours.instituteAutumnWorkload
-    );
-    summaryWorkload.set(
-        'instituteSpringWorkload',
-        summaryWorkload.instituteSpringWorkload + hours.instituteSpringWorkload
-    );
-    summaryWorkload.set(
-        'instituteManagementWorkload',
-        summaryWorkload.instituteManagementWorkload + hours.instituteManagementWorkload
-    );
+    summaryWorkload.kafedralAutumnWorkload += hours.kafedralAutumnWorkload;
+    summaryWorkload.kafedralSpringWorkload += hours.kafedralSpringWorkload;
+    summaryWorkload.kafedralAdditionalWorkload += hours.kafedralAdditionalWorkload;
+    summaryWorkload.instituteAutumnWorkload += hours.instituteAutumnWorkload;
+    summaryWorkload.instituteSpringWorkload += hours.instituteSpringWorkload;
+    summaryWorkload.instituteManagementWorkload += hours.instituteManagementWorkload;
+    summaryWorkload.totalKafedralHours += hours.totalKafedralHours;
+    summaryWorkload.totalOidHours += hours.totalOidHours;
+    summaryWorkload.totalHours += hours.totalHours;
 
     await summaryWorkload.save();
-
     await checkHours(summaryWorkload);
 }
 
 async function deleteHours(newWorkload) {
-    const workload = await Workload.findByPk(newWorkload.id);
-    if (workload.educatorId === null) return;
-    const summaryWorkload = await SummaryWorkload.findOne({ where: { educatorId: workload.educatorId } });
+    const previousWorkload = newWorkload._previousDataValues;
+    if (previousWorkload.educatorId === null) return;
+    const summaryWorkload = await SummaryWorkload.findOne({where: {educatorId: previousWorkload.educatorId}});
 
     const hours = {
         kafedralAutumnWorkload: 0,
@@ -82,51 +61,34 @@ async function deleteHours(newWorkload) {
         totalKafedralHours: 0,
         totalOidHours: 0,
         totalHours: 0,
-    };
+    }
+
 
     // Проверяем предмет на общеинститутский ли он и период и устанавливаем часы для кафедральных или институтских дисциплин
-    if (workload.isOid === false && workload.period === 1) hours.kafedralAutumnWorkload += workload.hours;
-    if (workload.isOid === false && workload.period === 2) hours.kafedralSpringWorkload += workload.hours;
-    if (workload.isOid === false && !workload.period) hours.kafedralAdditionalWorkload += workload.hours;
-    if (workload.isOid === true && workload.period === 1) hours.instituteAutumnWorkload += workload.hours;
-    if (workload.isOid === true && workload.period === 2) hours.instituteSpringWorkload += workload.hours;
-    if (workload.isOid === true && !workload.period) hours.instituteManagementWorkload += workload.hours;
+    if (!newWorkload.isOid && newWorkload.period === 1) hours.kafedralAutumnWorkload += parseFloat(previousWorkload.hours);
+    if (!newWorkload.isOid && newWorkload.period === 2) hours.kafedralSpringWorkload += parseFloat(previousWorkload.hours);
+    if (!newWorkload.isOid && !newWorkload.period) hours.kafedralAdditionalWorkload += parseFloat(previousWorkload.hours);
+    if (newWorkload.isOid && newWorkload.period === 1) hours.instituteAutumnWorkload += parseFloat(previousWorkload.hours);
+    if (newWorkload.isOid && newWorkload.period === 2) hours.instituteSpringWorkload += parseFloat(previousWorkload.hours);
+    if (newWorkload.isOid && !newWorkload.period) hours.instituteManagementWorkload += parseFloat(previousWorkload.hours);
 
-    hours.totalKafedralHours =
+    hours.totalKafedralHours +=
         hours.kafedralAutumnWorkload + hours.kafedralSpringWorkload + hours.kafedralAdditionalWorkload;
-    hours.totalOidHours =
+    hours.totalOidHours +=
         hours.instituteAutumnWorkload + hours.instituteSpringWorkload + hours.instituteManagementWorkload;
-    hours.totalHours = hours.totalKafedralHours + hours.totalOidHours;
+    hours.totalHours += hours.totalKafedralHours + hours.totalOidHours;
 
-    summaryWorkload.set('totalKafedralHours', summaryWorkload.totalKafedralHours - hours.totalKafedralHours);
-    summaryWorkload.set('totalOidHours', summaryWorkload.totalOidHours - hours.totalOidHours);
-    summaryWorkload.set('totalHours', summaryWorkload.totalHours - hours.totalHours);
-    summaryWorkload.set(
-        'kafedralAutumnWorkload',
-        summaryWorkload.kafedralAutumnWorkload - hours.kafedralAutumnWorkload
-    );
-    summaryWorkload.set(
-        'kafedralSpringWorkload',
-        summaryWorkload.kafedralSpringWorkload - hours.kafedralSpringWorkload
-    );
-    summaryWorkload.set(
-        'kafedralAdditionalWorkload',
-        summaryWorkload.kafedralAdditionalWorkload - hours.kafedralAdditionalWorkload
-    );
-    summaryWorkload.set(
-        'instituteAutumnWorkload',
-        summaryWorkload.instituteAutumnWorkload - hours.instituteAutumnWorkload
-    );
-    summaryWorkload.set(
-        'instituteSpringWorkload',
-        summaryWorkload.instituteSpringWorkload - hours.instituteSpringWorkload
-    );
-    summaryWorkload.set(
-        'instituteManagementWorkload',
-        summaryWorkload.instituteManagementWorkload - hours.instituteManagementWorkload
-    );
+    summaryWorkload.kafedralAutumnWorkload -= hours.kafedralAutumnWorkload;
+    summaryWorkload.kafedralSpringWorkload -= hours.kafedralSpringWorkload;
+    summaryWorkload.kafedralAdditionalWorkload -= hours.kafedralAdditionalWorkload;
+    summaryWorkload.instituteAutumnWorkload -= hours.instituteAutumnWorkload;
+    summaryWorkload.instituteSpringWorkload -= hours.instituteSpringWorkload;
+    summaryWorkload.instituteManagementWorkload -= hours.instituteManagementWorkload;
+    summaryWorkload.totalKafedralHours -= hours.totalKafedralHours;
+    summaryWorkload.totalOidHours -= hours.totalOidHours;
+    summaryWorkload.totalHours -= hours.totalHours;
 
     await summaryWorkload.save();
 }
 
-export { setHours, deleteHours };
+export {setHours, deleteHours};
