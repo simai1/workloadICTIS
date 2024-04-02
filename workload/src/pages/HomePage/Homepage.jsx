@@ -8,8 +8,12 @@ import Warnings from "../../components/Warnings/Warnings";
 import TableLks from "../../components/TableLks/TableLks";
 import Profile from "../../components/Profile/Profile";
 import EditInput from "../../components/EditInput/EditInput";
+import DataContext from "../../context";
+import { bufferRequestToApi } from "../../bufferFunction";
 
 function HomePage() {
+  const { appData } = React.useContext(DataContext);
+
   const [selectedComponent, setSelectedComponent] = useState("Disciplines");
   const [tableMode, setTableMode] = useState("cathedrals"); //выбранный компонент
 
@@ -17,58 +21,12 @@ function HomePage() {
   const [searchTerm, setSearchTerm] = useState(""); //поиск по таблице
   const [onenModalWind, setOpenModalWind] = useState(false); // переменная закрытия модального окна профиля
   const refProfile = React.useRef(null); // ссылка на модальное окно профиля
-  const [name, setName] = useState("");
-  const [post, setpost] = useState("");
-  const [bet, setbet] = useState("");
+
+  const [educatorIdforLk, setEducatorIdforLk] = useState(""); // id для вывода LK, если пустое то LK не отображается
 
   const handleButtonClick = () => {
-    setName("");
+    setEducatorIdforLk("");
   };
-  const handleComponentChange = (component) => {
-    setSelectedComponent(component);
-  };
-
-  const handleNameChange = (nameTeacher, postTeacher, betTeacher) => {
-    setName(nameTeacher);
-    setpost(postTeacher);
-    setbet(betTeacher);
-  };
-
-  const handleSearch = (event) => {
-    setSearchTerm(event.target.value);
-  };
-
-  const EditTableData = (selectedComponent) => {
-    console.log(selectedComponent);
-    //тут написать функцию которая будет подгружать нужное содержимое tableData и tableHeaders
-  };
-
-  const tableHeaders = React.useMemo(() => {
-    return [
-      { key: "id", label: "№" },
-      { key: "discipline", label: "Дисциплина" },
-      { key: "workload", label: "Нагрузка" },
-      { key: "groups", label: "Группа" },
-      { key: "department", label: "Кафедра" },
-      { key: "block", label: "Блок" },
-      { key: "semester", label: "Семестр" },
-      { key: "period", label: "Период" },
-      { key: "curriculum", label: "Учебный план" },
-      { key: "curriculumUnit", label: "Подразделение учебного плана" },
-      { key: "formOfEducation", label: "Форма обучения" },
-      { key: "levelOfTraining", label: "Уровень подготовки" },
-      {
-        key: "specialty",
-        label: "Направление подготовки (специальность)",
-      },
-      { key: "core", label: "Профиль" },
-      { key: "numberOfStudents", label: "Количество студентов" },
-      { key: "hours", label: "Часы" },
-      { key: "audienceHours", label: "Аудиторные часы" },
-      { key: "ratingControlHours", label: "Часы рейтинг-контроль" },
-      { key: "educator", label: "Преподаватель" },
-    ];
-  }, []);
 
   const tableHeaders2 = [
     { key: "id", label: "№" },
@@ -81,12 +39,82 @@ function HomePage() {
     { key: "recommendedMaxHours", label: "Рекомендуемый максимум часов" },
     { key: "minHours", label: "Минимум часов" },
   ];
+  const handleComponentChange = (component) => {
+    setSelectedComponent(component);
+    if (component === "Disciplines") {
+      setTableHeaders(tableHeaders);
+    } else {
+      setTableHeaders(tableHeaders2);
+    }
+  };
+
+  const changeInput = () => {
+    setTableHeaders(tableHeaders2);
+  };
+
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const EditTableData = (selectedComponent) => {
+    console.log(selectedComponent);
+    //тут написать функцию которая будет подгружать нужное содержимое tableData и tableHeaders
+  };
+  const tableHeaders = [
+    { key: "id", label: "№" },
+    { key: "discipline", label: "Дисциплина" },
+    { key: "workload", label: "Нагрузка" },
+    { key: "groups", label: "Группа" },
+    { key: "department", label: "Кафедра" },
+    { key: "block", label: "Блок" },
+    { key: "semester", label: "Семестр" },
+    { key: "period", label: "Период" },
+    { key: "curriculum", label: "Учебный план" },
+    { key: "curriculumUnit", label: "Подразделение учебного плана" },
+    { key: "formOfEducation", label: "Форма обучения" },
+    { key: "levelOfTraining", label: "Уровень подготовки" },
+    {
+      key: "specialty",
+      label: "Направление подготовки (специальность)",
+    },
+    { key: "core", label: "Профиль" },
+    { key: "numberOfStudents", label: "Количество студентов" },
+    { key: "hours", label: "Часы" },
+    { key: "audienceHours", label: "Аудиторные часы" },
+    { key: "ratingControlHours", label: "Часы рейтинг-контроль" },
+    { key: "educator", label: "Преподаватель" },
+  ];
+
+  const [tableHeadersTeacher, setTableHeaders] = useState(tableHeaders);
+
+  const onSaveClick = () => {
+    //! отправляем все запросы на обработку
+    console.log("Сохранено", appData.bufferAction);
+    bufferRequestToApi(appData.bufferAction).then(() => {
+      appData.setBufferAction([0]);
+    });
+    console.log("выполнено и очищено", appData.bufferAction);
+  };
 
   return (
     <Layout>
       <div className={styles.HomePage}>
         <div className={styles.header}>
           <div className={styles.header_top}>
+            <div>
+              <button
+                style={{
+                  height: "45px",
+                  backgroundColor: "#3b28cc",
+                  color: "#fff",
+                  borderRadius: " 8px",
+                  border: "none",
+                }}
+                onClick={onSaveClick}
+              >
+                Сохранить
+              </button>
+            </div>
             <div className={styles.header_search}>
               <input
                 type="text"
@@ -124,9 +152,10 @@ function HomePage() {
             </div>
             <div className={styles.header_left_component}>
               <Warnings
+                setEducatorIdforLk={setEducatorIdforLk}
+                educatorIdforLk={educatorIdforLk}
                 className={styles.Warnings}
                 setSelectedComponent={setSelectedComponent}
-                handleNameChange={handleNameChange}
                 setEducatorData={setEducatorData}
               />
               <Profile
@@ -158,15 +187,20 @@ function HomePage() {
                 }}
               />
             </div>
+
             <div className={styles.EditInput}>
-              <EditInput tableHeaders={tableHeaders} />
+              {educatorIdforLk === "" && (
+                <EditInput
+                  selectedComponent={selectedComponent} //! исправить не обновляется
+                  tableHeaders={tableHeadersTeacher}
+                />
+              )}
             </div>
           </div>
         </div>
 
         <div className={styles.Block__tables}>
-          {selectedComponent === "Disciplines" &&
-          (name === "" || name !== "") ? (
+          {selectedComponent === "Disciplines" ? (
             <TableDisciplines
               tableHeaders={tableHeaders}
               searchTerm={searchTerm}
@@ -174,18 +208,23 @@ function HomePage() {
               refProfile={refProfile}
               setOpenModalWind={setOpenModalWind}
             />
-          ) : selectedComponent === "Teachers" && name === "" ? (
+          ) : selectedComponent === "Teachers" && educatorIdforLk === "" ? (
             <TableTeachers
+              setEducatorIdforLk={setEducatorIdforLk}
+              changeInput={changeInput}
+              setTableHeaders={setTableHeaders}
+              tableHeaders={tableHeadersTeacher}
               searchTerm={searchTerm}
               setSearchTerm={setSearchTerm}
               setEducatorData={setEducatorData}
-              onNameChange={handleNameChange}
             />
-          ) : selectedComponent === "Teachers" && name !== "" ? (
+          ) : selectedComponent === "Teachers" && educatorIdforLk !== "" ? (
             <TableLks
+              setEducatorIdforLk={setEducatorIdforLk}
+              educatorIdforLk={educatorIdforLk}
+              changeInput={changeInput}
+              searchTerm={searchTerm}
               educatorData={educatorData}
-              delNameChange={handleNameChange}
-              NameTeachers={{ name, post, bet }}
             />
           ) : null}
         </div>

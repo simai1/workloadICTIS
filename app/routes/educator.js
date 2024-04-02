@@ -6,7 +6,7 @@ import checkRole from '../middlewares/checkRoles.js';
 import role from '../config/roles.js';
 
 const router = Router();
-router.use(verify.general);
+// router.use(verify.general);
 
 router
     .route('/:educatorId')
@@ -47,4 +47,5 @@ router
         asyncRoute(eduController.getTypeOfEmployments)
     );
 router.route('/get/educatorsByDepartment').get(asyncRoute(eduController.getEducatorsByDepartment));
+
 export default router;

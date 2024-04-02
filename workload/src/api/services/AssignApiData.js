@@ -3,10 +3,29 @@
 
 import {
   Comment,
+  Educator,
+  EducatorLK,
   Workload,
   getAllWarningMessage,
   getOffers,
 } from "./ApiRequest";
+
+//! функция получения всех преподавателей
+export function getDataEducator() {
+  return Educator().then((data) => {
+    console.log("teatcher ", data);
+    return data;
+  });
+}
+
+//! функция получения данных личного кабинета преподавателя
+export function getDataEducatorLK(id, setEducatorLkData, setEducatorLkTable) {
+  EducatorLK(id).then((data) => {
+    console.log("EducatorLK ", data);
+    setEducatorLkData(data);
+    setEducatorLkTable(data.workloads[0]);
+  });
+}
 
 //! функция получения всех нагрузок
 export function getDataTable() {
@@ -34,7 +53,7 @@ export function getDataAllComment(setCommentAllData) {
 //! функция получения всех предупреждений
 export function getAllWarnin(setAllWarningMessage) {
   getAllWarningMessage().then((data) => {
-    console.log("Warning ", data);
+    console.log("AllWarning ", data);
     setAllWarningMessage(data);
   });
 }

@@ -19,6 +19,7 @@ import {
   getDataTable,
 } from "../../api/services/AssignApiData";
 import OfferModalWindow from "../OfferModalWindow/OfferModalWindow";
+import { returnPrevState } from "../../bufferFunction";
 
 function TableDisciplines(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]); //заголовок обновленный для Redux сортировки
@@ -58,7 +59,40 @@ function TableDisciplines(props) {
     });
   };
 
-  //! заносим данные о преподавателях в состояние
+  //! обновление таблицы, отмена действия при ctrl+z
+  useEffect(() => {
+    if (appData.bufferAction[0] === 0) {
+      getDataTableAll();
+      getDataAllComment(setCommentAllData); // получение комментариев
+      console.log("Таблица обноленна после буффера");
+      appData.setBufferAction([]);
+    }
+    const handleKeyDown = (event) => {
+      //! следим за нажатием ctrl + z для отмены последнего действияы
+      if (
+        event.ctrlKey &&
+        (event.key === "z" ||
+          event.key === "я" ||
+          event.key === "Z" ||
+          event.key === "Я")
+      ) {
+        console.log("отеменено последнее действие", appData.bufferAction);
+        //! отмена последнего действия
+        returnPrevState(appData.bufferAction, updatedData).then((data) => {
+          setUpdatedData(data);
+          appData.setBufferAction((prevItems) => prevItems.slice(1));
+        });
+        //функция отмены последенего действия находится в TableDisciplines
+      }
+      //! следим за нажатием ctrl + s для сохранения изменений
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [appData.bufferAction]);
+
+  //! заносим данные в состояния
   useEffect(() => {
     getDataTableAll();
     setTableData(appData.workload);
@@ -121,7 +155,6 @@ function TableDisciplines(props) {
   };
 
   const handleIndividualCheckboxChange = (el, index) => {
-    // console.log(el.target.tagName);
     if (
       el.target.tagName !== "DIV" &&
       el.target.tagName !== "TEXTAREA" &&
@@ -152,14 +185,16 @@ function TableDisciplines(props) {
     setIdrow(filteredData[index].id);
   };
 
-  //! при нажатии на кружо предложения
-  const handleClicOffer = (el, index) => {
-    console.log("id", index, allOffersData[index - 1]);
+  //! при нажатии на кружок предложения
+  const handleClicOffer = (el, id_workload, index) => {
+    console.log("id", index, id_workload, allOffersData[index]);
     setModalWindowOffer({
-      id: allOffersData[index - 1].id,
+      id: allOffersData.find(
+        (item) => item.workloadId === filteredData[index].id
+      ).id,
       flag: !modalWindowOffer.flag,
     });
-    setPosition({ x: el.pageX - 40, y: el.pageY - 200 });
+    setPosition({ x: el.pageX - 40, y: el.pageY - 260 });
   };
 
   //! добавить комментарий к нагрузке из контекстного меню
@@ -175,9 +210,9 @@ function TableDisciplines(props) {
   const clickFigth = (event, index) => {
     setSamplePointsShow(!isSamplePointsShow);
     if (event.clientX + 372 > window.innerWidth) {
-      setPositionFigth({ x: window.innerWidth - 500, y: event.clientY - 100 });
+      setPositionFigth({ x: event.pageX - 50, y: event.pageY - 150 });
     } else {
-      setPositionFigth({ x: event.clientX - 50, y: event.clientY - 100 });
+      setPositionFigth({ x: event.pageX - 50, y: event.pageY - 150 });
     }
 
     const keyTd = tableHeaders[index].key;
@@ -249,29 +284,6 @@ function TableDisciplines(props) {
     setUpdatedData(updatedData);
   }
 
-  // //! поиск и фильтрация таблицы
-  // const handleSearch = (event) => {
-  //   const searchTerm = event.target.value;
-  //   props.setSearchTerm(searchTerm);
-  //   let fd;
-  //   if (searchTerm === "") {
-  //     fd = updatedData;
-  //   } else {
-  //     fd = updatedData.filter((row) => {
-  //       return Object.values(row).some(
-  //         (value) =>
-  //           value !== null &&
-  //           value !== undefined &&
-  //           value
-  //             .toString()
-  //             .toLowerCase()
-  //             .includes(props.searchTerm.toLowerCase())
-  //       );
-  //     });
-  //   }
-  //   setFilteredData(fd);
-  // };
-
   //! компонет поиска выведен в родительский
   //! useEffect следит за изменение searchTerm
   useEffect(() => {
@@ -295,15 +307,11 @@ function TableDisciplines(props) {
   }, [updatedData, props.searchTerm]);
 
   //! меню при нажатии пкм
-  const handleContextMenu = (e) => {
+  const handleContextMenu = (e, index) => {
     e.preventDefault();
+    // console.log(index);
     setShowMenu(!showMenu);
     setMenuPosition({ x: e.clientX, y: e.clientY });
-  };
-
-  //! добавление преподавателя на нагрузку
-  const handleMenuClick = () => {
-    console.log("handleMenuClick");
   };
 
   //! расчет left для статических блоков таблицы
@@ -349,52 +357,21 @@ function TableDisciplines(props) {
     const parsedValue = Number(textareaTd);
     const numberValue = isNaN(parsedValue) ? textareaTd : parsedValue;
     // отпрака запроса на изменение данных
+    const data = { id: id, key: key.key, value: numberValue };
     textareaTd &&
-      workloadUpdata(id, { [key.key]: numberValue }).then(() =>
-        getDataTableAll()
-      );
+      //! буфер
+      appData.setBufferAction([
+        { request: "workloadUpdata", data: data },
+        ...appData.bufferAction,
+      ]);
+    // workloadUpdata(id, { [key.key]: numberValue }).then(() =>
+    //   getDataTableAll()
+    // );
     setCellNumber([]);
   };
-
   //! содержимое
   return (
     <div className={styles.tabledisciplinesMain}>
-      {/* <div className={styles.tabledisciplinesMain_search}>
-        <input
-          type="text"
-          placeholder="Поиск"
-          id="search"
-          name="search"
-          value={searchTerm}
-          onChange={handleSearch}
-          className={styles.search}
-        />
-        <img src="./img/search.svg"></img>
-      </div> */}
-
-      {/* <div className={styles.ButtonCaf_gen}>
-        <Button
-          Bg={selectedComponent === "cathedrals" ? "#3B28CC" : "#efedf3"}
-          textColot={selectedComponent === "cathedrals" ? "#efedf3" : "#000000"}
-          text="Кафедральные"
-          onClick={() => {
-            handleComponentChange("cathedrals");
-            EditTableData(selectedComponent);
-          }}
-        />
-        <Button
-          Bg={selectedComponent === "genInstitute" ? "#3B28CC" : "#efedf3"}
-          textColot={selectedComponent === "cathedrals" ? "#000000" : "#efedf3"}
-          text="Общеинститутские"
-          onClick={() => {
-            handleComponentChange("genInstitute");
-            EditTableData(selectedComponent);
-          }}
-        />
-      </div>
-      <div className={styles.EditInput}>
-        <EditInput tableHeaders={tableHeaders} />
-      </div> */}
       <div>
         {isHovered && (
           <NotificationForm
@@ -412,6 +389,11 @@ function TableDisciplines(props) {
 
         {modalWindowOffer.flag && (
           <OfferModalWindow
+            allOffersDataItem={allOffersData.filter(
+              (item) => item.id === modalWindowOffer.id
+            )}
+            modalWindowOffer={modalWindowOffer}
+            setModalWindowOffer={setModalWindowOffer}
             position={position}
             refOffer={refOffer}
             workloadId={modalWindowOffer.id}
@@ -434,11 +416,16 @@ function TableDisciplines(props) {
             refContextMenu={refContextMenu}
             showMenu={showMenu}
             menuPosition={menuPosition}
-            handleMenuClick={handleMenuClick}
             setShowMenu={setShowMenu}
             individualCheckboxes={individualCheckboxes}
             getDataTableAll={getDataTableAll}
             onAddComment={onAddComment}
+            setFilteredData={setFilteredData}
+            filteredData={filteredData}
+            updatedData={updatedData}
+            setUpdatedData={setUpdatedData}
+            setAllOffersData={setAllOffersData}
+            allOffersData={allOffersData}
           />
         )}
         <div className={styles.table_container}>
@@ -448,6 +435,7 @@ function TableDisciplines(props) {
               <thead>
                 <tr ref={trRef} className={styles.tr_thead}>
                   <th className={styles.checkboxHeader} style={{ left: "0" }}>
+                    <div className={styles.input_left}></div>
                     <input
                       type="checkbox"
                       className={styles.custom__checkbox}
@@ -489,7 +477,7 @@ function TableDisciplines(props) {
                     return (
                       <tr
                         key={index}
-                        onContextMenu={handleContextMenu}
+                        onContextMenu={(e) => handleContextMenu(e, index)}
                         className={styles.table_tr}
                         // клик на строку выделяет ее
                         onClick={(el) =>
@@ -521,6 +509,7 @@ function TableDisciplines(props) {
                           )}
 
                           {/* //! вывод предложений */}
+
                           {allOffersData.some(
                             (item) => item.workloadId === filteredData[index].id
                           ) && (
@@ -528,7 +517,13 @@ function TableDisciplines(props) {
                               key={index}
                               className={styles.notice}
                               style={{ backgroundColor: "#FFD600" }}
-                              onClick={(el, item) => handleClicOffer(el, index)}
+                              onClick={(el, item) =>
+                                handleClicOffer(
+                                  el,
+                                  filteredData[index].id,
+                                  index
+                                )
+                              }
                             >
                               {
                                 allOffersData.filter(
