@@ -178,11 +178,9 @@ export default {
 
         // Совмещаем часы
         let totalStudents = 0;
-        let totalHours = 0;
 
         workloads.forEach(workload => {
             totalStudents += workload.numberOfStudents;
-            totalHours += workload.hours;
         });
 
         // Создаем совмещенную нагрузку
@@ -201,7 +199,7 @@ export default {
             specialty: firstWorkload.get('specialty'),
             core: firstWorkload.get('core'),
             numberOfStudents: totalStudents,
-            hours: totalHours,
+            hours: firstWorkload.get('hours'),
             audienceHours: firstWorkload.get('audienceHours'),
             ratingControlHours: firstWorkload.get('ratingControlHours'),
             comment: firstWorkload.get('comment'),
@@ -265,14 +263,12 @@ export default {
     async getDepartmentWorkload(req, res) {
         const userId = req.user;
         const educator = await Educator.findOne({ where: { userId } });
-        // if (!educator) throw new AppErrorInvalid(userId);
 
         const department = educator.department;
         const workloads = await Workload.findAll({
             where: { department },
             include: { model: Educator },
         });
-        console.log(workloads);
 
         const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
         res.json(workloadsDto);

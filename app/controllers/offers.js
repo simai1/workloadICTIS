@@ -3,11 +3,9 @@ import Offer from '../models/offers.js';
 import WorkloadController from './workload.js';
 import Workload from '../models/workload.js';
 import { AppErrorInvalid, AppErrorMissing } from '../utils/errors.js';
-import User from '../models/user.js';
 import EducatorDto from '../dtos/educator-dto.js';
 import OfferDto from '../dtos/offer-dto.js';
 import status from '../config/status.js';
-import role from '../config/roles.js';
 
 export default {
     async getAllOffers(req, res) {
@@ -134,5 +132,12 @@ export default {
 
         // Удаление предложения
         await offer.destroy({ force: true });
+    },
+    async deleteOffer({ params: { offerId } }, res) {
+        if (!offerId) throw new AppErrorMissing('offerId');
+        const offer = await Offer.findByPk(offerId);
+        if (!offer) throw new AppErrorMissing('Offer not found');
+        await offer.destroy({ force: true });
+        res.status(200).json('Successfully delete');
     },
 };

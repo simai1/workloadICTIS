@@ -66,13 +66,6 @@ export const educators = [
         rate: 1,
     },
     {
-        name: 'Бучнев Максим Тимофеевич',
-        department: 7,
-        position: 5,
-        typeOfEmployment: 1,
-        rate: 0.5,
-    },
-    {
         name: 'Орлов Руслан Александрович',
         department: 6,
         position: 5,
