@@ -6,8 +6,11 @@ import { map as mapPositions } from '../config/position.js';
 import { map as mapTypeOfEmployments } from '../config/type-of-employment.js';
 import Workload from '../models/workload.js';
 import SummaryWorkload from '../models/summary-workload.js';
+import WorkloadDto from '../dtos/workload-dto.js';
+import User from '../models/user.js';
 import WorkloadProfileDto from "../dtos/workload-profile-dto.js";
 import EducatorListDto from "../dtos/educator-list-dto.js";
+
 
 export default {
     async getAll(params, res) {
@@ -43,7 +46,7 @@ export default {
                 educatorId,
             },
         });
-        const workloadsDto = []
+        const workloadsDto = [];
         for (const workload of workloads) {
             workloadsDto.push(new WorkloadProfileDto(workload))
         }
@@ -111,5 +114,16 @@ export default {
         await educator.destroy({ force: true });
 
         res.status(200).json('Successfully deleted');
+    },
+    async getEducatorsByDepartment(req, res) {
+        const userId = req.user;
+
+        const educator = await Educator.findOne({ where: { userId } });
+
+        const department = educator.department;
+
+        const educators = await Educator.findAll({ where: { department } });
+        const educatorsDto = educators.map(educator => new EducatorDto(educator));
+        res.json(educatorsDto);
     },
 };

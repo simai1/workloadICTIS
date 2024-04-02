@@ -1,3 +1,5 @@
+import { mapObjectKeys } from '../utils/map.js';
+
 const departments = {
     БИТ: 1,
     ВМ: 2,
@@ -14,10 +16,4 @@ const departments = {
 
 export default departments;
 
-export const map = Object.keys(departments).reduce(
-  (acc, k) => ({
-      ...acc,
-      [departments[k]]: k,
-  }),
-  {}
-);
+export const map = mapObjectKeys(departments);

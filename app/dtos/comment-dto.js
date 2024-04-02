@@ -5,6 +5,7 @@ export default class CommentDto {
     educator;
     isChecked;
     workloadId;
+    sender;
 
     constructor(model) {
         this.id = model.id;
