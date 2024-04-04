@@ -229,9 +229,8 @@ const ContextMenu = (props) => {
         { request: "joinWorkloads", data: data, prevState: prevState },
         ...appData.bufferAction,
       ]);
-    } else console.log("Нельзя соеденить");
- 
-
+    } else props.setIsPopUpMenu(true);
+  };
   //! удаление нагрузки
   const handleDeletWorkload = () => {
     console.log("удалить ", appData.individualCheckboxes);

@@ -43,7 +43,7 @@ function TableDisciplines(props) {
     id: null,
     flag: false,
   });
-  
+
   //! данные вытянутые из контекста
   const { appData } = React.useContext(DataContext);
 
@@ -265,7 +265,7 @@ function TableDisciplines(props) {
   };
 
   //выбор компонента
-console.log(props.isPopUpMenu)
+  console.log(props.isPopUpMenu);
   // ! заголовки
   const tableHeaders = useMemo(() => {
     return [
@@ -463,14 +463,14 @@ console.log(props.isPopUpMenu)
         )}
         {showMenu && (
           <ContextMenu
+            isPopUpMenu={isPopUpMenu}
+            setIsPopUpMenu={setIsPopUpMenu}
             refContextMenu={refContextMenu}
             showMenu={showMenu}
             menuPosition={menuPosition}
             setShowMenu={setShowMenu}
             getDataTableAll={getDataTableAll}
             onAddComment={onAddComment}
-            setFilteredData={setFilteredData}
-            filteredData={filteredData}
             updatedData={updatedData}
             setUpdatedData={setUpdatedData}
             setAllOffersData={setAllOffersData}
@@ -714,11 +714,8 @@ console.log(props.isPopUpMenu)
         </div>
       </div>
       <div className={styles.Block__tables__shadow}></div>
-      
-      {isPopUpMenu &&(
-        <PopUpError/>
-      )
-      }
+
+      {isPopUpMenu && <PopUpError setIsPopUpMenu={setIsPopUpMenu} />}
     </div>
   );
 }
