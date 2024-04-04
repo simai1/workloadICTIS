@@ -10,6 +10,7 @@ import Profile from "../../components/Profile/Profile";
 import EditInput from "../../components/EditInput/EditInput";
 import DataContext from "../../context";
 import { bufferRequestToApi } from "../../bufferFunction";
+import { PopUpError } from "../../ui/PopUp/PopUpError";
 
 function HomePage() {
   const { appData } = React.useContext(DataContext);
@@ -239,6 +240,7 @@ function HomePage() {
         </a>
       </div>
     </Layout>
+    
   );
 }
 

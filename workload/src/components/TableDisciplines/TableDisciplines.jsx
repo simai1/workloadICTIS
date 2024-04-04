@@ -20,12 +20,14 @@ import {
 } from "../../api/services/AssignApiData";
 import OfferModalWindow from "../OfferModalWindow/OfferModalWindow";
 import { returnPrevState } from "../../bufferFunction";
+import { PopUpError } from "../../ui/PopUp/PopUpError";
 
 function TableDisciplines(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]); //заголовок обновленный для Redux сортировки
   const [updatedData, setUpdatedData] = useState([]); //массив обновленный для Redux сортировки
   const [selectedComponent, setSelectedComponent] = useState("cathedrals"); //выбранный компонент
   const [isHovered, setIsHovered] = useState(false); // флаг открытия уведомлений от преподавателей
+  const [isPopUpMenu, setisPopUpMenu] = useState(false); // флаг открытия PopUp меню
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [positionFigth, setPositionFigth] = useState({ x: 0, y: 0 });
   const [idRow, setIdrow] = useState(0);
@@ -606,6 +608,10 @@ function TableDisciplines(props) {
         </div>
       </div>
       <div className={styles.Block__tables__shadow}></div>
+      {isPopUpMenu &&(
+        <PopUpError/>
+      )
+      }
     </div>
   );
 }

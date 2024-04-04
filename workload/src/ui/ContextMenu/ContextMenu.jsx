@@ -162,17 +162,37 @@ const ContextMenu = (props) => {
       ids: props.individualCheckboxes,
     };
 
+    // console.log(data.ids.length)
+    // console.log("1", data.ids[0]);
+    // console.log("2", data.ids[1]);
+    console.log(props.updatedData)
+    const arrItems = [];
+    props.updatedData.map((item) =>(
+      data.ids.includes(item.id) && arrItems.push(item)
+    ));
+    console.log("Данные", arrItems);
+    // Сначала получим значения полей первого объекта
+    let { department: department1, workload: workload1, discipline: discipline1 } = arrItems[0];
+    for (let i = 1; i < arrItems.length; i++) {
+      let { department, workload, discipline } = arrItems[i];
+      // Сравним значения полей с первым объектом
+      if (department !== department1 || workload !== workload1 || discipline !== discipline1) {
+        alert('Поля не равны');
+        return;
+      }
+    }
     //! буфер
     appData.setBufferAction([
       { request: "joinWorkloads", data: data },
       ...appData.bufferAction,
     ]);
-
+    
     //! запрос на соединение нагрузок
     // joinWorkloads(data).then((response) => {
     //   props.getDataTableAll();
     // });
   };
+ 
 
   //! удаление нагрузки
   const handleDeletWorkload = () => {
