@@ -3,7 +3,6 @@ import styles from "./PopUpError.module.scss";
 import Button from "../Button/Button";
 
 export function PopUpError(props) {
-  const [isPopUpMenu, setIsPopUpMenu] = useState(false); // флаг открытия PopUp меню
   
   return (
    <div className={styles.mainPop}>
