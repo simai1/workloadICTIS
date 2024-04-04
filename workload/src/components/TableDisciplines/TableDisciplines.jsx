@@ -27,7 +27,7 @@ function TableDisciplines(props) {
   const [updatedData, setUpdatedData] = useState([]); //массив обновленный для Redux сортировки
   const [selectedComponent, setSelectedComponent] = useState("cathedrals"); //выбранный компонент
   const [isHovered, setIsHovered] = useState(false); // флаг открытия уведомлений от преподавателей
-  const [isPopUpMenu, setisPopUpMenu] = useState(false); // флаг открытия PopUp меню
+  const [isPopUpMenu, setIsPopUpMenu] = useState(false); // флаг открытия PopUp меню
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [positionFigth, setPositionFigth] = useState({ x: 0, y: 0 });
   const [idRow, setIdrow] = useState(0);
@@ -46,7 +46,7 @@ function TableDisciplines(props) {
     id: null,
     flag: false,
   });
-
+  
   //! данные вытянутые из контекста
   const { appData } = React.useContext(DataContext);
 
@@ -222,7 +222,7 @@ function TableDisciplines(props) {
   };
 
   //выбор компонента
-
+console.log(props.isPopUpMenu)
   // ! заголовки
   const tableHeaders = useMemo(() => {
     return [
@@ -608,6 +608,7 @@ function TableDisciplines(props) {
         </div>
       </div>
       <div className={styles.Block__tables__shadow}></div>
+      
       {isPopUpMenu &&(
         <PopUpError/>
       )
