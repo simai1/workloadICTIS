@@ -1,6 +1,7 @@
 import express from 'express';
 import http from 'http'; // Добавьте этот импорт
 import { Server } from 'socket.io';
+import cronService from './services/cron.js';
 import cookieParser from 'cookie-parser';
 import cookieSession from 'cookie-session';
 
@@ -38,6 +39,7 @@ const io = new Server(server, {
     },
 });
 
+// ==== on server start functions
 (async function initDb() {
     try {
         await dbUtils.initializeDbModels();
@@ -51,6 +53,14 @@ const io = new Server(server, {
         setTimeout(initDb, 5000);
     }
 })();
+// ============== //
+
+// CronJob section //
+// if (process.env.NODE_ENV === 'staging') {
+//     cronService.agreementDecline.start();
+// }
+cronService.checkHours.start();
+// ============== //
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false }));
