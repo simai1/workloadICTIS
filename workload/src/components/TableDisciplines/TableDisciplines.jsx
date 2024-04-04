@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import styles from "./TableDisciplines.module.scss";
-import Button from "../../ui/Button/Button";
-import EditInput from "../EditInput/EditInput";
 import { useDispatch, useSelector } from "react-redux";
 import ContextMenu from "../../ui/ContextMenu/ContextMenu";
 import { NotificationForm } from "../../ui/NotificationForm/NotificationForm";
@@ -11,7 +9,6 @@ import DataContext from "../../context";
 import { ReactComponent as SvgChackmark } from "./../../img/checkmark.svg";
 import { ReactComponent as SvgCross } from "./../../img/cross.svg";
 
-import { workloadUpdata } from "../../api/services/ApiRequest";
 import {
   getAllOffers,
   getAllWarnin,
@@ -32,7 +29,7 @@ function TableDisciplines(props) {
   const [isSamplePointsShow, setSamplePointsShow] = useState(false);
   const [isSamplePointsData, setSamplePointsData] = useState("");
   const [isCheckedGlobal, setIsCheckedGlobal] = useState(false); //главный чекбокс таблицы
-  const [individualCheckboxes, setIndividualCheckboxes] = useState([]); //чекбоксы таблицы
+
   const [isChecked, setChecked] = useState([]);
   const [showMenu, setShowMenu] = useState(false); //меню
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 }); //меню
@@ -54,7 +51,7 @@ function TableDisciplines(props) {
       setUpdatedData(data);
       setFilteredData(data);
       getAllOffers(setAllOffersData);
-      setIndividualCheckboxes([]);
+      appData.setIndividualCheckboxes([]);
       console.log("Таблица обноленна");
     });
   };
@@ -79,7 +76,10 @@ function TableDisciplines(props) {
         console.log("отеменено последнее действие", appData.bufferAction);
         //! отмена последнего действия
         if (appData.bufferAction.length > 0) {
-          if (appData.bufferAction[0].request !== "deleteComment") {
+          if (
+            appData.bufferAction[0].request === "removeEducatorinWorkload" ||
+            appData.bufferAction[0].request === "addEducatorWorkload"
+          ) {
             returnPrevState(appData.bufferAction, updatedData).then((data) => {
               setUpdatedData(data);
               appData.setBufferAction((prevItems) => prevItems.slice(1));
@@ -89,17 +89,40 @@ function TableDisciplines(props) {
               ...commentAllData,
               ...appData.bufferAction[0].prevState,
             ]);
-            console.log([
-              ...commentAllData,
-              ...appData.bufferAction[0].prevState,
-            ]);
             appData.setBufferAction((prevItems) => prevItems.slice(1));
+          } else if (appData.bufferAction[0].request === "joinWorkloads") {
+            // удаляем нагрузку которую обьеденили
+            const dataTable = updatedData.filter(
+              (item) =>
+                !appData.bufferAction[0].prevState.some(
+                  (el) => el.id === item.id
+                )
+            );
+            // сохраняем индекс удаленного элемента
+            const deletedIndex = updatedData.findIndex((item) =>
+              appData.bufferAction[0].prevState.some((el) => el.id === item.id)
+            );
+            const newArray = [...dataTable];
+            newArray.splice(
+              deletedIndex,
+              0,
+              ...appData.bufferAction[0].prevState
+            );
+            setUpdatedData(newArray);
+            // убираем заблокированные элементы
+            appData.setBlockedCheckboxes((prev) =>
+              prev.filter(
+                (el) =>
+                  !appData.bufferAction[0].prevState.some(
+                    (item) => item.id !== el
+                  )
+              )
+            );
           }
         }
 
         //функция отмены последенего действия находится в TableDisciplines
       }
-      //! следим за нажатием ctrl + s для сохранения изменений
     };
     document.addEventListener("keydown", handleKeyDown);
     return () => {
@@ -165,8 +188,8 @@ function TableDisciplines(props) {
   const handleGlobalCheckboxChange = () => {
     setIsCheckedGlobal(!isCheckedGlobal);
     !isCheckedGlobal
-      ? setIndividualCheckboxes(filteredData.map((el) => el.id))
-      : setIndividualCheckboxes([]);
+      ? appData.setIndividualCheckboxes(filteredData.map((el) => el.id))
+      : appData.setIndividualCheckboxes([]);
   };
 
   const handleIndividualCheckboxChange = (el, index) => {
@@ -176,14 +199,14 @@ function TableDisciplines(props) {
       el.target.tagName !== "svg" &&
       el.target.tagName !== "path"
     ) {
-      let ic = [...individualCheckboxes];
+      let ic = [...appData.individualCheckboxes];
 
       if (ic.includes(filteredData[index].id)) {
         ic = ic.filter((el) => el !== filteredData[index].id);
       } else {
         ic = [...ic, filteredData[index].id];
       }
-      setIndividualCheckboxes(ic);
+      appData.setIndividualCheckboxes(ic);
 
       if (ic.length === filteredData.length) {
         setIsCheckedGlobal(true);
@@ -215,9 +238,8 @@ function TableDisciplines(props) {
   //! добавить комментарий к нагрузке из контекстного меню
   const onAddComment = () => {
     setShowMenu(false);
-    setIdrow(individualCheckboxes[0]);
+    setIdrow(appData.individualCheckboxes[0]);
     setIsHovered(true);
-    // setPosition({ x: menuPosition.x + 210, y: menuPosition.y - 125 });
     setPosition({ x: menuPosition.x - 60, y: menuPosition.y - 125 });
   };
 
@@ -443,7 +465,6 @@ function TableDisciplines(props) {
             showMenu={showMenu}
             menuPosition={menuPosition}
             setShowMenu={setShowMenu}
-            individualCheckboxes={individualCheckboxes}
             getDataTableAll={getDataTableAll}
             onAddComment={onAddComment}
             setFilteredData={setFilteredData}
@@ -510,54 +531,107 @@ function TableDisciplines(props) {
                           handleIndividualCheckboxChange(el, index)
                         }
                         style={
-                          individualCheckboxes.includes(filteredData[index].id)
+                          appData.individualCheckboxes.includes(
+                            filteredData[index].id
+                          ) // выделенные галочкой
                             ? { backgroundColor: "rgb(234, 234, 250)" }
+                            : appData.blockedCheckboxes.includes(
+                                filteredData[index].id
+                              ) // блокированные поля
+                            ? {
+                                pointerEvents: "none",
+                                backgroundColor: "rgb(238 238 238)",
+                              }
                             : null
                         }
                       >
                         <td className={styles.checkbox} style={{ left: "0" }}>
                           {/* //!вывод комментарие  */}
-                          {commentAllData.some(
-                            (item) => item.workloadId === filteredData[index].id
-                          ) && (
-                            <div
-                              key={index}
-                              className={styles.notice}
-                              onClick={(el) => handleClicNotice(el, index)}
-                            >
-                              {
-                                commentAllData.filter(
-                                  (item) =>
-                                    item.workloadId === filteredData[index].id
-                                ).length
-                              }
-                            </div>
+                          {commentAllData.map(
+                            (item) =>
+                              item.workloadId === filteredData[index].id && (
+                                <div
+                                  key={item.id}
+                                  className={styles.notice}
+                                  onClick={(el) => handleClicNotice(el, index)}
+                                  style={
+                                    commentAllData.some(
+                                      (el) => el.workloadId === item.workloadId
+                                    )
+                                      ? {
+                                          transform: "translateY(+18px)",
+                                        }
+                                      : null
+                                  }
+                                >
+                                  {
+                                    commentAllData.filter(
+                                      (item) =>
+                                        item.workloadId ===
+                                        filteredData[index].id
+                                    ).length
+                                  }
+                                  <div
+                                    className={
+                                      commentAllData.some(
+                                        (el) =>
+                                          el.workloadId === item.workloadId
+                                      )
+                                        ? styles.notis_rigth_two
+                                        : styles.notis_rigth_one
+                                    }
+                                  ></div>
+                                </div>
+                              )
                           )}
 
                           {/* //! вывод предложений */}
 
-                          {allOffersData.some(
-                            (item) => item.workloadId === filteredData[index].id
-                          ) && (
-                            <div
-                              key={index}
-                              className={styles.notice}
-                              style={{ backgroundColor: "#FFD600" }}
-                              onClick={(el, item) =>
-                                handleClicOffer(
-                                  el,
-                                  filteredData[index].id,
-                                  index
-                                )
-                              }
-                            >
-                              {
-                                allOffersData.filter(
-                                  (item) =>
-                                    item.workloadId === filteredData[index].id
-                                ).length
-                              }
-                            </div>
+                          {allOffersData.map(
+                            (item) =>
+                              item.workloadId === filteredData[index].id && (
+                                <div
+                                  key={item.id}
+                                  className={styles.notice}
+                                  style={
+                                    commentAllData.some(
+                                      (el) => el.workloadId === item.workloadId
+                                    )
+                                      ? {
+                                          backgroundColor: "#FFD600",
+                                          transform: "translateY(-18px)",
+                                        }
+                                      : {
+                                          backgroundColor: "#FFD600",
+                                        }
+                                  }
+                                  onClick={(el, item) =>
+                                    handleClicOffer(
+                                      el,
+                                      filteredData[index].id,
+                                      index
+                                    )
+                                  }
+                                >
+                                  {
+                                    allOffersData.filter(
+                                      (item) =>
+                                        item.workloadId ===
+                                        filteredData[index].id
+                                    ).length
+                                  }
+                                  <div
+                                    className={
+                                      commentAllData.some(
+                                        (el) =>
+                                          el.workloadId === item.workloadId
+                                      )
+                                        ? styles.notis_rigth_two
+                                        : styles.notis_rigth_one
+                                    }
+                                  ></div>
+                                </div>
+                              )
                           )}
 
                           <input
@@ -566,7 +640,7 @@ function TableDisciplines(props) {
                             name="dataRow"
                             id={`dataRow-${index}`}
                             checked={
-                              individualCheckboxes.includes(
+                              appData.individualCheckboxes.includes(
                                 filteredData[index].id
                               )
                                 ? true
