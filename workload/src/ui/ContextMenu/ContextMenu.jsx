@@ -230,12 +230,7 @@ const ContextMenu = (props) => {
         ...appData.bufferAction,
       ]);
     } else console.log("Нельзя соеденить");
-
-    //! запрос на соединение нагрузок
-    // joinWorkloads(data).then((response) => {
-    //   props.getDataTableAll();
-    // });
-  };
+ 
 
   //! удаление нагрузки
   const handleDeletWorkload = () => {
