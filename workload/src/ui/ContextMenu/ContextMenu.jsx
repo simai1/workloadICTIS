@@ -13,12 +13,15 @@ import { EducatorMenu } from "./EducatorMenu";
 // } from "../../api/services/ApiRequest";
 import DataContext from "../../context";
 import { EducatorLK } from "../../api/services/ApiRequest";
+import { Highlight } from "./Highlight";
 // import { addDataBuffer } from "../../bufferFunction";
 const ContextMenu = (props) => {
   const [menuPosition, setMenuPosition] = useState(props.menuPosition);
   const [showSubMenu, setShowSubMenu] = useState(false);
   const [educatorMenuShow, setEducatorMenuShow] = useState(false);
   const [propose, setPropose] = useState(false);
+  const [Highlightshow, setHighlightshow] = useState(false);
+
 
   const { appData } = React.useContext(DataContext);
   useEffect(() => {
@@ -35,12 +38,14 @@ const ContextMenu = (props) => {
     setShowSubMenu(!showSubMenu);
     setEducatorMenuShow(false);
     setPropose(false);
+    setHighlightshow(false);
   };
 
   //! нажатие на добавить преподавателя
   const addEducator = () => {
     setPropose(false);
     setShowSubMenu(false);
+    setHighlightshow(false);
     setEducatorMenuShow(!educatorMenuShow);
   };
 
@@ -48,13 +53,37 @@ const ContextMenu = (props) => {
   const onClickPropose = () => {
     setEducatorMenuShow(false);
     setShowSubMenu(false);
+    setHighlightshow(false);
     setPropose(!propose);
   };
 
    //! нажатие выделить
-   const ClickVidelit = () => {
-    
+   const ClickHighlightshov = () => {
+    setHighlightshow(!Highlightshow);
+    setEducatorMenuShow(false);
+    setShowSubMenu(false);
+    setPropose(false);
   };
+
+  //!функция замены цвета
+  const SetColor = (colorRows) => {
+    appData.individualCheckboxes.map((id) => {
+      if (props.Highlight.some((item) => item.id === id)) {
+        props.Highlight[props.Highlight.findIndex(el => el.id = id)].color = colorRows
+        props.setHighlight([...props.Highlight])
+      } else {
+        props.setHighlight([...props.Highlight, { id: id, color: colorRows }]);
+      }
+    });
+    console.log(props.Highlight);
+  }
+  
+
+ 
+ 
+ 
+   
+
 
   //! Выбор преподавателя
   const selectedEducator = (id) => {
@@ -365,15 +394,16 @@ const ContextMenu = (props) => {
             Удалить
           </button>
         </div>
-        <div className={styles.blockMenuPop}>
+        <div className={styles.blockMenuPop}  onClick={ClickHighlightshov}>
           <button className={styles.buttonDel}>Выделить</button>
 
-          {showSubMenu && (
+          {Highlightshow && (
             <img src={arrow} alt=">" className={styles.imgOpen} />
           )}
-          {!showSubMenu && (
+          {!Highlightshow && (
             <img src={arrow} alt=">" className={styles.imgClose} />
           )}
+
         </div>
       </div>
       {showSubMenu && (
@@ -390,6 +420,13 @@ const ContextMenu = (props) => {
           selectedEducator={selectedEducator}
         />
       )}
+      {( Highlightshow &&(
+        <Highlight
+          menuPosition={menuPosition}
+          SetColor={SetColor}
+        />
+              )
+        )}
     </div>
   );
 };
