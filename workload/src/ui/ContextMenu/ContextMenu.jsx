@@ -51,6 +51,11 @@ const ContextMenu = (props) => {
     setPropose(!propose);
   };
 
+   //! нажатие выделить
+   const ClickVidelit = () => {
+    
+  };
+
   //! Выбор преподавателя
   const selectedEducator = (id) => {
     props.setShowMenu(false);
@@ -359,6 +364,16 @@ const ContextMenu = (props) => {
           >
             Удалить
           </button>
+        </div>
+        <div className={styles.blockMenuPop}>
+          <button className={styles.buttonDel}>Выделить</button>
+
+          {showSubMenu && (
+            <img src={arrow} alt=">" className={styles.imgOpen} />
+          )}
+          {!showSubMenu && (
+            <img src={arrow} alt=">" className={styles.imgClose} />
+          )}
         </div>
       </div>
       {showSubMenu && (
