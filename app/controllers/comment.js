@@ -2,15 +2,16 @@ import { AppErrorMissing } from '../utils/errors.js';
 import Comment from '../models/comment.js';
 import CommentDto from '../dtos/comment-dto.js';
 import Educator from '../models/educator.js';
+import User from '../models/user.js';
 
 export default {
-    async createComment({ body: { educatorId, workloadId, text } }, res) {
-        if (!educatorId) throw new AppErrorMissing('educatorId');
+    async createComment({ body: { workloadId, text }, user }, res) {
         if (!workloadId) throw new AppErrorMissing('workloadId');
         if (!text) throw new AppErrorMissing('text');
+        const sender = await Educator.findOne({ where: { userId: user } });
 
         const comment = await Comment.create({
-            educatorId,
+            educatorId: sender.id,
             workloadId,
             text,
         });
