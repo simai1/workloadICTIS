@@ -34,36 +34,35 @@ services:
       - DB_HOST=db
     networks:
       - workload-ICTIS-network
-      - workload-ICTIS-frontend
 
-  nginx:
-    container_name: workload-master-nginx
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile
+#  nginx:
+#    container_name: workload-master-nginx
+#    build:
+#      context: ./nginx
+#      dockerfile: Dockerfile
+#    depends_on:
+#      - client
+#    restart: always
+#    ports:
+#      - "80:80"
+#    networks:
+#      - workload-ICTIS-network
+  
+  client:
     depends_on:
       - server
-    restart: always
+    container_name: workload-master-client
+    build:
+      context: ./workload
+      dockerfile: Dockerfile
     ports:
-      - "80:80"
+      - '80:80'
+    restart: always
     networks:
-      - workload-ICTIS-network
-  
-#  client:
-#    depends_on:
-#      - server
-#    container_name: workload-master-client
-#    build:
-#      context: .
-#      dockerfile: ./workload/Dockerfile
-#    ports:
-#      - '3020:3020'
-#    networks:
-#    - workload-ICTIS-frontend
-  
+    - workload-ICTIS-network
+ 
 networks:
   workload-ICTIS-network:
-  workload-ICTIS-frontend:
 
 volumes:
   pgdata:

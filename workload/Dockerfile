@@ -1,7 +1,10 @@
-FROM node:20.9.0
-WORKDIR /workload-client
-COPY package.json .
+FROM node:20.9.0 as build
+WORKDIR /app
+COPY ./package*.json ./
 RUN npm install
 COPY . .
-EXPOSE 4010
-CMD ["npm", "run", "start"]
+RUN npm run build
+
+FROM nginx:1.25
+COPY --from=build /app/build /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
