@@ -129,7 +129,8 @@ table {
       display: flex;
       justify-content: space-between;
       .DataLksHeadSchet {
-        width: 100px;
+        width: auto;
+        padding: 0 10px;
         height: 45px;
         border-radius: 8px;
         font-size: 18px;

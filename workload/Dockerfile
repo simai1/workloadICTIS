@@ -1,7 +1,10 @@
-FROM node:20.9.0
+FROM node:20.9.0 as build
 WORKDIR /app
-COPY package.json .
+COPY ./package*.json ./
 RUN npm install
 COPY . .
-EXPOSE 3000
-CMD ["npm", "run", "start"]
+RUN npm run build
+
+FROM nginx:1.25
+COPY --from=build /app/build /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf

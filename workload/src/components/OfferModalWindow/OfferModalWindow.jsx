@@ -1,13 +1,39 @@
 //? модальное окно предложений
 import { AcceptOffer } from "../../api/services/ApiRequest";
+import DataContext from "../../context";
 import styles from "./OfferModalWindow.module.scss";
-import React from "react";
+import React, { useState } from "react";
 function OfferModalWindow(props) {
+  console.log(props.allOffersDataItem);
+  const [itemIndex, setItemIndex] = useState(0); // изменять при листании
+
+  const { appData } = React.useContext(DataContext);
+
   const onClickAcceptOffer = () => {
     console.log("Принято", props.workloadId);
-    AcceptOffer(props.workloadId).then(() => {
-      props.getDataTableAll();
-    });
+    //! буфер
+    const data = { id: props.workloadId, status: "принято" };
+    appData.setBufferAction([
+      { request: "AcceptOffer", data: data },
+      ...appData.bufferAction,
+    ]);
+    // AcceptOffer(props.workloadId, "принято").then(() => {
+    //   props.getDataTableAll();
+    // });
+    props.setModalWindowOffer({ id: props.modalWindowOffer.id, flag: false });
+  };
+  const onClickAcceptOfferRejected = () => {
+    console.log("Отклонено", props.workloadId);
+    //! буфер
+    const data = { id: props.workloadId, status: "отклонено" };
+    appData.setBufferAction([
+      { request: "AcceptOffer", data: data },
+      ...appData.bufferAction,
+    ]);
+    // AcceptOffer(props.workloadId, "отклонено").then(() => {
+    //   props.getDataTableAll();
+    // });
+    props.setModalWindowOffer({ id: props.modalWindowOffer.id, flag: false });
   };
   return (
     <div
@@ -19,13 +45,21 @@ function OfferModalWindow(props) {
       }}
     >
       <div className={styles.container}>
-        <span className={styles.name_top}>Иванов Иван Иванович</span>
+        <span className={styles.name_top}>
+          {props.allOffersDataItem[itemIndex].Educator.name}
+        </span>
         <span className={styles.inner}>Предложил</span>
-        <span className={styles.name_bottom}>Петрова Петра Петряева</span>
+        <span className={styles.name_bottom}>
+          {props.allOffersDataItem[itemIndex].educatorId}
+        </span>
         <div className={styles.button_box}>
-          <button className={styles.button_left}>Отклонить</button>
+          <button
+            className={styles.button_left}
+            onClick={onClickAcceptOfferRejected}
+          >
+            Отклонить
+          </button>
           <button className={styles.button_rigth} onClick={onClickAcceptOffer}>
-            {" "}
             Принять
           </button>
         </div>

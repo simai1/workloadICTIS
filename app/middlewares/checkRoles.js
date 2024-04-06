@@ -1,12 +1,12 @@
-const Roles = require('../config/roles.js');
+import roles from '../config/roles.js';
+import User from '../models/user.js';
+// import { asyncRoute } from '../utils/errors.js';
 
-const checkRole = (allowedRoles) => {
-    return (req, res, next) => {
-        const userRoles = req.user && req.user.roles;
+const checkRole = allowedRoles => {
+    return async (req, res, next) => {
+        const user = await User.findByPk(req.user);
 
-        console.log('User Roles:', userRoles); // Добавим эту строку для отладки
-
-        if (userRoles && (allowedRoles.some(role => userRoles.includes(role)) || userRoles.includes(Roles.ADMIN))) {
+        if (user.role && (allowedRoles.some(role => user.role === role) || user.role === roles.DIRECTORATE)) {
             next();
         } else {
             res.status(403).json({ error: 'Access forbidden' });
@@ -14,4 +14,4 @@ const checkRole = (allowedRoles) => {
     };
 };
 
-module.exports = checkRole;
+export default checkRole;

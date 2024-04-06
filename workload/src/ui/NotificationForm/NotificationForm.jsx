@@ -18,24 +18,22 @@ export function NotificationForm(props) {
   const [isComment, setIsComment] = useState(false);
   const [textarea, setTextarea] = useState("");
   const [positionMenu, setPositionMenu] = useState(props.position);
+  const { appData } = React.useContext(DataContext);
 
   //! кнопка отправить
   const onCheckmarkClick = () => {
     if (textarea.trim() === "") {
       setError(true);
     } else {
-      Educator().then((item) => {
-        //удалить, заменить id пользователя
-        const data = {
-          educatorId: item[1].id,
-          workloadId: props.workloadId,
-          text: textarea,
-        };
-        console.log(item);
-        createComment(data).then(() =>
-          props.getDataAllComment(props.setCommentAllData)
-        );
-      });
+      //удалить, заменить id пользователя
+      const data = {
+        educatorId: appData.myProfile.id,
+        workloadId: props.workloadId,
+        text: textarea,
+      };
+      createComment(data).then(() =>
+        props.getDataAllComment(props.setCommentAllData)
+      );
       setIsComment(false);
 
       // setPositionMenu({ y: props.position.y, x: props.position.x });
@@ -73,10 +71,15 @@ export function NotificationForm(props) {
   //! нажатие галочки удаление комментариев
   const onCheckmarkClickDelet = (data) => {
     console.log(props.workloadId);
+    //! буфер
+    appData.setBufferAction([
+      { request: "deleteComment", data: props.workloadId },
+      ...appData.bufferAction,
+    ]);
     //удаление коммента по id
-    deleteComment(props.workloadId).then(() =>
-      props.getDataAllComment(props.setCommentAllData)
-    );
+    // deleteComment(props.workloadId).then(() =>
+    //   props.getDataAllComment(props.setCommentAllData)
+    // );
   };
 
   return (
@@ -84,7 +87,7 @@ export function NotificationForm(props) {
       <div
         className={styles.hovered_notice}
         style={{
-          top: positionMenu.y + 65,
+          top: positionMenu.y,
           left: positionMenu.x + 70,
         }}
       >

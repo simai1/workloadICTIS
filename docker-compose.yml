@@ -2,11 +2,9 @@ version: '3'
 services:
   db:
     container_name:
-      workload-ICTIS-db
-    image: postgres:15-alpine
+      workload-master-db
+    image: postgres:15
     restart: always
-    env_file:
-      - ./app/.env
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
@@ -20,16 +18,14 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   server:
-    container_name: workload-ICTIS-server
+    container_name: workload-master-server
     build:
-      context: ./app/
-      dockerfile: ./Dockerfile
+      context: ./app
+      dockerfile: Dockerfile
     depends_on:
       - db
     ports:
       - '3010:3010'
-    env_file:
-      - ./app/.env
     environment:
       - DB_NAME=${DB_NAME}
       - DB_USERNAME=${DB_USER}
@@ -38,23 +34,35 @@ services:
       - DB_HOST=db
     networks:
       - workload-ICTIS-network
-      - workload-ICTIS-frontend
+
+#  nginx:
+#    container_name: workload-master-nginx
+#    build:
+#      context: ./nginx
+#      dockerfile: Dockerfile
+#    depends_on:
+#      - client
+#    restart: always
+#    ports:
+#      - "80:80"
+#    networks:
+#      - workload-ICTIS-network
   
   client:
     depends_on:
       - server
-    container_name: workload-ICTIS-client
+    container_name: workload-master-client
     build:
-      context: ./workload/
-      dockerfile: ./Dockerfile
+      context: ./workload
+      dockerfile: Dockerfile
     ports:
-      - '3000:3000'
+      - '80:80'
+    restart: always
     networks:
-    - workload-ICTIS-frontend
-  
+    - workload-ICTIS-network
+ 
 networks:
   workload-ICTIS-network:
-  workload-ICTIS-frontend:
 
 volumes:
   pgdata:

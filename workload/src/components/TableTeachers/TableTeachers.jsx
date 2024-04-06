@@ -4,6 +4,7 @@ import EditInput from "../EditInput/EditInput";
 import { useDispatch, useSelector } from "react-redux";
 import DataContext from "../../context";
 import { Educator } from "../../api/services/ApiRequest";
+import { getDataEducator } from "../../api/services/AssignApiData";
 
 function TableTeachers(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]);
@@ -12,49 +13,21 @@ function TableTeachers(props) {
   // const [clickedName, setClickedName] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [tableData, setTableData] = useState([]); // соберем из аднных апи общие данные
-
   const { appData } = React.useContext(DataContext);
-  // заносим данные о преподавателях в состояние
+
+  useEffect(() => {
+    props.changeInput();
+  }, []);
+
+  //! заносим данные о преподавателях в состояние
   React.useEffect(() => {
-    Educator().then((data) => {
-      console.log("teatcher ", data);
-      appData.setEducator(data); //данные с апи о преподавателях
+    getDataEducator().then((data) => {
+      appData.setEducator(data);
       setFilteredData(data);
       setUpdatedData(data);
     });
-    // Positions().then((data) => {
-    //   appData.setPositions(data); //данные с апи должность
-    // });
-    // TypeOfEmployments().then((data) => {
-    //   appData.setTypeOfEmployments(data); //данные с апи Вид занятости
-    // });
   }, []);
-  // console.log(appData);
 
-  // const tableData = [
-  //   {
-  //     id: 1,
-  //     name: "Данильченко Владислав Иванович",
-  //     post: "Старший преподаватель",
-  //     bet: "0,75",
-  //     hours: "600",
-  //     hours_period_1: "240",
-  //     hours_period_2: "260",
-  //     hours_without_a_period: "100",
-  //     department: "ПиБЖ",
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Капылов Никита Максимович",
-  //     post: "Старший преподаватель",
-  //     bet: "0,75",
-  //     hours: "600",
-  //     hours_period_1: "240",
-  //     hours_period_2: "260",
-  //     hours_without_a_period: "100",
-  //     department: "ПиБЖ",
-  //   },
-  // ];
   const tableHeaders = [
     { key: "id", label: "№" },
     { key: "name", label: "Преподователь" },
@@ -67,11 +40,9 @@ function TableTeachers(props) {
     { key: "minHours", label: "Минимум часов" },
   ];
 
-  const handleNameClick = (name, index) => {
-    // setClickedName(name);
-    let postClickTicher = appData.educator[index].department;
-    let betClickTicher = appData.educator[index].rate;
-    props.onNameChange(name, postClickTicher, betClickTicher);
+  const handleNameClick = (index, id) => {
+    props.setEducatorIdforLk(id);
+    console.log("ideducator", id);
     props.setEducatorData(appData.educator[index]);
   };
 
@@ -143,8 +114,8 @@ function TableTeachers(props) {
         />
         <img src="./img/search.svg"></img>
       </div> */}
-
-      {/* <div className={styles.EditInput}>
+      {/* 
+      <div className={styles.EditInput}>
         <EditInput tableHeaders={tableHeaders} />
       </div> */}
 
@@ -165,7 +136,7 @@ function TableTeachers(props) {
                     return (
                       <td
                         key={key}
-                        onClick={() => handleNameClick(row.name, index)}
+                        onClick={() => handleNameClick(index, row.id)}
                         className={styles.tdName}
                       >
                         {row[key]}

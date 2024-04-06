@@ -67,12 +67,24 @@ export default {
         const newWorkloads = [];
 
         for (const workload of existingWorkloads) {
+            const studentsCount = workload.numberOfStudents;
+            const studentsPerGroup = Math.floor(studentsCount / n);
+            const remainder = studentsCount % n;
             // Создаем и сохраняем новые нагрузки в базу данных
             for (let i = 0; i < n; i++) {
                 const copyWorkload = { ...workload.get() };
                 copyWorkload.isSplit = true;
                 copyWorkload.originalId = workload.id;
                 delete copyWorkload.id;
+                // Распределение студентов между группами
+                if (i < remainder) {
+                    // Если индекс группы меньше остатка, добавляем по одному студенту
+                    copyWorkload.numberOfStudents = studentsPerGroup + 1;
+                } else {
+                    // В остальных случаях добавляем студентов равномерно
+                    copyWorkload.numberOfStudents = studentsPerGroup;
+                }
+
                 const newWorkload = await Workload.create(copyWorkload);
                 newWorkloads.push(newWorkload);
             }
@@ -166,11 +178,9 @@ export default {
 
         // Совмещаем часы
         let totalStudents = 0;
-        let totalHours = 0;
 
         workloads.forEach(workload => {
             totalStudents += workload.numberOfStudents;
-            totalHours += workload.hours;
         });
 
         // Создаем совмещенную нагрузку
@@ -189,7 +199,7 @@ export default {
             specialty: firstWorkload.get('specialty'),
             core: firstWorkload.get('core'),
             numberOfStudents: totalStudents,
-            hours: totalHours,
+            hours: firstWorkload.get('hours'),
             audienceHours: firstWorkload.get('audienceHours'),
             ratingControlHours: firstWorkload.get('ratingControlHours'),
             comment: firstWorkload.get('comment'),
@@ -250,17 +260,13 @@ export default {
         res.status(200).json('Successfully deleted');
     },
 
-    async getDepartmentWorkload({ body: { department } }, res) {
-        if (!department) throw new AppErrorMissing('department');
-        if (typeof department !== 'number') department = parseInt(department);
-        if (!Object.values(departments).includes(department)) throw new AppErrorInvalid(department);
-        // Если department = 6, то нужно выввести все нагрузки, у которых department = 6
-        let departmentFilter = {};
-        if (department >= 1 && department <= 11) {
-            departmentFilter = { department };
-        }
+    async getDepartmentWorkload(req, res) {
+        const userId = req.user;
+        const educator = await Educator.findOne({ where: { userId } });
+
+        const department = educator.department;
         const workloads = await Workload.findAll({
-            where: departmentFilter,
+            where: { department },
             include: { model: Educator },
         });
 
