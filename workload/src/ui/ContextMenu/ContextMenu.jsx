@@ -125,33 +125,47 @@ const ContextMenu = (props) => {
       n: count,
     };
     console.log("updatedData", props.updatedData);
-    const newUpdatedData = [...props.updatedData]; // копирование исходного массива
 
-    appData.individualCheckboxes.forEach((targetId, index) => {
-      const elementIndex = newUpdatedData.findIndex(
-        (object) => object.id === targetId
-      ); // поиск индекса элемента по id
-      const targetElement = newUpdatedData.find(
-        (object) => object.id === targetId
-      ); // найденный элемент
-
-      targetElement.id = "000000000000";
-      targetElement.numberOfStudents = targetElement.numberOfStudents / 2;
-
-      console.log("targetElement", targetElement);
+    const prev = props.updatedData.filter((item) =>
+      appData.individualCheckboxes.some((el) => el === item.id)
+    );
+    // Создаем новый массив для измененных данных
+    let updatedData = [...props.updatedData];
+    for (let i = 0; i < appData.individualCheckboxes.length; i++) {
+      const elementIndex = updatedData.findIndex(
+        (object) => object.id === appData.individualCheckboxes[i]
+      );
+      // Модифицируем элементы в новом массиве
       if (elementIndex !== -1) {
-        // если элемент с заданным id найден
-        newUpdatedData.splice(elementIndex + index + 1, 0, {
-          ...targetElement,
-        }); // вставка нового элемента после выбранного элемента
+        // берем нагрузку и после нее вставляем count-1 нагрузок
+        for (let j = 1; j < count; j++) {
+          updatedData.splice(elementIndex + j, 0, updatedData[elementIndex]);
+        }
+        updatedData = updatedData.map((el, index) => {
+          if (el.id === appData.individualCheckboxes[i]) {
+            const item = { ...el };
+            if (item.numberOfStudents % 1 === 0) {
+              item.numberOfStudents = Math.floor(
+                el.numberOfStudents / count + index
+              );
+            } else {
+              item.numberOfStudentss = item.numberOfStudents / count;
+            }
+            item.educator = null;
+            item.id = `a${el.id}${index}a`; // Уникальный id
+            return item;
+          }
+          return el;
+        });
       }
-    });
-    console.log("newUpdatedData", newUpdatedData);
-    props.setUpdatedData(newUpdatedData);
+    }
+    console.log("updatedData", updatedData);
+    // Обновляем данные во внешнем компоненте
+    props.setUpdatedData(updatedData);
 
     //! буфер
     appData.setBufferAction([
-      { request: "splitWorkload", data: data },
+      { request: "splitWorkload", data: data, prevState: prev },
       ...appData.bufferAction,
     ]);
 

@@ -1,7 +1,7 @@
 //? Здесь все запросы к апи, присвоение этих данных состояниями в AssingApiData
 
 import axios from "axios";
-const server = "https://workload.sfedu.ru";
+const server = "https://workload.sfedu.ru/api";
 
 //! получаем преподов
 export const Educator = async () => {

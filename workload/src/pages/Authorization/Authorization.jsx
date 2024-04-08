@@ -9,7 +9,7 @@ function Authorization() {
         <h2>Авторизация</h2>
         <a
           className={styles.button}
-          href="http://localhost:3010/auth/loginSfedu"
+          href="https://workload.sfedu.ru/api/loginSfedu"
         >
           Войти через сервис Microsoft
         </a>
