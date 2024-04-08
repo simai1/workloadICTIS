@@ -72,7 +72,7 @@ app.use('/notification', notificationRoute);
 app.use('/educator', eduRoute);
 app.use('/parser', parserRoute);
 app.use('/workload', workloadRoute);
-//app.use('/auth', authRoute);
+app.use('/auth', authRoute);
 app.use('/offers', offerRoute);
 app.use('/role', roleRoute);
 

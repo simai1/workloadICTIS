@@ -68,7 +68,7 @@ function App() {
         appData,
       }}
     >
-      <BrowserRouter>
+      <BrowserRouter basename="/client">
         <div className="Container">
           <Routes>
             <Route path="/" element={<Authorization />}></Route>

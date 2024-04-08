@@ -1,7 +1,8 @@
 import socketIO from "socket.io-client";
 
 function socketConnect() {
-  const socketUrl = "https://workload.sfedu.ru/api";
+  //const socketUrl = "https://workload.sfedu.ru:80";
+  const socketUrl = "https://localhost:3010";
   const socket = socketIO.connect(socketUrl);
   
   return new Promise((resolve) => {
