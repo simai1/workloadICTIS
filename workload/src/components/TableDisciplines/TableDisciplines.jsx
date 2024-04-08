@@ -557,7 +557,7 @@ function TableDisciplines(props) {
                                   className={styles.notice}
                                   onClick={(el) => handleClicNotice(el, index)}
                                   style={
-                                    commentAllData.some(
+                                    allOffersData.some(
                                       (el) => el.workloadId === item.workloadId
                                     )
                                       ? {
@@ -575,7 +575,7 @@ function TableDisciplines(props) {
                                   }
                                   <div
                                     className={
-                                      commentAllData.some(
+                                      allOffersData.some(
                                         (el) =>
                                           el.workloadId === item.workloadId
                                       )
