@@ -39,7 +39,9 @@ function TableDisciplines(props) {
   const [filteredData, setFilteredData] = useState([]);
   const [commentAllData, setCommentAllData] = useState([]); // все комментарии
   const [allOffersData, setAllOffersData] = useState([]);
+  
   const [Highlight, setHighlight] = useState([]);
+  
   const [modalWindowOffer, setModalWindowOffer] = useState({
     id: null,
     flag: false,

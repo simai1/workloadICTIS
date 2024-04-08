@@ -66,17 +66,22 @@ const ContextMenu = (props) => {
   };
 
   //!функция замены цвета
+  
   const SetColor = (colorRows) => {
-    appData.individualCheckboxes.map((id) => {
-      if (props.Highlight.some((item) => item.id === id)) {
-        props.Highlight[props.Highlight.findIndex(el => el.id = id)].color = colorRows
-        props.setHighlight([...props.Highlight])
+    const updatedHighlights = [...props.Highlight]; // Создаем копию текущего состояния highlights
+    appData.individualCheckboxes.forEach((id) => {
+      const existingIndex = updatedHighlights.findIndex(el => el.id === id);
+      if (existingIndex !== -1) {
+        updatedHighlights[existingIndex] = { ...updatedHighlights[existingIndex], color: colorRows };
       } else {
-        props.setHighlight([...props.Highlight, { id: id, color: colorRows }]);
+        updatedHighlights.push({ id: id, color: colorRows }); // Добавляем новый элемент в массив
       }
     });
+    props.setHighlight(updatedHighlights); // Обновляем состояние highlights
     console.log(props.Highlight);
   }
+  
+  
   
 
  
@@ -408,7 +413,8 @@ const ContextMenu = (props) => {
             Удалить
           </button>
         </div>
-        <div className={styles.blockMenuPop}  onClick={ClickHighlightshov}>
+        {/* выделение меню */}
+        {/* <div className={styles.blockMenuPop}  onClick={ClickHighlightshov}>
           <button className={styles.buttonDel}>Выделить</button>
 
           {Highlightshow && (
@@ -418,7 +424,7 @@ const ContextMenu = (props) => {
             <img src={arrow} alt=">" className={styles.imgClose} />
           )}
 
-        </div>
+        </div> */}
       </div>
       {showSubMenu && (
         <SubMenu
@@ -434,13 +440,14 @@ const ContextMenu = (props) => {
           selectedEducator={selectedEducator}
         />
       )}
-      {( Highlightshow &&(
+      {/* выделение меню */}
+      {/* {( Highlightshow &&(
         <Highlight
           menuPosition={menuPosition}
           SetColor={SetColor}
         />
               )
-        )}
+        )} */}
     </div>
   );
 };
