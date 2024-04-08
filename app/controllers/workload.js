@@ -76,6 +76,8 @@ export default {
                 copyWorkload.isSplit = true;
                 copyWorkload.originalId = workload.id;
                 delete copyWorkload.id;
+                delete copyWorkload.educatorId;
+                delete copyWorkload.EducatorId;
                 // Распределение студентов между группами
                 if (i < remainder) {
                     // Если индекс группы меньше остатка, добавляем по одному студенту
