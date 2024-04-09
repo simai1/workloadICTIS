@@ -21,6 +21,7 @@ import eduRoute from './routes/educator.js';
 import workloadRoute from './routes/workload.js';
 import notificationRoute from './routes/notification.js';
 import offerRoute from './routes/offers.js';
+import colorRoute from './routes/color.js';
 // FIX ME
 import roleRoute from './routes/role.js';
 
@@ -75,6 +76,7 @@ app.use('/workload', workloadRoute);
 app.use('/auth', authRoute);
 app.use('/offers', offerRoute);
 app.use('/role', roleRoute);
+app.use('/color', colorRoute);
 
 io.on('connection', socket => {
     console.log(`socket ${socket.id} connected`);

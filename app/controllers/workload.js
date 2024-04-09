@@ -275,4 +275,5 @@ export default {
         const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
         res.json(workloadsDto);
     },
+    async changeColorWorkload(req, res) {},
 };

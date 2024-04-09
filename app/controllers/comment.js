@@ -2,7 +2,6 @@ import { AppErrorMissing } from '../utils/errors.js';
 import Comment from '../models/comment.js';
 import CommentDto from '../dtos/comment-dto.js';
 import Educator from '../models/educator.js';
-import User from '../models/user.js';
 
 export default {
     async createComment({ body: { workloadId, text }, user }, res) {
