@@ -18,13 +18,14 @@ passport.deserializeUser((id, done) => {
 passport.use(
     new AzureAdOAuth2Strategy(
         {
-            callbackURL: 'http://localhost:3000/auth/login',
+            callbackURL: 'http://localhost/auth/login',
+            callbackURL: 'https://workload.sfedu.ru/auth/login',
             clientID: process.env.SFEDU_ID,
             clientSecret: process.env.SFEDU_SECRET,
         },
         async function (accessToken, refreshToken, params, profile, done) {
             const waadProfile = jwt.decode(params.id_token, '', true);
-            // console.log(profile, jwt.decode(params.id_token, '', true));
+            console.log(profile, jwt.decode(params.id_token, '', true));
             User.findOne({ where: { login: waadProfile.unique_name } }).then(currentUser => {
                 if (currentUser) {
                     done(null, currentUser);

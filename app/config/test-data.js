@@ -144,4 +144,32 @@ export const educators = [
         typeOfEmployment: 1,
         rate: 0.5,
     },
+    {
+        name: 'Суханов Александр Сергеевич',
+        department: 6,
+        position: 5,
+        typeOfEmployment: 1,
+        rate: 0.5,
+    },
+    {
+        name: 'Бучнев Максим Тимофеевич',
+        department: 6,
+        position: 5,
+        typeOfEmployment: 1,
+        rate: 0.5,
+    },
+    {
+        name: 'Тоноян Артур Арменович',
+        department: 6,
+        position: 5,
+        typeOfEmployment: 1,
+        rate: 0.5,
+    },
+    {
+        name: 'Капылов Никита Максимович',
+        department: 6,
+        position: 5,
+        typeOfEmployment: 1,
+        rate: 0.5,
+    },
 ];
