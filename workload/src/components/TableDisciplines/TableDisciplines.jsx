@@ -49,7 +49,7 @@ function TableDisciplines(props) {
 
   //! данные вытянутые из контекста
   const { appData } = React.useContext(DataContext);
-
+  console.log("blockedCheckboxes", appData.blockedCheckboxes);
   const getDataTableAll = () => {
     getDataTable().then((data) => {
       appData.setWorkload(data);
@@ -191,9 +191,16 @@ function TableDisciplines(props) {
 
   //! чекбоксы
   const handleGlobalCheckboxChange = () => {
+    // выделяем нагрузку если ее нет в блокированных (при нажатии на "выделить все")
     setIsCheckedGlobal(!isCheckedGlobal);
     !isCheckedGlobal
-      ? appData.setIndividualCheckboxes(filteredData.map((el) => el.id))
+      ? appData.setIndividualCheckboxes(
+          filteredData.map((el) => {
+            if (!appData.blockedCheckboxes.includes(el.id)) {
+              return el.id;
+            }
+          })
+        )
       : appData.setIndividualCheckboxes([]);
   };
 

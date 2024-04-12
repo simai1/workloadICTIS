@@ -171,6 +171,11 @@ const ContextMenu = (props) => {
     // Создаем новый массив для измененных данных
     let updatedData = [...props.updatedData];
     for (let i = 0; i < appData.individualCheckboxes.length; i++) {
+      // // добавляем нугрузки в заблокированные (пока не сохранить)
+      // appData.setBlockedCheckboxes((prevent) => [
+      //   ...prevent,
+      //   appData.individualCheckboxes[i],
+      // ]);
       const elementIndex = updatedData.findIndex(
         (object) => object.id === appData.individualCheckboxes[i]
       );
@@ -183,15 +188,24 @@ const ContextMenu = (props) => {
         updatedData = updatedData.map((el, index) => {
           if (el.id === appData.individualCheckboxes[i]) {
             const item = { ...el };
-            if (item.numberOfStudents % 1 === 0) {
-              item.numberOfStudents = Math.floor(
-                el.numberOfStudents / count + index
-              );
+            const studentsPerGroup = Math.floor(item.numberOfStudents / count);
+            const remainder = item.numberOfStudents % count;
+            console.log(studentsPerGroup, remainder);
+            if (index < remainder) {
+              // Если индекс группы меньше остатка, добавляем по одному студенту
+              item.numberOfStudents = studentsPerGroup + 1;
             } else {
-              item.numberOfStudentss = item.numberOfStudents / count;
+              // В остальных случаях добавляем студентов равномерно
+              item.numberOfStudents = studentsPerGroup;
             }
+
             item.educator = null;
             item.id = `a${el.id}${index}a`; // Уникальный id
+            // добавляем нугрузки в заблокированные (пока не сохранить)
+            appData.setBlockedCheckboxes((prevent) => [
+              ...prevent,
+              `a${el.id}${index}a`,
+            ]);
             return item;
           }
           return el;
