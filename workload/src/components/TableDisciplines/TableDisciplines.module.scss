@@ -71,6 +71,7 @@
     flex-direction: row;
     overflow-x: scroll;
     border-radius: 8px;
+    width: 100%;
     // border-left: 1px solid var(--gray-color);
     // border-right: 1px solid var(--gray-color);
     // border-top: 1px solid var(--gray-color);
@@ -268,10 +269,25 @@
       transform: translateY(-4px);
       cursor: pointer;
     }
-    .notice::after {
-      content: "";
+    // .notice::after {
+    //   content: "";
+    //   width: 3px;
+    //   height: 53px;
+    //   background-color: inherit;
+    //   position: absolute;
+    //   right: -10px;
+    // }
+
+    .notis_rigth_one {
       width: 3px;
       height: 53px;
+      background-color: inherit;
+      position: absolute;
+      right: -10px;
+    }
+    .notis_rigth_two {
+      width: 3px;
+      height: 36px;
       background-color: inherit;
       position: absolute;
       right: -10px;

@@ -55,22 +55,22 @@ const ContextMenu = (props) => {
   const selectedEducator = (id) => {
     props.setShowMenu(false);
     const data = {
-      workloadId: props.individualCheckboxes[0],
+      workloadId: appData.individualCheckboxes[0],
       educatorId: id,
     };
     if (educatorMenuShow) {
       // получаем преподавателей и изменяем данные в таблице предваритеольно до сохранения
       EducatorLK(id).then((dataReq) => {
         let prevState = null;
-        const newFilteredData = props.updatedData.map((object) => {
-          if (object.id === props.individualCheckboxes[0]) {
+        const newUpdatedData = props.updatedData.map((object) => {
+          if (object.id === appData.individualCheckboxes[0]) {
             prevState = object.educator;
             return { ...object, educator: dataReq.name };
           }
           return object;
         });
-        // newFilteredData.map((item) => console.log("name", item.educator));
-        props.setUpdatedData(newFilteredData);
+        // newUpdatedData.map((item) => console.log("name", item.educator));
+        props.setUpdatedData(newUpdatedData);
         //! буфер
         appData.setBufferAction([
           { request: "addEducatorWorkload", data: data, prevState: prevState },
@@ -91,7 +91,7 @@ const ContextMenu = (props) => {
 
         const offer = {
           Educator: appData.myProfile,
-          workloadId: props.individualCheckboxes[0],
+          workloadId: appData.individualCheckboxes[0],
           educatorId: Educator.id,
         };
         props.setAllOffersData([...props.allOffersData, offer]);
@@ -103,7 +103,7 @@ const ContextMenu = (props) => {
           {
             request: "createOffer",
             data: {
-              workloadId: props.individualCheckboxes[0],
+              workloadId: appData.individualCheckboxes[0],
               educatorId: appData.myProfile.id,
             },
           },
@@ -119,69 +119,154 @@ const ContextMenu = (props) => {
 
   //! Деление нагрузки на count
   const handleSplitWorkload = (count) => {
-    console.log("Разделить на ", count, props.individualCheckboxes);
+    console.log("Разделить на ", count, appData.individualCheckboxes);
     const data = {
-      ids: props.individualCheckboxes,
+      ids: appData.individualCheckboxes,
       n: count,
     };
-    console.log("filteredData", props.filteredData);
-    const newFilteredData = [...props.filteredData]; // копирование исходного массива
+    console.log("updatedData", props.updatedData);
 
-    props.individualCheckboxes.forEach((targetId, index) => {
-      const elementIndex = newFilteredData.findIndex(
-        (object) => object.id === targetId
-      ); // поиск индекса элемента по id
-      const targetElement = newFilteredData.find(
-        (object) => object.id === targetId
-      ); // найденный элемент
-
+    const prev = props.updatedData.filter((item) =>
+      appData.individualCheckboxes.some((el) => el === item.id)
+    );
+    // Создаем новый массив для измененных данных
+    let updatedData = [...props.updatedData];
+    for (let i = 0; i < appData.individualCheckboxes.length; i++) {
+      // // добавляем нугрузки в заблокированные (пока не сохранить)
+      // appData.setBlockedCheckboxes((prevent) => [
+      //   ...prevent,
+      //   appData.individualCheckboxes[i],
+      // ]);
+      const elementIndex = updatedData.findIndex(
+        (object) => object.id === appData.individualCheckboxes[i]
+      );
+      // Модифицируем элементы в новом массиве
       if (elementIndex !== -1) {
-        // если элемент с заданным id найден
-        newFilteredData.splice(elementIndex + index + 1, 0, {
-          ...targetElement,
-        }); // вставка нового элемента после выбранного элемента
+        // берем нагрузку и после нее вставляем count-1 нагрузок
+        for (let j = 1; j < count; j++) {
+          updatedData.splice(elementIndex + j, 0, updatedData[elementIndex]);
+        }
+        updatedData = updatedData.map((el, index) => {
+          if (el.id === appData.individualCheckboxes[i]) {
+            const item = { ...el };
+            const studentsPerGroup = Math.floor(item.numberOfStudents / count);
+            const remainder = item.numberOfStudents % count;
+            console.log(studentsPerGroup, remainder);
+            if (index < remainder) {
+              // Если индекс группы меньше остатка, добавляем по одному студенту
+              item.numberOfStudents = studentsPerGroup + 1;
+            } else {
+              // В остальных случаях добавляем студентов равномерно
+              item.numberOfStudents = studentsPerGroup;
+            }
+
+            item.educator = null;
+            item.id = `a${el.id}${index}a`; // Уникальный id
+            // добавляем нугрузки в заблокированные (пока не сохранить)
+            appData.setBlockedCheckboxes((prevent) => [
+              ...prevent,
+              `a${el.id}${index}a`,
+            ]);
+            return item;
+          }
+          return el;
+        });
       }
-    });
-    console.log("newFilteredData", newFilteredData);
-    props.setFilteredData(newFilteredData);
+    }
+    console.log("updatedData", updatedData);
+    // Обновляем данные во внешнем компоненте
+    props.setUpdatedData(updatedData);
+
     //! буфер
     appData.setBufferAction([
-      { request: "splitWorkload", data: data },
+      { request: "splitWorkload", data: data, prevState: prev },
       ...appData.bufferAction,
     ]);
+
     //! запрос на деление нагрузки
     // splitWorkload(data).then(() => {
     //   props.getDataTableAll();
     // });
   };
 
-  //! соеденить 2 нагрузки
+  //! соединение нагрузок
   const handleJoinWorkloads = (count) => {
-    console.log("соеденить ", count, props.individualCheckboxes);
+    console.log("соеденить ", count, appData.individualCheckboxes);
     const data = {
-      ids: props.individualCheckboxes,
+      ids: appData.individualCheckboxes,
     };
 
-    //! буфер
-    appData.setBufferAction([
-      { request: "joinWorkloads", data: data },
-      ...appData.bufferAction,
-    ]);
+    // берем все обьеденяемые элементы и записываем в предыдущее сотсояние
+    const prevState = props.updatedData.filter((item) => {
+      return Object.values(appData.individualCheckboxes).includes(item.id);
+    });
 
-    //! запрос на соединение нагрузок
-    // joinWorkloads(data).then((response) => {
-    //   props.getDataTableAll();
-    // });
+    // проверим совпадение необходимых параметов для обьединения
+    if (
+      prevState.every((item) => item.workload === prevState[0].workload) &&
+      prevState.every((item) => item.discipline === prevState[0].discipline) &&
+      prevState.every((item) => item.hours === prevState[0].hours)
+    ) {
+      // подсчет общего колличества студентов
+      const sumOfStudents = prevState.reduce(
+        (total, el) => total + el.numberOfStudents,
+        0
+      );
+      // складываем уникальные группы
+      const groups = prevState.reduce((total, el) => {
+        if (!total.includes(el.groups)) {
+          return total + " " + el.groups;
+        }
+        return total;
+      }, "");
+      const individualCB = Object.values(appData.individualCheckboxes).splice(
+        1
+      );
+      // удаляем все обьеденяемые нагрузки кроме первой
+      const upData = props.updatedData.filter((item) => {
+        return !individualCB.includes(item.id);
+      });
+
+      // изменим параметры нагрузки
+      const index = upData.findIndex(
+        (item) => item.id === appData.individualCheckboxes[0]
+      );
+      appData.setBlockedCheckboxes((prevent) => [
+        ...prevent,
+        appData.individualCheckboxes[0],
+      ]);
+
+      if (index !== -1) {
+        const updatedObject = {
+          ...upData[index],
+          groups: groups,
+          numberOfStudents: sumOfStudents,
+        };
+        // Создадим новый массив с обновленным объектом
+        const newUpdatedData = [
+          ...upData.slice(0, index),
+          updatedObject,
+          ...upData.slice(index + 1),
+        ];
+        props.setUpdatedData(newUpdatedData);
+        appData.setIndividualCheckboxes([]);
+      }
+
+      //! буфер
+      appData.setBufferAction([
+        { request: "joinWorkloads", data: data, prevState: prevState },
+        ...appData.bufferAction,
+      ]);
+    } else props.setIsPopUpMenu(true);
   };
-
   //! удаление нагрузки
   const handleDeletWorkload = () => {
-    console.log("удалить ", props.individualCheckboxes);
-    const data = { ids: props.individualCheckboxes };
-    const newFilteredData = props.filteredData.filter(
-      (item) => !props.individualCheckboxes.includes(item.id)
+    console.log("удалить ", appData.individualCheckboxes);
+    const data = { ids: appData.individualCheckboxes };
+    const newUpdatedData = appData.updatedData.filter(
+      (item) => !appData.individualCheckboxes.includes(item.id)
     );
-    props.setFilteredData(newFilteredData);
+    props.setUpdatedData(newUpdatedData);
     //! буфер
     appData.setBufferAction([
       { request: "deleteWorkload", data: data },
@@ -195,22 +280,23 @@ const ContextMenu = (props) => {
 
   //! удалить преподавателя у нагрузки
   const removeEducator = () => {
-    console.log(props.individualCheckboxes);
+    console.log(appData.individualCheckboxes);
     const data = {
-      workloadId: props.individualCheckboxes[0],
+      workloadId: appData.individualCheckboxes[0],
     };
-    const newFilteredData = props.filteredData.map((object) => {
-      if (object.id === props.individualCheckboxes[0]) {
+    let prevState = null;
+    const newUpdatedData = props.updatedData.map((object) => {
+      if (object.id === appData.individualCheckboxes[0]) {
+        prevState = object.educator;
         return { ...object, educator: null };
       }
       return object;
     });
-    // newFilteredData.map((item) => console.log("name", item.educator));
-    props.setFilteredData(newFilteredData);
+    props.setUpdatedData(newUpdatedData);
 
     //! буфер
     appData.setBufferAction([
-      { request: "removeEducatorinWorkload", data: data },
+      { request: "removeEducatorinWorkload", data: data, prevState: prevState },
       ...appData.bufferAction,
     ]);
     //! запрос на удаление преподавателя с нагрузки
@@ -262,7 +348,7 @@ const ContextMenu = (props) => {
             <img src={arrow} alt=">" className={styles.imgClose} />
           )}
         </div>
-        {props.individualCheckboxes.length === 1 && (
+        {appData.individualCheckboxes.length === 1 && (
           <div>
             <button
               className={styles.activeStylePointer}
@@ -273,7 +359,7 @@ const ContextMenu = (props) => {
           </div>
         )}
 
-        {props.individualCheckboxes.length > 1 && (
+        {appData.individualCheckboxes.length > 1 && (
           <div>
             <button
               className={styles.activeStylePointer}
@@ -283,7 +369,7 @@ const ContextMenu = (props) => {
             </button>
           </div>
         )}
-        {props.individualCheckboxes.length === 1 && (
+        {appData.individualCheckboxes.length === 1 && (
           <div className={styles.blockMenuPop} onClick={onClickPropose}>
             <button className={styles.activeStylePointer}>Предложить</button>
             <img
