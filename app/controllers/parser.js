@@ -5,6 +5,8 @@ import EnumDepartments from "../config/departments.js";
 import {AppErrorNotExist} from "../utils/errors.js";
 import Workload from "../models/workload.js";
 import FullNameDepartments from "../config/full-name-departments.js"
+import { sequelize } from "../models/index.js";
+
 
 export default {
     //departmen
@@ -18,6 +20,9 @@ export default {
             workload.push({ name, data: sheetData });
         });
         
+        //await Workload.truncate();
+        await sequelize.query("DELETE FROM \"workloads\"", null);
+
         const dataWorkload = workload[0].data;
         for (const element of dataWorkload) {
             const id = element[0];
@@ -53,7 +58,7 @@ export default {
                     });
                     const educatorId = existEducator ? existEducator.id : null;
 
-                    const newWorkload = await Workload.create({
+                    await Workload.create({
                         discipline,
                         department,
                         workload,
