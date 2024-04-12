@@ -73,6 +73,28 @@ body {
         margin-bottom: 2px;
       }
     }
+
+    .right_button {
+      display: flex;
+      flex-direction: row;
+
+      .import {
+        font-size: 16px;
+        font-weight: 500;
+        padding: 15px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 44px;
+        width: 176px;
+        background-color: #fff;
+        margin-left: 16px;
+        border-radius: 8px;
+        color: #0040e5;
+        cursor: pointer;
+        justify-content: space-between;
+      }
+    }
   }
   width: 100%;
   //отступ снизу страницы
