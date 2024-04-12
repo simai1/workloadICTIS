@@ -70,7 +70,9 @@ function TableDisciplines(props) {
       props.tableMode === "genInstitute"
         ? appData.workload.filter((item) => item.isOid === false)
         : appData.workload.filter((item) => item.isOid === true);
-
+    if (props.tableMode === "genInstitute") {
+      console.log("33");
+    }
     setUpdatedData(dataIsOid);
     setFilteredData(dataIsOid);
   }, [props.tableMode]);
