@@ -229,9 +229,24 @@
   }
 
   .taleDestiplinesMainTable {
-    // .table_tr {
-    //   position: relative;
-    // }
+   
+     .colorBlue{
+      background-color: var(--color--blueBg)!important;
+     }
+     .colorGreen{
+      background-color: var(--color--greenBg)!important;
+     }
+     .colorYellow{
+      background-color: var(--color--yellowBg)!important;
+     }
+     .colorChecked{
+        background-color: var(--color--checkedBg);
+     }
+     .clorBlocked{
+        background-color: var(--color--blockedBg);
+     }
+
+    
     overflow-y: scroll;
 
     .checkboxHeader {

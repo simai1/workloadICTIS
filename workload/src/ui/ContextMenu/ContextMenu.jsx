@@ -13,12 +13,15 @@ import { EducatorMenu } from "./EducatorMenu";
 // } from "../../api/services/ApiRequest";
 import DataContext from "../../context";
 import { EducatorLK } from "../../api/services/ApiRequest";
+import { Highlight } from "./Highlight";
 // import { addDataBuffer } from "../../bufferFunction";
 const ContextMenu = (props) => {
   const [menuPosition, setMenuPosition] = useState(props.menuPosition);
   const [showSubMenu, setShowSubMenu] = useState(false);
   const [educatorMenuShow, setEducatorMenuShow] = useState(false);
   const [propose, setPropose] = useState(false);
+  const [Highlightshow, setHighlightshow] = useState(false);
+
 
   const { appData } = React.useContext(DataContext);
   useEffect(() => {
@@ -35,12 +38,14 @@ const ContextMenu = (props) => {
     setShowSubMenu(!showSubMenu);
     setEducatorMenuShow(false);
     setPropose(false);
+    setHighlightshow(false);
   };
 
   //! нажатие на добавить преподавателя
   const addEducator = () => {
     setPropose(false);
     setShowSubMenu(false);
+    setHighlightshow(false);
     setEducatorMenuShow(!educatorMenuShow);
   };
 
@@ -48,8 +53,42 @@ const ContextMenu = (props) => {
   const onClickPropose = () => {
     setEducatorMenuShow(false);
     setShowSubMenu(false);
+    setHighlightshow(false);
     setPropose(!propose);
   };
+
+   //! нажатие выделить
+   const ClickHighlightshov = () => {
+    setHighlightshow(!Highlightshow);
+    setEducatorMenuShow(false);
+    setShowSubMenu(false);
+    setPropose(false);
+  };
+
+  //!функция замены цвета
+  
+  const SetColor = (colorRows) => {
+    const updatedHighlights = [...props.Highlight]; // Создаем копию текущего состояния highlights
+    appData.individualCheckboxes.forEach((id) => {
+      const existingIndex = updatedHighlights.findIndex(el => el.id === id);
+      if (existingIndex !== -1) {
+        updatedHighlights[existingIndex] = { ...updatedHighlights[existingIndex], color: colorRows };
+      } else {
+        updatedHighlights.push({ id: id, color: colorRows }); // Добавляем новый элемент в массив
+      }
+    });
+    props.setHighlight(updatedHighlights); // Обновляем состояние highlights
+    console.log(props.Highlight);
+  }
+  
+  
+  
+
+ 
+ 
+ 
+   
+
 
   //! Выбор преподавателя
   const selectedEducator = (id) => {
@@ -388,6 +427,18 @@ const ContextMenu = (props) => {
             Удалить
           </button>
         </div>
+        {/* выделение меню */}
+        {/* <div className={styles.blockMenuPop}  onClick={ClickHighlightshov}>
+          <button className={styles.buttonDel}>Выделить</button>
+
+          {Highlightshow && (
+            <img src={arrow} alt=">" className={styles.imgOpen} />
+          )}
+          {!Highlightshow && (
+            <img src={arrow} alt=">" className={styles.imgClose} />
+          )}
+
+        </div> */}
       </div>
       {showSubMenu && (
         <SubMenu
@@ -403,6 +454,14 @@ const ContextMenu = (props) => {
           selectedEducator={selectedEducator}
         />
       )}
+      {/* выделение меню */}
+      {/* {( Highlightshow &&(
+        <Highlight
+          menuPosition={menuPosition}
+          SetColor={SetColor}
+        />
+              )
+        )} */}
     </div>
   );
 };

@@ -38,6 +38,9 @@ function TableDisciplines(props) {
   const [filteredData, setFilteredData] = useState([]);
   const [commentAllData, setCommentAllData] = useState([]); // все комментарии
   const [allOffersData, setAllOffersData] = useState([]);
+  
+  const [Highlight, setHighlight] = useState([]);
+  
   const [modalWindowOffer, setModalWindowOffer] = useState({
     id: null,
     flag: false,
@@ -488,6 +491,8 @@ function TableDisciplines(props) {
         )}
         {showMenu && (
           <ContextMenu
+            Highlight ={Highlight}
+            setHighlight={setHighlight}
             isPopUpMenu={isPopUpMenu}
             setIsPopUpMenu={setIsPopUpMenu}
             refContextMenu={refContextMenu}
@@ -549,29 +554,26 @@ function TableDisciplines(props) {
                   );
                   if (!checkValues) {
                     return (
-                      <tr
+                    <tr
                         key={index}
                         onContextMenu={(e) => handleContextMenu(e, index)}
-                        className={styles.table_tr}
-                        // клик на строку выделяет ее
-                        onClick={(el) =>
-                          handleIndividualCheckboxChange(el, index)
-                        }
-                        style={
-                          appData.individualCheckboxes.includes(
-                            filteredData[index].id
-                          ) // выделенные галочкой
-                            ? { backgroundColor: "rgb(234, 234, 250)" }
-                            : appData.blockedCheckboxes.includes(
-                                filteredData[index].id
-                              ) // блокированные поля
-                            ? {
-                                pointerEvents: "none",
-                                backgroundColor: "rgb(238 238 238)",
-                              }
-                            : null
-                        }
+                        className={`
+                          ${styles.table_tr}
+                          ${appData.individualCheckboxes.includes(filteredData[index].id) ? styles.colorChecked : ''}
+                          ${appData.blockedCheckboxes.includes(filteredData[index].id) ? styles.clorBlocked : ''}
+                          ${
+                            !Highlight.some(item => item.id.includes(filteredData[index].id)) ? '' :
+                            Highlight.find(item => item.id.includes(filteredData[index].id)).color === 1 ? styles.colorBlue :
+                            Highlight.find(item => item.id.includes(filteredData[index].id)).color === 2 ? styles.colorGreen :
+                            Highlight.find(item => item.id.includes(filteredData[index].id)).color === 3 ? styles.colorYellow :
+                            ''
+                          }
+                        `}
+                        onClick={(el) => handleIndividualCheckboxChange(el, index)}
                       >
+
+                    
+                    
                         <td className={styles.checkbox} style={{ left: "0" }}>
                           {/* //!вывод комментарие  */}
                           {commentAllData.map(
