@@ -9,15 +9,15 @@ import FullNameDepartments from "../config/full-name-departments.js"
 export default {
     //departmen
     //
-    async parseFromXlsx(fileLocation, res){
-        let workbook = XLSX.readFile(fileLocation);
+    async parseFromXlsx(req, res){
+        let workbook = XLSX.readFile(req.file.path);
         const workload = [];
 
         Object.keys(workbook.Sheets).forEach((name) => {
             const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[name], {header: 1});
             workload.push({ name, data: sheetData });
         });
-
+        
         const dataWorkload = workload[0].data;
         for (const element of dataWorkload) {
             const id = element[0];
