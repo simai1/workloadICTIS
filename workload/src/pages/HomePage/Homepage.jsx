@@ -190,13 +190,24 @@ function HomePage() {
               />
             </div>
 
-            <div className={styles.EditInput}>
-              {educatorIdforLk === "" && (
-                <EditInput
-                  selectedComponent={selectedComponent} //! исправить не обновляется
-                  tableHeaders={tableHeadersTeacher}
+            <div className={styles.right_button}>
+              <div className={styles.EditInput}>
+                {educatorIdforLk === "" && (
+                  <EditInput
+                    selectedComponent={selectedComponent} //! исправить не обновляется
+                    tableHeaders={tableHeadersTeacher}
+                  />
+                )}
+              </div>
+              <div className={styles.import}>
+                <input
+                  type="file"
+                  placeholder="Импорт файла"
+                  style={{ display: "none" }}
                 />
-              )}
+                <button>Загрузить файл</button>
+                <img src="./img/import.png" alt=">"></img>
+              </div>
             </div>
           </div>
         </div>
@@ -241,7 +252,6 @@ function HomePage() {
         </a>
       </div>
     </Layout>
-    
   );
 }
 
