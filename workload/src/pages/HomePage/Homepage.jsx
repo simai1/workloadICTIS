@@ -215,6 +215,7 @@ function HomePage() {
         <div className={styles.Block__tables}>
           {selectedComponent === "Disciplines" ? (
             <TableDisciplines
+              tableMode={tableMode}
               tableHeaders={tableHeaders}
               searchTerm={searchTerm}
               setSearchTerm={setSearchTerm}

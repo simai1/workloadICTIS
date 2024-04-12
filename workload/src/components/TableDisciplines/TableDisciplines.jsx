@@ -22,7 +22,7 @@ import { PopUpError } from "../../ui/PopUp/PopUpError";
 function TableDisciplines(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]); //заголовок обновленный для Redux сортировки
   const [updatedData, setUpdatedData] = useState([]); //массив обновленный для Redux сортировки
-  const [selectedComponent, setSelectedComponent] = useState("cathedrals"); //выбранный компонент
+  // const [selectedComponent, setSelectedComponent] = useState("cathedrals"); //выбранный компонент
   const [isHovered, setIsHovered] = useState(false); // флаг открытия уведомлений от преподавателей
   const [isPopUpMenu, setIsPopUpMenu] = useState(false); // флаг открытия PopUp меню
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -46,17 +46,24 @@ function TableDisciplines(props) {
 
   //! данные вытянутые из контекста
   const { appData } = React.useContext(DataContext);
-  console.log("blockedCheckboxes", appData.blockedCheckboxes);
   const getDataTableAll = () => {
     getDataTable().then((data) => {
       appData.setWorkload(data);
-      setUpdatedData(data);
-      setFilteredData(data);
+      const dataIsOid =
+        props.tableMode === "genInstitute"
+          ? data.filter((item) => item.isOid === false)
+          : data.filter((item) => item.isOid === true);
+      setUpdatedData(dataIsOid);
+      setFilteredData(dataIsOid);
       getAllOffers(setAllOffersData);
       appData.setIndividualCheckboxes([]);
       console.log("Таблица обноленна");
     });
   };
+  console.log("tableMode", props.tableMode);
+  useEffect(() => {
+    getDataTableAll();
+  }, [props.tableMode]);
 
   //! обновление таблицы, отмена действия при ctrl+z
   useEffect(() => {
@@ -272,7 +279,6 @@ function TableDisciplines(props) {
   };
 
   //выбор компонента
-  console.log(props.isPopUpMenu);
   // ! заголовки
   const tableHeaders = useMemo(() => {
     return [
@@ -301,9 +307,9 @@ function TableDisciplines(props) {
     ];
   }, []);
 
-  const handleComponentChange = (component) => {
-    setSelectedComponent(component);
-  };
+  // const handleComponentChange = (component) => {
+  //   setSelectedComponent(component);
+  // };
 
   //! работа с таблицами через REDUX
   const dispatch = useDispatch();
