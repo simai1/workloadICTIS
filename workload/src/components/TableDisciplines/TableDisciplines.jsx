@@ -7,12 +7,23 @@ import ContextMenu from "../../ui/ContextMenu/ContextMenu";
 import { NotificationForm } from "../../ui/NotificationForm/NotificationForm";
 import { SamplePoints } from "../../ui/SamplePoints/SamplePoints";
 import DataContext from "../../context";
-import { Comment, Workload } from "../../api/services/ApiGetData";
 
-function TableDisciplines() {
+import { ReactComponent as SvgChackmark } from "./../../img/checkmark.svg";
+import { ReactComponent as SvgCross } from "./../../img/cross.svg";
+
+import { workloadUpdata } from "../../api/services/ApiRequest";
+import {
+  getAllOffers,
+  getAllWarnin,
+  getDataAllComment,
+  getDataTable,
+} from "../../api/services/AssignApiData";
+import OfferModalWindow from "../OfferModalWindow/OfferModalWindow";
+import { returnPrevState } from "../../bufferFunction";
+
+function TableDisciplines(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]); //заголовок обновленный для Redux сортировки
   const [updatedData, setUpdatedData] = useState([]); //массив обновленный для Redux сортировки
-  const [searchTerm, setSearchTerm] = useState(""); //поиск по таблице
   const [selectedComponent, setSelectedComponent] = useState("cathedrals"); //выбранный компонент
   const [isHovered, setIsHovered] = useState(false); // флаг открытия уведомлений от преподавателей
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -27,39 +38,67 @@ function TableDisciplines() {
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 }); //меню
   const [tableData, setTableData] = useState([]); // соберем из данных апи общие для таблицы
   const [filteredData, setFilteredData] = useState([]);
-  const [commentAllData, setCommentAllData] = useState([]);
+  const [commentAllData, setCommentAllData] = useState([]); // все комментарии
+  const [allOffersData, setAllOffersData] = useState([]);
+  const [modalWindowOffer, setModalWindowOffer] = useState({
+    id: null,
+    flag: false,
+  });
 
-  //данные вытянутые из контекста
+  //! данные вытянутые из контекста
   const { appData } = React.useContext(DataContext);
 
-  function getDataTable() {
-    Workload().then((data) => {
-      console.log(data);
-      const updatedWorkload = data.map((item) => {
-        const { isSplit, ...rest } = item; // убираем isSplit из массива
-        return {
-          ...rest,
-          educator: item.educator && item.educator.name,
-        };
-      });
-      appData.setWorkload(updatedWorkload); //данные с апи нагрузки
-      setUpdatedData(updatedWorkload);
-      setFilteredData(updatedWorkload);
+  const getDataTableAll = () => {
+    getDataTable().then((data) => {
+      appData.setWorkload(data);
+      setUpdatedData(data);
+      setFilteredData(data);
+      getAllOffers(setAllOffersData);
+      setIndividualCheckboxes([]);
+      console.log("Таблица обноленна");
     });
-    setTableData(appData.workload);
-  }
+  };
 
-  function getDataAllComment() {
-    Comment().then((data) => {
-      console.log("comment", data);
-      setCommentAllData(data);
-    });
-  }
-
-  // заносим данные о преподавателях в состояние
+  //! обновление таблицы, отмена действия при ctrl+z
   useEffect(() => {
-    getDataTable();
-    getDataAllComment();
+    if (appData.bufferAction[0] === 0) {
+      getDataTableAll();
+      getDataAllComment(setCommentAllData); // получение комментариев
+      console.log("Таблица обноленна после буффера");
+      appData.setBufferAction([]);
+    }
+    const handleKeyDown = (event) => {
+      //! следим за нажатием ctrl + z для отмены последнего действияы
+      if (
+        event.ctrlKey &&
+        (event.key === "z" ||
+          event.key === "я" ||
+          event.key === "Z" ||
+          event.key === "Я")
+      ) {
+        console.log("отеменено последнее действие", appData.bufferAction);
+        //! отмена последнего действия
+        returnPrevState(appData.bufferAction, updatedData).then((data) => {
+          setUpdatedData(data);
+          appData.setBufferAction((prevItems) => prevItems.slice(1));
+        });
+        //функция отмены последенего действия находится в TableDisciplines
+      }
+      //! следим за нажатием ctrl + s для сохранения изменений
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [appData.bufferAction]);
+
+  //! заносим данные в состояния
+  useEffect(() => {
+    getDataTableAll();
+    setTableData(appData.workload);
+    getDataAllComment(setCommentAllData); // получение комментариев
+    getAllWarnin(appData.setAllWarningMessage); // предупреждения
+    getAllOffers(setAllOffersData); // предложения
   }, []);
 
   //! сортировака (по hedars) пришедших данных из апи
@@ -71,16 +110,33 @@ function TableDisciplines() {
     setTableData(sortedArray);
   }, [appData.workload]);
 
-  // закрытие модального окна при нажатии вне него
+  //! закрытие модального окна при нажатии вне него
   const refSP = useRef(null);
   const refHoverd = useRef(null);
+  const refOffer = useRef(null);
+  const refContextMenu = useRef(null);
   useEffect(() => {
     const handler = (event) => {
       if (refSP.current && !refSP.current.contains(event.target)) {
         setSamplePointsShow(false);
       }
+      if (refOffer.current && !refOffer.current.contains(event.target)) {
+        setModalWindowOffer({ id: modalWindowOffer.id, flag: false });
+      }
+      if (
+        props.refProfile.current &&
+        !props.refProfile.current.contains(event.target)
+      ) {
+        props.setOpenModalWind(false);
+      }
       if (refHoverd.current && !refHoverd.current.contains(event.target)) {
         setIsHovered(false);
+      }
+      if (
+        refContextMenu.current &&
+        !refContextMenu.current.contains(event.target)
+      ) {
+        setShowMenu(false);
       }
     };
 
@@ -90,7 +146,7 @@ function TableDisciplines() {
     };
   }, []);
 
-  //чекбоксы
+  //! чекбоксы
   const handleGlobalCheckboxChange = () => {
     setIsCheckedGlobal(!isCheckedGlobal);
     !isCheckedGlobal
@@ -99,7 +155,12 @@ function TableDisciplines() {
   };
 
   const handleIndividualCheckboxChange = (el, index) => {
-    if (el.target.tagName !== "DIV") {
+    if (
+      el.target.tagName !== "DIV" &&
+      el.target.tagName !== "TEXTAREA" &&
+      el.target.tagName !== "svg" &&
+      el.target.tagName !== "path"
+    ) {
       let ic = [...individualCheckboxes];
 
       if (ic.includes(filteredData[index].id)) {
@@ -120,8 +181,20 @@ function TableDisciplines() {
   //! при нажатии на кружок уведомления
   const handleClicNotice = (el, index) => {
     setIsHovered(!isHovered);
-    setPosition({ x: el.clientX - 40, y: el.clientY - 200 });
+    setPosition({ x: el.pageX - 40, y: el.pageY - 200 });
     setIdrow(filteredData[index].id);
+  };
+
+  //! при нажатии на кружок предложения
+  const handleClicOffer = (el, id_workload, index) => {
+    console.log("id", index, id_workload, allOffersData[index]);
+    setModalWindowOffer({
+      id: allOffersData.find(
+        (item) => item.workloadId === filteredData[index].id
+      ).id,
+      flag: !modalWindowOffer.flag,
+    });
+    setPosition({ x: el.pageX - 40, y: el.pageY - 260 });
   };
 
   //! добавить комментарий к нагрузке из контекстного меню
@@ -137,9 +210,9 @@ function TableDisciplines() {
   const clickFigth = (event, index) => {
     setSamplePointsShow(!isSamplePointsShow);
     if (event.clientX + 372 > window.innerWidth) {
-      setPositionFigth({ x: window.innerWidth - 500, y: event.clientY - 100 });
+      setPositionFigth({ x: event.pageX - 50, y: event.pageY - 150 });
     } else {
-      setPositionFigth({ x: event.clientX - 50, y: event.clientY - 100 });
+      setPositionFigth({ x: event.pageX - 50, y: event.pageY - 150 });
     }
 
     const keyTd = tableHeaders[index].key;
@@ -154,6 +227,7 @@ function TableDisciplines() {
 
   //выбор компонента
 
+  // ! заголовки
   const tableHeaders = useMemo(() => {
     return [
       { key: "id", label: "№" },
@@ -210,28 +284,11 @@ function TableDisciplines() {
     setUpdatedData(updatedData);
   }
 
-  //! поиск и фильтрация таблицы
-  const handleSearch = (event) => {
-    const searchTerm = event.target.value;
-    setSearchTerm(searchTerm);
-    let fd;
-    if (searchTerm === "") {
-      fd = updatedData;
-    } else {
-      fd = updatedData.filter((row) => {
-        return Object.values(row).some(
-          (value) =>
-            value !== null &&
-            value !== undefined &&
-            value.toString().toLowerCase().includes(searchTerm.toLowerCase())
-        );
-      });
-    }
-    setFilteredData(fd);
-  };
+  //! компонет поиска выведен в родительский
+  //! useEffect следит за изменение searchTerm
   useEffect(() => {
     let fd;
-    if (searchTerm === "") {
+    if (props.searchTerm === "") {
       fd = updatedData;
     } else {
       fd = updatedData.filter((row) => {
@@ -239,28 +296,22 @@ function TableDisciplines() {
           (value) =>
             value !== null &&
             value !== undefined &&
-            value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+            value
+              .toString()
+              .toLowerCase()
+              .includes(props.searchTerm.toLowerCase())
         );
       });
     }
     setFilteredData(fd);
-  }, [updatedData, searchTerm]);
-
-  const EditTableData = (selectedComponent) => {
-    console.log(selectedComponent);
-    //тут написать функцию которая будет подгружать нужное содержимое tableData и tableHeaders
-  };
+  }, [updatedData, props.searchTerm]);
 
   //! меню при нажатии пкм
-  const handleContextMenu = (e) => {
+  const handleContextMenu = (e, index) => {
     e.preventDefault();
+    // console.log(index);
     setShowMenu(!showMenu);
     setMenuPosition({ x: e.clientX, y: e.clientY });
-  };
-
-  //! добавление преподавателя на нагрузку
-  const handleMenuClick = () => {
-    console.log("handleMenuClick");
   };
 
   //! расчет left для статических блоков таблицы
@@ -290,49 +341,37 @@ function TableDisciplines() {
   //! функция изменения значения td при двойном клике
   const [cellNumber, setCellNumber] = useState([]);
   const changeValueTd = (index, ind) => {
-    console.log("изменить ", index, ind);
-    setCellNumber(index, ind);
+    // console.log("изменить ", index, ind);
+    if (ind === 15 || ind == 14) {
+      setCellNumber({ index, ind });
+    }
+    // console.log(cellNumber);
+  };
+  const [textareaTd, setTextareaTd] = useState("");
+  const onChangeTextareaTd = (event) => {
+    setTextareaTd(event.target.value);
   };
 
+  const onClickButton = (id, key) => {
+    console.log(id, { [key.key]: textareaTd });
+    const parsedValue = Number(textareaTd);
+    const numberValue = isNaN(parsedValue) ? textareaTd : parsedValue;
+    // отпрака запроса на изменение данных
+    const data = { id: id, key: key.key, value: numberValue };
+    textareaTd &&
+      //! буфер
+      appData.setBufferAction([
+        { request: "workloadUpdata", data: data },
+        ...appData.bufferAction,
+      ]);
+    // workloadUpdata(id, { [key.key]: numberValue }).then(() =>
+    //   getDataTableAll()
+    // );
+    setCellNumber([]);
+  };
   //! содержимое
   return (
     <div className={styles.tabledisciplinesMain}>
-      <div className={styles.tabledisciplinesMain_search}>
-        <input
-          type="text"
-          placeholder="Поиск"
-          id="search"
-          name="search"
-          value={searchTerm}
-          onChange={handleSearch}
-          className={styles.search}
-        />
-        <img src="./img/search.svg"></img>
-      </div>
-
-      <div className={styles.ButtonCaf_gen}>
-        <Button
-          Bg={selectedComponent === "cathedrals" ? "#3B28CC" : "#efedf3"}
-          textColot={selectedComponent === "cathedrals" ? "#efedf3" : "#000000"}
-          text="Кафедральные"
-          onClick={() => {
-            handleComponentChange("cathedrals");
-            EditTableData(selectedComponent);
-          }}
-        />
-        <Button
-          Bg={selectedComponent === "genInstitute" ? "#3B28CC" : "#efedf3"}
-          textColot={selectedComponent === "cathedrals" ? "#000000" : "#efedf3"}
-          text="Общеинститутские"
-          onClick={() => {
-            handleComponentChange("genInstitute");
-            EditTableData(selectedComponent);
-          }}
-        />
-      </div>
-      <div className={styles.EditInput}>
-        <EditInput tableHeaders={tableHeaders} />
-      </div>
       <div>
         {isHovered && (
           <NotificationForm
@@ -340,10 +379,25 @@ function TableDisciplines() {
             position={position}
             setPosition={setPosition}
             workloadId={idRow}
+            setCommentAllData={setCommentAllData}
             getDataAllComment={getDataAllComment}
             commentData={commentAllData
               .filter((item) => item.workloadId === idRow)
               .reverse()}
+          />
+        )}
+
+        {modalWindowOffer.flag && (
+          <OfferModalWindow
+            allOffersDataItem={allOffersData.filter(
+              (item) => item.id === modalWindowOffer.id
+            )}
+            modalWindowOffer={modalWindowOffer}
+            setModalWindowOffer={setModalWindowOffer}
+            position={position}
+            refOffer={refOffer}
+            workloadId={modalWindowOffer.id}
+            getDataTableAll={getDataTableAll}
           />
         )}
 
@@ -359,13 +413,19 @@ function TableDisciplines() {
         )}
         {showMenu && (
           <ContextMenu
+            refContextMenu={refContextMenu}
             showMenu={showMenu}
             menuPosition={menuPosition}
-            handleMenuClick={handleMenuClick}
             setShowMenu={setShowMenu}
             individualCheckboxes={individualCheckboxes}
-            getDataTable={getDataTable}
+            getDataTableAll={getDataTableAll}
             onAddComment={onAddComment}
+            setFilteredData={setFilteredData}
+            filteredData={filteredData}
+            updatedData={updatedData}
+            setUpdatedData={setUpdatedData}
+            setAllOffersData={setAllOffersData}
+            allOffersData={allOffersData}
           />
         )}
         <div className={styles.table_container}>
@@ -375,6 +435,7 @@ function TableDisciplines() {
               <thead>
                 <tr ref={trRef} className={styles.tr_thead}>
                   <th className={styles.checkboxHeader} style={{ left: "0" }}>
+                    <div className={styles.input_left}></div>
                     <input
                       type="checkbox"
                       className={styles.custom__checkbox}
@@ -416,7 +477,7 @@ function TableDisciplines() {
                     return (
                       <tr
                         key={index}
-                        onContextMenu={handleContextMenu}
+                        onContextMenu={(e) => handleContextMenu(e, index)}
                         className={styles.table_tr}
                         // клик на строку выделяет ее
                         onClick={(el) =>
@@ -429,6 +490,7 @@ function TableDisciplines() {
                         }
                       >
                         <td className={styles.checkbox} style={{ left: "0" }}>
+                          {/* //!вывод комментарие  */}
                           {commentAllData.some(
                             (item) => item.workloadId === filteredData[index].id
                           ) && (
@@ -439,6 +501,32 @@ function TableDisciplines() {
                             >
                               {
                                 commentAllData.filter(
+                                  (item) =>
+                                    item.workloadId === filteredData[index].id
+                                ).length
+                              }
+                            </div>
+                          )}
+
+                          {/* //! вывод предложений */}
+
+                          {allOffersData.some(
+                            (item) => item.workloadId === filteredData[index].id
+                          ) && (
+                            <div
+                              key={index}
+                              className={styles.notice}
+                              style={{ backgroundColor: "#FFD600" }}
+                              onClick={(el, item) =>
+                                handleClicOffer(
+                                  el,
+                                  filteredData[index].id,
+                                  index
+                                )
+                              }
+                            >
+                              {
+                                allOffersData.filter(
                                   (item) =>
                                     item.workloadId === filteredData[index].id
                                 ).length
@@ -480,11 +568,36 @@ function TableDisciplines() {
                               className={styles.td_inner}
                               onDoubleClick={() => changeValueTd(index, ind)}
                             >
-                              {row[updatedHeader[ind].key] === null
-                                ? "0"
-                                : updatedHeader[ind].key === "id"
-                                ? index + 1
-                                : row[updatedHeader[ind].key]}
+                              {/* редактирование поля нагрузки при двойном клике на нее */}
+                              {cellNumber &&
+                              cellNumber.index === index &&
+                              cellNumber.ind === ind ? (
+                                <div className={styles.textarea_title}>
+                                  <textarea
+                                    className={styles.textarea}
+                                    type="text"
+                                    defaultValue={row[updatedHeader[ind].key]}
+                                    onChange={onChangeTextareaTd}
+                                  ></textarea>
+                                  <div className={styles.svg_textarea}>
+                                    <SvgChackmark
+                                      className={styles.SvgChackmark_green}
+                                      onClick={() => onClickButton(row.id, key)}
+                                    />
+                                    <SvgCross
+                                      onClick={() => {
+                                        setCellNumber([]);
+                                      }}
+                                    />
+                                  </div>
+                                </div>
+                              ) : row[updatedHeader[ind].key] === null ? (
+                                "0"
+                              ) : updatedHeader[ind].key === "id" ? (
+                                index + 1
+                              ) : (
+                                row[updatedHeader[ind].key]
+                              )}
                             </div>
                           </td>
                         ))}

@@ -1,26 +1,17 @@
-import { AppErrorAlreadyExists, AppErrorMissing } from '../utils/errors.js';
+import { AppErrorMissing } from '../utils/errors.js';
 import Comment from '../models/comment.js';
 import CommentDto from '../dtos/comment-dto.js';
 import Educator from '../models/educator.js';
-import Workload from '../models/workload.js';
+import User from '../models/user.js';
 
 export default {
-    async createComment({ body: { educatorId, workloadId, text } }, res) {
-        if (!educatorId) throw new AppErrorMissing('educatorId');
+    async createComment({ body: { workloadId, text }, user }, res) {
         if (!workloadId) throw new AppErrorMissing('workloadId');
         if (!text) throw new AppErrorMissing('text');
-
-        const educatorInWorkload = await Workload.findOne({
-            where: { id: workloadId },
-            include: { model: Educator, where: { id: educatorId } },
-        });
-
-        if (!educatorInWorkload) {
-            throw new AppErrorMissing('Преподаватель не связан с этой нагрузкой');
-        }
+        const sender = await Educator.findOne({ where: { userId: user } });
 
         const comment = await Comment.create({
-            educatorId,
+            educatorId: sender.id,
             workloadId,
             text,
         });
@@ -47,5 +38,18 @@ export default {
         }
 
         res.json(commentDtos);
+    },
+
+    async deleteAllComments({ params: { workloadId } }, res) {
+        if (!workloadId) throw new AppErrorMissing('workloadId');
+        const comments = await Comment.findAll({ where: { workloadId } });
+        if (comments.length === 0) {
+            res.send('No comments found for the specified workload');
+            return;
+        }
+        for (const comment of comments) {
+            await comment.destroy({ force: true });
+        }
+        res.send('All comments deleted');
     },
 };

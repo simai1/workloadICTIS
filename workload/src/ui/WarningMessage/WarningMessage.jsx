@@ -2,18 +2,20 @@ import React from "react";
 import styles from "./WarningMessage.module.scss";
 import arrow from "./../../img/arrow.svg";
 const WarningMessage = (props) => {
+  console.log(props.item);
   return (
     <li>
       <div className={styles.nameWarnName}>
         <p className={styles.circlesbuttonWarn}>
-          <span>{props.id}</span>
+          <span>{props.index + 1}</span>
         </p>
-        <p>{props.arrMessage.name}</p>
+        <p className={styles.name}>{props.item.Educator.name}</p>
       </div>
-      <div className={styles.buttonWarnBlock}>
-        <p>
-          Перегрузка - <span>{props.arrMessage.hours}</span> ч
-        </p>
+      <div
+        className={styles.buttonWarnBlock}
+        onClick={() => props.directLks(props.item.Educator.id)}
+      >
+        <p>{props.item.message}</p>
         <img className={styles.arrowButton} src={arrow} alt="arrow" />
       </div>
     </li>

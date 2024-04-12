@@ -32,17 +32,17 @@
     background-color: #efedf3;
   }
 }
-input[type="text"] {
-  margin-bottom: 10px;
-  position: absolute;
-  top: -92px;
-  width: 310px;
-  font-size: 18px;
-  border-radius: 8px;
-  border: 1px solid var(--border-color);
-  color: var(--black-color);
-  padding: 9px 0px 9px 16px;
-}
+// input[type="text"] {
+//   margin-bottom: 10px;
+//   position: absolute;
+//   top: -92px;
+//   width: 310px;
+//   font-size: 18px;
+//   border-radius: 8px;
+//   border: 1px solid var(--border-color);
+//   color: var(--black-color);
+//   padding: 9px 0px 9px 16px;
+// }
 
 .ButtonCaf_gen {
   margin-bottom: 16px;
@@ -61,7 +61,7 @@ input[type="text"] {
   border-right: 1px solid var(--gray-color);
   border-top: 1px solid var(--gray-color);
   position: relative;
-  top: 60px;
+  // top: 60px;
   .TableTeachers {
     width: 100%;
   }

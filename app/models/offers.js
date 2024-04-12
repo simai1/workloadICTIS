@@ -1,4 +1,5 @@
 import { DataTypes, Model } from 'sequelize';
+import EnumStatus from '../config/status.js';
 
 export default class Offer extends Model {
     static initialize(sequelize) {
@@ -10,10 +11,6 @@ export default class Offer extends Model {
                     allowNull: false,
                     primaryKey: true,
                 },
-                // userId: {
-                //     type: DataTypes.UUID,
-                //     allowNull: false,
-                // },
                 educatorId: {
                     type: DataTypes.UUID,
                     allowNull: false,
@@ -22,10 +19,17 @@ export default class Offer extends Model {
                     type: DataTypes.UUID,
                     allowNull: false,
                 },
-                status: {
-                    type: DataTypes.ENUM('принято', 'отклонено', 'ожидает'),
-                    defaultValue: 'ожидает',
+                proposerId: {
+                    type: DataTypes.UUID,
                     allowNull: false,
+                },
+                status: {
+                    type: DataTypes.SMALLINT,
+                    defaultValue: 1,
+                    allowNull: false,
+                    validate: {
+                        isIn: [Object.values(EnumStatus)],
+                    },
                 },
             },
             {

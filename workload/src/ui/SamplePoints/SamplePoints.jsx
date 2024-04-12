@@ -11,7 +11,7 @@ export function SamplePoints(props) {
   const filteredData = props.isSamplePointsData.td.filter((el) => {
     // Преобразовываем el в строку, если он является числом
     const elString = typeof el === "number" ? el.toString() : el;
-    return elString.toLowerCase().includes(searchText.toLowerCase());
+    return elString?.toLowerCase().includes(searchText?.toLowerCase());
   });
 
   const onAllChecked = () => {

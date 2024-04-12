@@ -2,6 +2,11 @@ import express from 'express';
 import http from 'http'; // Добавьте этот импорт
 import { Server } from 'socket.io';
 import cookieParser from 'cookie-parser';
+import cookieSession from 'cookie-session';
+
+import passportSetup from './config/passport-setup.js'; // eslint-disable-line
+import passport from 'passport';
+
 import 'dotenv/config';
 
 import corsMiddleware from './middlewares/cors.js';
@@ -16,6 +21,8 @@ import eduRoute from './routes/educator.js';
 import workloadRoute from './routes/workload.js';
 import notificationRoute from './routes/notification.js';
 import offerRoute from './routes/offers.js';
+// FIX ME
+import roleRoute from './routes/role.js';
 
 import { eventEmitter } from './utils/notification.js';
 
@@ -50,6 +57,14 @@ const io = new Server(server, {
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(
+    cookieSession({
+        maxAge: 24 * 60 * 60 * 1000,
+        keys: [process.env.COOKIE_KEY],
+    })
+);
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(corsMiddleware);
 
 app.use('/comment', commentRoute);
@@ -59,6 +74,7 @@ app.use('/parser', parserRoute);
 app.use('/workload', workloadRoute);
 app.use('/auth', authRoute);
 app.use('/offers', offerRoute);
+app.use('/role', roleRoute);
 
 io.on('connection', socket => {
     console.log(`socket ${socket.id} connected`);
