@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./HomePage.module.scss";
 import TableDisciplines from "../../components/TableDisciplines/TableDisciplines";
 import TableTeachers from "../../components/TableTeachers/TableTeachers";
@@ -96,6 +96,18 @@ function HomePage() {
       appData.setBufferAction([0]);
     });
     console.log("выполнено и очищено", appData.bufferAction);
+  };
+
+  const fileInputRef = useRef(null);
+  //! функции для импорта файла
+  const handleFileUpload = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleFileChange = () => {
+    const file = fileInputRef.current.files[0];
+    // Здесь можно выполнить дополнительную обработку загруженного файла
+    console.log("Выбранный файл:", file);
   };
 
   return (
@@ -202,11 +214,14 @@ function HomePage() {
               <div className={styles.import}>
                 <input
                   type="file"
-                  placeholder="Импорт файла"
+                  ref={fileInputRef}
                   style={{ display: "none" }}
+                  onChange={handleFileChange}
                 />
-                <button>Загрузить файл</button>
-                <img src="./img/import.png" alt=">"></img>
+                <button onClick={handleFileUpload}>
+                  <p>Импорт файла</p>
+                  <img src="./img/import.svg" alt=">"></img>
+                </button>
               </div>
             </div>
           </div>

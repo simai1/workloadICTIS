@@ -31,7 +31,6 @@ function TableDisciplines(props) {
   const [isSamplePointsShow, setSamplePointsShow] = useState(false);
   const [isSamplePointsData, setSamplePointsData] = useState("");
   const [isCheckedGlobal, setIsCheckedGlobal] = useState(false); //главный чекбокс таблицы
-
   const [isChecked, setChecked] = useState([]);
   const [showMenu, setShowMenu] = useState(false); //меню
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 }); //меню
@@ -44,11 +43,15 @@ function TableDisciplines(props) {
     flag: false,
   });
 
+  const [generalInstituteData, setGeneralInstituteData] = useState([]); // общеинститутские данные
+  const [cathedralData, setCathedralData] = useState([]); // кафедральыне данные
+
   //! данные вытянутые из контекста
   const { appData } = React.useContext(DataContext);
   const getDataTableAll = () => {
     getDataTable().then((data) => {
       appData.setWorkload(data);
+      // выводим данные в зависимостри кафедральные или общеинститутские
       const dataIsOid =
         props.tableMode === "genInstitute"
           ? data.filter((item) => item.isOid === false)
@@ -60,9 +63,16 @@ function TableDisciplines(props) {
       console.log("Таблица обноленна");
     });
   };
-  console.log("tableMode", props.tableMode);
+
+  //! обновляем таблице если перешли между кафедральным и общенститутским
   useEffect(() => {
-    getDataTableAll();
+    const dataIsOid =
+      props.tableMode === "genInstitute"
+        ? appData.workload.filter((item) => item.isOid === false)
+        : appData.workload.filter((item) => item.isOid === true);
+
+    setUpdatedData(dataIsOid);
+    setFilteredData(dataIsOid);
   }, [props.tableMode]);
 
   //! обновление таблицы, отмена действия при ctrl+z
