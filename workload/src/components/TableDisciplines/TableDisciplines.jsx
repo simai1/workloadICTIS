@@ -38,9 +38,9 @@ function TableDisciplines(props) {
   const [filteredData, setFilteredData] = useState([]);
   const [commentAllData, setCommentAllData] = useState([]); // все комментарии
   const [allOffersData, setAllOffersData] = useState([]);
-  
+
   const [Highlight, setHighlight] = useState([]);
-  
+
   const [modalWindowOffer, setModalWindowOffer] = useState({
     id: null,
     flag: false,
@@ -59,8 +59,13 @@ function TableDisciplines(props) {
         props.tableMode === "genInstitute"
           ? data.filter((item) => item.isOid === false)
           : data.filter((item) => item.isOid === true);
+
       setUpdatedData(dataIsOid);
       setFilteredData(dataIsOid);
+
+      setGeneralInstituteData(data.filter((item) => item.isOid === false));
+      setCathedralData(data.filter((item) => item.isOid === true));
+
       getAllOffers(setAllOffersData);
       appData.setIndividualCheckboxes([]);
       console.log("Таблица обноленна");
@@ -69,16 +74,25 @@ function TableDisciplines(props) {
 
   //! обновляем таблице если перешли между кафедральным и общенститутским
   useEffect(() => {
-    const dataIsOid =
-      props.tableMode === "genInstitute"
-        ? appData.workload.filter((item) => item.isOid === false)
-        : appData.workload.filter((item) => item.isOid === true);
     if (props.tableMode === "genInstitute") {
-      console.log("33");
+      setUpdatedData(generalInstituteData);
+      setFilteredData(generalInstituteData);
+    } else {
+      setUpdatedData(cathedralData);
+      setFilteredData(cathedralData);
     }
-    setUpdatedData(dataIsOid);
-    setFilteredData(dataIsOid);
+    // убираем выделенные нагрузки
+    appData.setIndividualCheckboxes([]);
   }, [props.tableMode]);
+
+  //! при обновлении updatedData запосним наши данные
+  useEffect(() => {
+    if (props.tableMode === "genInstitute") {
+      setGeneralInstituteData(updatedData);
+    } else {
+      setCathedralData(updatedData);
+    }
+  }, [updatedData]);
 
   //! обновление таблицы, отмена действия при ctrl+z
   useEffect(() => {
@@ -491,7 +505,7 @@ function TableDisciplines(props) {
         )}
         {showMenu && (
           <ContextMenu
-            Highlight ={Highlight}
+            Highlight={Highlight}
             setHighlight={setHighlight}
             isPopUpMenu={isPopUpMenu}
             setIsPopUpMenu={setIsPopUpMenu}
@@ -554,26 +568,49 @@ function TableDisciplines(props) {
                   );
                   if (!checkValues) {
                     return (
-                    <tr
+                      <tr
                         key={index}
                         onContextMenu={(e) => handleContextMenu(e, index)}
                         className={`
                           ${styles.table_tr}
-                          ${appData.individualCheckboxes.includes(filteredData[index].id) ? styles.colorChecked : ''}
-                          ${appData.blockedCheckboxes.includes(filteredData[index].id) ? styles.clorBlocked : ''}
                           ${
-                            !Highlight.some(item => item.id.includes(filteredData[index].id)) ? '' :
-                            Highlight.find(item => item.id.includes(filteredData[index].id)).color === 1 ? styles.colorBlue :
-                            Highlight.find(item => item.id.includes(filteredData[index].id)).color === 2 ? styles.colorGreen :
-                            Highlight.find(item => item.id.includes(filteredData[index].id)).color === 3 ? styles.colorYellow :
-                            ''
+                            appData.individualCheckboxes.includes(
+                              filteredData[index].id
+                            )
+                              ? styles.colorChecked
+                              : ""
+                          }
+                          ${
+                            appData.blockedCheckboxes.includes(
+                              filteredData[index].id
+                            )
+                              ? styles.clorBlocked
+                              : ""
+                          }
+                          ${
+                            !Highlight.some((item) =>
+                              item.id.includes(filteredData[index].id)
+                            )
+                              ? ""
+                              : Highlight.find((item) =>
+                                  item.id.includes(filteredData[index].id)
+                                ).color === 1
+                              ? styles.colorBlue
+                              : Highlight.find((item) =>
+                                  item.id.includes(filteredData[index].id)
+                                ).color === 2
+                              ? styles.colorGreen
+                              : Highlight.find((item) =>
+                                  item.id.includes(filteredData[index].id)
+                                ).color === 3
+                              ? styles.colorYellow
+                              : ""
                           }
                         `}
-                        onClick={(el) => handleIndividualCheckboxChange(el, index)}
+                        onClick={(el) =>
+                          handleIndividualCheckboxChange(el, index)
+                        }
                       >
-
-                    
-                    
                         <td className={styles.checkbox} style={{ left: "0" }}>
                           {/* //!вывод комментарие  */}
                           {commentAllData.map(

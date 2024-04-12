@@ -182,24 +182,32 @@ function HomePage() {
           </div>
           <div className={styles.header_bottom}>
             <div className={styles.header_bottom_button}>
-              <Button
-                Bg={tableMode === "cathedrals" ? "#3B28CC" : "#efedf3"}
-                textColot={tableMode === "cathedrals" ? "#efedf3" : "#000000"}
-                text="Кафедральные"
-                onClick={() => {
-                  setTableMode("cathedrals");
-                  EditTableData(tableMode);
-                }}
-              />
-              <Button
-                Bg={tableMode === "genInstitute" ? "#3B28CC" : "#efedf3"}
-                textColot={tableMode === "cathedrals" ? "#000000" : "#efedf3"}
-                text="Общеинститутские"
-                onClick={() => {
-                  setTableMode("genInstitute");
-                  EditTableData(tableMode);
-                }}
-              />
+              {selectedComponent === "Disciplines" && (
+                <>
+                  <Button
+                    Bg={tableMode === "cathedrals" ? "#3B28CC" : "#efedf3"}
+                    textColot={
+                      tableMode === "cathedrals" ? "#efedf3" : "#000000"
+                    }
+                    text="Кафедральные"
+                    onClick={() => {
+                      setTableMode("cathedrals");
+                      EditTableData(tableMode);
+                    }}
+                  />
+                  <Button
+                    Bg={tableMode === "genInstitute" ? "#3B28CC" : "#efedf3"}
+                    textColot={
+                      tableMode === "cathedrals" ? "#000000" : "#efedf3"
+                    }
+                    text="Общеинститутские"
+                    onClick={() => {
+                      setTableMode("genInstitute");
+                      EditTableData(tableMode);
+                    }}
+                  />
+                </>
+              )}
             </div>
 
             <div className={styles.right_button}>
