@@ -17,7 +17,7 @@ router.get('/loginSfedu', passport.authenticate('azure_ad_oauth2', {
 
 router.get('/login', passport.authenticate('azure_ad_oauth2'),(req, res) => {
   // res.send('redirect URI')
-  res.redirect('/');
+  res.redirect(`${process.env.WEB_URL}/homePage`);
 })
 
 router.get('/logout', (req, res) => {

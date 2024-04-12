@@ -1,13 +1,13 @@
 //? Здесь все запросы к апи, присвоение этих данных состояниями в AssingApiData
 
 import axios from "axios";
-const server = "https://workload.sfedu.ru/api";
-//const server = "http://localhost:80/api"; local-nginx
+// const server = "https://workload.sfedu.ru/api";
+const server = "http://localhost:3002";
 
 //! получаем преподов
 export const Educator = async () => {
   try {
-    const response = await axios.get(`${server}/educator`);
+    const response = await axios.get(`${server}/educator`, { withCredentials: true });
     return response.data;
   } catch (error) {
     console.error("Error:", error);
@@ -18,7 +18,7 @@ export const Educator = async () => {
 //! получаем данных личного кабинета преподавателя
 export const EducatorLK = async (data) => {
   try {
-    const response = await axios.get(`${server}/educator/${data}`);
+    const response = await axios.get(`${server}/educator/${data}`, { withCredentials: true });
     return response.data;
   } catch (error) {
     console.error("Error:", error);
@@ -28,7 +28,7 @@ export const EducatorLK = async (data) => {
 
 export const Positions = async () => {
   try {
-    const response = await axios.get(`${server}/educatorget/positions`);
+    const response = await axios.get(`${server}/educatorget/positions`, { withCredentials: true });
     return response.data;
   } catch (error) {
     console.error("Error:", error);
@@ -39,7 +39,7 @@ export const Positions = async () => {
 export const TypeOfEmployments = async () => {
   try {
     const response = await axios.get(
-      `${server}/educator/get/typeOfEmployments`
+      `${server}/educator/get/typeOfEmployments`, { withCredentials: true }
     );
     return response.data;
   } catch (error) {
@@ -51,7 +51,7 @@ export const TypeOfEmployments = async () => {
 //! получаем нагрузки
 export const Workload = async () => {
   try {
-    const response = await axios.get(`${server}/workload`);
+    const response = await axios.get(`${server}/workload`, { withCredentials: true });
     return response.data;
   } catch (error) {
     console.error("Error:", error);
@@ -62,7 +62,7 @@ export const Workload = async () => {
 //! получаем комментарии к нагрузкам от преподавателей
 export const Comment = async () => {
   try {
-    const response = await axios.get(`${server}/comment/getAllComment`);
+    const response = await axios.get(`${server}/comment/getAllComment`, { withCredentials: true });
     return response.data;
   } catch (error) {
     console.error("Error:", error);
@@ -73,7 +73,7 @@ export const Comment = async () => {
 //! получение предупреждений о перегрузках
 export const getAllWarningMessage = async () => {
   try {
-    const response = await axios.get(`${server}/notification`);
+    const response = await axios.get(`${server}/notification`, { withCredentials: true });
     return response.data;
   } catch (error) {
     console.error("Error:", error);
@@ -84,7 +84,7 @@ export const getAllWarningMessage = async () => {
 //! получение предложений
 export const getOffers = async () => {
   try {
-    const response = await axios.get(`${server}/offers`);
+    const response = await axios.get(`${server}/offers`, { withCredentials: true });
     return response.data;
   } catch (error) {
     console.error("Error:", error);
@@ -96,7 +96,7 @@ export const getOffers = async () => {
 export const addEducatorWorkload = async (data) => {
   console.log("Добавление преподавателя ", data);
   try {
-    const response = await axios.patch(`${server}/workload/faculty`, data);
+    const response = await axios.patch(`${server}/workload/faculty`, data, { withCredentials: true });
     console.log("response ", response);
     return response.data;
   } catch (error) {
@@ -109,7 +109,7 @@ export const addEducatorWorkload = async (data) => {
 export const splitWorkload = async (data) => {
   console.log("Раздление нагрузки ", data);
   try {
-    const response = await axios.post(`${server}/workload/split`, data);
+    const response = await axios.post(`${server}/workload/split`, data, { withCredentials: true });
     console.log("response ", response);
     return response.data;
   } catch (error) {
@@ -122,7 +122,7 @@ export const splitWorkload = async (data) => {
 export const joinWorkloads = async (data) => {
   console.log("Соединение нагрузки ", data);
   try {
-    const response = await axios.post(`${server}/workload/map`, data);
+    const response = await axios.post(`${server}/workload/map`, data, { withCredentials: true });
     console.log("response ", response);
     return response.data;
   } catch (error) {
@@ -137,7 +137,7 @@ export const AcceptOffer = async (data) => {
   try {
     const response = await axios.post(
       `${server}/offers/confirmOrReject/${data.id}`,
-      { status: data.status }
+      { status: data.status }, { withCredentials: true }
     );
     console.log("response ", response);
     return response.data;
@@ -153,7 +153,7 @@ export const deleteWorkload = async (data) => {
   try {
     const response = await axios.delete(
       `${server}/workload/deleteSeveralWorkloads`,
-      { data: data }
+      { data: data, withCredentials: true}
     );
     console.log("response ", response);
     return response.data;
