@@ -21,12 +21,3 @@ function socketConnect() {
 }
 
 export default socketConnect;
-
-// socket.emit("message", {
-//   text: "text 1",
-//   name: " alex",
-// });
-
-// socket.on("response", (data) => {
-//   console.log("Получен ответ от сервера:", data);
-// });
