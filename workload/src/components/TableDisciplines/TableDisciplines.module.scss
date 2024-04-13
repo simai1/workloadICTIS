@@ -229,24 +229,23 @@
   }
 
   .taleDestiplinesMainTable {
-   
-     .colorBlue{
-      background-color: var(--color--blueBg)!important;
-     }
-     .colorGreen{
-      background-color: var(--color--greenBg)!important;
-     }
-     .colorYellow{
-      background-color: var(--color--yellowBg)!important;
-     }
-     .colorChecked{
-        background-color: var(--color--checkedBg);
-     }
-     .clorBlocked{
-        background-color: var(--color--blockedBg);
-     }
+    .colorBlue {
+      background-color: var(--color--blueBg) !important;
+    }
+    .colorGreen {
+      background-color: var(--color--greenBg) !important;
+    }
+    .colorYellow {
+      background-color: var(--color--yellowBg) !important;
+    }
+    .colorChecked {
+      background-color: var(--color--checkedBg);
+    }
+    .clorBlocked {
+      background-color: var(--color--blockedBg);
+      pointer-events: none;
+    }
 
-    
     overflow-y: scroll;
 
     .checkboxHeader {
@@ -284,14 +283,6 @@
       transform: translateY(-4px);
       cursor: pointer;
     }
-    // .notice::after {
-    //   content: "";
-    //   width: 3px;
-    //   height: 53px;
-    //   background-color: inherit;
-    //   position: absolute;
-    //   right: -10px;
-    // }
 
     .notis_rigth_one {
       width: 3px;
@@ -307,12 +298,6 @@
       position: absolute;
       right: -10px;
     }
-    // .checkbox::before {
-    //   content: "1";
-    //   position: absolute;
-    //   left: -30px;
-    //   background-color: #efedf3;
-    // }
     .custom__checkbox {
       position: absolute;
       opacity: 0;

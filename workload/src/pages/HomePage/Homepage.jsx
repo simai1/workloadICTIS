@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import styles from "./HomePage.module.scss";
 import TableDisciplines from "../../components/TableDisciplines/TableDisciplines";
 import TableTeachers from "../../components/TableTeachers/TableTeachers";
@@ -10,7 +10,6 @@ import Profile from "../../components/Profile/Profile";
 import EditInput from "../../components/EditInput/EditInput";
 import DataContext from "../../context";
 import { bufferRequestToApi } from "../../bufferFunction";
-import { PopUpError } from "../../ui/PopUp/PopUpError";
 
 function HomePage() {
   const { appData } = React.useContext(DataContext);

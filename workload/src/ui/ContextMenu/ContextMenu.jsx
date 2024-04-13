@@ -22,7 +22,6 @@ const ContextMenu = (props) => {
   const [propose, setPropose] = useState(false);
   const [Highlightshow, setHighlightshow] = useState(false);
 
-
   const { appData } = React.useContext(DataContext);
   useEffect(() => {
     console.log("bufferAction", appData.bufferAction);
@@ -57,8 +56,8 @@ const ContextMenu = (props) => {
     setPropose(!propose);
   };
 
-   //! нажатие выделить
-   const ClickHighlightshov = () => {
+  //! нажатие выделить
+  const ClickHighlightshov = () => {
     setHighlightshow(!Highlightshow);
     setEducatorMenuShow(false);
     setShowSubMenu(false);
@@ -66,29 +65,23 @@ const ContextMenu = (props) => {
   };
 
   //!функция замены цвета
-  
+
   const SetColor = (colorRows) => {
     const updatedHighlights = [...props.Highlight]; // Создаем копию текущего состояния highlights
     appData.individualCheckboxes.forEach((id) => {
-      const existingIndex = updatedHighlights.findIndex(el => el.id === id);
+      const existingIndex = updatedHighlights.findIndex((el) => el.id === id);
       if (existingIndex !== -1) {
-        updatedHighlights[existingIndex] = { ...updatedHighlights[existingIndex], color: colorRows };
+        updatedHighlights[existingIndex] = {
+          ...updatedHighlights[existingIndex],
+          color: colorRows,
+        };
       } else {
         updatedHighlights.push({ id: id, color: colorRows }); // Добавляем новый элемент в массив
       }
     });
     props.setHighlight(updatedHighlights); // Обновляем состояние highlights
     console.log(props.Highlight);
-  }
-  
-  
-  
-
- 
- 
- 
-   
-
+  };
 
   //! Выбор преподавателя
   const selectedEducator = (id) => {
@@ -168,14 +161,10 @@ const ContextMenu = (props) => {
     const prev = props.updatedData.filter((item) =>
       appData.individualCheckboxes.some((el) => el === item.id)
     );
+    var newIds = [];
     // Создаем новый массив для измененных данных
     let updatedData = [...props.updatedData];
     for (let i = 0; i < appData.individualCheckboxes.length; i++) {
-      // // добавляем нугрузки в заблокированные (пока не сохранить)
-      // appData.setBlockedCheckboxes((prevent) => [
-      //   ...prevent,
-      //   appData.individualCheckboxes[i],
-      // ]);
       const elementIndex = updatedData.findIndex(
         (object) => object.id === appData.individualCheckboxes[i]
       );
@@ -190,7 +179,6 @@ const ContextMenu = (props) => {
             const item = { ...el };
             const studentsPerGroup = Math.floor(item.numberOfStudents / count);
             const remainder = item.numberOfStudents % count;
-            console.log(studentsPerGroup, remainder);
             if (index < remainder) {
               // Если индекс группы меньше остатка, добавляем по одному студенту
               item.numberOfStudents = studentsPerGroup + 1;
@@ -201,6 +189,7 @@ const ContextMenu = (props) => {
 
             item.educator = null;
             item.id = `a${el.id}${index}a`; // Уникальный id
+            newIds.push(`a${el.id}${index}a`);
             // добавляем нугрузки в заблокированные (пока не сохранить)
             appData.setBlockedCheckboxes((prevent) => [
               ...prevent,
@@ -218,7 +207,7 @@ const ContextMenu = (props) => {
 
     //! буфер
     appData.setBufferAction([
-      { request: "splitWorkload", data: data, prevState: prev },
+      { request: "splitWorkload", data: data, prevState: prev, newIds: newIds },
       ...appData.bufferAction,
     ]);
 

@@ -10,6 +10,7 @@ import { ReactComponent as SvgChackmark } from "./../../img/checkmark.svg";
 import { ReactComponent as SvgCross } from "./../../img/cross.svg";
 
 import {
+  funcGetAllColors,
   getAllOffers,
   getAllWarnin,
   getDataAllComment,
@@ -18,6 +19,7 @@ import {
 import OfferModalWindow from "../OfferModalWindow/OfferModalWindow";
 import { returnPrevState } from "../../bufferFunction";
 import { PopUpError } from "../../ui/PopUp/PopUpError";
+import { getAllColors } from "../../api/services/ApiRequest";
 
 function TableDisciplines(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]); //заголовок обновленный для Redux сортировки
@@ -38,6 +40,7 @@ function TableDisciplines(props) {
   const [filteredData, setFilteredData] = useState([]);
   const [commentAllData, setCommentAllData] = useState([]); // все комментарии
   const [allOffersData, setAllOffersData] = useState([]);
+  const [allColorsData, setAllColorsData] = useState([]); // выделенные цветом храним id
 
   const [Highlight, setHighlight] = useState([]);
 
@@ -67,6 +70,7 @@ function TableDisciplines(props) {
       setCathedralData(data.filter((item) => item.isOid === true));
 
       getAllOffers(setAllOffersData);
+      // funcGetAllColors(setAllColorsData); // получение цветов
       appData.setIndividualCheckboxes([]);
       console.log("Таблица обноленна");
     });
@@ -156,6 +160,17 @@ function TableDisciplines(props) {
                   )
               )
             );
+          } else if (appData.bufferAction[0].request === "splitWorkload") {
+            // отмена разделения нагрузки
+            setUpdatedData(
+              updatedData.filter(
+                (item) => !appData.bufferAction[0].newIds.includes(item.id)
+              )
+            );
+            setUpdatedData((prev) => [
+              appData.bufferAction[0].prevState[0],
+              ...prev,
+            ]);
           }
         }
 
@@ -572,7 +587,6 @@ function TableDisciplines(props) {
                         key={index}
                         onContextMenu={(e) => handleContextMenu(e, index)}
                         className={`
-                          ${styles.table_tr}
                           ${
                             appData.individualCheckboxes.includes(
                               filteredData[index].id
