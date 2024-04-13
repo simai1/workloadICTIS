@@ -21,6 +21,7 @@ import eduRoute from './routes/educator.js';
 import workloadRoute from './routes/workload.js';
 import notificationRoute from './routes/notification.js';
 import offerRoute from './routes/offers.js';
+import colorRoute from './routes/color.js';
 // FIX ME
 import roleRoute from './routes/role.js';
 
@@ -55,7 +56,7 @@ const io = new Server(server, {
 })();
 
 app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(
     cookieSession({
@@ -75,6 +76,7 @@ app.use('/workload', workloadRoute);
 app.use('/auth', authRoute);
 app.use('/offers', offerRoute);
 app.use('/role', roleRoute);
+app.use('/color', colorRoute);
 
 io.on('connection', socket => {
     console.log(`socket ${socket.id} connected`);
