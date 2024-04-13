@@ -4,6 +4,8 @@ import Workload from '../models/workload.js';
 import Educator from '../models/educator.js';
 
 import WorkloadDto from '../dtos/workload-dto.js';
+import SummaryWorkload from "../models/summary-workload.js";
+import checkHours from "../utils/notification.js";
 
 export default {
     // Получение нагрузки
@@ -150,7 +152,11 @@ export default {
         if (!workloadId) throw new AppErrorMissing('workloadId');
         const workload = await Workload.findByPk(workloadId);
         if (!workload) throw new AppErrorInvalid('workload');
-        workload.update({ educatorId: null });
+
+        const sumWorkload = SummaryWorkload.findAll();
+        await checkHours(sumWorkload);
+
+        await workload.update({ educatorId: null });
         res.json({ status: 'OK' });
     },
 
