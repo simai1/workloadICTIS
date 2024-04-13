@@ -365,6 +365,14 @@ const ContextMenu = (props) => {
             Удалить преподавателя
           </button>
         </div>
+        <div>
+          <button
+            className={styles.activeStylePointer}
+            onClick={removeEducator}
+          >
+            Закрепить
+          </button>
+        </div>
 
         <div onClick={handleMouseClickPop} className={styles.blockMenuPop}>
           <button className={styles.buttonDel}>Разделить</button>
