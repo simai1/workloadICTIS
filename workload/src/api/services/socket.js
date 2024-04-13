@@ -1,8 +1,7 @@
 import socketIO from "socket.io-client";
 
 function socketConnect() {
-  // const socketUrl = "https://workload.sfedu.ru/api";
-  const socketUrl = "https://localhost:3002";
+  const socketUrl = "https://workload.sfedu.ru";
   const socket = socketIO.connect(socketUrl);
 
   return new Promise((resolve) => {
@@ -23,11 +22,3 @@ function socketConnect() {
 
 export default socketConnect;
 
-// socket.emit("message", {
-//   text: "text 1",
-//   name: " alex",
-// });
-
-// socket.on("response", (data) => {
-//   console.log("Получен ответ от сервера:", data);
-// });

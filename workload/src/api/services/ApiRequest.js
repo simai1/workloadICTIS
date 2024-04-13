@@ -232,3 +232,4 @@ export const workloadUpdata = async (data) => {
     throw error;
   }
 };
+
