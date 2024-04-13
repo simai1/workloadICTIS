@@ -10,6 +10,8 @@ import Profile from "../../components/Profile/Profile";
 import EditInput from "../../components/EditInput/EditInput";
 import DataContext from "../../context";
 import { bufferRequestToApi } from "../../bufferFunction";
+import { PopUpError } from "../../ui/PopUp/PopUpError";
+import FiltredRows from "../../ui/FiltredRows/FiltredRows";
 
 function HomePage() {
   const { appData } = React.useContext(DataContext);
@@ -122,6 +124,7 @@ function HomePage() {
                   color: "#fff",
                   borderRadius: " 8px",
                   border: "none",
+                  fontSize: "18px",
                 }}
                 onClick={onSaveClick}
               >
@@ -207,6 +210,7 @@ function HomePage() {
                   />
                 </>
               )}
+              <FiltredRows />
             </div>
 
             <div className={styles.right_button}>

@@ -1,3 +1,5 @@
+import { mapObjectKeys } from '../utils/map.js';
+
 const positions = {
     Ассистент: 1,
     'Ведущий научный сотрудник': 2,
@@ -13,10 +15,5 @@ const positions = {
 };
 
 export default positions;
-export const map = Object.keys(positions).reduce(
-    (acc, k) => ({
-        ...acc,
-        [positions[k]]: k,
-    }),
-    {}
-);
+
+export const map = mapObjectKeys(positions);

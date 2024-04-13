@@ -4,6 +4,7 @@ import EnumTypeOfEmployment from '../config/type-of-employment.js';
 import EnumDepartment from '../config/departments.js';
 import { setHours } from '../utils/educators-hours.js';
 import createSummaryWorkload from '../utils/create-summary-workload.js';
+
 export default class Educator extends Model {
     static initialize(sequelize) {
          Educator.init(
@@ -17,6 +18,10 @@ export default class Educator extends Model {
                 name: {
                     type: DataTypes.STRING,
                     allowNull: false,
+                },
+                userId: {
+                  type: DataTypes.UUID,
+                  allowNull: true,
                 },
                 position: {
                     type: DataTypes.SMALLINT,
@@ -40,16 +45,25 @@ export default class Educator extends Model {
                     type: DataTypes.REAL,
                     allowNull: false,
                     defaultValue: 0,
+                    validate: {
+                        isNumeric: true,
+                    }
                 },
                 recommendedMaxHours: {
                     type: DataTypes.REAL,
                     allowNull: false,
                     defaultValue: 0,
+                    validate: {
+                        isNumeric: true,
+                    }
                 },
                 minHours: {
                     type: DataTypes.REAL,
                     allowNull: false,
                     defaultValue: 0,
+                    validate: {
+                        isNumeric: true,
+                    }
                 },
                 department: {
                     type: DataTypes.SMALLINT,

@@ -109,11 +109,11 @@ function TableDisciplines(props) {
     const handleKeyDown = (event) => {
       //! следим за нажатием ctrl + z для отмены последнего действияы
       if (
-        event.ctrlKey &&
+        (event.ctrlKey  || event.comand ) &&
         (event.key === "z" ||
           event.key === "я" ||
           event.key === "Z" ||
-          event.key === "Я")
+          event.key === "Я" )
       ) {
         console.log("отеменено последнее действие", appData.bufferAction);
         //! отмена последнего действия
@@ -430,18 +430,16 @@ function TableDisciplines(props) {
   }
   const arrLeft = [
     widthsTableHeader[0],
-    widthsTableHeader[0] + widthsTableHeader[1],
-    widthsTableHeader[0] + widthsTableHeader[1] + widthsTableHeader[2],
+    widthsTableHeader[0] + widthsTableHeader[1] + 0.5,
+    widthsTableHeader[0] + widthsTableHeader[1] + widthsTableHeader[2] ,
   ];
 
   //! функция изменения значения td при двойном клике
   const [cellNumber, setCellNumber] = useState([]);
   const changeValueTd = (index, ind) => {
-    // console.log("изменить ", index, ind);
     if (ind === 15 || ind == 14) {
       setCellNumber({ index, ind });
     }
-    // console.log(cellNumber);
   };
   const [textareaTd, setTextareaTd] = useState("");
   const onChangeTextareaTd = (event) => {

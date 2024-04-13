@@ -1,5 +1,4 @@
 import { DataTypes, Model } from 'sequelize';
-import checkHours from '../utils/notification.js';
 
 export default class SummaryWorkload extends Model {
     static initialize(sequelize) {
@@ -16,7 +15,7 @@ export default class SummaryWorkload extends Model {
                     allowNull: false,
                     defaultValue: 0,
                 },
-                totalOidHours : {
+                totalOidHours: {
                     type: DataTypes.REAL,
                     allowNull: false,
                     defaultValue: 0,
@@ -69,12 +68,6 @@ export default class SummaryWorkload extends Model {
                 paranoid: true,
             }
         );
-
-        SummaryWorkload.afterUpdate(summaryWorkload => {
-            if(summaryWorkload.changed()) {
-                checkHours(summaryWorkload);
-            }
-        });
 
         // При обновлении нагрузки просчитывать часы
     }

@@ -1,99 +1,68 @@
-    import SummaryWorkload from '../models/summary-workload.js';
-    import Notification from '../models/notifications.js';
-    import Educator from '../models/educator.js';
-    import { EventEmitter } from 'events';
-    import ioClient from 'socket.io-client';
+import Notification from '../models/notifications.js';
+import Educator from '../models/educator.js';
+import { EventEmitter } from 'events';
+import { notificationMessages } from '../const/messages.js';
+import EducatorDto from '../dtos/educator-dto.js';
 
+const eventEmitter = new EventEmitter();
+// const eventQueue = [];
+// let isProcessing = false;
 
-    const eventEmitter = new EventEmitter();
+async function createNotification(message, educator) {
+    try {
+        const notification = await Notification.create({ message, educatorId: educator.id });
+        eventEmitter.emit('notificationCreated', { notification, educator: new EducatorDto(educator) });
+    } catch (error) {
+        console.error('Error creating notification:', error);
+    }
+}
 
-    const eventQueue = [];
+function getNotificationMessage(totalHours, minHours, maxHours, recommendedMaxHours) {
+    if (totalHours < minHours) return notificationMessages.underMin;
+    if (totalHours > maxHours) return notificationMessages.overMax;
+    if (maxHours > totalHours && totalHours > recommendedMaxHours) return notificationMessages.overRecommendedMax;
+    return null;
+}
 
-    // Создаем соединение с сервером клиента
-    const socket = ioClient('http://localhost:4000'); // Обновите порт, если вы используете другой порт для сервера клиента
-
-    export default async function checkHours(summaryWorkload) {
-        console.log('Туть');
+export default async function checkHours(summaryWorkload) {
+    try {
         const educator = await Educator.findByPk(summaryWorkload.educatorId);
-        //Create notification if Educators max and recomended hours > or < than summaryworkload totalHours
-        const maxHours = educator.maxHours;
-        const recommendedMaxHours = educator.recommendedMaxHours;
-        const minHours = educator.minHours;
-
+        const { maxHours, recommendedMaxHours, minHours } = educator;
         const totalHours = summaryWorkload.totalHours;
-        console.log('Max Hours:', maxHours);
-        console.log('Recomended Max Hours:',recommendedMaxHours);
-        console.log('Min Hours:', minHours);
-        console.log('Total Hours:', totalHours);
 
         const existingNotification = await Notification.findOne({
-            where: { educatorId: summaryWorkload.educatorId}
-        })
-    
-        if (!existingNotification && totalHours < minHours) {
-            const notification = await Notification.create({
-                message: 'Нужно увеличить нагрузку для преподавателя',
-                educatorId: summaryWorkload.educatorId,
-            });
-            console.log('Сработало тут 3');
-    
-            eventEmitter.emit('notificationCreated', { notification });
-            // Отправляем уведомление на сервер клиента
-            // socket.emit('notificationCreated', { notification });
-    
-        } else if (!existingNotification && totalHours > maxHours) {
-            const notification = await Notification.create({
-                message: 'Превышены максимальные часы для преподавателя',
-                educatorId: summaryWorkload.educatorId,
-            });
-            console.log('Сработало тут 2');
-    
-            eventEmitter.emit('notificationCreated', { notification });
-            // Отправляем уведомление на сервер клиента
-            // socket.emit('notificationCreated', { notification });
-    
-        } else if (!existingNotification && totalHours > recommendedMaxHours) {
-            const notification = await Notification.create({
-                message: 'Превышены рекомендуемые максимальные часы для преподавателя',
-                educatorId: summaryWorkload.educatorId,
-            });
-            console.log('Сработало тут');
-            eventEmitter.emit('notificationCreated', { notification });
-            // Отправляем уведомление на сервер клиента
-            // socket.emit('notificationCreated', { notification });
-    
-        } else if (existingNotification && totalHours < minHours) {
-            // Уведомление уже существует, и условия изменились - обновляем сообщение
-            existingNotification.message = 'Нужно увеличить нагрузку для преподавателя';
-            await existingNotification.save();
-            console.log('Уведомление обновлено', existingNotification);
-            eventEmitter.emit('notificationCreated', { existingNotification });
+            where: { educatorId: summaryWorkload.educatorId },
+            attributes: { exclude: ['EducatorId'] },
+        });
 
-    
-        } else if (existingNotification && totalHours > maxHours) {
-            // Уведомление уже существует, и условия изменились - обновляем сообщение
-            existingNotification.message = 'Превышены максимальные часы для преподавателя';
-            await existingNotification.save();
-            console.log('Уведомление обновлено', existingNotification);
-            eventEmitter.emit('notificationCreated', { existingNotification });
+        const notificationMessage = getNotificationMessage(totalHours, minHours, maxHours, recommendedMaxHours);
 
-    
-        } else if (existingNotification && totalHours > recommendedMaxHours) {
-            // Уведомление уже существует, и условия изменились - обновляем сообщение
-            existingNotification.message = 'Превышены рекомендуемые максимальные часы для преподавателя';
-            await existingNotification.save();
-            console.log('Уведомление обновлено', existingNotification);
-            eventEmitter.emit('notificationCreated', { existingNotification });
-
+        if (existingNotification) {
+            // Если есть уведомление и условия не соблюдаются, удаляем его
+            if (!notificationMessage) {
+                eventEmitter.emit('notificationCreated', 'Уведомление удалено');
+                await existingNotification.destroy({ force: true });
+            }
+        } else {
+            // Если нет уведомления и условия не соблюдаются, создаем новое уведомление
+            if (notificationMessage) {
+                createNotification(notificationMessage, educator);
+            }
         }
+
+        // Обработка изменения условий в существующем уведомлении
+        if (existingNotification && notificationMessage) {
+            const existingMessage = existingNotification.message;
+
+            if (existingMessage !== notificationMessage) {
+                existingNotification.message = notificationMessage;
+                await existingNotification.save();
+                eventEmitter.emit('notificationCreated', { existingNotification, educator: new EducatorDto(educator) });
+            }
+        }
+    } catch (error) {
+        console.error('Ошибка в checkHours:', error);
     }
+}
 
-
-    eventEmitter.on('notificationCreated', eventData => {
-        eventQueue.push(eventData);
-        // const messageValue = eventQueue.length;
-        socket.emit('notificationCreated', eventData);
-        // console.log('Message Value:', messageValue);
-    });
-    
-    export { eventEmitter }; // Export eventEmitter for use in other parts of your application
+export { eventEmitter };

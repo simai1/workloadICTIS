@@ -1,4 +1,6 @@
-export default {
+import { mapObjectKeys } from '../utils/map.js';
+
+const departments = {
     БИТ: 1,
     ВМ: 2,
     ВТ: 3,
@@ -11,3 +13,7 @@ export default {
     САПР: 10,
     СиПУ: 11,
 };
+
+export default departments;
+
+export const map = mapObjectKeys(departments);
