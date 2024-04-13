@@ -4,7 +4,7 @@ function socketConnect() {
   const socketUrl = "https://workload.sfedu.ru:80/authoff";
   //const socketUrl = "http://localhost:80";
   const socket = socketIO.connect(socketUrl);
-  
+
   return new Promise((resolve) => {
     socket.on("connect", (data) => {
       console.log("Получен ответ от сервера:", data);
