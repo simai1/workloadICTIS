@@ -41,7 +41,7 @@ function TableDisciplines(props) {
   const [sortData, setSortData] = useState([]); // данные при выборе высе дисциплины измененные выделенные и тд
   const [commentAllData, setCommentAllData] = useState([]); // все комментарии
   const [allOffersData, setAllOffersData] = useState([]);
-  // const [allColorsData, setAllColorsData] = useState([]); // выделенные цветом храним id
+  const [allColorsData, setAllColorsData] = useState([]); // выделенные цветом храним id
 
   const [Highlight, setHighlight] = useState([]); // массив хранения выделенных цветом (хранится id нагрузки и номер цвета)
 
@@ -52,9 +52,25 @@ function TableDisciplines(props) {
 
   const [generalInstituteData, setGeneralInstituteData] = useState([]); // общеинститутские данные
   const [cathedralData, setCathedralData] = useState([]); // кафедральыне данные
-
+  const [changeNumberOfStudents, setChangeNumberOfStudents] = useState([]); // храним id нагрузок у которых изменили количество студентво
+  const [changeHours, setChangHours] = useState([]); // храним id нагрузок у которых изменили час
   //! данные вытянутые из контекста
   const { appData } = React.useContext(DataContext);
+
+  useEffect(() => {
+    setChangeNumberOfStudents(
+      appData.bufferAction
+        .filter((item) => item.data.key === "numberOfStudents")
+        .map((el) => el.data.id)
+    );
+    setChangHours(
+      appData.bufferAction
+        .filter((item) => item.data.key === "hours")
+        .map((el) => el.data.id)
+    );
+  }, [appData.bufferAction]);
+
+  console.log("changeNumberOfStudents", changeNumberOfStudents);
 
   const getDataTableAll = () => {
     getDataTable().then((data) => {
@@ -88,7 +104,7 @@ function TableDisciplines(props) {
     if (props.SelectedText === "Все дисциплины") {
       setSortData(updatedData);
     }
-  }, [props.SelectedText]);
+  }, [props.SelectedText, updatedData]);
 
   //! при изменении SortData обновим таблицу
   useEffect(() => {
@@ -762,6 +778,23 @@ function TableDisciplines(props) {
                             <div
                               className={styles.td_inner}
                               onDoubleClick={() => changeValueTd(index, ind)}
+                              style={
+                                changeNumberOfStudents.some(
+                                  (el) => el === row.id
+                                ) &&
+                                updatedHeader[ind].key === "numberOfStudents"
+                                  ? {
+                                      backgroundColor: "rgb(255 135 135)",
+                                      borderRadius: "8px",
+                                    }
+                                  : changeHours.some((el) => el === row.id) &&
+                                    updatedHeader[ind].key === "hours"
+                                  ? {
+                                      backgroundColor: "rgb(255 135 135)",
+                                      borderRadius: "8px",
+                                    }
+                                  : null
+                              }
                             >
                               {/* редактирование поля нагрузки при двойном клике на нее */}
                               {cellNumber &&
