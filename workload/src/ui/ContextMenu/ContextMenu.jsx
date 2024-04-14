@@ -425,7 +425,7 @@ const ContextMenu = (props) => {
           </button>
         </div>
         {/* выделение меню */}
-        {/* <div className={styles.blockMenuPop}  onClick={ClickHighlightshov}>
+        <div className={styles.blockMenuPop} onClick={ClickHighlightshov}>
           <button className={styles.buttonDel}>Выделить</button>
 
           {Highlightshow && (
@@ -434,8 +434,7 @@ const ContextMenu = (props) => {
           {!Highlightshow && (
             <img src={arrow} alt=">" className={styles.imgClose} />
           )}
-
-        </div> */}
+        </div>
       </div>
       {showSubMenu && (
         <SubMenu
@@ -452,13 +451,9 @@ const ContextMenu = (props) => {
         />
       )}
       {/* выделение меню */}
-      {/* {( Highlightshow &&(
-        <Highlight
-          menuPosition={menuPosition}
-          SetColor={SetColor}
-        />
-              )
-        )} */}
+      {Highlightshow && (
+        <Highlight menuPosition={menuPosition} SetColor={SetColor} />
+      )}
     </div>
   );
 };

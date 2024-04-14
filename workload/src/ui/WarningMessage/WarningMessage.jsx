@@ -2,7 +2,6 @@ import React from "react";
 import styles from "./WarningMessage.module.scss";
 import arrow from "./../../img/arrow.svg";
 const WarningMessage = (props) => {
-  console.log(props.item);
   return (
     <li>
       <div className={styles.nameWarnName}>

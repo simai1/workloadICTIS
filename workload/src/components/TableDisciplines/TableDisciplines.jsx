@@ -38,11 +38,12 @@ function TableDisciplines(props) {
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 }); //меню
   const [tableData, setTableData] = useState([]); // соберем из данных апи общие для таблицы
   const [filteredData, setFilteredData] = useState([]);
+  const [sortData, setSortData] = useState([]); // данные при выборе высе дисциплины измененные выделенные и тд
   const [commentAllData, setCommentAllData] = useState([]); // все комментарии
   const [allOffersData, setAllOffersData] = useState([]);
-  const [allColorsData, setAllColorsData] = useState([]); // выделенные цветом храним id
+  // const [allColorsData, setAllColorsData] = useState([]); // выделенные цветом храним id
 
-  const [Highlight, setHighlight] = useState([]);
+  const [Highlight, setHighlight] = useState([]); // массив хранения выделенных цветом (хранится id нагрузки и номер цвета)
 
   const [modalWindowOffer, setModalWindowOffer] = useState({
     id: null,
@@ -54,6 +55,7 @@ function TableDisciplines(props) {
 
   //! данные вытянутые из контекста
   const { appData } = React.useContext(DataContext);
+
   const getDataTableAll = () => {
     getDataTable().then((data) => {
       appData.setWorkload(data);
@@ -65,7 +67,7 @@ function TableDisciplines(props) {
 
       setUpdatedData(dataIsOid);
       setFilteredData(dataIsOid);
-
+      setSortData(dataIsOid);
       setGeneralInstituteData(data.filter((item) => item.isOid === false));
       setCathedralData(data.filter((item) => item.isOid === true));
 
@@ -76,7 +78,24 @@ function TableDisciplines(props) {
     });
   };
 
-  //! обновляем таблице если перешли между кафедральным и общенститутским
+  //! фильтрация при выборе всех дисциплин измененных выделенных и тд
+  useEffect(() => {
+    if (props.SelectedText === "Выделенные") {
+      setSortData(
+        updatedData.filter((item) => Highlight.some((el) => el.id === item.id))
+      );
+    }
+    if (props.SelectedText === "Все дисциплины") {
+      setSortData(updatedData);
+    }
+  }, [props.SelectedText]);
+
+  //! при изменении SortData обновим таблицу
+  useEffect(() => {
+    setFilteredData(sortData);
+  }, [sortData]);
+
+  //! обновляем таблицу если перешли между кафедральным и общенститутским
   useEffect(() => {
     if (props.tableMode === "genInstitute") {
       setUpdatedData(generalInstituteData);
@@ -109,11 +128,11 @@ function TableDisciplines(props) {
     const handleKeyDown = (event) => {
       //! следим за нажатием ctrl + z для отмены последнего действияы
       if (
-        (event.ctrlKey  || event.comand ) &&
+        (event.ctrlKey || event.comand) &&
         (event.key === "z" ||
           event.key === "я" ||
           event.key === "Z" ||
-          event.key === "Я" )
+          event.key === "Я")
       ) {
         console.log("отеменено последнее действие", appData.bufferAction);
         //! отмена последнего действия
@@ -351,10 +370,6 @@ function TableDisciplines(props) {
     ];
   }, []);
 
-  // const handleComponentChange = (component) => {
-  //   setSelectedComponent(component);
-  // };
-
   //! работа с таблицами через REDUX
   const dispatch = useDispatch();
   const filters = useSelector((state) => state.filters);
@@ -385,9 +400,9 @@ function TableDisciplines(props) {
   useEffect(() => {
     let fd;
     if (props.searchTerm === "") {
-      fd = updatedData;
+      fd = sortData;
     } else {
-      fd = updatedData.filter((row) => {
+      fd = sortData.filter((row) => {
         return Object.values(row).some(
           (value) =>
             value !== null &&
@@ -430,16 +445,18 @@ function TableDisciplines(props) {
   }
   const arrLeft = [
     widthsTableHeader[0],
-    widthsTableHeader[0] + widthsTableHeader[1] + 0.5,
-    widthsTableHeader[0] + widthsTableHeader[1] + widthsTableHeader[2] ,
+    widthsTableHeader[0] + widthsTableHeader[1],
+    widthsTableHeader[0] + widthsTableHeader[1] + widthsTableHeader[2],
   ];
 
   //! функция изменения значения td при двойном клике
   const [cellNumber, setCellNumber] = useState([]);
   const changeValueTd = (index, ind) => {
+    // console.log("изменить ", index, ind);
     if (ind === 15 || ind == 14) {
       setCellNumber({ index, ind });
     }
+    // console.log(cellNumber);
   };
   const [textareaTd, setTextareaTd] = useState("");
   const onChangeTextareaTd = (event) => {
