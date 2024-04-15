@@ -6,6 +6,7 @@ import {
   Educator,
   EducatorLK,
   Workload,
+  getAllColors,
   getAllWarningMessage,
   getOffers,
 } from "./ApiRequest";
@@ -63,5 +64,13 @@ export function getAllOffers(setAllOffersData) {
   getOffers().then((data) => {
     console.log("Предложения", data);
     setAllOffersData(data);
+  });
+}
+
+//! функция получения всех предложений
+export function funcGetAllColors(setAllColorsData) {
+  getAllColors().then((data) => {
+    console.log("allColors", data);
+    setAllColorsData(data);
   });
 }

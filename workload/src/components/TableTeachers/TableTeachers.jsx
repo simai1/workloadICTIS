@@ -9,10 +9,8 @@ import { getDataEducator } from "../../api/services/AssignApiData";
 function TableTeachers(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]);
   const [updatedData, setUpdatedData] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
   // const [clickedName, setClickedName] = useState("");
   const [filteredData, setFilteredData] = useState([]);
-  const [tableData, setTableData] = useState([]); // соберем из аднных апи общие данные
   const { appData } = React.useContext(DataContext);
 
   useEffect(() => {
@@ -69,33 +67,21 @@ function TableTeachers(props) {
     setUpdatedHeader(updatedHeader);
     setUpdatedData(updatedData);
   }
-  // const handleSearch = (event) => {
-  //   const searchTerm = event.target.value;
-  //   setSearchTerm(searchTerm);
-  //   let fd;
-  //   if (searchTerm === "") {
-  //     fd = updatedData;
-  //   } else {
-  //     fd = updatedData.filter((row) => {
-  //       return Object.values(row).some((value) =>
-  //         value.toString().toLowerCase().includes(searchTerm.toLowerCase())
-  //       );
-  //     });
-  //   }
-  //   setFilteredData(fd);
-  // };
+
   React.useEffect(() => {
     let fd;
     if (props.searchTerm === "") {
       fd = updatedData;
     } else {
       fd = updatedData.filter((row) => {
-        return Object.values(row).some((value) =>
-          value
-            .toString()
-            .toLowerCase()
-            .includes(props.searchTerm.toLowerCase())
-        );
+        return Object.values(row)
+          .splice(1)
+          .some((value) =>
+            value
+              .toString()
+              .toLowerCase()
+              .includes(props.searchTerm.toLowerCase())
+          );
       });
     }
     setFilteredData(fd);
@@ -103,22 +89,6 @@ function TableTeachers(props) {
 
   return (
     <div className={styles.TableTeachers}>
-      {/* <div className={styles.tabledisciplinesMain_search}>
-        <input
-          id="searchTableTeachers"
-          type="text"
-          placeholder="Поиск"
-          value={searchTerm}
-          onChange={handleSearch}
-          className={styles.search}
-        />
-        <img src="./img/search.svg"></img>
-      </div> */}
-      {/* 
-      <div className={styles.EditInput}>
-        <EditInput tableHeaders={tableHeaders} />
-      </div> */}
-
       <div className={styles.TableTeachers__inner}>
         <table className={styles.TableTeachers}>
           <thead>

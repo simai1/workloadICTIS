@@ -79,21 +79,35 @@ export async function bufferRequestToApi(buffer) {
   }
   return count === buffer.length;
 }
-
+/////////////////////////////////////////////////
 //! возвращение предыдущего стостояния таблицы
 export async function returnPrevState(buffer, data) {
-  console.log("пред сост буфера", buffer[0]);
-  if ("removeEducatorinWorkload") {
-    let prev = buffer[0].prevState;
-    if (buffer[0].prevState === "null") {
-      prev = 0;
-    }
-    const newFilteredData = data.map((item) => {
+  console.log("пред сост буфера", buffer);
+  let prev = buffer[0].prevState;
+  if (buffer[0].prevState === null) {
+    prev = 0;
+  }
+  //! добавление удаление преподавателя
+  if (
+    buffer[0].request === "removeEducatorinWorkload" ||
+    buffer[0].request === "addEducatorWorkload"
+  ) {
+    const newUpdatedData = data.map((item) => {
       if (item.id === buffer[0].data.workloadId) {
-        return { ...item, educator: buffer[0].prevState };
+        return { ...item, educator: prev };
       }
       return item;
     });
-    return newFilteredData;
+    return newUpdatedData;
+  }
+  //! изменение данных нагрузки
+  else if (buffer[0].request === "workloadUpdata") {
+    const newUpdatedData = data.map((item) => {
+      if (item.id === buffer[0].data.id) {
+        return { ...item, [buffer[0].data.key]: prev };
+      }
+      return item;
+    });
+    return newUpdatedData;
   }
 }
