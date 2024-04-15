@@ -523,10 +523,11 @@ function TableDisciplines(props) {
   const [textareaTd, setTextareaTd] = useState("");
   const onChangeTextareaTd = (event) => {
     setTextareaTd(event.target.value);
+    console.log(event.target.value);
   };
 
   const onClickButton = (id, key) => {
-    let parsedValue = textareaTd.replace(/\D/g, "");
+    let parsedValue = parseFloat(textareaTd);
     let numberValue = isNaN(parsedValue) ? textareaTd : parsedValue;
     //! параметры запроса на изменение данных
     const data = { id: id, key: key.key, value: numberValue };
@@ -547,6 +548,7 @@ function TableDisciplines(props) {
         ...appData.bufferAction,
       ]);
     setCellNumber([]);
+    setTextareaTd(null);
   };
   //! содержимое
   return (
@@ -858,10 +860,14 @@ function TableDisciplines(props) {
                                     onChange={onChangeTextareaTd}
                                   ></textarea>
                                   <div className={styles.svg_textarea}>
-                                    <SvgChackmark
-                                      className={styles.SvgChackmark_green}
-                                      onClick={() => onClickButton(row.id, key)}
-                                    />
+                                    {textareaTd?.trim() && (
+                                      <SvgChackmark
+                                        className={styles.SvgChackmark_green}
+                                        onClick={() =>
+                                          onClickButton(row.id, key)
+                                        }
+                                      />
+                                    )}
                                     <SvgCross
                                       onClick={() => {
                                         setCellNumber([]);
