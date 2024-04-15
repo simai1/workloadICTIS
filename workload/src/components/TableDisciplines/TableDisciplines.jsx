@@ -56,6 +56,7 @@ function TableDisciplines(props) {
   const [changeNumberOfStudents, setChangeNumberOfStudents] = useState([]); // храним id нагрузок у которых изменили количество студентво
   const [changeHours, setChangHours] = useState([]); // храним id нагрузок у которых изменили час
   const [changeEducator, setChangEducator] = useState([]); // храним id нагрузок у которых изменили преподавателя
+  const [allChangeData, setAllChangeData] = useState([]); // все измененные данные
   //! данные вытянутые из контекста
   const { appData } = React.useContext(DataContext);
 
@@ -63,12 +64,12 @@ function TableDisciplines(props) {
   useEffect(() => {
     setChangeNumberOfStudents(
       appData.bufferAction
-        .filter((item) => item.data.key === "numberOfStudents")
+        .filter((item) => item.data?.key === "numberOfStudents")
         .map((el) => el.data.id)
     );
     setChangHours(
       appData.bufferAction
-        .filter((item) => item.data.key === "hours")
+        .filter((item) => item.data?.key === "hours")
         .map((el) => el.data.id)
     );
     setChangEducator(
@@ -77,6 +78,15 @@ function TableDisciplines(props) {
         .map((el) => el.data.workloadId)
     );
   }, [appData.bufferAction]);
+
+  useEffect(() => {
+    setAllChangeData([
+      ...changeEducator,
+      ...changeHours,
+      ...changeNumberOfStudents,
+    ]);
+  }, [changeEducator, changeHours, changeNumberOfStudents]);
+  console.log("allChange", allChangeData);
 
   const getDataTableAll = () => {
     getDataTable().then((data) => {
@@ -156,6 +166,11 @@ function TableDisciplines(props) {
     }
     if (props.SelectedText === "Все дисциплины") {
       setSortData(updatedData);
+    }
+    if (props.SelectedText === "Измененные") {
+      setSortData(
+        updatedData.filter((item) => allChangeData.some((el) => el === item.id))
+      );
     }
   }, [props.SelectedText, updatedData]);
 
@@ -259,6 +274,18 @@ function TableDisciplines(props) {
               appData.bufferAction[0].prevState[0],
               ...prev,
             ]);
+          } else if (appData.bufferAction[0].request === "workloadUpdata") {
+            //отмена изменения даннных textarea
+            const newData = [...updatedData];
+            newData.map((item) => {
+              if (item.id === appData.bufferAction[0].data.id) {
+                item[appData.bufferAction[0].data.key] =
+                  appData.bufferAction[0].prevState;
+              }
+              return item;
+            });
+            setUpdatedData([...newData]);
+            appData.setBufferAction((prevItems) => prevItems.slice(1));
           }
         }
 
@@ -285,6 +312,7 @@ function TableDisciplines(props) {
   const refHoverd = useRef(null);
   const refOffer = useRef(null);
   const refContextMenu = useRef(null);
+  const refTextArea = useRef(null);
   useEffect(() => {
     const handler = (event) => {
       if (refSP.current && !refSP.current.contains(event.target)) {
@@ -307,6 +335,10 @@ function TableDisciplines(props) {
         !refContextMenu.current.contains(event.target)
       ) {
         setShowMenu(false);
+      }
+      if (refTextArea.current && !refTextArea.current.contains(event.target)) {
+        setCellNumber(null);
+        setTextareaTd(null);
       }
     };
 
@@ -525,10 +557,11 @@ function TableDisciplines(props) {
   const [textareaTd, setTextareaTd] = useState("");
   const onChangeTextareaTd = (event) => {
     setTextareaTd(event.target.value);
+    console.log(event.target.value);
   };
 console.log(appData.fileData)
   const onClickButton = (id, key) => {
-    let parsedValue = textareaTd.replace(/\D/g, "");
+    let parsedValue = parseFloat(textareaTd);
     let numberValue = isNaN(parsedValue) ? textareaTd : parsedValue;
     //! параметры запроса на изменение данных
     const data = { id: id, key: key.key, value: numberValue };
@@ -549,6 +582,7 @@ console.log(appData.fileData)
         ...appData.bufferAction,
       ]);
     setCellNumber([]);
+    setTextareaTd(null);
   };
   //! содержимое
   return (
@@ -852,7 +886,10 @@ console.log(appData.fileData)
                               {cellNumber &&
                               cellNumber.index === index &&
                               cellNumber.ind === ind ? (
-                                <div className={styles.textarea_title}>
+                                <div
+                                  className={styles.textarea_title}
+                                  ref={refTextArea}
+                                >
                                   <textarea
                                     className={styles.textarea}
                                     type="text"
@@ -860,10 +897,14 @@ console.log(appData.fileData)
                                     onChange={onChangeTextareaTd}
                                   ></textarea>
                                   <div className={styles.svg_textarea}>
-                                    <SvgChackmark
-                                      className={styles.SvgChackmark_green}
-                                      onClick={() => onClickButton(row.id, key)}
-                                    />
+                                    {textareaTd?.trim() && (
+                                      <SvgChackmark
+                                        className={styles.SvgChackmark_green}
+                                        onClick={() =>
+                                          onClickButton(row.id, key)
+                                        }
+                                      />
+                                    )}
                                     <SvgCross
                                       onClick={() => {
                                         setCellNumber([]);
