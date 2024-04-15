@@ -28,26 +28,19 @@ function TableLks(props) {
 
   const tableHeaders = useMemo(() => {
     return [
-      { key: "id", label: "№" },
-      { key: "discipline", label: "Дисциплина" },
       { key: "workload", label: "Нагрузка" },
-      { key: "groups", label: "Группа" },
       { key: "department", label: "Кафедра" },
-      { key: "block", label: "Блок" },
-      { key: "semester", label: "Семестр" },
-      { key: "period", label: "Период" },
-      { key: "curriculum", label: "Учебный план" },
+      { key: "type", label: "Тип" },
       { key: "curriculumUnit", label: "Подразделение учебного плана" },
-      { key: "formOfEducation", label: "Форма обучения" },
-      { key: "levelOfTraining", label: "Уровень подготовки" },
       {
         key: "specialty",
         label: "Направление подготовки (специальность)",
       },
-      { key: "core", label: "Профиль" },
-      { key: "numberOfStudents", label: "Количество студентов" },
       { key: "hours", label: "Часы" },
       { key: "audienceHours", label: "Аудиторные часы" },
+      { key: "hoursFirstPeriod", label: "Часы период 1" },
+      { key: "hoursSecondPeriod", label: "Часы период 2" },
+      { key: "hoursWithoutPeriod", label: "Часы период 3" },
     ];
   }, []);
 
@@ -103,8 +96,6 @@ function TableLks(props) {
     }
     return bg;
   }
-
-  console.log(BackgroundColorHours);
 
   return (
     <div>

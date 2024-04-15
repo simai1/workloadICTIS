@@ -340,11 +340,19 @@ const ContextMenu = (props) => {
       className={styles.ContextMenu}
     >
       <div
-        style={{
-          position: "fixed",
-          top: menuPosition.y,
-          left: menuPosition.x,
-        }}
+        style={
+          menuPosition.y + 320 > window.innerHeight
+            ? {
+                position: "fixed",
+                top: menuPosition.y - 320,
+                left: menuPosition.x,
+              }
+            : {
+                position: "fixed",
+                top: menuPosition.y,
+                left: menuPosition.x,
+              }
+        }
         className={styles.blockMenu}
       >
         <div className={styles.blockMenuPop} onClick={addEducator}>
