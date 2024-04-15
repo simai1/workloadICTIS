@@ -12,6 +12,7 @@ function App() {
   const [allWarningMessage, setAllWarningMessage] = useState([]);
   const [individualCheckboxes, setIndividualCheckboxes] = useState([]); //чекбоксы таблицы
   const [blockedCheckboxes, setBlockedCheckboxes] = useState([]); //чекбоксы таблицы
+  const [fileData, setFileData] = useState(null)
 
   //! данные пользователя ! изменить
   const myProfile = {
@@ -40,6 +41,8 @@ function App() {
     bufferAction,
     setBufferAction,
     myProfile,
+    fileData,
+    setFileData
   };
 
   useEffect(() => {

@@ -10,7 +10,6 @@ import Profile from "../../components/Profile/Profile";
 import EditInput from "../../components/EditInput/EditInput";
 import DataContext from "../../context";
 import { bufferRequestToApi } from "../../bufferFunction";
-import { PopUpError } from "../../ui/PopUp/PopUpError";
 import FiltredRows from "../../ui/FiltredRows/FiltredRows";
 import { getDataTable } from "../../api/services/AssignApiData";
 
@@ -24,7 +23,6 @@ function HomePage() {
   const [searchTerm, setSearchTerm] = useState(""); //поиск по таблице
   const [onenModalWind, setOpenModalWind] = useState(false); // переменная закрытия модального окна профиля
   const refProfile = React.useRef(null); // ссылка на модальное окно профиля
-
   const [educatorIdforLk, setEducatorIdforLk] = useState(""); // id для вывода LK, если пустое то LK не отображается
   const [SelectedText, setSelectedText] = useState("Все дисциплины"); // текст в FiltredRows
   const handleButtonClick = () => {
@@ -105,11 +103,14 @@ function HomePage() {
   const handleFileUpload = () => {
     fileInputRef.current.click();
   };
-
+  const handleFileClear = () =>{
+    fileInputRef.current.value = null
+  }
   const handleFileChange = () => {
     const file = fileInputRef.current.files[0];
     // Здесь можно выполнить дополнительную обработку загруженного файла
     console.log("Выбранный файл:", file);
+    appData.setFileData(file)
   };
 
   return (
@@ -245,6 +246,7 @@ function HomePage() {
         <div className={styles.Block__tables}>
           {selectedComponent === "Disciplines" ? (
             <TableDisciplines
+              handleFileClear={handleFileClear}
               tableMode={tableMode}
               tableHeaders={tableHeaders}
               searchTerm={searchTerm}

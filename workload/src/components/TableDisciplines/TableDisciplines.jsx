@@ -20,6 +20,7 @@ import OfferModalWindow from "../OfferModalWindow/OfferModalWindow";
 import { returnPrevState } from "../../bufferFunction";
 import { PopUpError } from "../../ui/PopUp/PopUpError";
 import { EducatorLK, getAllColors } from "../../api/services/ApiRequest";
+import { PopUpFile } from "../../ui/PopUpFile/PopUpFile";
 
 function TableDisciplines(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]); //заголовок обновленный для Redux сортировки
@@ -29,6 +30,7 @@ function TableDisciplines(props) {
   const [sortData, setSortData] = useState([]); // данные при выборе высе дисциплины измененные выделенные и тд
   const [isHovered, setIsHovered] = useState(false); // флаг открытия уведомлений от преподавателей
   const [isPopUpMenu, setIsPopUpMenu] = useState(false); // флаг открытия PopUp меню
+  const [isPopUpFile, setIsPopUpFile] = useState(false); // флаг открытия PopUp меню
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [positionFigth, setPositionFigth] = useState({ x: 0, y: 0 });
   const [idRow, setIdrow] = useState(0);
@@ -507,7 +509,7 @@ function TableDisciplines(props) {
   }
   const arrLeft = [
     widthsTableHeader[0],
-    widthsTableHeader[0] + widthsTableHeader[1],
+    widthsTableHeader[0] + widthsTableHeader[1] + 0.5,
     widthsTableHeader[0] + widthsTableHeader[1] + widthsTableHeader[2],
   ];
 
@@ -524,7 +526,7 @@ function TableDisciplines(props) {
   const onChangeTextareaTd = (event) => {
     setTextareaTd(event.target.value);
   };
-
+console.log(appData.fileData)
   const onClickButton = (id, key) => {
     let parsedValue = textareaTd.replace(/\D/g, "");
     let numberValue = isNaN(parsedValue) ? textareaTd : parsedValue;
@@ -892,6 +894,7 @@ function TableDisciplines(props) {
       <div className={styles.Block__tables__shadow}></div>
 
       {isPopUpMenu && <PopUpError setIsPopUpMenu={setIsPopUpMenu} />}
+      {appData.fileData !== null && <PopUpFile setIsPopUpFile={setIsPopUpFile} handleFileClear={props.handleFileClear}/>}
     </div>
   );
 }

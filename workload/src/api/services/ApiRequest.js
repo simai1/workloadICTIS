@@ -243,3 +243,15 @@ export const getAllColors = async () => {
     throw error;
   }
 };
+
+export const SubmitFileXLSX = async (data) => {
+  console.log("файл ", data);
+  try {
+    const response = await axios.post(`${server}/parser/uploadWorkload`, data);
+    console.log("response ", response);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
