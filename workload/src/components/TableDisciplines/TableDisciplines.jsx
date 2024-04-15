@@ -19,12 +19,14 @@ import {
 import OfferModalWindow from "../OfferModalWindow/OfferModalWindow";
 import { returnPrevState } from "../../bufferFunction";
 import { PopUpError } from "../../ui/PopUp/PopUpError";
-import { getAllColors } from "../../api/services/ApiRequest";
+import { EducatorLK, getAllColors } from "../../api/services/ApiRequest";
 
 function TableDisciplines(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]); //заголовок обновленный для Redux сортировки
   const [updatedData, setUpdatedData] = useState([]); //массив обновленный для Redux сортировки
-  // const [selectedComponent, setSelectedComponent] = useState("cathedrals"); //выбранный компонент
+  const [tableData, setTableData] = useState([]); // соберем из данных апи общие для таблицы
+  const [filteredData, setFilteredData] = useState([]);
+  const [sortData, setSortData] = useState([]); // данные при выборе высе дисциплины измененные выделенные и тд
   const [isHovered, setIsHovered] = useState(false); // флаг открытия уведомлений от преподавателей
   const [isPopUpMenu, setIsPopUpMenu] = useState(false); // флаг открытия PopUp меню
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -36,9 +38,6 @@ function TableDisciplines(props) {
   const [isChecked, setChecked] = useState([]);
   const [showMenu, setShowMenu] = useState(false); //меню
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 }); //меню
-  const [tableData, setTableData] = useState([]); // соберем из данных апи общие для таблицы
-  const [filteredData, setFilteredData] = useState([]);
-  const [sortData, setSortData] = useState([]); // данные при выборе высе дисциплины измененные выделенные и тд
   const [commentAllData, setCommentAllData] = useState([]); // все комментарии
   const [allOffersData, setAllOffersData] = useState([]);
   const [allColorsData, setAllColorsData] = useState([]); // выделенные цветом храним id
@@ -54,9 +53,11 @@ function TableDisciplines(props) {
   const [cathedralData, setCathedralData] = useState([]); // кафедральыне данные
   const [changeNumberOfStudents, setChangeNumberOfStudents] = useState([]); // храним id нагрузок у которых изменили количество студентво
   const [changeHours, setChangHours] = useState([]); // храним id нагрузок у которых изменили час
+  const [changeEducator, setChangEducator] = useState([]); // храним id нагрузок у которых изменили преподавателя
   //! данные вытянутые из контекста
   const { appData } = React.useContext(DataContext);
 
+  // при изменении количесвтва студентов или часов id этих нагрузок будут записываться в состояние а затем выделяться цветом
   useEffect(() => {
     setChangeNumberOfStudents(
       appData.bufferAction
@@ -68,9 +69,12 @@ function TableDisciplines(props) {
         .filter((item) => item.data.key === "hours")
         .map((el) => el.data.id)
     );
+    setChangEducator(
+      appData.bufferAction
+        .filter((item) => item.request === "addEducatorWorkload")
+        .map((el) => el.data.workloadId)
+    );
   }, [appData.bufferAction]);
-
-  console.log("changeNumberOfStudents", changeNumberOfStudents);
 
   const getDataTableAll = () => {
     getDataTable().then((data) => {
@@ -93,6 +97,53 @@ function TableDisciplines(props) {
       console.log("Таблица обноленна");
     });
   };
+
+  //! заносим данные в состояния
+  useEffect(() => {
+    getDataTableAll();
+    setTableData(appData.workload);
+    getDataAllComment(setCommentAllData); // получение комментариев
+    getAllWarnin(appData.setAllWarningMessage); // предупреждения
+    getAllOffers(setAllOffersData); // предложения
+  }, []);
+
+  //! при изменении буфера
+  // useEffect(() => {
+  //   setUpdatedData([...appData.workload]);
+  //   setGeneralInstituteData(
+  //     appData.workload.filter((item) => item.isOid === false)
+  //   );
+  //   setCathedralData(appData.workload.filter((item) => item.isOid === true));
+  //   console.log("appData.bufferAction", appData.bufferAction);
+  //   for (var i = appData.bufferAction.length - 1; i >= 0; i--) {
+  //     console.log("setUpdatedData", i);
+  //     if (appData.bufferAction[i].request === "workloadUpdata") {
+  //       const updatedArray = updatedData.map((item) => {
+  //         if (item.id === appData.bufferAction[i].data.id) {
+  //           return {
+  //             ...item,
+  //             [appData.bufferAction[i].data.key]:
+  //               appData.bufferAction[i].data.value,
+  //           };
+  //         }
+  //         return item;
+  //       });
+  //       setUpdatedData([...updatedArray]);
+  //     }
+  //     if (appData.bufferAction[i].request === "addEducatorWorkload") {
+  //       EducatorLK(appData.bufferAction[i].data.educatorId).then((dataReq) => {
+  //         const newUpdatedData = updatedData.map((object) => {
+  //           if (object.id === appData.individualCheckboxes[0]) {
+  //             return { ...object, educator: dataReq.name };
+  //           }
+  //           return object;
+  //         });
+  //         // newUpdatedData.map((item) => console.log("name", item.educator));
+  //         setUpdatedData([...newUpdatedData]);
+  //       });
+  //     }
+  //   }
+  // }, [appData.bufferAction]);
 
   //! фильтрация при выборе всех дисциплин измененных выделенных и тд
   useEffect(() => {
@@ -217,15 +268,6 @@ function TableDisciplines(props) {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [appData.bufferAction]);
-
-  //! заносим данные в состояния
-  useEffect(() => {
-    getDataTableAll();
-    setTableData(appData.workload);
-    getDataAllComment(setCommentAllData); // получение комментариев
-    getAllWarnin(appData.setAllWarningMessage); // предупреждения
-    getAllOffers(setAllOffersData); // предложения
-  }, []);
 
   //! сортировака (по hedars) пришедших данных из апи
   useEffect(() => {
@@ -438,7 +480,11 @@ function TableDisciplines(props) {
     e.preventDefault();
     // console.log(index);
     setShowMenu(!showMenu);
-    setMenuPosition({ x: e.clientX, y: e.clientY });
+    if (e.clientX + 260 > window.innerWidth) {
+      setMenuPosition({ x: e.clientX - 260, y: e.clientY });
+    } else {
+      setMenuPosition({ x: e.clientX, y: e.clientY });
+    }
   };
 
   //! расчет left для статических блоков таблицы
@@ -480,29 +526,26 @@ function TableDisciplines(props) {
   };
 
   const onClickButton = (id, key) => {
-    const parsedValue = Number(textareaTd);
-    const numberValue = isNaN(parsedValue) ? textareaTd : parsedValue;
-    //! отпрака запроса на изменение данных
+    let parsedValue = textareaTd.replace(/\D/g, "");
+    let numberValue = isNaN(parsedValue) ? textareaTd : parsedValue;
+    //! параметры запроса на изменение данных
     const data = { id: id, key: key.key, value: numberValue };
-    console.log("Изменение данных таблицы", data);
     const item = updatedData.find((item) => item.id === id);
-    const updatedArray = updatedData.map((item) => {
-      if (item.id === id) {
-        return { ...item, [key.key]: numberValue };
-      }
-      return item;
-    });
-    setUpdatedData(updatedArray);
-
-    textareaTd &&
+    if (numberValue) {
+      const updatedArray = updatedData.map((item) => {
+        if (item.id === id) {
+          return { ...item, [key.key]: numberValue };
+        }
+        return item;
+      });
+      setUpdatedData(updatedArray);
+    }
+    numberValue &&
       //! буфер
       appData.setBufferAction([
         { request: "workloadUpdata", data: data, prevState: item[key.key] },
         ...appData.bufferAction,
       ]);
-    // workloadUpdata(id, { [key.key]: numberValue }).then(() =>
-    //   getDataTableAll()
-    // );
     setCellNumber([]);
   };
   //! содержимое
@@ -789,6 +832,13 @@ function TableDisciplines(props) {
                                     }
                                   : changeHours.some((el) => el === row.id) &&
                                     updatedHeader[ind].key === "hours"
+                                  ? {
+                                      backgroundColor: "rgb(255 135 135)",
+                                      borderRadius: "8px",
+                                    }
+                                  : changeEducator.some(
+                                      (el) => el === row.id
+                                    ) && updatedHeader[ind].key === "educator"
                                   ? {
                                       backgroundColor: "rgb(255 135 135)",
                                       borderRadius: "8px",

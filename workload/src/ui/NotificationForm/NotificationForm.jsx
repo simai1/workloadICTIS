@@ -159,7 +159,7 @@ export function NotificationForm(props) {
             onChange={onChangeTextarea}
           />
           {isError && <span>Заполните текстовое поле</span>}
-          <button onClick={onCheckmarkClick}>Отправать</button>
+          <button onClick={onCheckmarkClick}>Отправить</button>
         </div>
       </div>
     </main>

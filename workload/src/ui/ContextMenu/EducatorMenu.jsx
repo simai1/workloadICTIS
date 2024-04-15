@@ -25,11 +25,11 @@ export function EducatorMenu(props) {
     <div
       className={styles.EducatorMenu}
       style={
-        props.propose
+        props.menuPosition.x + 280 + 180 > window.innerWidth
           ? {
               position: "fixed",
-              top: props.menuPosition.y + 200,
-              left: props.menuPosition.x + 280,
+              top: props.menuPosition.y,
+              left: props.menuPosition.x - 200,
             }
           : {
               position: "fixed",

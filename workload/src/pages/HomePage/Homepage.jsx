@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./HomePage.module.scss";
 import TableDisciplines from "../../components/TableDisciplines/TableDisciplines";
 import TableTeachers from "../../components/TableTeachers/TableTeachers";
@@ -12,6 +12,7 @@ import DataContext from "../../context";
 import { bufferRequestToApi } from "../../bufferFunction";
 import { PopUpError } from "../../ui/PopUp/PopUpError";
 import FiltredRows from "../../ui/FiltredRows/FiltredRows";
+import { getDataTable } from "../../api/services/AssignApiData";
 
 function HomePage() {
   const { appData } = React.useContext(DataContext);
