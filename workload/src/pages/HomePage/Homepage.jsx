@@ -127,6 +127,7 @@ function HomePage() {
                   borderRadius: " 8px",
                   border: "none",
                   fontSize: "18px",
+                  padding:"10px 16px"
                 }}
                 onClick={onSaveClick}
               >
