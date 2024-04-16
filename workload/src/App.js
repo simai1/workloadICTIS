@@ -10,6 +10,9 @@ function App() {
   const [positions, setPositions] = useState([]); // должности
   const [workload, setWorkload] = useState([]); // данные о нагрузках
   const [allWarningMessage, setAllWarningMessage] = useState([]);
+  const [individualCheckboxes, setIndividualCheckboxes] = useState([]); //чекбоксы таблицы
+  const [blockedCheckboxes, setBlockedCheckboxes] = useState([]); //чекбоксы таблицы
+  const [fileData, setFileData] = useState(null)
 
   //! данные пользователя ! изменить
   const myProfile = {
@@ -23,6 +26,10 @@ function App() {
   const [bufferAction, setBufferAction] = useState([]);
 
   const appData = {
+    individualCheckboxes,
+    setIndividualCheckboxes,
+    blockedCheckboxes,
+    setBlockedCheckboxes,
     educator,
     setEducator,
     positions,
@@ -34,16 +41,12 @@ function App() {
     bufferAction,
     setBufferAction,
     myProfile,
+    fileData,
+    setFileData
   };
 
   useEffect(() => {
     const handleKeyDown = (event) => {
-      // //! следим за нажатием ctrl + z для отмены последнего действияы
-      // if (event.ctrlKey && (event.key === "z" || event.key === "я")) {
-      //   console.log("отеменено последнее действие");
-      //   setBufferAction((prevItems) => prevItems.slice(1));
-      //   //функция отмены последенего действия находится в TableDisciplines
-      // }
       //! следим за нажатием ctrl + s для сохранения изменений
       if (event.ctrlKey && (event.key === "s" || event.key === "ы")) {
         event.preventDefault();
@@ -51,6 +54,8 @@ function App() {
         bufferRequestToApi(bufferAction).then(() => {
           setBufferAction([0]);
         });
+        setIndividualCheckboxes([]);
+        setBlockedCheckboxes([]);
         console.log("выполнено и очищено", bufferAction);
       }
     };

@@ -1,11 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styles from "./NotificationForm.module.scss";
 import DataContext from "../../context";
-import {
-  Educator,
-  createComment,
-  deleteComment,
-} from "../../api/services/ApiRequest";
+import { createComment } from "../../api/services/ApiRequest";
 
 import { ReactComponent as LogoAllComment } from "./../../img/arrow_down.svg";
 import { ReactComponent as CommentsSvg } from "./../../img/comments.svg";
@@ -35,9 +31,6 @@ export function NotificationForm(props) {
         props.getDataAllComment(props.setCommentAllData)
       );
       setIsComment(false);
-
-      // setPositionMenu({ y: props.position.y, x: props.position.x });
-      //обновление модального окна комментариев
     }
   };
 
@@ -49,11 +42,6 @@ export function NotificationForm(props) {
   //! открытие textarea для ввода комментраия
   const handleClickComment = () => {
     setCommentsSheetOpen(false);
-    // if (isComment) {
-    //   setPositionMenu({ y: props.position.y, x: props.position.x });
-    // } else {
-    //   setPositionMenu({ y: props.position.y - 150, x: props.position.x });
-    // }
     setIsComment(!isComment);
   };
 
@@ -61,27 +49,29 @@ export function NotificationForm(props) {
   const onClickAllComment = () => {
     setCommentsSheetOpen(!isCommentsSheetOpen);
     setIsComment(false);
-    // if (isCommentsSheetOpen) {
-    //   setPositionMenu({ y: props.position.y, x: props.position.x });
-    // } else {
-    //   setPositionMenu({ y: props.position.y - 168, x: props.position.x });
-    // }
   };
 
   //! нажатие галочки удаление комментариев
-  const onCheckmarkClickDelet = (data) => {
-    console.log(props.workloadId);
+  const onCheckmarkClickDelet = () => {
+    const prevObj = props.commentAllData.filter(
+      (item) => item.workloadId === props.workloadId
+    );
+    props.setCommentAllData(
+      props.commentAllData.filter(
+        (item) => item.workloadId !== props.workloadId
+      )
+    );
     //! буфер
     appData.setBufferAction([
-      { request: "deleteComment", data: props.workloadId },
+      { request: "deleteComment", data: props.workloadId, prevState: prevObj },
       ...appData.bufferAction,
     ]);
+    props.setIsHovered(false);
     //удаление коммента по id
     // deleteComment(props.workloadId).then(() =>
     //   props.getDataAllComment(props.setCommentAllData)
     // );
   };
-
   return (
     <main ref={props.refHoverd} className={styles.notification}>
       <div
@@ -148,7 +138,7 @@ export function NotificationForm(props) {
 
                 <Checkmark
                   className={styles.logosvg}
-                  onClick={() => onCheckmarkClickDelet(props.commentData)}
+                  onClick={onCheckmarkClickDelet}
                 />
               </div>
             </div>
@@ -163,13 +153,13 @@ export function NotificationForm(props) {
           }
         >
           <textarea
-            style={isError ? { borderColor: "red" } : null}
+            style={isError ? { borderColor: "red" } : { height: "73%" }}
             id="textareaNotificationForm"
             type="text"
             onChange={onChangeTextarea}
           />
           {isError && <span>Заполните текстовое поле</span>}
-          <button onClick={onCheckmarkClick}>Отправать</button>
+          <button onClick={onCheckmarkClick}>Отправить</button>
         </div>
       </div>
     </main>

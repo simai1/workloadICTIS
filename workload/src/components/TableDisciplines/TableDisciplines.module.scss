@@ -71,6 +71,7 @@
     flex-direction: row;
     overflow-x: scroll;
     border-radius: 8px;
+    width: 100%;
     // border-left: 1px solid var(--gray-color);
     // border-right: 1px solid var(--gray-color);
     // border-top: 1px solid var(--gray-color);
@@ -228,9 +229,23 @@
   }
 
   .taleDestiplinesMainTable {
-    // .table_tr {
-    //   position: relative;
-    // }
+    .colorBlue {
+      background-color: var(--color--blueBg) !important;
+    }
+    .colorGreen {
+      background-color: var(--color--greenBg) !important;
+    }
+    .colorYellow {
+      background-color: var(--color--yellowBg) !important;
+    }
+    .colorChecked {
+      background-color: var(--color--checkedBg);
+    }
+    .clorBlocked {
+      background-color: var(--color--blockedBg);
+      pointer-events: none;
+    }
+
     overflow-y: scroll;
 
     .checkboxHeader {
@@ -268,20 +283,21 @@
       transform: translateY(-4px);
       cursor: pointer;
     }
-    .notice::after {
-      content: "";
+
+    .notis_rigth_one {
       width: 3px;
       height: 53px;
       background-color: inherit;
       position: absolute;
       right: -10px;
     }
-    // .checkbox::before {
-    //   content: "1";
-    //   position: absolute;
-    //   left: -30px;
-    //   background-color: #efedf3;
-    // }
+    .notis_rigth_two {
+      width: 3px;
+      height: 36px;
+      background-color: inherit;
+      position: absolute;
+      right: -10px;
+    }
     .custom__checkbox {
       position: absolute;
       opacity: 0;
@@ -335,7 +351,7 @@ table td {
   right: 0;
   top: 0;
   border-radius: 0px 8px 8px 0px;
-  z-index: 50;
+  z-index: 9;
 }
 
 .taleDestiplinesMainTable::before {
