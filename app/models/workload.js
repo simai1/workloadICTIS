@@ -100,11 +100,6 @@ export default class Workload extends Model {
                     allowNull: false,
                     defaultValue: false,
                 },
-                isAttached: {
-                    type: DataTypes.BOOLEAN,
-                    allowNull: false,
-                    defaultValue: false,
-                },
             },
             {
                 sequelize,
