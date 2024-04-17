@@ -90,7 +90,8 @@ function TableDisciplines(props) {
   //! пакетная загрузка данных
 
   //! функция разделения данных
-  const [activeDataCount, setActiveDataCount] = useState(20);
+  const [activeDataCount, setActiveDataCount] = useState(10);
+
   const splitData = (data) => {
     const mass = [];
     data.map((item, index) => {
@@ -99,7 +100,6 @@ function TableDisciplines(props) {
       }
     });
     console.log("mass", mass);
-    setActiveDataCount(activeDataCount + 20);
     return mass;
   };
 
@@ -109,14 +109,16 @@ function TableDisciplines(props) {
       let reqData = [];
       if (splitData(data)) {
         reqData = splitData(data);
+        console.log("data", reqData);
       }
+
       // выводим данные в зависимостри кафедральные или общеинститутские
       const dataIsOid =
         props.tableMode === "genInstitute"
           ? reqData.filter((item) => item.isOid === false)
           : reqData.filter((item) => item.isOid === true);
 
-      console.log("reqData", dataIsOid);
+      console.log("reqData", reqData);
 
       setUpdatedData(dataIsOid);
       setFilteredData(dataIsOid);
@@ -138,7 +140,7 @@ function TableDisciplines(props) {
     getDataAllComment(setCommentAllData); // получение комментариев
     getAllWarnin(appData.setAllWarningMessage); // предупреждения
     getAllOffers(setAllOffersData); // предложения
-  }, []);
+  }, [activeDataCount]);
 
   //! при изменении буфера
   // useEffect(() => {
