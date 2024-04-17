@@ -86,22 +86,43 @@ function TableDisciplines(props) {
       ...changeNumberOfStudents,
     ]);
   }, [changeEducator, changeHours, changeNumberOfStudents]);
-  console.log("allChange", allChangeData);
 
+  //! пакетная загрузка данных
+
+  //! функция разделения данных
+  const [activeDataCount, setActiveDataCount] = useState(20);
+  const splitData = (data) => {
+    const mass = [];
+    data.map((item, index) => {
+      if (index < activeDataCount) {
+        mass.push(item);
+      }
+    });
+    console.log("mass", mass);
+    setActiveDataCount(activeDataCount + 20);
+    return mass;
+  };
   const getDataTableAll = () => {
     getDataTable().then((data) => {
       appData.setWorkload(data);
+      let reqData = [];
+
+      if (splitData(data)) {
+        reqData = splitData(data);
+      }
       // выводим данные в зависимостри кафедральные или общеинститутские
       const dataIsOid =
         props.tableMode === "genInstitute"
-          ? data.filter((item) => item.isOid === false)
-          : data.filter((item) => item.isOid === true);
+          ? reqData.filter((item) => item.isOid === false)
+          : reqData.filter((item) => item.isOid === true);
+
+      console.log("reqData", dataIsOid);
 
       setUpdatedData(dataIsOid);
       setFilteredData(dataIsOid);
       setSortData(dataIsOid);
-      setGeneralInstituteData(data.filter((item) => item.isOid === false));
-      setCathedralData(data.filter((item) => item.isOid === true));
+      setGeneralInstituteData(reqData.filter((item) => item.isOid === false));
+      setCathedralData(reqData.filter((item) => item.isOid === true));
 
       getAllOffers(setAllOffersData);
       // funcGetAllColors(setAllColorsData); // получение цветов
@@ -559,7 +580,7 @@ function TableDisciplines(props) {
     setTextareaTd(event.target.value);
     console.log(event.target.value);
   };
-console.log(appData.fileData)
+  // console.log(appData.fileData);
   const onClickButton = (id, key) => {
     let parsedValue = parseFloat(textareaTd);
     let numberValue = isNaN(parsedValue) ? textareaTd : parsedValue;
@@ -935,7 +956,12 @@ console.log(appData.fileData)
       <div className={styles.Block__tables__shadow}></div>
 
       {isPopUpMenu && <PopUpError setIsPopUpMenu={setIsPopUpMenu} />}
-      {appData.fileData !== null && <PopUpFile setIsPopUpFile={setIsPopUpFile} handleFileClear={props.handleFileClear}/>}
+      {appData.fileData !== null && (
+        <PopUpFile
+          setIsPopUpFile={setIsPopUpFile}
+          handleFileClear={props.handleFileClear}
+        />
+      )}
     </div>
   );
 }
