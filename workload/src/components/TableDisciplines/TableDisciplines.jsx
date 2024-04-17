@@ -102,11 +102,11 @@ function TableDisciplines(props) {
     setActiveDataCount(activeDataCount + 20);
     return mass;
   };
+
   const getDataTableAll = () => {
     getDataTable().then((data) => {
       appData.setWorkload(data);
       let reqData = [];
-
       if (splitData(data)) {
         reqData = splitData(data);
       }
