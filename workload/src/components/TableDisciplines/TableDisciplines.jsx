@@ -93,18 +93,33 @@ function TableDisciplines(props) {
  const [activeDataCount, setActiveDataCount] = useState(20);
  const [TableDistNone, setTableDistNone] = useState(false);
  const [TableObjNone, setTableObjNone] = useState(false);
+  //! функция разделения данных
+  const splitData = (data) => {
+    const mass = [];
+    data.map((item, index) => {
+      if (index < activeDataCount) {
+        mass.push(item);
+      }
+    });
+    console.log("mass", mass);
+    return mass;
+  };
 
- const splitData = (data) => {
-   const mass = [];
-   data.map((item, index) => {
-     if (index < activeDataCount) {
-       mass.push(item);
-     }
-   });
-   console.log("mass", mass);
-   setActiveDataCount(activeDataCount + 20);
-   return mass;
- };
+  const tableRef = useRef(null);
+  useEffect(() => {
+    const table = tableRef.current;
+    const handleScroll = () => {
+      if (table.scrollTop + table.clientHeight >= table.scrollHeight - 10) {
+        setActiveDataCount((prevCount) => prevCount + 10);
+      }
+    };
+    table.addEventListener("scroll", handleScroll);
+    return () => {
+      table.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+
 
  const getDataTableAll = () => {
    getDataTable().then((data) => {
@@ -126,9 +141,6 @@ function TableDisciplines(props) {
          ? reqData.filter((item) => item.isOid === false)
          : reqData.filter((item) => item.isOid === true);
 
-     console.log(reqData.filter((item) => item.isOid === true));
-
-     console.log("reqData", reqData);
 
      setUpdatedData(dataIsOid);
      setFilteredData(dataIsOid);
@@ -682,7 +694,7 @@ function TableDisciplines(props) {
         )}
         <div className={styles.table_container}>
           {/* уведомления от преподавателей  */}
-          <div className={styles.TableDisciplines__inner}>
+          <div ref={tableRef} className={styles.TableDisciplines__inner}>
             <table className={styles.taleDestiplinesMainTable}>
               <thead>
                 <tr ref={trRef} className={styles.tr_thead}>
