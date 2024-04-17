@@ -100,7 +100,6 @@ function TableDisciplines(props) {
       }
     });
     console.log("mass", mass);
-    setActiveDataCount(activeDataCount + 20);
     return mass;
   };
   const getDataTableAll = () => {
@@ -140,7 +139,7 @@ function TableDisciplines(props) {
     getDataAllComment(setCommentAllData); // получение комментариев
     getAllWarnin(appData.setAllWarningMessage); // предупреждения
     getAllOffers(setAllOffersData); // предложения
-  }, []);
+  }, [activeDataCount]);
 
   //! при изменении буфера
   // useEffect(() => {
