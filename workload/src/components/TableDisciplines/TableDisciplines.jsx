@@ -89,49 +89,59 @@ function TableDisciplines(props) {
 
   //! пакетная загрузка данных
 
-  //! функция разделения данных
-  const [activeDataCount, setActiveDataCount] = useState(10);
+ //! функция разделения данных
+ const [activeDataCount, setActiveDataCount] = useState(20);
+ const [TableDistNone, setTableDistNone] = useState(false);
+ const [TableObjNone, setTableObjNone] = useState(false);
 
-  const splitData = (data) => {
-    const mass = [];
-    data.map((item, index) => {
-      if (index < activeDataCount) {
-        mass.push(item);
-      }
-    });
-    console.log("mass", mass);
-    return mass;
-  };
+ const splitData = (data) => {
+   const mass = [];
+   data.map((item, index) => {
+     if (index < activeDataCount) {
+       mass.push(item);
+     }
+   });
+   console.log("mass", mass);
+   setActiveDataCount(activeDataCount + 20);
+   return mass;
+ };
 
-  const getDataTableAll = () => {
-    getDataTable().then((data) => {
-      appData.setWorkload(data);
-      let reqData = [];
-      if (splitData(data)) {
-        reqData = splitData(data);
-        console.log("data", reqData);
-      }
+ const getDataTableAll = () => {
+   getDataTable().then((data) => {
+     appData.setWorkload(data);
+    //  const dataObj = data.filter((item) => item.isOid === false);
+    //  const dataDist = data.filter((item) => item.isOid === true);
+    //  dataObj.lenght === 0 ? setTableObjNone(false) : setTableObjNone(true);
+    //  dataDist.lenght === 0 ? setTableDistNone(false) : setTableDistNone(true);
+    
+     let reqData = [];
+     if (splitData(data)) {
+       reqData = splitData(data);
+       console.log("data", reqData);
+     }
 
-      // выводим данные в зависимостри кафедральные или общеинститутские
-      const dataIsOid =
-        props.tableMode === "genInstitute"
-          ? reqData.filter((item) => item.isOid === false)
-          : reqData.filter((item) => item.isOid === true);
+     // выводим данные в зависимостри кафедральные или общеинститутские
+     const dataIsOid =
+       props.tableMode === "genInstitute"
+         ? reqData.filter((item) => item.isOid === false)
+         : reqData.filter((item) => item.isOid === true);
 
-      console.log("reqData", reqData);
+     console.log(reqData.filter((item) => item.isOid === true));
 
-      setUpdatedData(dataIsOid);
-      setFilteredData(dataIsOid);
-      setSortData(dataIsOid);
-      setGeneralInstituteData(reqData.filter((item) => item.isOid === false));
-      setCathedralData(reqData.filter((item) => item.isOid === true));
+     console.log("reqData", reqData);
 
-      getAllOffers(setAllOffersData);
-      // funcGetAllColors(setAllColorsData); // получение цветов
-      appData.setIndividualCheckboxes([]);
-      console.log("Таблица обноленна");
-    });
-  };
+     setUpdatedData(dataIsOid);
+     setFilteredData(dataIsOid);
+     setSortData(dataIsOid);
+     setGeneralInstituteData(reqData.filter((item) => item.isOid === false));
+     setCathedralData(reqData.filter((item) => item.isOid === true));
+
+     getAllOffers(setAllOffersData);
+     // funcGetAllColors(setAllColorsData); // получение цветов
+     appData.setIndividualCheckboxes([]);
+     console.log("Таблица обноленна");
+   });
+ };
 
   //! заносим данные в состояния
   useEffect(() => {
@@ -370,6 +380,7 @@ function TableDisciplines(props) {
       document.removeEventListener("click", handler);
     };
   }, []);
+
 
   //! чекбоксы
   const handleGlobalCheckboxChange = () => {
@@ -714,6 +725,7 @@ function TableDisciplines(props) {
                   const checkValues = Object.values(row).some((value) =>
                     isChecked.includes(value)
                   );
+                
                   if (!checkValues) {
                     return (
                       <tr
@@ -952,6 +964,22 @@ function TableDisciplines(props) {
                 })}
               </tbody>
             </table>
+            {(!TableDistNone && TableObjNone) && (
+              <div className={styles.DataIsNone}>
+                  <div className={styles.DataIsNoneInner}>
+                    <p>Извините, но в таблице "Кафедральные дисциплины" отсутствуют данные</p>
+                  </div>
+              </div>
+            )};
+            {(TableDistNone && !TableObjNone) && (
+             <div className={styles.DataIsNone}>
+             <div className={styles.DataIsNoneInner}>
+             <p>Извините, но в таблице "Общеинститутские дисциплины" отсутствуют данные</p>
+             </div>
+         </div>
+            )}
+               
+            
           </div>
         </div>
       </div>
