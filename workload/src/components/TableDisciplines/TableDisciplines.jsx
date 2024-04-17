@@ -91,7 +91,7 @@ function TableDisciplines(props) {
 
   //! функция разделения данных
   const [activeDataCount, setActiveDataCount] = useState(10);
-
+  const [reachedEnd, setReachedEnd] = useState(false);
   const splitData = (data) => {
     const mass = [];
     data.map((item, index) => {
@@ -102,13 +102,27 @@ function TableDisciplines(props) {
     console.log("mass", mass);
     return mass;
   };
+
+  const tableRef = useRef(null);
+  useEffect(() => {
+    const table = tableRef.current;
+    const handleScroll = () => {
+      if (table.scrollTop + table.clientHeight >= table.scrollHeight - 10) {
+        setActiveDataCount((prevCount) => prevCount + 10);
+      }
+    };
+    table.addEventListener("scroll", handleScroll);
+    return () => {
+      table.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   const getDataTableAll = () => {
     getDataTable().then((data) => {
       appData.setWorkload(data);
       let reqData = [];
       if (splitData(data)) {
         reqData = splitData(data);
-        console.log("data", reqData);
       }
 
       // выводим данные в зависимостри кафедральные или общеинститутские
@@ -116,8 +130,6 @@ function TableDisciplines(props) {
         props.tableMode === "genInstitute"
           ? reqData.filter((item) => item.isOid === false)
           : reqData.filter((item) => item.isOid === true);
-
-      console.log("reqData", reqData);
 
       setUpdatedData(dataIsOid);
       setFilteredData(dataIsOid);
@@ -670,7 +682,7 @@ function TableDisciplines(props) {
         )}
         <div className={styles.table_container}>
           {/* уведомления от преподавателей  */}
-          <div className={styles.TableDisciplines__inner}>
+          <div ref={tableRef} className={styles.TableDisciplines__inner}>
             <table className={styles.taleDestiplinesMainTable}>
               <thead>
                 <tr ref={trRef} className={styles.tr_thead}>
