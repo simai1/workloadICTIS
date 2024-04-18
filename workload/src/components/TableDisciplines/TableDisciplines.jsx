@@ -91,10 +91,10 @@ function TableDisciplines(props) {
 
  //! функция разделения данных
  const [activeDataCount, setActiveDataCount] = useState(20);
- const [TableDistNone, setTableDistNone] = useState(true);
- const [TableObjNone, setTableObjNone] = useState(true);
- //console.log(TableDistNone)
- //console.log(TableObjNone)
+ const [TableDistNone, setTableDistNone] = useState(false);
+ const [TableObjNone, setTableObjNone] = useState(false);
+//  console.log(TableDistNone)
+//  console.log(TableObjNone)
 
   //! функция разделения данных
   const splitData = (data) => {
@@ -131,6 +131,8 @@ function TableDisciplines(props) {
      const dataDist = data.filter((item) => item.isOid === true);
      console.log("dataObj", dataObj.length); // Corrected the spelling of 'length'
      console.log("dataDist", dataDist.length); // Corrected the spelling of 'length'
+     console.log("dataDistdata", dataDist); // Corrected the spelling of 'length'
+
      dataObj.length === 0 ? setTableObjNone(false) : setTableObjNone(true); // Corrected the spelling of 'length'
      dataDist.length === 0 ? setTableDistNone(false) : setTableDistNone(true); // Corrected the spelling of 'length'
      
@@ -166,7 +168,7 @@ function TableDisciplines(props) {
     getDataTableAll();
     setTableData(appData.workload);
     getDataAllComment(setCommentAllData); // получение комментариев
-    getAllWarnin(appData.setAllWarningMessage); // предупреждения
+    // getAllWarnin(appData.setAllWarningMessage); // предупреждения
     getAllOffers(setAllOffersData); // предложения
   }, [activeDataCount]);
 
