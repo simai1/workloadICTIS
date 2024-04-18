@@ -90,8 +90,9 @@ function TableDisciplines(props) {
   //! пакетная загрузка данных
 
   //! функция разделения данных
-  const [activeDataCount, setActiveDataCount] = useState(10);
-  const [reachedEnd, setReachedEnd] = useState(false);
+  const [activeDataCount, setActiveDataCount] = useState(10); // количесвто данных выводимых изначально
+  const [activeDataLength, setActiveDataLength] = useState(11); // длинна массива данных таблицы
+
   const splitData = (data) => {
     const mass = [];
     data.map((item, index) => {
@@ -100,14 +101,19 @@ function TableDisciplines(props) {
       }
     });
     console.log("mass", mass);
+    setActiveDataLength(mass.length);
     return mass;
   };
 
+  //! при пролистывании таблицы данные буду пакетно подгружаться
   const tableRef = useRef(null);
   useEffect(() => {
     const table = tableRef.current;
     const handleScroll = () => {
-      if (table.scrollTop + table.clientHeight >= table.scrollHeight - 10) {
+      if (
+        table.scrollTop + table.clientHeight >= table.scrollHeight - 10 &&
+        activeDataLength > activeDataCount
+      ) {
         setActiveDataCount((prevCount) => prevCount + 10);
       }
     };
@@ -120,22 +126,35 @@ function TableDisciplines(props) {
   const getDataTableAll = () => {
     getDataTable().then((data) => {
       appData.setWorkload(data);
+
+      const datisoid =
+        props.tableMode === "genInstitute"
+          ? data.filter((item) => item.isOid === false)
+          : data.filter((item) => item.isOid === true);
+
+      let reqdat = [];
+      if (splitData(datisoid)) {
+        reqdat = splitData(datisoid);
+      }
+
       let reqData = [];
-      if (splitData(data)) {
-        reqData = splitData(data);
+      if (splitData(datisoid)) {
+        reqData = splitData(datisoid);
       }
 
       // выводим данные в зависимостри кафедральные или общеинститутские
-      const dataIsOid =
-        props.tableMode === "genInstitute"
-          ? reqData.filter((item) => item.isOid === false)
-          : reqData.filter((item) => item.isOid === true);
+      // const dataIsOid =
+      //   props.tableMode === "genInstitute"
+      //     ? reqData.filter((item) => item.isOid === false)
+      //     : reqData.filter((item) => item.isOid === true);
 
-      setUpdatedData(dataIsOid);
-      setFilteredData(dataIsOid);
-      setSortData(dataIsOid);
-      setGeneralInstituteData(reqData.filter((item) => item.isOid === false));
-      setCathedralData(reqData.filter((item) => item.isOid === true));
+      setUpdatedData(reqdat);
+      setFilteredData(reqdat);
+      setSortData(reqdat);
+      setGeneralInstituteData(
+        splitData(data.filter((item) => item.isOid === false))
+      );
+      setCathedralData(splitData(data.filter((item) => item.isOid === true)));
 
       getAllOffers(setAllOffersData);
       // funcGetAllColors(setAllColorsData); // получение цветов
@@ -149,47 +168,9 @@ function TableDisciplines(props) {
     getDataTableAll();
     setTableData(appData.workload);
     getDataAllComment(setCommentAllData); // получение комментариев
-    getAllWarnin(appData.setAllWarningMessage); // предупреждения
+    // getAllWarnin(appData.setAllWarningMessage); // предупреждения
     getAllOffers(setAllOffersData); // предложения
   }, [activeDataCount]);
-
-  //! при изменении буфера
-  // useEffect(() => {
-  //   setUpdatedData([...appData.workload]);
-  //   setGeneralInstituteData(
-  //     appData.workload.filter((item) => item.isOid === false)
-  //   );
-  //   setCathedralData(appData.workload.filter((item) => item.isOid === true));
-  //   console.log("appData.bufferAction", appData.bufferAction);
-  //   for (var i = appData.bufferAction.length - 1; i >= 0; i--) {
-  //     console.log("setUpdatedData", i);
-  //     if (appData.bufferAction[i].request === "workloadUpdata") {
-  //       const updatedArray = updatedData.map((item) => {
-  //         if (item.id === appData.bufferAction[i].data.id) {
-  //           return {
-  //             ...item,
-  //             [appData.bufferAction[i].data.key]:
-  //               appData.bufferAction[i].data.value,
-  //           };
-  //         }
-  //         return item;
-  //       });
-  //       setUpdatedData([...updatedArray]);
-  //     }
-  //     if (appData.bufferAction[i].request === "addEducatorWorkload") {
-  //       EducatorLK(appData.bufferAction[i].data.educatorId).then((dataReq) => {
-  //         const newUpdatedData = updatedData.map((object) => {
-  //           if (object.id === appData.individualCheckboxes[0]) {
-  //             return { ...object, educator: dataReq.name };
-  //           }
-  //           return object;
-  //         });
-  //         // newUpdatedData.map((item) => console.log("name", item.educator));
-  //         setUpdatedData([...newUpdatedData]);
-  //       });
-  //     }
-  //   }
-  // }, [appData.bufferAction]);
 
   //! фильтрация при выборе всех дисциплин измененных выделенных и тд
   useEffect(() => {
@@ -527,8 +508,9 @@ function TableDisciplines(props) {
     let fd;
     if (props.searchTerm === "") {
       fd = sortData;
+      setFilteredData(fd);
     } else {
-      fd = sortData.filter((row) => {
+      fd = appData.workload.filter((row) => {
         return Object.values(row).some(
           (value) =>
             value !== null &&
@@ -539,8 +521,8 @@ function TableDisciplines(props) {
               .includes(props.searchTerm.toLowerCase())
         );
       });
+      setFilteredData(splitData(fd));
     }
-    setFilteredData(fd);
   }, [updatedData, props.searchTerm]);
 
   //! меню при нажатии пкм
