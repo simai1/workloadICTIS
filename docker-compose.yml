@@ -34,19 +34,6 @@ services:
       - DB_HOST=db
     networks:
       - workload-ICTIS-network
-
-#  nginx:
-#    container_name: workload-master-nginx
-#    build:
-#      context: ./nginx
-#      dockerfile: Dockerfile
-#    depends_on:
-#      - client
-#    restart: always
-#    ports:
-#      - "80:80"
-#    networks:
-#      - workload-ICTIS-network
   
   client:
     depends_on:
