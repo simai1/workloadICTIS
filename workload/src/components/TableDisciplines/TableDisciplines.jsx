@@ -91,8 +91,11 @@ function TableDisciplines(props) {
 
  //! функция разделения данных
  const [activeDataCount, setActiveDataCount] = useState(20);
- const [TableDistNone, setTableDistNone] = useState(false);
- const [TableObjNone, setTableObjNone] = useState(false);
+ const [TableDistNone, setTableDistNone] = useState(true);
+ const [TableObjNone, setTableObjNone] = useState(true);
+ //console.log(TableDistNone)
+ //console.log(TableObjNone)
+
   //! функция разделения данных
   const splitData = (data) => {
     const mass = [];
@@ -124,10 +127,13 @@ function TableDisciplines(props) {
  const getDataTableAll = () => {
    getDataTable().then((data) => {
      appData.setWorkload(data);
-    //  const dataObj = data.filter((item) => item.isOid === false);
-    //  const dataDist = data.filter((item) => item.isOid === true);
-    //  dataObj.lenght === 0 ? setTableObjNone(false) : setTableObjNone(true);
-    //  dataDist.lenght === 0 ? setTableDistNone(false) : setTableDistNone(true);
+     const dataObj = data.filter((item) => item.isOid === false);
+     const dataDist = data.filter((item) => item.isOid === true);
+     console.log("dataObj", dataObj.length); // Corrected the spelling of 'length'
+     console.log("dataDist", dataDist.length); // Corrected the spelling of 'length'
+     dataObj.length === 0 ? setTableObjNone(false) : setTableObjNone(true); // Corrected the spelling of 'length'
+     dataDist.length === 0 ? setTableDistNone(false) : setTableDistNone(true); // Corrected the spelling of 'length'
+     
     
      let reqData = [];
      if (splitData(data)) {
@@ -976,14 +982,14 @@ function TableDisciplines(props) {
                 })}
               </tbody>
             </table>
-            {(!TableDistNone && TableObjNone) && (
+            {(!TableDistNone &&  props.tableMode != "genInstitute") && (
               <div className={styles.DataIsNone}>
                   <div className={styles.DataIsNoneInner}>
                     <p>Извините, но в таблице "Кафедральные дисциплины" отсутствуют данные</p>
                   </div>
               </div>
             )};
-            {(TableDistNone && !TableObjNone) && (
+            {(props.tableMode === "genInstitute" && !TableObjNone) && (
              <div className={styles.DataIsNone}>
              <div className={styles.DataIsNoneInner}>
              <p>Извините, но в таблице "Общеинститутские дисциплины" отсутствуют данные</p>
