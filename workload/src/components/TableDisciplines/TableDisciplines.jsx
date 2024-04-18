@@ -126,35 +126,22 @@ function TableDisciplines(props) {
   const getDataTableAll = () => {
     getDataTable().then((data) => {
       appData.setWorkload(data);
-
-      const datisoid =
-        props.tableMode === "genInstitute"
-          ? data.filter((item) => item.isOid === false)
-          : data.filter((item) => item.isOid === true);
-
-      let reqdat = [];
-      if (splitData(datisoid)) {
-        reqdat = splitData(datisoid);
-      }
-
-      let reqData = [];
-      if (splitData(datisoid)) {
-        reqData = splitData(datisoid);
-      }
+      let reqData = data;
+      // if (splitData(data)) {
+      //   reqData = splitData(data);
+      // }
 
       // выводим данные в зависимостри кафедральные или общеинститутские
-      // const dataIsOid =
-      //   props.tableMode === "genInstitute"
-      //     ? reqData.filter((item) => item.isOid === false)
-      //     : reqData.filter((item) => item.isOid === true);
+      const dataIsOid =
+        props.tableMode === "genInstitute"
+          ? reqData.filter((item) => item.isOid === false)
+          : reqData.filter((item) => item.isOid === true);
 
-      setUpdatedData(reqdat);
-      setFilteredData(reqdat);
-      setSortData(reqdat);
-      setGeneralInstituteData(
-        splitData(data.filter((item) => item.isOid === false))
-      );
-      setCathedralData(splitData(data.filter((item) => item.isOid === true)));
+      setUpdatedData(dataIsOid);
+      setFilteredData(dataIsOid);
+      setSortData(dataIsOid);
+      setGeneralInstituteData(reqData.filter((item) => item.isOid === false));
+      setCathedralData(reqData.filter((item) => item.isOid === true));
 
       getAllOffers(setAllOffersData);
       // funcGetAllColors(setAllColorsData); // получение цветов
