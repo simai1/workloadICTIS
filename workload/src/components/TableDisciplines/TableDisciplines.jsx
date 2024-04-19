@@ -129,8 +129,8 @@ function TableDisciplines(props) {
   const getDataTableAll = () => {
     getDataTable().then((data) => {
       appData.setWorkload(data);
-      // const dataObj = data.filter((item) => item.isOid === false);
-      // const dataDist = data.filter((item) => item.isOid === true);
+      const dataObj = data.filter((item) => item.isOid === false);
+      const dataDist = data.filter((item) => item.isOid === true);
       // const datisoid =
       //   props.tableMode === "genInstitute"
       //     ? data.filter((item) => item.isOid === false)
@@ -150,7 +150,8 @@ function TableDisciplines(props) {
       // if (splitData(data)) {
       //   reqData = splitData(data);
       // }
-
+      dataObj.length === 0 ? setTableObjNone(false) : setTableObjNone(true); // Corrected the spelling of 'length'
+      dataDist.length === 0 ? setTableDistNone(false) : setTableDistNone(true); // Corrected the spelling of 'length'
       // выводим данные в зависимостри кафедральные или общеинститутские
       const dataIsOid =
         props.tableMode === "genInstitute"
