@@ -2,8 +2,11 @@ import { AppErrorInvalid, AppErrorMissing } from '../utils/errors.js';
 import departments from '../config/departments.js';
 import Workload from '../models/workload.js';
 import Educator from '../models/educator.js';
+import Notification from '../models/notifications.js';
 
 import WorkloadDto from '../dtos/workload-dto.js';
+import SummaryWorkload from '../models/summary-workload.js';
+import checkHours from '../utils/notification.js';
 
 export default {
     // Получение нагрузки
@@ -150,7 +153,20 @@ export default {
         if (!workloadId) throw new AppErrorMissing('workloadId');
         const workload = await Workload.findByPk(workloadId);
         if (!workload) throw new AppErrorInvalid('workload');
-        workload.update({ educatorId: null });
+        const educatorId = workload.educatorId;
+        await workload.update({ educatorId: null });
+
+        const remainingWorkloads = await Workload.count({ where: { educatorId } });
+        console.log(remainingWorkloads);
+
+        if (remainingWorkloads === 0) {
+            // Если нет нагрузок, удаляем предупреждение
+            await Notification.destroy({ where: { educatorId }, force: true }); // Предположим, что у вас есть метод для удаления summaryWorkload по educatorId
+        } else {
+            // Если остались нагрузки, все равно вызываем проверку часов
+            const summaryWorkload = await SummaryWorkload.findOne({ where: { educatorId } });
+            await checkHours(summaryWorkload); // Передаем summaryWorkload в функцию checkHours
+        }
         res.json({ status: 'OK' });
     },
 

@@ -5,11 +5,19 @@ export function SubMenu(props) {
   return (
     <div
       className={styles.blockMenuRight}
-      style={{
-        position: "fixed",
-        top: props.menuPosition.y,
-        left: props.menuPosition.x + 280,
-      }}
+      style={
+        props.menuPosition.x + 280 + 180 > window.innerWidth
+          ? {
+              position: "fixed",
+              top: props.menuPosition.y,
+              left: props.menuPosition.x - 150,
+            }
+          : {
+              position: "fixed",
+              top: props.menuPosition.y,
+              left: props.menuPosition.x + 280,
+            }
+      }
       // onMouseEnter={handleMouseEnter}
       // onMouseLeave={handleMouseLeave}
     >

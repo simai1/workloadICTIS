@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./HomePage.module.scss";
 import TableDisciplines from "../../components/TableDisciplines/TableDisciplines";
 import TableTeachers from "../../components/TableTeachers/TableTeachers";
@@ -10,6 +10,8 @@ import Profile from "../../components/Profile/Profile";
 import EditInput from "../../components/EditInput/EditInput";
 import DataContext from "../../context";
 import { bufferRequestToApi } from "../../bufferFunction";
+import FiltredRows from "../../ui/FiltredRows/FiltredRows";
+import { getDataTable } from "../../api/services/AssignApiData";
 
 function HomePage() {
   const { appData } = React.useContext(DataContext);
@@ -21,9 +23,8 @@ function HomePage() {
   const [searchTerm, setSearchTerm] = useState(""); //поиск по таблице
   const [onenModalWind, setOpenModalWind] = useState(false); // переменная закрытия модального окна профиля
   const refProfile = React.useRef(null); // ссылка на модальное окно профиля
-
   const [educatorIdforLk, setEducatorIdforLk] = useState(""); // id для вывода LK, если пустое то LK не отображается
-
+  const [SelectedText, setSelectedText] = useState("Все дисциплины"); // текст в FiltredRows
   const handleButtonClick = () => {
     setEducatorIdforLk("");
   };
@@ -87,6 +88,7 @@ function HomePage() {
 
   const [tableHeadersTeacher, setTableHeaders] = useState(tableHeaders);
 
+  //! сохранение буфера
   const onSaveClick = () => {
     //! отправляем все запросы на обработку
     console.log("Сохранено", appData.bufferAction);
@@ -94,6 +96,21 @@ function HomePage() {
       appData.setBufferAction([0]);
     });
     console.log("выполнено и очищено", appData.bufferAction);
+  };
+
+  const fileInputRef = useRef(null);
+  //! функции для импорта файла
+  const handleFileUpload = () => {
+    fileInputRef.current.click();
+  };
+  const handleFileClear = () =>{
+    fileInputRef.current.value = null
+  }
+  const handleFileChange = () => {
+    const file = fileInputRef.current.files[0];
+    // Здесь можно выполнить дополнительную обработку загруженного файла
+    console.log("Выбранный файл:", file);
+    appData.setFileData(file)
   };
 
   return (
@@ -109,6 +126,8 @@ function HomePage() {
                   color: "#fff",
                   borderRadius: " 8px",
                   border: "none",
+                  fontSize: "18px",
+                  padding:"10px 16px"
                 }}
                 onClick={onSaveClick}
               >
@@ -168,33 +187,59 @@ function HomePage() {
           </div>
           <div className={styles.header_bottom}>
             <div className={styles.header_bottom_button}>
-              <Button
-                Bg={tableMode === "cathedrals" ? "#3B28CC" : "#efedf3"}
-                textColot={tableMode === "cathedrals" ? "#efedf3" : "#000000"}
-                text="Кафедральные"
-                onClick={() => {
-                  setTableMode("cathedrals");
-                  EditTableData(tableMode);
-                }}
-              />
-              <Button
-                Bg={tableMode === "genInstitute" ? "#3B28CC" : "#efedf3"}
-                textColot={tableMode === "cathedrals" ? "#000000" : "#efedf3"}
-                text="Общеинститутские"
-                onClick={() => {
-                  setTableMode("genInstitute");
-                  EditTableData(tableMode);
-                }}
+              {selectedComponent === "Disciplines" && (
+                <>
+                  <Button
+                    Bg={tableMode === "cathedrals" ? "#3B28CC" : "#efedf3"}
+                    textColot={
+                      tableMode === "cathedrals" ? "#efedf3" : "#000000"
+                    }
+                    text="Кафедральные"
+                    onClick={() => {
+                      setTableMode("cathedrals");
+                      EditTableData(tableMode);
+                    }}
+                  />
+                  <Button
+                    Bg={tableMode === "genInstitute" ? "#3B28CC" : "#efedf3"}
+                    textColot={
+                      tableMode === "cathedrals" ? "#000000" : "#efedf3"
+                    }
+                    text="Общеинститутские"
+                    onClick={() => {
+                      setTableMode("genInstitute");
+                      EditTableData(tableMode);
+                    }}
+                  />
+                </>
+              )}
+              <FiltredRows
+                SelectedText={SelectedText}
+                setSelectedText={setSelectedText}
               />
             </div>
 
-            <div className={styles.EditInput}>
-              {educatorIdforLk === "" && (
-                <EditInput
-                  selectedComponent={selectedComponent} //! исправить не обновляется
-                  tableHeaders={tableHeadersTeacher}
+            <div className={styles.right_button}>
+              <div className={styles.EditInput}>
+                {educatorIdforLk === "" && (
+                  <EditInput
+                    selectedComponent={selectedComponent} //! исправить не обновляется
+                    tableHeaders={tableHeadersTeacher}
+                  />
+                )}
+              </div>
+              <div className={styles.import}>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  style={{ display: "none" }}
+                  onChange={handleFileChange}
                 />
-              )}
+                <button onClick={handleFileUpload}>
+                  <p>Импорт файла</p>
+                  <img src="./img/import.svg" alt=">"></img>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -202,11 +247,14 @@ function HomePage() {
         <div className={styles.Block__tables}>
           {selectedComponent === "Disciplines" ? (
             <TableDisciplines
+              handleFileClear={handleFileClear}
+              tableMode={tableMode}
               tableHeaders={tableHeaders}
               searchTerm={searchTerm}
               setSearchTerm={setSearchTerm}
               refProfile={refProfile}
               setOpenModalWind={setOpenModalWind}
+              SelectedText={SelectedText}
             />
           ) : selectedComponent === "Teachers" && educatorIdforLk === "" ? (
             <TableTeachers
