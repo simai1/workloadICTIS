@@ -1,8 +1,8 @@
 import { DataTypes, Model } from 'sequelize';
 
-export default class Comment extends Model {
+export default class Attaches extends Model {
     static initialize(sequelize) {
-        Comment.init(
+        Attaches.init(
             {
                 id: {
                     type: DataTypes.UUID,
@@ -10,29 +10,25 @@ export default class Comment extends Model {
                     allowNull: false,
                     primaryKey: true,
                 },
-                text: {
-                    type: DataTypes.STRING,
-                    allowNull: true,
+                isAttach: {
+                    type: DataTypes.BOOLEAN,
+                    defaultValue: false,
+                    allowNull: false,
                 },
                 educatorId: {
                     type: DataTypes.UUID,
-                    allowNull: false,
+                    allowNull: true,
                 },
                 workloadId: {
                     type: DataTypes.UUID,
-                    allowNull: false,
-                },
-                isChecked: {
-                    type: DataTypes.BOOLEAN,
-                    allowNull: false,
-                    defaultValue: false,
+                    allowNull: true,
                 },
             },
             {
                 sequelize,
                 schema: 'public',
-                modelName: 'Comment',
-                tableName: 'comments',
+                modelName: 'Attaches',
+                tableName: 'attaches',
                 paranoid: true,
             }
         );
