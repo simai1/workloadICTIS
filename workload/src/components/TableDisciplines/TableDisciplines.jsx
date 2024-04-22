@@ -134,14 +134,14 @@ function TableDisciplines(props) {
       // выводим данные в зависимостри кафедральные или общеинститутские
       const dataIsOid =
         props.tableMode === "genInstitute"
-          ? reqData.filter((item) => item.isOid === false)
-          : reqData.filter((item) => item.isOid === true);
+          ? reqData.filter((item) => item.isOid === true)
+          : reqData.filter((item) => item.isOid === false);
 
       setUpdatedData(dataIsOid);
       setFilteredData(dataIsOid);
       setSortData(dataIsOid);
-      setGeneralInstituteData(reqData.filter((item) => item.isOid === false));
-      setCathedralData(reqData.filter((item) => item.isOid === true));
+      setGeneralInstituteData(reqData.filter((item) => item.isOid === true));
+      setCathedralData(reqData.filter((item) => item.isOid === false));
 
       getAllOffers(setAllOffersData);
       // funcGetAllColors(setAllColorsData); // получение цветов
