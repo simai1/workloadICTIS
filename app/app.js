@@ -21,6 +21,7 @@ import eduRoute from './routes/educator.js';
 import workloadRoute from './routes/workload.js';
 import notificationRoute from './routes/notification.js';
 import offerRoute from './routes/offers.js';
+import userRoute from './routes/user.js';
 import colorRoute from './routes/color.js';
 import attachesRoute from './routes/attached.js';
 // FIX ME
@@ -75,6 +76,7 @@ app.use('/educator', eduRoute);
 app.use('/parser', parserRoute);
 app.use('/workload', workloadRoute);
 app.use('/auth', authRoute);
+app.use('/user', userRoute);
 app.use('/offers', offerRoute);
 app.use('/role', roleRoute);
 app.use('/color', colorRoute);
