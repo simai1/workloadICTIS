@@ -56,6 +56,9 @@ function TableDisciplines(props) {
   const [changeHours, setChangHours] = useState([]); // храним id нагрузок у которых изменили час
   const [changeEducator, setChangEducator] = useState([]); // храним id нагрузок у которых изменили преподавателя
   const [allChangeData, setAllChangeData] = useState([]); // все измененные данные
+
+  const [activeDataCount, setActiveDataCount] = useState({ start: 0, end: 10 }); // количесвто данных выводимых изначально от нуля до 10
+  const [activeDataLength, setActiveDataLength] = useState(11); // длинна массива данных таблицы
   //! данные вытянутые из контекста
   const { appData } = React.useContext(DataContext);
 
@@ -88,13 +91,11 @@ function TableDisciplines(props) {
 
   //! пакетная загрузка данных
   //! функция разделения данных
-  const [activeDataCount, setActiveDataCount] = useState(10); // количесвто данных выводимых изначально
-  const [activeDataLength, setActiveDataLength] = useState(11); // длинна массива данных таблицы
 
   const splitData = (data) => {
     const mass = [];
     data.map((item, index) => {
-      if (index < activeDataCount) {
+      if (index < activeDataCount.end && index > activeDataCount.start) {
         mass.push(item);
       }
     });
@@ -109,11 +110,11 @@ function TableDisciplines(props) {
   useEffect(() => {
     const table = tableRef.current;
     const handleScroll = () => {
-      if (
-        table.scrollTop + table.clientHeight >= table.scrollHeight - 10 &&
-        activeDataLength > activeDataCount
-      ) {
-        setActiveDataCount((prevCount) => prevCount + 10);
+      if (table.scrollTop + table.clientHeight >= table.scrollHeight - 10) {
+        setActiveDataCount({
+          start: activeDataCount.start + 10,
+          end: activeDataCount.end + 10,
+        });
       }
     };
     table.addEventListener("scroll", handleScroll);
@@ -134,7 +135,7 @@ function TableDisciplines(props) {
           : reqData.filter((item) => item.isOid === false);
 
       setUpdatedData(dataIsOid);
-      setFilteredData([...splitData(data)]);
+      setFilteredData(splitData(data));
       setSortData(dataIsOid);
       setGeneralInstituteData(reqData.filter((item) => item.isOid === true));
       setCathedralData(reqData.filter((item) => item.isOid === false));
@@ -174,17 +175,17 @@ function TableDisciplines(props) {
 
   //! при изменении SortData обновим таблицу
   useEffect(() => {
-    setFilteredData([...splitData(sortData)]);
+    setFilteredData(splitData(sortData));
   }, [sortData]);
 
   //! обновляем таблицу если перешли между кафедральным и общенститутским
   useEffect(() => {
     if (props.tableMode === "genInstitute") {
       setUpdatedData(generalInstituteData);
-      setFilteredData([...splitData(generalInstituteData)]);
+      setFilteredData(splitData(generalInstituteData));
     } else {
       setUpdatedData(cathedralData);
-      setFilteredData([...splitData(cathedralData)]);
+      setFilteredData(splitData(cathedralData));
     }
     // убираем выделенные нагрузки
     appData.setIndividualCheckboxes([]);
@@ -491,7 +492,7 @@ function TableDisciplines(props) {
     let fd;
     if (props.searchTerm === "") {
       fd = sortData;
-      setFilteredData([...splitData(fd)]);
+      setFilteredData(splitData(fd));
     } else {
       fd = appData.workload.filter((row) => {
         return Object.values(row).some(
@@ -504,7 +505,7 @@ function TableDisciplines(props) {
               .includes(props.searchTerm.toLowerCase())
         );
       });
-      setFilteredData([...splitData(fd)]);
+      setFilteredData(splitData(fd));
     }
   }, [updatedData, props.searchTerm]);
 
