@@ -126,6 +126,7 @@ export const educators = [
     {
         name: 'Алексеев Кирилл Николаевич',
         department: 1,
+        email: 'alexeev@sfedu.ru',
         position: 5,
         typeOfEmployment: 1,
         rate: 0.5,
@@ -133,6 +134,7 @@ export const educators = [
     {
         name: 'Беспалов Дмитрий Анатольевич',
         department: 1,
+        email: 'bespalov@sfedu.ru',
         position: 5,
         typeOfEmployment: 3,
         rate: 1,
@@ -147,6 +149,7 @@ export const educators = [
     {
         name: 'Бучнев Максим Тимофеевич',
         department: 6,
+        email: 'mbuchnev@sfedu.ru',
         position: 5,
         typeOfEmployment: 1,
         rate: 0.5,
@@ -154,6 +157,23 @@ export const educators = [
     {
         name: 'Орлов Руслан Александрович',
         department: 6,
+        email: 'ror@sfedu.ru',
+        position: 5,
+        typeOfEmployment: 1,
+        rate: 0.5,
+    },
+    {
+        name: 'Капылов Никита Максимович',
+        department: 6,
+        email: 'kapylov@sfedu.ru',
+        position: 5,
+        typeOfEmployment: 1,
+        rate: 0.5,
+    },
+    {
+        name: 'Тоноян Артур Арменович',
+        department: 6,
+        email: 'atonoian@sfedu.ru',
         position: 5,
         typeOfEmployment: 1,
         rate: 0.5,

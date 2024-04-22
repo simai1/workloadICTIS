@@ -19,6 +19,12 @@ export default class Educator extends Model {
                     type: DataTypes.STRING,
                     allowNull: false,
                 },
+                email: {
+                  type: DataTypes.STRING,
+                  allowNull: true,
+                  unique: 'email',
+                  validate: { isEmail: { msg: 'Must be a valid email address' } },
+                },
                 userId: {
                   type: DataTypes.UUID,
                   allowNull: true,

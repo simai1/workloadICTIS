@@ -53,6 +53,7 @@ async function fillEducators() {
             await Educator.create({
                 name: x.name,
                 position: x.position,
+                email: x.email || null,
                 department: x.department,
                 typeOfEmployment: x.typeOfEmployment,
                 rate: x.rate,
