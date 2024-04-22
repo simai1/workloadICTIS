@@ -7,15 +7,17 @@ import { sequelize } from "../models/index.js";
 
 export default {
     async parseFromXlsx(req, res){
+        const numberDepartment  = req.params.numberDepartment;
+        await sequelize.query(`DELETE FROM workloads where department=${numberDepartment}`, null);
+        console.log(numberDepartment)
         let workbook = XLSX.readFile(req.file.path);
         const workload = [];
+
 
         Object.keys(workbook.Sheets).forEach((name) => {
             const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[name], {header: 1});
             workload.push({ name, data: sheetData });
         });
-        
-        await sequelize.query("DELETE FROM \"workloads\"", null);
 
         const dataWorkload = workload[0].data;
         for (const element of dataWorkload) {
