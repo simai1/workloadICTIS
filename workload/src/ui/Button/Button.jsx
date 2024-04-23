@@ -12,7 +12,7 @@ function Button(props) {
     <button
       className={styles.Button}
       onClick={handleClick}
-      style={{ backgroundColor: props.Bg, color: props.textColot }}
+      style={{ backgroundColor: props.Bg, color: props.textColot, border: props.border}}
     >
       {props.text}
     </button>

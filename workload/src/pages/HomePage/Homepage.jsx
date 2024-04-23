@@ -12,6 +12,7 @@ import DataContext from "../../context";
 import { bufferRequestToApi } from "../../bufferFunction";
 import FiltredRows from "../../ui/FiltredRows/FiltredRows";
 import { getDataTable } from "../../api/services/AssignApiData";
+import { NoSaveData } from "../../ui/NoSaveData/NoSaveData";
 
 function HomePage() {
   const { appData } = React.useContext(DataContext);
@@ -284,6 +285,7 @@ function HomePage() {
             />
           </div>
         </a>
+        <NoSaveData  onSaveClick={onSaveClick}/>
       </div>
     </Layout>
   );

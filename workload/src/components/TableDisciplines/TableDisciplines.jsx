@@ -19,8 +19,9 @@ import {
 import OfferModalWindow from "../OfferModalWindow/OfferModalWindow";
 import { returnPrevState } from "../../bufferFunction";
 import { PopUpError } from "../../ui/PopUp/PopUpError";
-import { EducatorLK, getAllColors } from "../../api/services/ApiRequest";
+import { EducatorLK, GetRole, getAllColors } from "../../api/services/ApiRequest";
 import { PopUpFile } from "../../ui/PopUpFile/PopUpFile";
+import { NoSaveData } from "../../ui/NoSaveData/NoSaveData";
 
 function TableDisciplines(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]); //заголовок обновленный для Redux сортировки
@@ -43,7 +44,7 @@ function TableDisciplines(props) {
   const [commentAllData, setCommentAllData] = useState([]); // все комментарии
   const [allOffersData, setAllOffersData] = useState([]);
   const [allColorsData, setAllColorsData] = useState([]); // выделенные цветом храним id
-
+  const [role, setRole]= useState([]);//Получение роли авторизованного пользователя 
   const [Highlight, setHighlight] = useState([]); // массив хранения выделенных цветом (хранится id нагрузки и номер цвета)
 
   const [modalWindowOffer, setModalWindowOffer] = useState({
@@ -124,7 +125,14 @@ function TableDisciplines(props) {
       table.removeEventListener("scroll", handleScroll);
     };
   }, []);
-
+  
+//!Получение ролей пользователя 
+  // useEffect(()=>{
+  //   GetRole().then((data)=>{
+  //       // setRole(data)
+  //       console.log("role", data)
+  //   });
+  // },[]);
 
   const getDataTableAll = () => {
     getDataTable().then((data) => {
