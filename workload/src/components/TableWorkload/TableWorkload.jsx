@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import TableTd from "./TableTd";
-import TableTh from "./TableTh";
 import { headers } from "./Data";
 import { Workload } from "../../api/services/ApiRequest";
+import Table from "../TableDisciplines/Table";
 
 function TableWorkload() {
   const tableHeaders = headers;
@@ -15,24 +14,7 @@ function TableWorkload() {
   }, []);
   return (
     <div>
-      <table>
-        <thead>
-          <tr>
-            {tableHeaders.map((item) => (
-              <TableTh item={item} />
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {workloadData.map((item) => (
-            <tr key={item.id}>
-              {tableHeaders.map((itemKey) => {
-                return <TableTd item={item} itemKey={itemKey} />;
-              })}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <Table tableHeaders={tableHeaders} workloadData={workloadData} />
     </div>
   );
 }
