@@ -1,11 +1,11 @@
 import { mapObjectKeys } from '../utils/map.js';
 
 const roles = {
-    Методист: 1,
-    Лектор: 2,
-    'Заведующий кафедрой': 3,
-    Дирекция: 4,
-    Преподаватель: 5,
+    METHODIST: 1,
+    LECTURER: 2,
+    DEPARTMENT_HEAD: 3,
+    DIRECTORATE: 4,
+    EDUCATOR: 5,
 };
 
 export default roles;
