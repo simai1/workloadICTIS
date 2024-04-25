@@ -244,7 +244,6 @@ function TableDisciplines(props) {
             appData.setBufferAction((prevItems) => prevItems.slice(1));
           }
         }
-        //функция отмены последенего действия находится в TableDisciplines
       }
     };
     document.addEventListener("keydown", handleKeyDown);
@@ -347,7 +346,7 @@ function TableDisciplines(props) {
   };
 
   //! при нажатии на кружок предложения
-  const handleClicOffer = (el, id_workload, index) => {
+  const handleClicOffer = (el, index) => {
     setModalWindowOffer({
       id: allOffersData.find(
         (item) => item.workloadId === filteredData[index].id
@@ -428,7 +427,7 @@ function TableDisciplines(props) {
   }, [updatedData, props.searchTerm]);
 
   //! меню при нажатии пкм
-  const handleContextMenu = (e, index) => {
+  const handleContextMenu = (e) => {
     e.preventDefault();
     setShowMenu(!showMenu);
     if (e.clientX + 260 > window.innerWidth) {

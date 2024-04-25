@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { headers } from "./Data";
 import { Workload } from "../../api/services/ApiRequest";
 import Table from "./Table";
+import styles from "./TableWorkload.module.scss";
 
 function TableWorkload() {
   const tableHeaders = headers;
@@ -18,7 +19,7 @@ function TableWorkload() {
     });
   }, []);
   return (
-    <div>
+    <div className={styles.tabledisciplinesMain}>
       <Table tableHeaders={tableHeaders} filtredData={filtredData} />
     </div>
   );
