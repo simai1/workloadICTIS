@@ -12,7 +12,7 @@ function App() {
   const [allWarningMessage, setAllWarningMessage] = useState([]);
   const [individualCheckboxes, setIndividualCheckboxes] = useState([]); //чекбоксы таблицы
   const [blockedCheckboxes, setBlockedCheckboxes] = useState([]); //чекбоксы таблицы
-  const [fileData, setFileData] = useState(null)
+  const [fileData, setFileData] = useState(null);
 
   //! данные пользователя ! изменить
   const myProfile = {
@@ -42,7 +42,26 @@ function App() {
     setBufferAction,
     myProfile,
     fileData,
-    setFileData
+    setFileData,
+  };
+
+  // ! параметры таблицы
+  const [workloadData, setWorkloadData] = useState([]); // данные с бд нагрузок
+  const [filtredData, setFiltredData] = useState([]); // фильтрованные данные
+  const [selectedTr, setSelectedTr] = useState([]); //выбранные tr
+  const [onCheckBoxAll, setOnCheckBoxAll] = useState(false); //выбранные tr
+  const [isSamplePointsData, setSamplePointsData] = useState([]);
+  const tabPar = {
+    workloadData,
+    setWorkloadData,
+    filtredData,
+    setFiltredData,
+    selectedTr,
+    setSelectedTr,
+    setOnCheckBoxAll,
+    onCheckBoxAll,
+    isSamplePointsData,
+    setSamplePointsData,
   };
 
   useEffect(() => {
@@ -71,6 +90,7 @@ function App() {
     <DataContext.Provider
       value={{
         appData,
+        tabPar,
       }}
     >
       <BrowserRouter>

@@ -2,7 +2,7 @@ import React from "react";
 
 function TableTd(props) {
   return (
-    <td key={props.itemKey.key}>
+    <td key={props.item.id + "_" + props.itemKey.key}>
       {props.itemKey.key !== "id"
         ? props.item[props.itemKey.key]
         : props.index + 1}
