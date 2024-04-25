@@ -24,11 +24,13 @@ function TableWorkload() {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            {workloadData.map((item) => (
-              <TableTd item={item} tableHeaders={tableHeaders} />
-            ))}
-          </tr>
+          {workloadData.map((item) => (
+            <tr key={item.id}>
+              {tableHeaders.map((itemKey) => {
+                return <TableTd item={item} itemKey={itemKey} />;
+              })}
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>
