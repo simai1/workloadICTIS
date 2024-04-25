@@ -54,8 +54,6 @@ function TableDisciplines(props) {
   const [changeHours, setChangHours] = useState([]); // храним id нагрузок у которых изменили час
   const [changeEducator, setChangEducator] = useState([]); // храним id нагрузок у которых изменили преподавателя
   const [allChangeData, setAllChangeData] = useState([]); // все измененные данные
-  const [activeDataCount, setActiveDataCount] = useState({ start: 0, end: 10 }); // количесвто данных выводимых изначально от нуля до 10
-  const [activeDataLength, setActiveDataLength] = useState(11); // длинна массива данных таблицы
   const tableHeaders = headers;
   //! данные вытянутые из контекста
   const { appData } = React.useContext(DataContext);
@@ -114,7 +112,7 @@ function TableDisciplines(props) {
     getDataAllComment(setCommentAllData); // получение комментариев
     getAllWarnin(appData.setAllWarningMessage); // предупреждения
     getAllOffers(setAllOffersData); // предложения
-  }, [activeDataCount]);
+  }, []);
 
   //! фильтрация при выборе всех дисциплин измененных выделенных и тд
   useEffect(() => {

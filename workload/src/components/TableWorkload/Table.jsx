@@ -13,10 +13,10 @@ function Table(props) {
         </tr>
       </thead>
       <tbody>
-        {props.workloadData.map((item) => (
+        {props.filtredData.map((item, index) => (
           <tr key={item.id}>
             {props.tableHeaders.map((itemKey) => {
-              return <TableTd item={item} itemKey={itemKey} />;
+              return <TableTd item={item} itemKey={itemKey} index={index} />;
             })}
           </tr>
         ))}
