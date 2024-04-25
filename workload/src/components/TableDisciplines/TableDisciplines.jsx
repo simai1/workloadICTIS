@@ -46,18 +46,17 @@ function TableDisciplines(props) {
   const [allColorsData, setAllColorsData] = useState([]); // выделенные цветом храним id
   const [role, setRole]= useState([]);//Получение роли авторизованного пользователя 
   const [Highlight, setHighlight] = useState([]); // массив хранения выделенных цветом (хранится id нагрузки и номер цвета)
-
   const [modalWindowOffer, setModalWindowOffer] = useState({
     id: null,
     flag: false,
   });
-
   const [generalInstituteData, setGeneralInstituteData] = useState([]); // общеинститутские данные
   const [cathedralData, setCathedralData] = useState([]); // кафедральыне данные
   const [changeNumberOfStudents, setChangeNumberOfStudents] = useState([]); // храним id нагрузок у которых изменили количество студентво
   const [changeHours, setChangHours] = useState([]); // храним id нагрузок у которых изменили час
   const [changeEducator, setChangEducator] = useState([]); // храним id нагрузок у которых изменили преподавателя
   const [allChangeData, setAllChangeData] = useState([]); // все измененные данные
+  
   //! данные вытянутые из контекста
   const { appData } = React.useContext(DataContext);
 
@@ -94,7 +93,7 @@ function TableDisciplines(props) {
  const [TableDistNone, setTableDistNone] = useState(false);
  const [TableObjNone, setTableObjNone] = useState(false);
   const [activeDataCount, setActiveDataCount] = useState(10); // количесвто данных выводимых изначально
-  const [activeDataLength, setActiveDataLength] = useState(11); // длинна массива данных таблицы
+  const [activeDataLength, setActiveDataLength] = useState(11); // длина массива данных таблицы
 
   const splitData = (data) => {
     const mass = [];
@@ -457,9 +456,7 @@ function TableDisciplines(props) {
 
     const keyTd = tableHeaders[index].key;
 
-    const td = filteredData
-      .map((item) => item[keyTd])
-      .filter((value, i, arr) => arr.indexOf(value) === i);
+    const td = filteredData.map((item) => item[keyTd]).filter((value, i, arr) => arr.indexOf(value) === i);//!Это нужно подумать
 
     const data = { td, keyTd };
     setSamplePointsData(data);
@@ -728,7 +725,7 @@ function TableDisciplines(props) {
                   if (!checkValues) {
                     return (
                       <tr
-                        key={index}
+                        key={index}//!Изменить
                         onContextMenu={(e) => handleContextMenu(e, index)}
                         className={`
                           ${
