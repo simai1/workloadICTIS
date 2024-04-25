@@ -1,12 +1,10 @@
 import React from "react";
 import styles from "./TableDisciplines.module.scss";
 import DataContext from "../../context";
-
 import TableTd from "./TableTd";
 
 function Table(props) {
   const { appData } = React.useContext(DataContext);
-
   return (
     <div>
       <table className={styles.taleDestiplinesMainTable}>
@@ -54,7 +52,7 @@ function Table(props) {
             if (!checkValues) {
               return (
                 <tr
-                  key={index}
+                  key={row.id}
                   onContextMenu={(e) => props.handleContextMenu(e, index)}
                   className={`
                           ${
@@ -200,10 +198,9 @@ function Table(props) {
                     />
                     <label htmlFor={`dataRow-${index}`}></label>
                   </td>
-                  {props.updatedHeader.map((key, ind) => (
+                  {props.updatedHeader.map((item, ind) => (
                     <TableTd
-                      updatedHeader={props.updatedHeader}
-                      key={key}
+                      item={item}
                       ind={ind}
                       index={index}
                       row={row}

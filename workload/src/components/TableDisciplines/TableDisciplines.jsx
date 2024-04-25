@@ -57,7 +57,6 @@ function TableDisciplines(props) {
   const tableHeaders = headers;
   //! данные вытянутые из контекста
   const { appData } = React.useContext(DataContext);
-
   // при изменении количесвтва студентов или часов id этих нагрузок будут записываться в состояние а затем выделяться цветом
   useEffect(() => {
     setChangeNumberOfStudents(
@@ -366,6 +365,7 @@ function TableDisciplines(props) {
 
   //! клик на th, открытие МО фильтры к колонке
   const clickFigth = (event, index) => {
+    console.log(event, index);
     setSamplePointsShow(!isSamplePointsShow);
     if (event.clientX + 372 > window.innerWidth) {
       setPositionFigth({ x: event.pageX - 50, y: event.pageY - 150 });
@@ -560,6 +560,7 @@ function TableDisciplines(props) {
           {/* уведомления от преподавателей  */}
           <div className={styles.TableDisciplines__inner}>
             <Table
+              trRef={trRef}
               filteredData={filteredData}
               handleIndividualCheckboxChange={handleIndividualCheckboxChange}
               commentAllData={commentAllData}

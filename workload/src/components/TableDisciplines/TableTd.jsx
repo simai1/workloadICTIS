@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./TableDisciplines.module.scss";
 import { ReactComponent as SvgChackmark } from "./../../img/checkmark.svg";
 import { ReactComponent as SvgCross } from "./../../img/cross.svg";
@@ -6,11 +6,11 @@ import { ReactComponent as SvgCross } from "./../../img/cross.svg";
 function TableTd(props) {
   return (
     <td
-      key={props.updatedHeader[props.ind].key}
+      key={`${props.item.key}${props.index}`}
       className={
-        props.updatedHeader[props.ind].key === "discipline" ||
-        props.updatedHeader[props.ind].key === "id" ||
-        props.updatedHeader[props.ind].key === "workload"
+        props.item.key === "discipline" ||
+        props.item.key === "id" ||
+        props.item.key === "workload"
           ? styles.stytic_td
           : null
       }
@@ -21,19 +21,19 @@ function TableTd(props) {
         onDoubleClick={() => props.changeValueTd(props.index, props.ind)}
         style={
           props.changeNumberOfStudents?.some((el) => el === props.row.id) &&
-          props.updatedHeader[props.ind].key === "numberOfStudents"
+          props.item.key === "numberOfStudents"
             ? {
                 backgroundColor: "rgb(255 135 135)",
                 borderRadius: "8px",
               }
             : props.changeHours?.some((el) => el === props.row.id) &&
-              props.updatedHeader[props.ind].key === "hours"
+              props.item.key === "hours"
             ? {
                 backgroundColor: "rgb(255 135 135)",
                 borderRadius: "8px",
               }
             : props.changeEducator?.some((el) => el === props.row.id) &&
-              props.updatedHeader[props.ind].key === "educator"
+              props.item.key === "educator"
             ? {
                 backgroundColor: "rgb(255 135 135)",
                 borderRadius: "8px",
@@ -49,7 +49,7 @@ function TableTd(props) {
             <textarea
               className={styles.textarea}
               type="text"
-              defaultValue={props.row[props.updatedHeader[props.ind].key]}
+              defaultValue={props.row[props.item.key]}
               onChange={props.onChangeTextareaTd}
             ></textarea>
             <div className={styles.svg_textarea}>
@@ -66,12 +66,12 @@ function TableTd(props) {
               />
             </div>
           </div>
-        ) : props.row[props.updatedHeader[props.ind].key] === null ? (
+        ) : props.row[props.item.key] === null ? (
           "0"
-        ) : props.updatedHeader[props.ind].key === "id" ? (
+        ) : props.item.key === "id" ? (
           props.index + 1
         ) : (
-          props.row[props.updatedHeader[props.ind].key]
+          props.row[props.item.key]
         )}
       </div>
     </td>
