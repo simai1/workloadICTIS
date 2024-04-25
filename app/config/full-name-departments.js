@@ -1,3 +1,5 @@
+import { mapObjectKeys } from "../utils/map.js";
+
 const FullNameDepartments = {
     "Кафедра безопасности информационных технологий": 1,
     "Кафедра высшей математики": 2,
@@ -13,3 +15,5 @@ const FullNameDepartments = {
 };
 
 export default FullNameDepartments;
+
+export const map = mapObjectKeys(FullNameDepartments);
