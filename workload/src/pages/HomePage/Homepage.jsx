@@ -12,6 +12,7 @@ import DataContext from "../../context";
 import { bufferRequestToApi } from "../../bufferFunction";
 import FiltredRows from "../../ui/FiltredRows/FiltredRows";
 import { getDataTable } from "../../api/services/AssignApiData";
+import TableWorkload from "../../components/TableWorkload/TableWorkload";
 
 function HomePage() {
   const { appData } = React.useContext(DataContext);
@@ -103,14 +104,14 @@ function HomePage() {
   const handleFileUpload = () => {
     fileInputRef.current.click();
   };
-  const handleFileClear = () =>{
-    fileInputRef.current.value = null
-  }
+  const handleFileClear = () => {
+    fileInputRef.current.value = null;
+  };
   const handleFileChange = () => {
     const file = fileInputRef.current.files[0];
     // Здесь можно выполнить дополнительную обработку загруженного файла
     console.log("Выбранный файл:", file);
-    appData.setFileData(file)
+    appData.setFileData(file);
   };
 
   return (
@@ -127,7 +128,7 @@ function HomePage() {
                   borderRadius: " 8px",
                   border: "none",
                   fontSize: "18px",
-                  padding:"10px 16px"
+                  padding: "10px 16px",
                 }}
                 onClick={onSaveClick}
               >
@@ -246,7 +247,17 @@ function HomePage() {
 
         <div className={styles.Block__tables}>
           {selectedComponent === "Disciplines" ? (
-            <TableDisciplines
+            // <TableDisciplines
+            //   handleFileClear={handleFileClear}
+            //   tableMode={tableMode}
+            //   tableHeaders={tableHeaders}
+            //   searchTerm={searchTerm}
+            //   setSearchTerm={setSearchTerm}
+            //   refProfile={refProfile}
+            //   setOpenModalWind={setOpenModalWind}
+            //   SelectedText={SelectedText}
+            // />
+            <TableWorkload
               handleFileClear={handleFileClear}
               tableMode={tableMode}
               tableHeaders={tableHeaders}

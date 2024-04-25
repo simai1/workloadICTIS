@@ -20,6 +20,7 @@ import { PopUpError } from "../../ui/PopUp/PopUpError";
 import { EducatorLK, getAllColors } from "../../api/services/ApiRequest";
 import { PopUpFile } from "../../ui/PopUpFile/PopUpFile";
 import Table from "./Table";
+import { headers } from "./Data";
 
 function TableDisciplines(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]); //заголовок обновленный для Redux сортировки
@@ -42,23 +43,20 @@ function TableDisciplines(props) {
   const [commentAllData, setCommentAllData] = useState([]); // все комментарии
   const [allOffersData, setAllOffersData] = useState([]);
   const [allColorsData, setAllColorsData] = useState([]); // выделенные цветом храним id
-
   const [Highlight, setHighlight] = useState([]); // массив хранения выделенных цветом (хранится id нагрузки и номер цвета)
-
   const [modalWindowOffer, setModalWindowOffer] = useState({
     id: null,
     flag: false,
   });
-
   const [generalInstituteData, setGeneralInstituteData] = useState([]); // общеинститутские данные
   const [cathedralData, setCathedralData] = useState([]); // кафедральыне данные
   const [changeNumberOfStudents, setChangeNumberOfStudents] = useState([]); // храним id нагрузок у которых изменили количество студентво
   const [changeHours, setChangHours] = useState([]); // храним id нагрузок у которых изменили час
   const [changeEducator, setChangEducator] = useState([]); // храним id нагрузок у которых изменили преподавателя
   const [allChangeData, setAllChangeData] = useState([]); // все измененные данные
-
   const [activeDataCount, setActiveDataCount] = useState({ start: 0, end: 10 }); // количесвто данных выводимых изначально от нуля до 10
   const [activeDataLength, setActiveDataLength] = useState(11); // длинна массива данных таблицы
+  const tableHeaders = headers;
   //! данные вытянутые из контекста
   const { appData } = React.useContext(DataContext);
 
@@ -89,61 +87,23 @@ function TableDisciplines(props) {
     ]);
   }, [changeEducator, changeHours, changeNumberOfStudents]);
 
-  //! пакетная загрузка данных
-  //! функция разделения данных
-
-  const splitData = (data) => {
-    const mass = [];
-    data.map((item, index) => {
-      if (index < activeDataCount.end && index > activeDataCount.start) {
-        mass.push(item);
-      }
-    });
-    console.log("mass", mass);
-    setActiveDataLength(mass.length);
-    console.log("split", mass, activeDataCount, activeDataLength);
-    return mass;
-  };
-
-  //! при пролистывании таблицы данные буду пакетно подгружаться
-  const tableRef = useRef(null);
-  useEffect(() => {
-    const table = tableRef.current;
-    const handleScroll = () => {
-      if (table.scrollTop + table.clientHeight >= table.scrollHeight - 10) {
-        setActiveDataCount({
-          start: activeDataCount.start + 10,
-          end: activeDataCount.end + 10,
-        });
-      }
-    };
-    table.addEventListener("scroll", handleScroll);
-    return () => {
-      table.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
   const getDataTableAll = () => {
     getDataTable().then((data) => {
       appData.setWorkload(data);
       let reqData = data;
-
       // выводим данные в зависимостри кафедральные или общеинститутские
       const dataIsOid =
         props.tableMode === "genInstitute"
           ? reqData.filter((item) => item.isOid === true)
           : reqData.filter((item) => item.isOid === false);
-
       setUpdatedData(dataIsOid);
-      setFilteredData(splitData(data));
+      setFilteredData(data);
       setSortData(dataIsOid);
       setGeneralInstituteData(reqData.filter((item) => item.isOid === true));
       setCathedralData(reqData.filter((item) => item.isOid === false));
-
       getAllOffers(setAllOffersData);
       // funcGetAllColors(setAllColorsData); // получение цветов
       appData.setIndividualCheckboxes([]);
-      console.log("Таблица обноленна");
     });
   };
 
@@ -152,7 +112,7 @@ function TableDisciplines(props) {
     getDataTableAll();
     setTableData(appData.workload);
     getDataAllComment(setCommentAllData); // получение комментариев
-    // getAllWarnin(appData.setAllWarningMessage); // предупреждения
+    getAllWarnin(appData.setAllWarningMessage); // предупреждения
     getAllOffers(setAllOffersData); // предложения
   }, [activeDataCount]);
 
@@ -175,17 +135,17 @@ function TableDisciplines(props) {
 
   //! при изменении SortData обновим таблицу
   useEffect(() => {
-    setFilteredData(splitData(sortData));
+    setFilteredData(sortData);
   }, [sortData]);
 
   //! обновляем таблицу если перешли между кафедральным и общенститутским
   useEffect(() => {
     if (props.tableMode === "genInstitute") {
       setUpdatedData(generalInstituteData);
-      setFilteredData(splitData(generalInstituteData));
+      setFilteredData(generalInstituteData);
     } else {
       setUpdatedData(cathedralData);
-      setFilteredData(splitData(cathedralData));
+      setFilteredData(cathedralData);
     }
     // убираем выделенные нагрузки
     appData.setIndividualCheckboxes([]);
@@ -205,7 +165,6 @@ function TableDisciplines(props) {
     if (appData.bufferAction[0] === 0) {
       getDataTableAll();
       getDataAllComment(setCommentAllData); // получение комментариев
-      console.log("Таблица обноленна после буффера");
       appData.setBufferAction([]);
     }
     const handleKeyDown = (event) => {
@@ -287,7 +246,6 @@ function TableDisciplines(props) {
             appData.setBufferAction((prevItems) => prevItems.slice(1));
           }
         }
-
         //функция отмены последенего действия находится в TableDisciplines
       }
     };
@@ -340,7 +298,6 @@ function TableDisciplines(props) {
         setTextareaTd(null);
       }
     };
-
     document.addEventListener("click", handler, true);
     return () => {
       document.removeEventListener("click", handler);
@@ -370,14 +327,12 @@ function TableDisciplines(props) {
       el.target.tagName !== "path"
     ) {
       let ic = [...appData.individualCheckboxes];
-
       if (ic.includes(filteredData[index].id)) {
         ic = ic.filter((el) => el !== filteredData[index].id);
       } else {
         ic = [...ic, filteredData[index].id];
       }
       appData.setIndividualCheckboxes(ic);
-
       if (ic.length === filteredData.length) {
         setIsCheckedGlobal(true);
       } else {
@@ -395,7 +350,6 @@ function TableDisciplines(props) {
 
   //! при нажатии на кружок предложения
   const handleClicOffer = (el, id_workload, index) => {
-    console.log("id", index, id_workload, allOffersData[index]);
     setModalWindowOffer({
       id: allOffersData.find(
         (item) => item.workloadId === filteredData[index].id
@@ -421,45 +375,13 @@ function TableDisciplines(props) {
     } else {
       setPositionFigth({ x: event.pageX - 50, y: event.pageY - 150 });
     }
-
     const keyTd = tableHeaders[index].key;
-
     const td = filteredData
       .map((item) => item[keyTd])
       .filter((value, i, arr) => arr.indexOf(value) === i);
-
     const data = { td, keyTd };
     setSamplePointsData(data);
   };
-
-  //выбор компонента
-  // ! заголовки
-  const tableHeaders = useMemo(() => {
-    return [
-      { key: "id", label: "№" },
-      { key: "discipline", label: "Дисциплина" },
-      { key: "workload", label: "Нагрузка" },
-      { key: "groups", label: "Группа" },
-      { key: "department", label: "Кафедра" },
-      { key: "block", label: "Блок" },
-      { key: "semester", label: "Семестр" },
-      { key: "period", label: "Период" },
-      { key: "curriculum", label: "Учебный план" },
-      { key: "curriculumUnit", label: "Подразделение учебного плана" },
-      { key: "formOfEducation", label: "Форма обучения" },
-      { key: "levelOfTraining", label: "Уровень подготовки" },
-      {
-        key: "specialty",
-        label: "Направление подготовки (специальность)",
-      },
-      { key: "core", label: "Профиль" },
-      { key: "numberOfStudents", label: "Количество студентов" },
-      { key: "hours", label: "Часы" },
-      { key: "audienceHours", label: "Аудиторные часы" },
-      { key: "ratingControlHours", label: "Часы рейтинг-контроль" },
-      { key: "educator", label: "Преподаватель" },
-    ];
-  }, []);
 
   //! работа с таблицами через REDUX
   const dispatch = useDispatch();
@@ -467,7 +389,6 @@ function TableDisciplines(props) {
   useEffect(() => {
     addHeadersTable(filters, tableHeaders, tableData);
   }, [filters, dispatch]);
-
   function addHeadersTable(filters, tableHeaders, tableData) {
     const updatedHeader = tableHeaders.filter((header) =>
       filters.includes(header.key)
@@ -481,7 +402,6 @@ function TableDisciplines(props) {
       });
       return updatedRow;
     });
-
     setUpdatedHeader(updatedHeader);
     setUpdatedData(updatedData);
   }
@@ -492,7 +412,7 @@ function TableDisciplines(props) {
     let fd;
     if (props.searchTerm === "") {
       fd = sortData;
-      setFilteredData(splitData(fd));
+      setFilteredData(fd);
     } else {
       fd = appData.workload.filter((row) => {
         return Object.values(row).some(
@@ -505,14 +425,13 @@ function TableDisciplines(props) {
               .includes(props.searchTerm.toLowerCase())
         );
       });
-      setFilteredData(splitData(fd));
+      setFilteredData(fd);
     }
   }, [updatedData, props.searchTerm]);
 
   //! меню при нажатии пкм
   const handleContextMenu = (e, index) => {
     e.preventDefault();
-    // console.log(index);
     setShowMenu(!showMenu);
     if (e.clientX + 260 > window.innerWidth) {
       setMenuPosition({ x: e.clientX - 260, y: e.clientY });
@@ -555,7 +474,6 @@ function TableDisciplines(props) {
   const [textareaTd, setTextareaTd] = useState("");
   const onChangeTextareaTd = (event) => {
     setTextareaTd(event.target.value);
-    console.log(event.target.value);
   };
   const onClickButton = (id, key) => {
     let parsedValue = parseFloat(textareaTd);
@@ -600,7 +518,6 @@ function TableDisciplines(props) {
               .reverse()}
           />
         )}
-
         {modalWindowOffer.flag && (
           <OfferModalWindow
             allOffersDataItem={allOffersData.filter(
@@ -614,7 +531,6 @@ function TableDisciplines(props) {
             getDataTableAll={getDataTableAll}
           />
         )}
-
         {isSamplePointsShow && (
           <SamplePoints
             refSP={refSP}
@@ -645,7 +561,7 @@ function TableDisciplines(props) {
         )}
         <div className={styles.table_container}>
           {/* уведомления от преподавателей  */}
-          <div ref={tableRef} className={styles.TableDisciplines__inner}>
+          <div className={styles.TableDisciplines__inner}>
             <Table
               filteredData={filteredData}
               handleIndividualCheckboxChange={handleIndividualCheckboxChange}
@@ -682,5 +598,4 @@ function TableDisciplines(props) {
     </div>
   );
 }
-
 export default TableDisciplines;

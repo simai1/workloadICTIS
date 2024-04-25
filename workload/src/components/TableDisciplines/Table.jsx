@@ -1,8 +1,8 @@
 import React from "react";
 import styles from "./TableDisciplines.module.scss";
 import DataContext from "../../context";
-import { ReactComponent as SvgChackmark } from "./../../img/checkmark.svg";
-import { ReactComponent as SvgCross } from "./../../img/cross.svg";
+
+import TableTd from "./TableTd";
 
 function Table(props) {
   const { appData } = React.useContext(DataContext);
@@ -201,84 +201,23 @@ function Table(props) {
                     <label htmlFor={`dataRow-${index}`}></label>
                   </td>
                   {props.updatedHeader.map((key, ind) => (
-                    <td
-                      key={props.updatedHeader[ind].key}
-                      className={
-                        props.updatedHeader[ind].key === "discipline" ||
-                        props.updatedHeader[ind].key === "id" ||
-                        props.updatedHeader[ind].key === "workload"
-                          ? styles.stytic_td
-                          : null
-                      }
-                      style={{ left: props.arrLeft[ind] || "0" }}
-                    >
-                      <div
-                        className={styles.td_inner}
-                        onDoubleClick={() => props.changeValueTd(index, ind)}
-                        style={
-                          props.changeNumberOfStudents?.some(
-                            (el) => el === row.id
-                          ) &&
-                          props.updatedHeader[ind].key === "numberOfStudents"
-                            ? {
-                                backgroundColor: "rgb(255 135 135)",
-                                borderRadius: "8px",
-                              }
-                            : props.changeHours?.some((el) => el === row.id) &&
-                              props.updatedHeader[ind].key === "hours"
-                            ? {
-                                backgroundColor: "rgb(255 135 135)",
-                                borderRadius: "8px",
-                              }
-                            : props.changeEducator?.some(
-                                (el) => el === row.id
-                              ) && props.updatedHeader[ind].key === "educator"
-                            ? {
-                                backgroundColor: "rgb(255 135 135)",
-                                borderRadius: "8px",
-                              }
-                            : null
-                        }
-                      >
-                        {/* редактирование поля нагрузки при двойном клике на нее */}
-                        {props.cellNumber &&
-                        props.cellNumber.index === index &&
-                        props.cellNumber.ind === ind ? (
-                          <div
-                            className={styles.textarea_title}
-                            ref={props.refTextArea}
-                          >
-                            <textarea
-                              className={styles.textarea}
-                              type="text"
-                              defaultValue={row[props.updatedHeader[ind].key]}
-                              onChange={props.onChangeTextareaTd}
-                            ></textarea>
-                            <div className={styles.svg_textarea}>
-                              {props.textareaTd?.trim() && (
-                                <SvgChackmark
-                                  className={styles.SvgChackmark_green}
-                                  onClick={() =>
-                                    props.onClickButton(row.id, key)
-                                  }
-                                />
-                              )}
-                              <SvgCross
-                                onClick={() => {
-                                  props.setCellNumber([]);
-                                }}
-                              />
-                            </div>
-                          </div>
-                        ) : row[props.updatedHeader[ind].key] === null ? (
-                          "0"
-                        ) : props.updatedHeader[ind].key === "id" ? (
-                          index + 1
-                        ) : (
-                          row[props.updatedHeader[ind].key]
-                        )}
-                      </div>
-                    </td>
+                    <TableTd
+                      updatedHeader={props.updatedHeader}
+                      key={key}
+                      ind={ind}
+                      index={index}
+                      row={row}
+                      arrLeft={props.arrLeft}
+                      changeValueTd={props.changeValueTd}
+                      changeNumberOfStudents={props.changeNumberOfStudents}
+                      changeHours={props.changeHours}
+                      changeEducator={props.changeEducator}
+                      cellNumber={props.cellNumber}
+                      onChangeTextareaTd={props.onChangeTextareaTd}
+                      textareaTd={props.textareaTd}
+                      onClickButton={props.onClickButton}
+                      setCellNumber={props.setCellNumber}
+                    />
                   ))}
                 </tr>
               );
