@@ -241,4 +241,12 @@ export const educators = [
         typeOfEmployment: 1,
         rate: 0.5,
     },
+    {
+        name: 'Суханов Александр Сергеевич',
+        department: 6,
+        email: 'sukhanov@sfedu.ru',
+        position: 5,
+        typeOfEmployment: 1,
+        rate: 0.5,
+    },
 ];
