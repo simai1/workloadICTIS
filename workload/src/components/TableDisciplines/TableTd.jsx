@@ -4,6 +4,7 @@ import { ReactComponent as SvgChackmark } from "./../../img/checkmark.svg";
 import { ReactComponent as SvgCross } from "./../../img/cross.svg";
 
 function TableTd(props) {
+  
   return (
     <td
       key={props.updatedHeader[props.ind].key}
