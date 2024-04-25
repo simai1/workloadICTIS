@@ -1,7 +1,7 @@
 import React from "react";
 
 function TableTh(props) {
-  return <td key={props.item.key}>{props.item.label}</td>;
+  return <th key={props.item.key}>{props.item.label}</th>;
 }
 
 export default TableTh;

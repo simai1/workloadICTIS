@@ -247,17 +247,7 @@ function HomePage() {
 
         <div className={styles.Block__tables}>
           {selectedComponent === "Disciplines" ? (
-            // <TableDisciplines
-            //   handleFileClear={handleFileClear}
-            //   tableMode={tableMode}
-            //   tableHeaders={tableHeaders}
-            //   searchTerm={searchTerm}
-            //   setSearchTerm={setSearchTerm}
-            //   refProfile={refProfile}
-            //   setOpenModalWind={setOpenModalWind}
-            //   SelectedText={SelectedText}
-            // />
-            <TableWorkload
+            <TableDisciplines
               handleFileClear={handleFileClear}
               tableMode={tableMode}
               tableHeaders={tableHeaders}
@@ -267,7 +257,17 @@ function HomePage() {
               setOpenModalWind={setOpenModalWind}
               SelectedText={SelectedText}
             />
-          ) : selectedComponent === "Teachers" && educatorIdforLk === "" ? (
+          ) : // <TableWorkload
+          //   handleFileClear={handleFileClear}
+          //   tableMode={tableMode}
+          //   tableHeaders={tableHeaders}
+          //   searchTerm={searchTerm}
+          //   setSearchTerm={setSearchTerm}
+          //   refProfile={refProfile}
+          //   setOpenModalWind={setOpenModalWind}
+          //   SelectedText={SelectedText}
+          // />
+          selectedComponent === "Teachers" && educatorIdforLk === "" ? (
             <TableTeachers
               setEducatorIdforLk={setEducatorIdforLk}
               changeInput={changeInput}

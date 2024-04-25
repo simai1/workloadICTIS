@@ -17,9 +17,8 @@ import {
 import OfferModalWindow from "../OfferModalWindow/OfferModalWindow";
 import { returnPrevState } from "../../bufferFunction";
 import { PopUpError } from "../../ui/PopUp/PopUpError";
-import { EducatorLK, GetRole, getAllColors } from "../../api/services/ApiRequest";
+import { EducatorLK, getAllColors } from "../../api/services/ApiRequest";
 import { PopUpFile } from "../../ui/PopUpFile/PopUpFile";
-import { NoSaveData } from "../../ui/NoSaveData/NoSaveData";
 import Table from "./Table";
 import { headers } from "./Data";
 
@@ -44,7 +43,6 @@ function TableDisciplines(props) {
   const [commentAllData, setCommentAllData] = useState([]); // все комментарии
   const [allOffersData, setAllOffersData] = useState([]);
   const [allColorsData, setAllColorsData] = useState([]); // выделенные цветом храним id
-  const [role, setRole]= useState([]);//Получение роли авторизованного пользователя 
   const [Highlight, setHighlight] = useState([]); // массив хранения выделенных цветом (хранится id нагрузки и номер цвета)
   const [modalWindowOffer, setModalWindowOffer] = useState({
     id: null,
@@ -56,7 +54,6 @@ function TableDisciplines(props) {
   const [changeHours, setChangHours] = useState([]); // храним id нагрузок у которых изменили час
   const [changeEducator, setChangEducator] = useState([]); // храним id нагрузок у которых изменили преподавателя
   const [allChangeData, setAllChangeData] = useState([]); // все измененные данные
-  
   const tableHeaders = headers;
   //! данные вытянутые из контекста
   const { appData } = React.useContext(DataContext);
@@ -91,23 +88,6 @@ function TableDisciplines(props) {
   const getDataTableAll = () => {
     getDataTable().then((data) => {
       appData.setWorkload(data);
-      const dataObj = data.filter((item) => item.isOid === false);
-      const dataDist = data.filter((item) => item.isOid === true);
-      // const datisoid =
-      //   props.tableMode === "genInstitute"
-      //     ? data.filter((item) => item.isOid === false)
-      //     : data.filter((item) => item.isOid === true);
-
-      // let reqdat = [];
-      // if (splitData(datisoid)) {
-      //   reqdat = splitData(datisoid);
-      // }
-
-      // let reqData = [];
-      // if (splitData(datisoid)) {
-      //   reqData = splitData(datisoid);
-      // }
-
       let reqData = data;
       // выводим данные в зависимостри кафедральные или общеинститутские
       const dataIsOid =
@@ -132,7 +112,7 @@ function TableDisciplines(props) {
     getDataAllComment(setCommentAllData); // получение комментариев
     getAllWarnin(appData.setAllWarningMessage); // предупреждения
     getAllOffers(setAllOffersData); // предложения
-  }, [activeDataCount]);
+  }, []);
 
   //! фильтрация при выборе всех дисциплин измененных выделенных и тд
   useEffect(() => {
@@ -321,7 +301,6 @@ function TableDisciplines(props) {
       document.removeEventListener("click", handler);
     };
   }, []);
-
 
   //! чекбоксы
   const handleGlobalCheckboxChange = () => {
