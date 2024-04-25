@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import styles from "./NotificationForm.module.scss";
 import DataContext from "../../context";
-import { createComment } from "../../api/services/ApiRequest";
-
+import { createComment } from "../../api/services/ApiRequest"
 import { ReactComponent as LogoAllComment } from "./../../img/arrow_down.svg";
 import { ReactComponent as CommentsSvg } from "./../../img/comments.svg";
 import { ReactComponent as CommentsSvgActive } from "./../../img/commentsOn.svg";
@@ -13,7 +12,7 @@ export function NotificationForm(props) {
   const [isError, setError] = useState(false);
   const [isComment, setIsComment] = useState(false);
   const [textarea, setTextarea] = useState("");
-  const [positionMenu, setPositionMenu] = useState(props.position);
+  const [positionMenu] = useState(props.position);
   const { appData } = React.useContext(DataContext);
 
   //! кнопка отправить

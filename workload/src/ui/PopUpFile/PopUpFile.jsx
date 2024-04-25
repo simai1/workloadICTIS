@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styles from "./PopUpFile.module.scss";
 import Button from "../Button/Button";
 import DataContext from "../../context";
