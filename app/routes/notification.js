@@ -6,12 +6,12 @@ import role from '../config/roles.js';
 import verify from '../middlewares/verify-token.js';
 
 const router = Router();
-router.use(verify.general);
+//router.use(verify.general);
 
 router
     .route('/')
     .get(
-        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.METHODIST, role.DIRECTORATE])),
+        //asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.METHODIST, role.DIRECTORATE])),
         asyncRoute(notificationController.getAllNotifications)
     );
 
