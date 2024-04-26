@@ -28,7 +28,7 @@ export default class Workload extends Model {
                     allowNull: false,
                 },
                 groups: {
-                    type: DataTypes.STRING,
+                    type: DataTypes.STRING(400),
                     allowNull: false,
                 },
                 block: {
@@ -43,11 +43,11 @@ export default class Workload extends Model {
                     type: DataTypes.SMALLINT,
                 },
                 curriculum: {
-                    type: DataTypes.STRING,
+                    type: DataTypes.STRING(600),
                     allowNull: false,
                 },
                 curriculumUnit: {
-                    type: DataTypes.STRING,
+                    type: DataTypes.STRING(600),
                     allowNull: false,
                 },
                 formOfEducation: {
@@ -59,11 +59,11 @@ export default class Workload extends Model {
                     allowNull: false,
                 },
                 specialty: {
-                    type: DataTypes.STRING,
+                    type: DataTypes.STRING(1200),
                     allowNull: false,
                 },
                 core: {
-                    type: DataTypes.STRING,
+                    type: DataTypes.STRING(1200),
                     allowNull: false,
                 },
                 numberOfStudents: {
@@ -95,7 +95,7 @@ export default class Workload extends Model {
                     type: DataTypes.UUID,
                     allowNull: true,
                 },
-                    isOid: {
+                isOid: {
                     type: DataTypes.BOOLEAN,
                     allowNull: false,
                     defaultValue: false,
