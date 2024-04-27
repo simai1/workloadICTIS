@@ -32,3 +32,45 @@ export function splitWorkloadCount(data, selectedTr, count) {
   }
   return { updatedData, newIds, blocked };
 }
+
+export function combineData(data, selectedTr) {
+  const prevState = data.filter((item) =>
+    Object.values(selectedTr).includes(item.id)
+  );
+  if (
+    prevState.every(
+      (item) =>
+        item.workload === prevState[0].workload &&
+        item.discipline === prevState[0].discipline &&
+        item.hours === prevState[0].hours
+    )
+  ) {
+    const sumOfStudents = prevState.reduce(
+      (total, el) => total + el.numberOfStudents,
+      0
+    );
+    const groups = prevState.reduce((total, el) => {
+      if (!total.includes(el.groups)) {
+        return total + " " + el.groups;
+      }
+      return total;
+    }, "");
+    const individualCB = Object.values(selectedTr).slice(1);
+    const upData = data.filter((item) => !individualCB.includes(item.id));
+    const index = upData.findIndex((item) => item.id === selectedTr[0]);
+    if (index !== -1) {
+      const updatedObject = {
+        ...upData[index],
+        groups,
+        numberOfStudents: sumOfStudents,
+      };
+      const newUpdatedData = [
+        ...upData.slice(0, index),
+        updatedObject,
+        ...upData.slice(index + 1),
+      ];
+      return { newUpdatedData, prevState };
+    }
+  }
+  return null;
+}

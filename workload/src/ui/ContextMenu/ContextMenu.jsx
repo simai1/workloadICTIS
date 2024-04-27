@@ -7,14 +7,11 @@ import DataContext from "../../context";
 import { EducatorLK } from "../../api/services/ApiRequest";
 import { Highlight } from "./Highlight";
 import MenuPop from "./MenuPop";
-import { splitWorkloadCount, upDateEducator } from "./Function";
+import { combineData, splitWorkloadCount, upDateEducator } from "./Function";
 
 const ContextMenu = (props) => {
   const { appData, tabPar } = React.useContext(DataContext);
   const [menuShow, setMenuShow] = useState("");
-  const [educatorMenuShow, setEducatorMenuShow] = useState(false);
-  const [propose, setPropose] = useState(false);
-  const [Highlightshow, setHighlightshow] = useState(false);
 
   useEffect(() => {
     console.log("bufferAction", appData.bufferAction);
@@ -136,88 +133,38 @@ const ContextMenu = (props) => {
   };
 
   //! соединение нагрузок
-  const handleJoinWorkloads = (count) => {
+  const handleJoinWorkloads = () => {
     setMenuShow("");
-    console.log("соеденить ", count, appData.individualCheckboxes);
     const data = {
-      ids: appData.individualCheckboxes,
+      ids: tabPar.selectedTr,
     };
-
-    // берем все обьеденяемые элементы и записываем в предыдущее сотсояние
-    const prevState = props.updatedData.filter((item) => {
-      return Object.values(appData.individualCheckboxes).includes(item.id);
-    });
-
-    // проверим совпадение необходимых параметов для обьединения
-    if (
-      prevState.every((item) => item.workload === prevState[0].workload) &&
-      prevState.every((item) => item.discipline === prevState[0].discipline) &&
-      prevState.every((item) => item.hours === prevState[0].hours)
-    ) {
-      // подсчет общего колличества студентов
-      const sumOfStudents = prevState.reduce(
-        (total, el) => total + el.numberOfStudents,
-        0
-      );
-      // складываем уникальные группы
-      const groups = prevState.reduce((total, el) => {
-        if (!total.includes(el.groups)) {
-          return total + " " + el.groups;
-        }
-        return total;
-      }, "");
-      const individualCB = Object.values(appData.individualCheckboxes).splice(
-        1
-      );
-      // удаляем все обьеденяемые нагрузки кроме первой
-      const upData = props.updatedData.filter((item) => {
-        return !individualCB.includes(item.id);
-      });
-
-      // изменим параметры нагрузки
-      const index = upData.findIndex(
-        (item) => item.id === appData.individualCheckboxes[0]
-      );
+    const funData = combineData(tabPar.workloadDataFix, tabPar.selectedTr);
+    if (funData === null) {
+      console.error("неправильно соеденяем данные");
+    } else {
       appData.setBlockedCheckboxes((prevent) => [
         ...prevent,
-        appData.individualCheckboxes[0],
+        tabPar.selectedTr[0],
       ]);
-
-      if (index !== -1) {
-        const updatedObject = {
-          ...upData[index],
-          groups: groups,
-          numberOfStudents: sumOfStudents,
-        };
-        // Создадим новый массив с обновленным объектом
-        const newUpdatedData = [
-          ...upData.slice(0, index),
-          updatedObject,
-          ...upData.slice(index + 1),
-        ];
-        props.setUpdatedData(newUpdatedData);
-        appData.setIndividualCheckboxes([]);
-      }
-
+      tabPar.setSelectedTr([]);
+      tabPar.setWorkloadDataFix(funData.newUpdatedData);
       //! буфер
       appData.setBufferAction([
-        { request: "joinWorkloads", data: data, prevState: prevState },
+        { request: "joinWorkloads", data: data, prevState: funData.prevState },
         ...appData.bufferAction,
       ]);
-    } else props.setIsPopUpMenu(true);
+    }
   };
   //! удаление нагрузки
   const handleDeletWorkload = () => {
     setMenuShow("");
-    console.log("удалить ", appData.individualCheckboxes);
-    const data = { ids: appData.individualCheckboxes };
-    const newUpdatedData = appData.updatedData.filter(
-      (item) => !appData.individualCheckboxes.includes(item.id)
+    const data = { ids: tabPar.selectedTr };
+    const newUpdatedData = tabPar.workloadDataFix.filter(
+      (item) => !tabPar.selectedTr.includes(item.id)
     );
-    props.setUpdatedData(newUpdatedData);
-    //! буфер
+    tabPar.setWorkloadDataFix(newUpdatedData);
     appData.setBufferAction([
-      { request: "deleteWorkload", data: data },
+      { request: "deleteWorkload", data },
       ...appData.bufferAction,
     ]);
   };
@@ -225,23 +172,17 @@ const ContextMenu = (props) => {
   //! удалить преподавателя у нагрузки
   const removeEducator = () => {
     setMenuShow("");
-    console.log(appData.individualCheckboxes);
-    const data = {
-      workloadId: appData.individualCheckboxes[0],
-    };
-    let prevState = null;
-    const newUpdatedData = props.updatedData.map((object) => {
-      if (object.id === appData.individualCheckboxes[0]) {
-        prevState = object.educator;
-        return { ...object, educator: null };
-      }
-      return object;
-    });
-    props.setUpdatedData(newUpdatedData);
-
-    //! буфер
+    const { selectedTr, workloadDataFix, setWorkloadDataFix } = tabPar;
+    const workloadId = selectedTr[0];
+    const prevState = workloadDataFix.find(
+      (obj) => obj.id === workloadId
+    )?.educator;
+    const newUpdatedData = workloadDataFix.map((obj) =>
+      obj.id === workloadId ? { ...obj, educator: null } : obj
+    );
+    setWorkloadDataFix(newUpdatedData);
     appData.setBufferAction([
-      { request: "removeEducatorinWorkload", data: data, prevState: prevState },
+      { request: "removeEducatorinWorkload", data: { workloadId }, prevState },
       ...appData.bufferAction,
     ]);
   };
@@ -327,7 +268,7 @@ const ContextMenu = (props) => {
       {(menuShow === "educator" || menuShow === "propose") && (
         // меню с выбором преподавалетля
         <EducatorMenu
-          propose={propose}
+          propose={menuShow === "propose"}
           contextPosition={tabPar.contextPosition}
           selectedEducator={selectedEducator}
         />

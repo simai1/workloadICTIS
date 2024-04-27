@@ -55,8 +55,8 @@ function App() {
   const [onCheckBoxAll, setOnCheckBoxAll] = useState(false); //выбранные tr
   const [isSamplePointsData, setSamplePointsData] = useState([]); // данные фильтрации по th
   const [spShow, setSpShow] = useState(null); // отображение модального окна th
-  const [contextMenuShow, setContextMenuShow] = useState(false);
-  const [contextPosition, setContextPosition] = useState({ x: 300, y: 300 });
+  const [contextMenuShow, setContextMenuShow] = useState(false); // показать скрыть контекст меню
+  const [contextPosition, setContextPosition] = useState({ x: 300, y: 300 }); // позиция контекст меню в таблице
 
   const [allOffersData, setAllOffersData] = useState([]);
   const tabPar = {
