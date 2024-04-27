@@ -13,9 +13,10 @@ import { bufferRequestToApi } from "../../bufferFunction";
 import FiltredRows from "../../ui/FiltredRows/FiltredRows";
 import { getDataTable } from "../../api/services/AssignApiData";
 import TableWorkload from "../../components/TableWorkload/TableWorkload";
+import { funSplitData } from "../../components/TableWorkload/Function";
 
 function HomePage() {
-  const { appData } = React.useContext(DataContext);
+  const { appData, tabPar } = React.useContext(DataContext);
 
   const [selectedComponent, setSelectedComponent] = useState("Disciplines");
   const [tableMode, setTableMode] = useState("cathedrals"); //выбранный компонент
@@ -58,9 +59,10 @@ function HomePage() {
     setSearchTerm(event.target.value);
   };
 
-  const EditTableData = (selectedComponent) => {
-    console.log(selectedComponent);
+  const EditTableData = (tableMode) => {
+    tabPar.setDataIsOid(tableMode === "genInstitute");
     //тут написать функцию которая будет подгружать нужное содержимое tableData и tableHeaders
+    // используется в TableWorkload
   };
   const tableHeaders = [
     { key: "id", label: "№" },
@@ -198,7 +200,7 @@ function HomePage() {
                     text="Кафедральные"
                     onClick={() => {
                       setTableMode("cathedrals");
-                      EditTableData(tableMode);
+                      EditTableData("cathedrals");
                     }}
                   />
                   <Button
@@ -209,7 +211,7 @@ function HomePage() {
                     text="Общеинститутские"
                     onClick={() => {
                       setTableMode("genInstitute");
-                      EditTableData(tableMode);
+                      EditTableData("genInstitute");
                     }}
                   />
                 </>

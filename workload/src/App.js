@@ -47,21 +47,41 @@ function App() {
 
   // ! параметры таблицы
   const [workloadData, setWorkloadData] = useState([]); // данные с бд нагрузок
+  const [workloadDataFix, setWorkloadDataFix] = useState([]); //данные с убранным массиовм преподавателя
   const [filtredData, setFiltredData] = useState([]); // фильтрованные данные
+
+  const [dataIsOid, setDataIsOid] = useState(false);
   const [selectedTr, setSelectedTr] = useState([]); //выбранные tr
   const [onCheckBoxAll, setOnCheckBoxAll] = useState(false); //выбранные tr
-  const [isSamplePointsData, setSamplePointsData] = useState([]);
+  const [isSamplePointsData, setSamplePointsData] = useState([]); // данные фильтрации по th
+  const [spShow, setSpShow] = useState(null); // отображение модального окна th
+  const [contextMenuShow, setContextMenuShow] = useState(false);
+  const [contextPosition, setContextPosition] = useState({ x: 300, y: 300 });
+
+  const [allOffersData, setAllOffersData] = useState([]);
   const tabPar = {
     workloadData,
     setWorkloadData,
+    workloadDataFix,
+    setWorkloadDataFix,
     filtredData,
     setFiltredData,
+    dataIsOid,
+    setDataIsOid,
     selectedTr,
     setSelectedTr,
     setOnCheckBoxAll,
     onCheckBoxAll,
     isSamplePointsData,
     setSamplePointsData,
+    spShow,
+    setSpShow,
+    contextMenuShow,
+    setContextMenuShow,
+    setContextPosition,
+    contextPosition,
+    allOffersData,
+    setAllOffersData,
   };
 
   useEffect(() => {

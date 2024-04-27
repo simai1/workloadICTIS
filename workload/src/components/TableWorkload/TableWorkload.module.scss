@@ -2,13 +2,18 @@
 
 .tabledisciplinesMain {
   display: flex;
-  width: 98%;
+  width: 96%;
   height: 80vh;
   overflow: auto;
   margin-left: 64px;
 
   .table {
     width: 100%;
+    th {
+      // position: relative;
+      position: sticky;
+      top: 0;
+    }
     .th_inner {
       display: flex;
       justify-content: center;
@@ -21,6 +26,18 @@
   .selectedTr {
     background-color: var(--color--blueBg);
   }
+  table {
+    thead {
+      tr {
+        background-color: var(--gray-color);
+      }
+      td {
+        position: sticky;
+        top: 0;
+      }
+    }
+  }
+
   .InputCheckbox {
     input {
       appearance: none;

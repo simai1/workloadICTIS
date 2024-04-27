@@ -19,6 +19,17 @@ function Table(props) {
       }
     });
   };
+  //! клик левой кнопкой мыши на tr
+  const clickTrContetx = (itemId) => {
+    tabPar.setSelectedTr((prev) => {
+      const index = prev.indexOf(itemId);
+      if (index === -1 && tabPar.selectedTr.length === 0) {
+        return [...prev, itemId];
+      } else {
+        return [...prev];
+      }
+    });
+  };
 
   const clickTrAll = () => {
     let ids = [];
@@ -43,8 +54,13 @@ function Table(props) {
             checked={tabPar.onCheckBoxAll}
             clickTr={clickTrAll}
           />
-          {props.tableHeaders.map((item) => (
-            <TableTh key={item.key} item={item} />
+          {props.tableHeaders.map((item, index) => (
+            <TableTh
+              key={item.key}
+              item={item}
+              index={index}
+              modal={tabPar.spShow === index}
+            />
           ))}
         </tr>
       </thead>
@@ -56,6 +72,7 @@ function Table(props) {
               tabPar.selectedTr.includes(item.id) ? styles.selectedTr : null
             }
             onClick={() => clickTr(item.id)}
+            onContextMenu={() => clickTrContetx(item.id)}
             key={item.id}
           >
             <InputCheckbox

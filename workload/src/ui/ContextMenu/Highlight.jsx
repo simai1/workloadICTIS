@@ -1,21 +1,23 @@
 import React from "react";
 import styles from "./ContextMenu.module.scss";
+import DataContext from "../../context";
 
 export function Highlight(props) {
+  const { tabPar } = React.useContext(DataContext);
   return (
     <div
       className={styles.blockHighlight}
       style={
-        props.menuPosition.x + 280 + 180 > window.innerWidth
+        tabPar.contextPosition.x + 280 + 180 > window.innerWidth
           ? {
               position: "fixed",
-              top: props.menuPosition.y,
-              left: props.menuPosition.x - 130,
+              top: tabPar.contextPosition.y,
+              left: tabPar.contextPosition.x - 130,
             }
           : {
               position: "fixed",
-              top: props.menuPosition.y,
-              left: props.menuPosition.x + 280,
+              top: tabPar.contextPosition.y,
+              left: tabPar.contextPosition.x + 280,
             }
       }
     >

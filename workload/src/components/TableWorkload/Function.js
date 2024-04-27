@@ -18,3 +18,8 @@ export function filteredWorkload(data, text) {
     );
   });
 }
+
+export function funSplitData(data, isOid) {
+  const origData = [...data];
+  return origData.filter((item) => item.isOid === isOid);
+}
