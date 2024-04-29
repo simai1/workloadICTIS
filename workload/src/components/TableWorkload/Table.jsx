@@ -23,8 +23,14 @@ function Table(props) {
   const clickTrContetx = (itemId) => {
     tabPar.setSelectedTr((prev) => {
       const index = prev.indexOf(itemId);
-      if (index === -1 && tabPar.selectedTr.length === 0) {
+      if (
+        index === -1 &&
+        tabPar.selectedTr.length === 0 &&
+        !tabPar.contextMenuShow
+      ) {
         return [...prev, itemId];
+      } else if (tabPar.selectedTr.length === 1 && tabPar.contextMenuShow) {
+        return [...prev.slice(0, index), ...prev.slice(index + 1)];
       } else {
         return [...prev];
       }
@@ -46,7 +52,7 @@ function Table(props) {
   };
 
   return (
-    <table className={styles.table}>
+    <table className={styles.table} ref={props.tableRef}>
       <thead>
         <tr>
           <InputCheckbox

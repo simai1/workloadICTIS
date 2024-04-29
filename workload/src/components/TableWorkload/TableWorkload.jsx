@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { headers } from "./Data";
-import { Workload } from "../../api/services/ApiRequest";
+import { Comment, Workload } from "../../api/services/ApiRequest";
 import Table from "./Table";
 import styles from "./TableWorkload.module.scss";
 import { filteredWorkload, funFixEducator, funSplitData } from "./Function";
@@ -22,6 +22,10 @@ function TableWorkload(props) {
       // разделяем на общеинституские и кафедральные
       const splitData = funSplitData(fixData, tabPar.dataIsOid);
       tabPar.setFiltredData(splitData);
+      // получаем все комментарии
+      Comment().then((data) => {
+        tabPar.setAllCommentsData(data);
+      });
     });
   }, []);
 

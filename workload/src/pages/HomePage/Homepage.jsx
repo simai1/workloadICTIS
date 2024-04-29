@@ -11,9 +11,7 @@ import EditInput from "../../components/EditInput/EditInput";
 import DataContext from "../../context";
 import { bufferRequestToApi } from "../../bufferFunction";
 import FiltredRows from "../../ui/FiltredRows/FiltredRows";
-import { getDataTable } from "../../api/services/AssignApiData";
 import TableWorkload from "../../components/TableWorkload/TableWorkload";
-import { funSplitData } from "../../components/TableWorkload/Function";
 
 function HomePage() {
   const { appData, tabPar } = React.useContext(DataContext);
@@ -114,6 +112,13 @@ function HomePage() {
     // Здесь можно выполнить дополнительную обработку загруженного файла
     console.log("Выбранный файл:", file);
     appData.setFileData(file);
+  };
+  const tableRef = useRef(null);
+  const raketClick = () => {
+    console.log(tableRef);
+    if (tableRef.current) {
+      tableRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   };
 
   return (
@@ -268,6 +273,7 @@ function HomePage() {
               refProfile={refProfile}
               setOpenModalWind={setOpenModalWind}
               SelectedText={SelectedText}
+              tableRef={tableRef}
             />
           ) : selectedComponent === "Teachers" && educatorIdforLk === "" ? (
             <TableTeachers
@@ -289,7 +295,7 @@ function HomePage() {
             />
           ) : null}
         </div>
-        <a href="#">
+        <a href="#" onClick={raketClick}>
           <div className={styles.rocket}>
             <img
               className={styles.rocket_img}

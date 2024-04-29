@@ -1,0 +1,9 @@
+@mixin stickyTd($width, $left) {
+  position: sticky;
+  width: $width;
+  min-width: $width;
+  max-width: $width;
+  left: $left;
+  box-sizing: border-box;
+  background-color: #fff;
+}

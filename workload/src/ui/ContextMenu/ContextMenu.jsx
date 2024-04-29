@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import styles from "./ContextMenu.module.scss";
-import arrow from "./../../img/arrow.svg";
 import { SubMenu } from "./SubMenu";
 import { EducatorMenu } from "./EducatorMenu";
 import DataContext from "../../context";
@@ -8,6 +7,7 @@ import { EducatorLK } from "../../api/services/ApiRequest";
 import { Highlight } from "./Highlight";
 import MenuPop from "./MenuPop";
 import { combineData, splitWorkloadCount, upDateEducator } from "./Function";
+import { NotificationForm } from "../NotificationForm/NotificationForm";
 
 const ContextMenu = (props) => {
   const { appData, tabPar } = React.useContext(DataContext);
@@ -40,6 +40,12 @@ const ContextMenu = (props) => {
   //! нажатие выделить
   const ClickHighlightshov = () => {
     setMenuShow(menuShow === "highlight" ? "" : "highlight");
+  };
+
+  //! оставить комментарий
+  const onAddComment = () => {
+    console.log("оставить комментарий");
+    setMenuShow(menuShow === "commentsMenu" ? "" : "commentsMenu");
   };
 
   //!функция замены цвета
@@ -230,8 +236,9 @@ const ContextMenu = (props) => {
         {tabPar.selectedTr.length === 1 && (
           <MenuPop
             btnText={"Оставить комментарий"}
-            func={props.onAddComment}
-            img={false}
+            func={onAddComment}
+            menuShow={menuShow === "commentsMenu"}
+            img={true}
           />
         )}
         {tabPar.selectedTr.length > 1 && (
@@ -279,6 +286,9 @@ const ContextMenu = (props) => {
           contextPosition={tabPar.contextPosition}
           SetColor={SetColor}
         />
+      )}
+      {menuShow === "commentsMenu" && (
+        <NotificationForm contextPosition={tabPar.contextPosition} />
       )}
     </div>
   );

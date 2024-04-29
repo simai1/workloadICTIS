@@ -1,4 +1,5 @@
 @import "./../../style/colors.scss";
+@import "./../../style/mixin.scss";
 
 .tabledisciplinesMain {
   display: flex;
@@ -24,7 +25,9 @@
     }
   }
   .selectedTr {
-    background-color: var(--color--blueBg);
+    td {
+      background-color: var(--color--blueBg) !important;
+    }
   }
   table {
     thead {
@@ -34,7 +37,43 @@
       td {
         position: sticky;
         top: 0;
+        left: 0;
+        z-index: 10;
       }
+    }
+
+    td:nth-child(1) {
+      @include stickyTd(60px, 0);
+    }
+    td:nth-child(2) {
+      @include stickyTd(60px, 60px);
+    }
+    td:nth-child(3) {
+      @include stickyTd(172px, 120px);
+    }
+    td:nth-child(4) {
+      @include stickyTd(auto, 292px);
+    }
+
+    th:nth-child(1) {
+      @include stickyTd(60px, 0);
+      background-color: var(--gray-color);
+      z-index: 10;
+    }
+    th:nth-child(2) {
+      @include stickyTd(60px, 60px);
+      background-color: var(--gray-color);
+      z-index: 10;
+    }
+    th:nth-child(3) {
+      @include stickyTd(172px, 120px);
+      background-color: var(--gray-color);
+      z-index: 10;
+    }
+    th:nth-child(4) {
+      @include stickyTd(auto, 292px);
+      background-color: var(--gray-color);
+      z-index: 10;
     }
   }
 

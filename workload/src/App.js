@@ -49,6 +49,9 @@ function App() {
   const [workloadData, setWorkloadData] = useState([]); // данные с бд нагрузок
   const [workloadDataFix, setWorkloadDataFix] = useState([]); //данные с убранным массиовм преподавателя
   const [filtredData, setFiltredData] = useState([]); // фильтрованные данные
+  const [allCommentsData, setAllCommentsData] = useState([]); // все комментарии
+  const [allOffersData, setAllOffersData] = useState([]); // предложения
+  const [coloredData, setColoredData] = useState([]); // выделенные цветом
 
   const [dataIsOid, setDataIsOid] = useState(false);
   const [selectedTr, setSelectedTr] = useState([]); //выбранные tr
@@ -58,7 +61,6 @@ function App() {
   const [contextMenuShow, setContextMenuShow] = useState(false); // показать скрыть контекст меню
   const [contextPosition, setContextPosition] = useState({ x: 300, y: 300 }); // позиция контекст меню в таблице
 
-  const [allOffersData, setAllOffersData] = useState([]);
   const tabPar = {
     workloadData,
     setWorkloadData,
@@ -82,6 +84,8 @@ function App() {
     contextPosition,
     allOffersData,
     setAllOffersData,
+    allCommentsData,
+    setAllCommentsData,
   };
 
   useEffect(() => {

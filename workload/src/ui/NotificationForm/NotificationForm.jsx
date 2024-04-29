@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./NotificationForm.module.scss";
 import DataContext from "../../context";
 import { createComment } from "../../api/services/ApiRequest";
@@ -13,8 +13,15 @@ export function NotificationForm(props) {
   const [isError, setError] = useState(false);
   const [isComment, setIsComment] = useState(false);
   const [textarea, setTextarea] = useState("");
-  const [positionMenu, setPositionMenu] = useState(props.position);
-  const { appData } = React.useContext(DataContext);
+  const [workloadComments, setWorkloadComments] = useState([]);
+  const { appData, tabPar } = React.useContext(DataContext);
+
+  useEffect(() => {
+    const allComments = [...tabPar.allCommentsData];
+    setWorkloadComments(
+      allComments.filter((item) => item.id === tabPar.selectedTr[0])
+    );
+  }, []);
 
   //! кнопка отправить
   const onCheckmarkClick = () => {
@@ -24,12 +31,13 @@ export function NotificationForm(props) {
       //удалить, заменить id пользователя
       const data = {
         educatorId: appData.myProfile.id,
-        workloadId: props.workloadId,
+        workloadId: tabPar.selectedTr[0],
         text: textarea,
       };
-      createComment(data).then(() =>
-        props.getDataAllComment(props.setCommentAllData)
-      );
+      // createComment(data).then(() =>
+      //   props.getDataAllComment(props.setCommentAllData)
+      // );
+      createComment(data);
       setIsComment(false);
     }
   };
@@ -67,26 +75,20 @@ export function NotificationForm(props) {
       ...appData.bufferAction,
     ]);
     props.setIsHovered(false);
-    //удаление коммента по id
-    // deleteComment(props.workloadId).then(() =>
-    //   props.getDataAllComment(props.setCommentAllData)
-    // );
+  };
+  const notisStales = {
+    top: props.contextPosition.y,
+    left: props.contextPosition.x + 270,
   };
   return (
     <main ref={props.refHoverd} className={styles.notification}>
-      <div
-        className={styles.hovered_notice}
-        style={{
-          top: positionMenu.y,
-          left: positionMenu.x + 70,
-        }}
-      >
+      <div className={styles.hovered_notice} style={notisStales}>
         <div className={styles.comment_top}>
           {/* отображение всех комментарие начиная с последнего по первый */}
-          {isCommentsSheetOpen && props.commentData.length > 1 ? (
+          {isCommentsSheetOpen && workloadComments.length > 1 ? (
             <div className={styles.CommentsSheet}>
               <div className={styles.container}>
-                {props.commentData.map((item) => (
+                {workloadComments.map((item) => (
                   <div key={item?.id}>
                     <h4>{item?.educator?.name}</h4>
                     <p>{item?.text}</p>
@@ -96,16 +98,16 @@ export function NotificationForm(props) {
             </div>
           ) : (
             <div className={styles.headComment}>
-              <h4>{props.commentData[0]?.educator?.name}</h4>
-              <p>{props.commentData[0]?.text}</p>
+              <h4>{workloadComments[0]?.educator?.name}</h4>
+              <p>{workloadComments[0]?.text}</p>
             </div>
           )}
-          {props.commentData.length > 0 && (
+          {workloadComments.length > 0 && (
             <div className={styles.hovered_notice_img}>
               <div className={styles.left} onClick={onClickAllComment}>
-                {props.commentData.length > 1 && (
+                {workloadComments.length > 1 && (
                   <>
-                    <span>{props.commentData.length}</span>
+                    <span>{workloadComments.length}</span>
 
                     <LogoAllComment
                       height={8}
@@ -147,7 +149,7 @@ export function NotificationForm(props) {
 
         <div
           className={
-            isComment || props.commentData.length === 0
+            isComment || workloadComments.length === 0
               ? styles.comment
               : styles.comment_show
           }
