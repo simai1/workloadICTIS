@@ -7,3 +7,24 @@
   box-sizing: border-box;
   background-color: #fff;
 }
+
+@mixin customTd($width) {
+  min-width: $width;
+  max-width: $width;
+}
+
+@mixin scrollStyle($width, $height) {
+  &::-webkit-scrollbar {
+    width: $width; /* ширина scrollbar */
+    height: $height;
+  }
+  &::-webkit-scrollbar-track {
+    background: #fff; /* цвет дорожки */
+  }
+  &::-webkit-scrollbar-thumb,
+  &::-webkit-scrollbar-thumb {
+    background-color: #a6a6a6;
+    border-radius: 5px;
+    border: 3px solid #a6a6a6;
+  }
+}

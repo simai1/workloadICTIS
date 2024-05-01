@@ -61,6 +61,24 @@ function App() {
   const [contextMenuShow, setContextMenuShow] = useState(false); // показать скрыть контекст меню
   const [contextPosition, setContextPosition] = useState({ x: 300, y: 300 }); // позиция контекст меню в таблице
 
+  const [isChecked, setIsChecked] = useState([]);
+  const [isAllChecked, setAllChecked] = useState(true);
+  const checkPar = {
+    isChecked,
+    setIsChecked,
+    isAllChecked,
+    setAllChecked,
+  };
+  //! для виртуального скролла
+  const [startData, setStartData] = useState(0); // индекс элемента с которого показывается таблица
+  const visibleData = filtredData.length > 10 ? 10 : filtredData.length - 1; // кооличество данных которые мы видим в таблице
+  const heightTd = 150; // высота td
+  const visibleDataPar = {
+    startData,
+    setStartData,
+    visibleData,
+    heightTd,
+  };
   const tabPar = {
     workloadData,
     setWorkloadData,
@@ -115,6 +133,8 @@ function App() {
       value={{
         appData,
         tabPar,
+        visibleDataPar,
+        checkPar,
       }}
     >
       <BrowserRouter>

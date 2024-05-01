@@ -115,6 +115,8 @@
     width: 100%;
     font-size: 14px;
     border-collapse: collapse;
+    border-spacing: 0;
+
     col {
       width: 100px;
     }
@@ -337,7 +339,7 @@
 }
 
 table td {
-  padding: 17px 20px !important;
+  // padding: 17px 20px !important;
 }
 .Block__tables__shadow {
   background: linear-gradient(

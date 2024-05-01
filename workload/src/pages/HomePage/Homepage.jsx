@@ -14,7 +14,7 @@ import FiltredRows from "../../ui/FiltredRows/FiltredRows";
 import TableWorkload from "../../components/TableWorkload/TableWorkload";
 
 function HomePage() {
-  const { appData, tabPar } = React.useContext(DataContext);
+  const { appData, tabPar, visibleDataPar } = React.useContext(DataContext);
 
   const [selectedComponent, setSelectedComponent] = useState("Disciplines");
   const [tableMode, setTableMode] = useState("cathedrals"); //выбранный компонент
@@ -113,12 +113,12 @@ function HomePage() {
     console.log("Выбранный файл:", file);
     appData.setFileData(file);
   };
-  const tableRef = useRef(null);
+
+  //! при нажатии на ракету
   const raketClick = () => {
-    console.log(tableRef);
-    if (tableRef.current) {
-      tableRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
+    visibleDataPar.setStartData(0);
+    const table = document.querySelector("table");
+    table.scrollIntoView(true);
   };
 
   return (
@@ -273,7 +273,6 @@ function HomePage() {
               refProfile={refProfile}
               setOpenModalWind={setOpenModalWind}
               SelectedText={SelectedText}
-              tableRef={tableRef}
             />
           ) : selectedComponent === "Teachers" && educatorIdforLk === "" ? (
             <TableTeachers
@@ -295,7 +294,7 @@ function HomePage() {
             />
           ) : null}
         </div>
-        <a href="#" onClick={raketClick}>
+        <div onClick={raketClick}>
           <div className={styles.rocket}>
             <img
               className={styles.rocket_img}
@@ -303,7 +302,7 @@ function HomePage() {
               alt="up"
             />
           </div>
-        </a>
+        </div>
       </div>
     </Layout>
   );

@@ -2,11 +2,10 @@ import React, { useState, useRef, useEffect } from "react";
 import styles from "./SamplePoints.module.scss";
 import DataContext from "../../context";
 import { FilteredSample } from "./Function";
+
 export function SamplePoints(props) {
-  const { tabPar } = React.useContext(DataContext);
-  const [isAllChecked, setAllChecked] = useState(true);
+  const { tabPar, checkPar } = React.useContext(DataContext);
   const [searchText, setSearchText] = useState("");
-  const [isChecked, setIsChecked] = useState([]);
 
   const handleInputChange = (event) => {
     setSearchText(event.target.value);
@@ -24,9 +23,9 @@ export function SamplePoints(props) {
 
   //! при нажатии на Input All
   const onAllChecked = () => {
-    const checked = isAllChecked ? [...filteredData] : [];
-    setIsChecked(checked);
-    setAllChecked(!isAllChecked);
+    const checked = checkPar.isAllChecked ? [...filteredData] : [];
+    checkPar.setIsChecked(checked);
+    checkPar.setAllChecked(!checkPar.isAllChecked);
     // Фильтруем данные
     const fdfix = FilteredSample(
       tabPar.workloadDataFix,
@@ -38,19 +37,17 @@ export function SamplePoints(props) {
 
   //! при нажатии на Input
   const onChecked = (el) => {
-    const checked = [...isChecked];
+    const checked = [...checkPar.isChecked];
     const index = checked.indexOf(el);
     index !== -1 ? checked.splice(index, 1) : checked.push(el);
-    setIsChecked(checked);
+    checkPar.setIsChecked(checked);
+    console.log(checked);
+
     // Фильтруем данные
-    const fdfix = FilteredSample(
-      tabPar.workloadDataFix,
-      checked,
-      props.itemKey
-    );
+    const fdfix = FilteredSample(tabPar.filtredData, checked, props.itemKey);
     tabPar.setFiltredData(fdfix);
     const allChecked = checked.length === 0;
-    setAllChecked(allChecked);
+    checkPar.setAllChecked(allChecked);
   };
 
   return (
@@ -69,7 +66,7 @@ export function SamplePoints(props) {
               id="allCheckbox"
               type="checkbox"
               onChange={onAllChecked}
-              checked={isAllChecked}
+              checked={checkPar.isAllChecked}
             />
             <p>Все</p>
           </div>
@@ -80,7 +77,7 @@ export function SamplePoints(props) {
                   id={`checkbox-${index}`}
                   type="checkbox"
                   onChange={() => onChecked(el, index)}
-                  checked={!isChecked.includes(el)}
+                  checked={!checkPar.isChecked.includes(el)}
                 />
                 <p>{props.index === 0 ? index + 1 : el}</p>
               </div>

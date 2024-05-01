@@ -1,6 +1,13 @@
 @import "./../../style/colors.scss";
 @import "./../../style/mixin.scss";
+$heightCell: 150px;
 
+.DataGrid {
+  display: flex;
+  width: 96%;
+  height: 80vh;
+  margin-left: 64px;
+}
 .tabledisciplinesMain {
   display: flex;
   width: 96%;
@@ -9,11 +16,82 @@
   margin-left: 64px;
 
   .table {
-    width: 100%;
+    width: 100vw;
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    background-color: #fff;
+    font-size: 14px;
+    font-weight: 400;
+    // table-layout: fixed; /* Фиксированная ширина ячеек */
+    position: relative; /* Относительное позиционирование для таблицы */
     th {
-      // position: relative;
       position: sticky;
       top: 0;
+      background-color: var(--gray-color);
+    }
+    td {
+      background-color: #fff;
+      box-sizing: border-box;
+    }
+
+    td {
+      min-height: $heightCell;
+      padding: 4px 10px;
+      max-height: $heightCell;
+      .tdInner {
+        max-height: $heightCell;
+        overflow: hidden; // Скрыть контент, выходящий за пределы обертки
+        white-space: nowrap; // Запретить перенос строк
+        text-overflow: ellipsis; // Добавить многоточие в конце обрезанного текста
+        &:hover {
+          width: 130px;
+          overflow: visible; // Показать полный текст при наведении
+          white-space: normal; // Разрешить перенос строк при наведении
+          text-overflow: unset; // Убрать многоточие при наведении
+        }
+      }
+    }
+
+    th[name="period"],
+    td[name="period"] {
+      @include customTd(110px);
+    }
+
+    th[name="numberOfStudents"],
+    td[name="numberOfStudents"] {
+      @include customTd(120px);
+    }
+
+    th[name="hours"],
+    td[name="hours"] {
+      @include customTd(120px);
+    }
+
+    th[name="audienceHours"],
+    td[name="audienceHours"] {
+      @include customTd(120px);
+    }
+
+    th[name="ratingControlHours"],
+    td[name="ratingControlHours"] {
+      @include customTd(120px);
+    }
+
+    th,
+    td {
+      // padding: 17px 20px;
+      min-width: 160px;
+      max-width: 160px;
+      box-sizing: border-box;
+      // border: 1px solid #a6a6a6;
+    }
+    .trPlug {
+      background-color: #fff;
+      padding: 0;
+      margin: 0;
     }
     .th_inner {
       display: flex;
@@ -23,13 +101,7 @@
         padding: 0 6px;
       }
     }
-  }
-  .selectedTr {
-    td {
-      background-color: var(--color--blueBg) !important;
-    }
-  }
-  table {
+
     thead {
       tr {
         background-color: var(--gray-color);
@@ -39,6 +111,21 @@
         top: 0;
         left: 0;
         z-index: 10;
+      }
+    }
+    tbody {
+      tr {
+        padding: 0;
+        margin: 0;
+        min-height: $heightCell;
+        max-height: $heightCell;
+        height: $heightCell;
+      }
+      td {
+        min-height: $heightCell;
+        max-height: $heightCell;
+        width: $heightCell;
+        // vertical-align: top;
       }
     }
 
@@ -52,7 +139,7 @@
       @include stickyTd(172px, 120px);
     }
     td:nth-child(4) {
-      @include stickyTd(auto, 292px);
+      @include stickyTd(160px, 292px);
     }
 
     th:nth-child(1) {
@@ -74,6 +161,11 @@
       @include stickyTd(auto, 292px);
       background-color: var(--gray-color);
       z-index: 10;
+    }
+  }
+  .selectedTr {
+    td {
+      background-color: var(--color--blueBg) !important;
     }
   }
 

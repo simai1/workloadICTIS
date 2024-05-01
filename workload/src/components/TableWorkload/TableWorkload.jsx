@@ -8,8 +8,16 @@ import DataContext from "../../context";
 import ContextMenu from "../../ui/ContextMenu/ContextMenu";
 
 function TableWorkload(props) {
-  const { tabPar } = React.useContext(DataContext);
+  const { tabPar, visibleDataPar } = React.useContext(DataContext);
   const tableHeaders = headers;
+
+  //! при событии скролл таблицы изменим индекс первого показываемого tr
+  const scrollTable = (e) => {
+    visibleDataPar.visibleData !== tabPar.filtredData.length - 1 &&
+      visibleDataPar.setStartData(
+        Math.floor(e.target.scrollTop / visibleDataPar.heightTd)
+      );
+  };
 
   //! получаем данные нагрузок с бд
   useEffect(() => {
@@ -43,6 +51,7 @@ function TableWorkload(props) {
     tabPar.setWorkloadDataFix(splitData);
     tabPar.setSelectedTr([]);
     tabPar.setOnCheckBoxAll(false);
+    visibleDataPar.setStartData(0);
   }, [tabPar.dataIsOid]);
 
   //! фильтрация по поиску
@@ -63,6 +72,7 @@ function TableWorkload(props) {
     <div
       onContextMenu={handleContextMenu}
       className={styles.tabledisciplinesMain}
+      onScroll={scrollTable}
     >
       {tabPar.contextMenuShow && <ContextMenu />}
       <Table tableHeaders={tableHeaders} />

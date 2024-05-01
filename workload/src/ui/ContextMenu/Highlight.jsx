@@ -7,23 +7,22 @@ export function Highlight(props) {
   const SetColor = (colorNumber) => {
     console.log(colorNumber);
   };
+
+  const divStyle =
+    tabPar.contextPosition.x + 280 + 180 > window.innerWidth
+      ? {
+          position: "fixed",
+          top: tabPar.contextPosition.y,
+          left: tabPar.contextPosition.x - 130,
+        }
+      : {
+          position: "fixed",
+          top: tabPar.contextPosition.y,
+          left: tabPar.contextPosition.x + 280,
+        };
+
   return (
-    <div
-      className={styles.blockHighlight}
-      style={
-        tabPar.contextPosition.x + 280 + 180 > window.innerWidth
-          ? {
-              position: "fixed",
-              top: tabPar.contextPosition.y,
-              left: tabPar.contextPosition.x - 130,
-            }
-          : {
-              position: "fixed",
-              top: tabPar.contextPosition.y,
-              left: tabPar.contextPosition.x + 280,
-            }
-      }
-    >
+    <div className={styles.blockHighlight} style={divStyle}>
       <div onClick={() => SetColor(1)}>
         <button className={styles.Group1}>Группа 1</button>
       </div>
