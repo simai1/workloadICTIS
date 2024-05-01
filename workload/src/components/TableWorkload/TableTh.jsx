@@ -4,14 +4,14 @@ import DataContext from "../../context";
 import { SamplePoints } from "../../ui/SamplePoints/SamplePoints";
 
 function TableTh(props) {
-  const { tabPar } = React.useContext(DataContext);
+  const { tabPar, basicTabData } = React.useContext(DataContext);
 
   //! открытие модального окна фильтрации столбца
   const clickTh = () => {
     if (tabPar.spShow === props.index) {
       tabPar.setSpShow(null);
     } else {
-      const modalData = tabPar.workloadDataFix.map(
+      const modalData = basicTabData.workloadDataFix.map(
         (item) => item[props.item.key]
       );
       tabPar.setSamplePointsData([...modalData]);

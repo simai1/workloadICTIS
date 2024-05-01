@@ -4,6 +4,7 @@ import HomePage from "./pages/HomePage/Homepage";
 import DataContext from "./context";
 import Authorization from "./pages/Authorization/Authorization";
 import { bufferRequestToApi, returnPrevState } from "./bufferFunction";
+import { headers } from "./components/TableWorkload/Data";
 
 function App() {
   const [educator, setEducator] = useState([]); // преподаватели
@@ -46,13 +47,25 @@ function App() {
   };
 
   // ! параметры таблицы
+  const [tableHeaders, setTableHeaders] = useState(headers);
   const [workloadData, setWorkloadData] = useState([]); // данные с бд нагрузок
   const [workloadDataFix, setWorkloadDataFix] = useState([]); //данные с убранным массиовм преподавателя
   const [filtredData, setFiltredData] = useState([]); // фильтрованные данные
   const [allCommentsData, setAllCommentsData] = useState([]); // все комментарии
   const [allOffersData, setAllOffersData] = useState([]); // предложения
-  const [coloredData, setColoredData] = useState([]); // выделенные цветом
 
+  const basicTabData = {
+    tableHeaders,
+    setTableHeaders,
+    workloadData,
+    setWorkloadData,
+    workloadDataFix,
+    setWorkloadDataFix,
+    filtredData,
+    setFiltredData,
+  };
+
+  const [coloredData, setColoredData] = useState([]); // выделенные цветом
   const [dataIsOid, setDataIsOid] = useState(false);
   const [selectedTr, setSelectedTr] = useState([]); //выбранные tr
   const [onCheckBoxAll, setOnCheckBoxAll] = useState(false); //выбранные tr
@@ -73,19 +86,15 @@ function App() {
   const [startData, setStartData] = useState(0); // индекс элемента с которого показывается таблица
   const visibleData = filtredData.length > 10 ? 10 : filtredData.length - 1; // кооличество данных которые мы видим в таблице
   const heightTd = 150; // высота td
+
   const visibleDataPar = {
     startData,
     setStartData,
     visibleData,
     heightTd,
   };
+
   const tabPar = {
-    workloadData,
-    setWorkloadData,
-    workloadDataFix,
-    setWorkloadDataFix,
-    filtredData,
-    setFiltredData,
     dataIsOid,
     setDataIsOid,
     selectedTr,
@@ -104,6 +113,8 @@ function App() {
     setAllOffersData,
     allCommentsData,
     setAllCommentsData,
+    coloredData,
+    setColoredData,
   };
 
   useEffect(() => {
@@ -115,7 +126,7 @@ function App() {
         bufferRequestToApi(bufferAction).then(() => {
           setBufferAction([0]);
         });
-        setIndividualCheckboxes([]);
+        setSelectedTr([]);
         setBlockedCheckboxes([]);
         console.log("выполнено и очищено", bufferAction);
       }
@@ -135,6 +146,7 @@ function App() {
         tabPar,
         visibleDataPar,
         checkPar,
+        basicTabData,
       }}
     >
       <BrowserRouter>

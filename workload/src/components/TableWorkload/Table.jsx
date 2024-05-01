@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import TableTh from "./TableTh";
 import TableTd from "./TableTd";
 import styles from "./TableWorkload.module.scss";
@@ -6,7 +6,8 @@ import DataContext from "../../context";
 import InputCheckbox from "./InputCheckbox";
 
 function Table(props) {
-  const { tabPar, visibleDataPar } = React.useContext(DataContext);
+  const { tabPar, visibleDataPar, basicTabData } =
+    React.useContext(DataContext);
 
   //! определение верхнего отступа таблицы
   const getTopHeight = () => {
@@ -16,24 +17,13 @@ function Table(props) {
   //! определение нижнего отступа таблицы
   const getBottomHeight = () => {
     return (
-      (tabPar.filtredData.length -
+      (basicTabData.filtredData.length -
         visibleDataPar.startData -
         visibleDataPar.visibleData) *
       visibleDataPar.heightTd
     );
   };
 
-  //! при клике на tr
-  const clickTr = (itemId) => {
-    tabPar.setSelectedTr((prev) => {
-      const index = prev.indexOf(itemId);
-      if (index !== -1) {
-        return [...prev.slice(0, index), ...prev.slice(index + 1)];
-      } else {
-        return [...prev, itemId];
-      }
-    });
-  };
   //! клик левой кнопкой мыши на tr
   const clickTrContetx = (itemId) => {
     tabPar.setSelectedTr((prev) => {
@@ -52,10 +42,30 @@ function Table(props) {
     });
   };
 
+  //! при клике на tr
+  const clickTr = (itemId) => {
+    var len = tabPar.selectedTr.length;
+    tabPar.setSelectedTr((prev) => {
+      const index = prev.indexOf(itemId);
+      if (index !== -1) {
+        len--;
+        return [...prev.slice(0, index), ...prev.slice(index + 1)];
+      } else {
+        len++;
+        return [...prev, itemId];
+      }
+    });
+    if (basicTabData.filtredData.length === len) {
+      tabPar.setOnCheckBoxAll(true);
+    } else {
+      tabPar.setOnCheckBoxAll(false);
+    }
+  };
+
   const clickTrAll = () => {
     let ids = [];
-    if (tabPar.filtredData.length !== tabPar.selectedTr.length) {
-      tabPar.filtredData.map((item) => {
+    if (basicTabData.filtredData.length !== tabPar.selectedTr.length) {
+      basicTabData.filtredData.map((item) => {
         ids.push(item.id);
       });
       tabPar.setOnCheckBoxAll(true);
@@ -64,6 +74,18 @@ function Table(props) {
       tabPar.setOnCheckBoxAll(false);
     }
     tabPar.setSelectedTr(ids);
+  };
+
+  //определение каласса tr
+  const getClassNameTr = (itemId) => {
+    let classText = null;
+    classText = tabPar.selectedTr.includes(itemId)
+      ? `${styles.selectedTr}`
+      : null;
+    const item = tabPar.coloredData.find((el) => el.id === itemId);
+    const colored = item ? `colored${item.color}` : null;
+    classText = item ? `${classText} ${styles[colored]}` : classText;
+    return classText;
   };
 
   return (
@@ -76,8 +98,10 @@ function Table(props) {
               bgColor={"#e2e0e5"}
               checked={tabPar.onCheckBoxAll}
               clickTr={clickTrAll}
+              th={true}
             />
-            {props.tableHeaders.map((item, index) => (
+
+            {basicTabData.tableHeaders.map((item, index) => (
               <TableTh
                 key={item.key}
                 item={item}
@@ -93,30 +117,25 @@ function Table(props) {
             className={styles.trPlug}
             style={{ height: getTopHeight() }}
           ></tr>
-          {tabPar.filtredData
+          {basicTabData.filtredData
             .slice(
               visibleDataPar.startData,
               visibleDataPar.startData + visibleDataPar.visibleData
             )
             .map((item, number) => (
               <tr
-                // выделяем цветом если выбранно
-                className={
-                  tabPar.selectedTr.includes(item.id) ? styles.selectedTr : null
-                }
+                // выделяем цветом если выбранно для контекстного меню
+                className={getClassNameTr(item.id)}
                 onClick={() => clickTr(item.id)}
                 onContextMenu={() => clickTrContetx(item.id)}
                 key={item.id}
               >
                 <InputCheckbox
-                  // bgColor={
-                  //   tabPar.selectedTr.includes(item.id) ? "#E6ECFD" : "#fff"
-                  // }
                   clickTr={clickTr}
                   itemId={item.id + "checkBox"}
                   checked={tabPar.selectedTr.includes(item.id)}
                 />
-                {props.tableHeaders.map((itemKey, index) => (
+                {basicTabData.tableHeaders.map((itemKey) => (
                   <TableTd
                     key={item.id + "td" + itemKey.key}
                     item={item}

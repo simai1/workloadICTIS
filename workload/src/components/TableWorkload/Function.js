@@ -1,6 +1,6 @@
 //! функция замены преподавательского массива на его имя
 export function funFixEducator(data) {
-  return data.map((item) => ({
+  return data.map((item, index) => ({
     ...item,
     educator: item.educator ? item.educator.name : "0",
   }));

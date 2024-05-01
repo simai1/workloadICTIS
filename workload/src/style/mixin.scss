@@ -5,7 +5,7 @@
   max-width: $width;
   left: $left;
   box-sizing: border-box;
-  background-color: #fff;
+  z-index: 10;
 }
 
 @mixin customTd($width) {

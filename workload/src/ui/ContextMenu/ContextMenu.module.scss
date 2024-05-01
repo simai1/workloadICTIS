@@ -3,7 +3,7 @@
 .ContextMenu {
   display: flex;
   position: relative;
-  z-index: 10;
+  z-index: 100;
   div {
     padding: 5px 0;
   }
@@ -100,28 +100,35 @@
       list-style: none;
     }
   }
-  .blockHighlight{
+  .blockHighlight {
     background-color: #fff;
     padding: 16px;
     border-radius: 8px;
     box-shadow: 4px 4px 20px 0px #00000026;
-
-    .Group1{
-      color:rgba(0, 64, 229, 1);
+    .Group0 {
+      cursor: pointer;
+      color: #000;
     }
-    .Group2{
+    .Group1 {
+      color: rgba(0, 64, 229, 1);
+    }
+    .Group2 {
       color: rgba(25, 194, 10, 1);
     }
-    .Group3{
+    .Group3 {
       color: rgba(255, 214, 0, 1);
     }
-    .Group1, .Group2, .Group3{
+    .Group1,
+    .Group2,
+    .Group3 {
       transition: 0.15s linear all;
     }
-    .Group1:hover, .Group2:hover, .Group3:hover{
+    .Group0:hover,
+    .Group1:hover,
+    .Group2:hover,
+    .Group3:hover {
       cursor: pointer;
       opacity: 0.6;
     }
   }
- 
 }

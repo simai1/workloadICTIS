@@ -1,10 +1,10 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import styles from "./SamplePoints.module.scss";
 import DataContext from "../../context";
 import { FilteredSample } from "./Function";
 
 export function SamplePoints(props) {
-  const { tabPar, checkPar } = React.useContext(DataContext);
+  const { tabPar, checkPar, basicTabData } = React.useContext(DataContext);
   const [searchText, setSearchText] = useState("");
 
   const handleInputChange = (event) => {
@@ -28,24 +28,25 @@ export function SamplePoints(props) {
     checkPar.setAllChecked(!checkPar.isAllChecked);
     // Фильтруем данные
     const fdfix = FilteredSample(
-      tabPar.workloadDataFix,
+      basicTabData.workloadDataFix,
       checked,
       props.itemKey
     );
-    tabPar.setFiltredData(fdfix);
+    basicTabData.setFiltredData(fdfix);
   };
 
   //! при нажатии на Input
   const onChecked = (el) => {
-    const checked = [...checkPar.isChecked];
-    const index = checked.indexOf(el);
-    index !== -1 ? checked.splice(index, 1) : checked.push(el);
+    let checked = [...checkPar.isChecked];
+    if (checked.some((item) => item.value === el)) {
+      checked = checked.filter((item) => item.value !== el);
+    } else {
+      checked.push({ value: el, itemKey: props.itemKey });
+    }
     checkPar.setIsChecked(checked);
-    console.log(checked);
-
     // Фильтруем данные
-    const fdfix = FilteredSample(tabPar.filtredData, checked, props.itemKey);
-    tabPar.setFiltredData(fdfix);
+    const fdfix = FilteredSample(basicTabData.workloadDataFix, checked);
+    basicTabData.setFiltredData(fdfix);
     const allChecked = checked.length === 0;
     checkPar.setAllChecked(allChecked);
   };
@@ -76,8 +77,10 @@ export function SamplePoints(props) {
                 <input
                   id={`checkbox-${index}`}
                   type="checkbox"
-                  onChange={() => onChecked(el, index)}
-                  checked={!checkPar.isChecked.includes(el)}
+                  onChange={() => onChecked(el)}
+                  checked={
+                    !checkPar.isChecked.some((item) => item.value === el)
+                  }
                 />
                 <p>{props.index === 0 ? index + 1 : el}</p>
               </div>

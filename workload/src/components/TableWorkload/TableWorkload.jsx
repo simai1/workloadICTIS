@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { headers } from "./Data";
+import React, { useContext, useEffect } from "react";
 import { Comment, Workload } from "../../api/services/ApiRequest";
 import Table from "./Table";
 import styles from "./TableWorkload.module.scss";
@@ -8,28 +7,30 @@ import DataContext from "../../context";
 import ContextMenu from "../../ui/ContextMenu/ContextMenu";
 
 function TableWorkload(props) {
-  const { tabPar, visibleDataPar } = React.useContext(DataContext);
-  const tableHeaders = headers;
+  const { appData, tabPar, visibleDataPar, basicTabData } =
+    useContext(DataContext);
 
   //! при событии скролл таблицы изменим индекс первого показываемого tr
   const scrollTable = (e) => {
-    visibleDataPar.visibleData !== tabPar.filtredData.length - 1 &&
+    visibleDataPar.visibleData !== basicTabData.filtredData.length - 1 &&
       visibleDataPar.setStartData(
         Math.floor(e.target.scrollTop / visibleDataPar.heightTd)
       );
   };
-
+  useEffect(() => {
+    console.log(appData.bufferAction);
+  }, [appData.bufferAction]);
   //! получаем данные нагрузок с бд
   useEffect(() => {
     Workload().then((data) => {
       const dataBd = [...data];
-      tabPar.setWorkloadData(dataBd);
+      basicTabData.setWorkloadData(dataBd);
       // зменяем массив преподавателя на его имя
       const fixData = funFixEducator(dataBd);
-      tabPar.setWorkloadDataFix(fixData);
+      basicTabData.setWorkloadDataFix(fixData);
       // разделяем на общеинституские и кафедральные
       const splitData = funSplitData(fixData, tabPar.dataIsOid);
-      tabPar.setFiltredData(splitData);
+      basicTabData.setFiltredData(splitData);
       // получаем все комментарии
       Comment().then((data) => {
         tabPar.setAllCommentsData(data);
@@ -39,16 +40,16 @@ function TableWorkload(props) {
 
   //! при зменении основынх данных записываем их в фильтрованные
   useEffect(() => {
-    tabPar.setFiltredData([...tabPar.workloadDataFix]);
-  }, [tabPar.workloadDataFix]);
+    basicTabData.setFiltredData([...basicTabData.workloadDataFix]);
+  }, [basicTabData.workloadDataFix]);
 
   //! при переходе с кафедральных на общеинституские и обратно фильтруем основные
   useEffect(() => {
     const splitData = funSplitData(
-      funFixEducator(tabPar.workloadData),
+      funFixEducator(basicTabData.workloadData),
       tabPar.dataIsOid
     );
-    tabPar.setWorkloadDataFix(splitData);
+    basicTabData.setWorkloadDataFix(splitData);
     tabPar.setSelectedTr([]);
     tabPar.setOnCheckBoxAll(false);
     visibleDataPar.setStartData(0);
@@ -56,15 +57,17 @@ function TableWorkload(props) {
 
   //! фильтрация по поиску
   useEffect(() => {
-    tabPar.setFiltredData(
-      filteredWorkload(tabPar.workloadDataFix, props.searchTerm)
+    basicTabData.setFiltredData(
+      filteredWorkload(basicTabData.workloadDataFix, props.searchTerm)
     );
   }, [props.searchTerm]);
 
   //! при нажатии правой кнопки мыши на таблицу открывает мню
-  const handleContextMenu = (event) => {
-    event.preventDefault();
-    tabPar.setContextPosition({ x: event.pageX, y: event.pageY });
+  const handleContextMenu = (e) => {
+    e.preventDefault();
+    let plusX = e.pageX + 256 > window.innerWidth ? -256 : 0;
+    let plusY = e.pageY + 320 > window.innerHeight ? -320 : 0;
+    tabPar.setContextPosition({ x: e.pageX + plusX, y: e.pageY + plusY });
     tabPar.setContextMenuShow(!tabPar.contextMenuShow);
   };
 
@@ -75,7 +78,7 @@ function TableWorkload(props) {
       onScroll={scrollTable}
     >
       {tabPar.contextMenuShow && <ContextMenu />}
-      <Table tableHeaders={tableHeaders} />
+      <Table />
     </div>
   );
 }
