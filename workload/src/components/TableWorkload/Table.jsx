@@ -109,9 +109,9 @@ function Table(props) {
                 key={item.id}
               >
                 <InputCheckbox
-                  bgColor={
-                    tabPar.selectedTr.includes(item.id) ? "#E6ECFD" : "#fff"
-                  }
+                  // bgColor={
+                  //   tabPar.selectedTr.includes(item.id) ? "#E6ECFD" : "#fff"
+                  // }
                   clickTr={clickTr}
                   itemId={item.id + "checkBox"}
                   checked={tabPar.selectedTr.includes(item.id)}

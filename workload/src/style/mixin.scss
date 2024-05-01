@@ -13,6 +13,19 @@
   max-width: $width;
 }
 
+@mixin customTdFixWidth() {
+  .tdInner {
+    overflow: hidden; // Скрыть контент, выходящий за пределы обертки
+    white-space: nowrap; // Запретить перенос строк
+    text-overflow: ellipsis; // Добавить многоточие в конце обрезанного текста
+    &:hover {
+      overflow: visible; // Показать полный текст при наведении
+      white-space: normal; // Разрешить перенос строк при наведении
+      text-overflow: unset; // Убрать многоточие при наведении
+    }
+  }
+}
+
 @mixin scrollStyle($width, $height) {
   &::-webkit-scrollbar {
     width: $width; /* ширина scrollbar */

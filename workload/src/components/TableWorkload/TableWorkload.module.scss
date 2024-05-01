@@ -1,5 +1,7 @@
 @import "./../../style/colors.scss";
 @import "./../../style/mixin.scss";
+
+// высота всех tr td
 $heightCell: 150px;
 
 .DataGrid {
@@ -41,18 +43,35 @@ $heightCell: 150px;
       min-height: $heightCell;
       padding: 4px 10px;
       max-height: $heightCell;
-      .tdInner {
-        max-height: $heightCell;
-        overflow: hidden; // Скрыть контент, выходящий за пределы обертки
-        white-space: nowrap; // Запретить перенос строк
-        text-overflow: ellipsis; // Добавить многоточие в конце обрезанного текста
-        &:hover {
-          width: 130px;
-          overflow: visible; // Показать полный текст при наведении
-          white-space: normal; // Разрешить перенос строк при наведении
-          text-overflow: unset; // Убрать многоточие при наведении
-        }
+    }
+
+    tr:hover td {
+      background-color: var(--tr-bg);
+    }
+    td {
+      .tdInner:hover {
+        background-color: var(--td-bg);
+        border-radius: 8px;
+        padding: 5px 0px;
       }
+    }
+    th[name="specialty"],
+    td[name="specialty"] {
+      @include customTd(200px);
+    }
+
+    th[name="core"],
+    td[name="core"] {
+      @include customTd(200px);
+    }
+
+    th[name="curriculumUnit"],
+    td[name="curriculumUnit"] {
+      @include customTd(200px);
+    }
+
+    td[name="groups"] {
+      @include customTdFixWidth;
     }
 
     th[name="period"],
@@ -136,10 +155,10 @@ $heightCell: 150px;
       @include stickyTd(60px, 60px);
     }
     td:nth-child(3) {
-      @include stickyTd(172px, 120px);
+      @include stickyTd(200px, 120px);
     }
     td:nth-child(4) {
-      @include stickyTd(160px, 292px);
+      @include stickyTd(160px, 320px);
     }
 
     th:nth-child(1) {
@@ -153,12 +172,12 @@ $heightCell: 150px;
       z-index: 10;
     }
     th:nth-child(3) {
-      @include stickyTd(172px, 120px);
+      @include stickyTd(200px, 120px);
       background-color: var(--gray-color);
       z-index: 10;
     }
     th:nth-child(4) {
-      @include stickyTd(auto, 292px);
+      @include stickyTd(160px, 320px);
       background-color: var(--gray-color);
       z-index: 10;
     }

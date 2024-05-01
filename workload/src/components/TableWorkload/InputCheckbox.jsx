@@ -1,9 +1,9 @@
 import React from "react";
 import styles from "./TableWorkload.module.scss";
-import DataContext from "../../context";
+// import DataContext from "../../context";
 
 function InputCheckbox(props) {
-  const { tabPar } = React.useContext(DataContext);
+  // const { tabPar } = React.useContext(DataContext);
 
   return (
     <td

@@ -3,16 +3,6 @@ import styles from "./TableWorkload.module.scss";
 
 function TableTd(props) {
   const refTd = useRef(null);
-  // useEffect(() => {
-  //   refTd.current.offsetHeight > 150
-  //     ? console.error(
-  //         props.itemKey.key,
-  //         props.index + 1,
-  //         refTd.current.innerText,
-  //         refTd.current.offsetHeight
-  //       )
-  //     : console.log(refTd.current.innerText, refTd.current.offsetHeight);
-  // }, [refTd]);
   return (
     <td
       ref={refTd}
