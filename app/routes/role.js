@@ -4,7 +4,7 @@ import verify from '../middlewares/verify-token.js';
 import role from '../config/roles.js';
 import checkRole from '../middlewares/checkRoles.js';
 import roleController from '../controllers/role.js';
-// import checkHours from '../utils/notification.js';
+ import checkHours from '../utils/notification.js';
 
 const router = Router();
 router.use(verify.general);

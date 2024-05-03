@@ -21,10 +21,10 @@ const upload = multer({ // multer settings
 });
 
 router
-    .route('/uploadWorkload/:numberDepartment')
+    .route('/parseWorkload/:numberDepartment')
     .post(
         upload.single('file'),
-        asyncRoute(parserController.parseFromXlsx)
-    );
+        asyncRoute(parserController.parseWorkload)
+    )
 
 export default router;
