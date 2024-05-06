@@ -6,7 +6,12 @@ import DataContext from "../../context";
 import { EducatorLK } from "../../api/services/ApiRequest";
 import { Highlight } from "./Highlight";
 import MenuPop from "./MenuPop";
-import { combineData, splitWorkloadCount, upDateEducator } from "./Function";
+import {
+  combineData,
+  splitWorkloadCount,
+  upDateEducator,
+  addСhangedData,
+} from "./Function";
 import { NotificationForm } from "../NotificationForm/NotificationForm";
 
 const ContextMenu = (props) => {
@@ -85,6 +90,10 @@ const ContextMenu = (props) => {
           { request: "addEducatorWorkload", data, prevState },
           ...appData.bufferAction,
         ]);
+        //! занесем id измененнных данных в состояние
+        tabPar.setChangedData(
+          addСhangedData(tabPar.changedData, "educator", id)
+        );
       });
     } else if (menuShow === "propose") {
       //! отправляем запрос на добавление предложения
@@ -106,6 +115,10 @@ const ContextMenu = (props) => {
           },
           ...appData.bufferAction,
         ]);
+        //! занесем id измененнных данных в состояние
+        tabPar.setChangedData(
+          addСhangedData(tabPar.changedData, "educator", tabPar.selectedTr[0])
+        );
       });
     }
   };
@@ -125,6 +138,7 @@ const ContextMenu = (props) => {
     const funData = splitWorkloadCount(updatedData, tabPar.selectedTr, count);
     basicTabData.setWorkloadDataFix(funData.updatedData);
     appData.setBlockedCheckboxes((prevent) => [...prevent, ...funData.blocked]);
+
     //! буфер
     appData.setBufferAction([
       {
@@ -135,6 +149,11 @@ const ContextMenu = (props) => {
       },
       ...appData.bufferAction,
     ]);
+    //! занесем id измененнных данных в состояние
+    tabPar.setChangedData(
+      addСhangedData(tabPar.changedData, "splitjoin", funData.newIds)
+    );
+    tabPar.setSelectedTr([]);
   };
 
   //! соединение нагрузок
@@ -161,20 +180,29 @@ const ContextMenu = (props) => {
         { request: "joinWorkloads", data: data, prevState: funData.prevState },
         ...appData.bufferAction,
       ]);
+      tabPar.setChangedData(
+        addСhangedData(tabPar.changedData, "splitjoin", data.ids)
+      );
     }
+
+    tabPar.setSelectedTr([]);
   };
   //! удаление нагрузки
   const handleDeletWorkload = () => {
     setMenuShow("");
     const data = { ids: tabPar.selectedTr };
-    const newUpdatedData = basicTabData.workloadDataFix.filter(
-      (item) => !tabPar.selectedTr.includes(item.id)
-    );
-    basicTabData.setWorkloadDataFix(newUpdatedData);
+    // const newUpdatedData = basicTabData.workloadDataFix.filter(
+    //   (item) => !tabPar.selectedTr.includes(item.id)
+    // );
+    // basicTabData.setWorkloadDataFix(newUpdatedData);
     appData.setBufferAction([
       { request: "deleteWorkload", data },
       ...appData.bufferAction,
     ]);
+    tabPar.setChangedData(
+      addСhangedData(tabPar.changedData, "deleted", data.ids)
+    );
+    tabPar.setSelectedTr([]);
   };
 
   //! удалить преподавателя у нагрузки
@@ -189,26 +217,22 @@ const ContextMenu = (props) => {
       obj.id === workloadId ? { ...obj, educator: null } : obj
     );
     basicTabData.setWorkloadDataFix(newUpdatedData);
+    //! заносим данные в буффер
     appData.setBufferAction([
       { request: "removeEducatorinWorkload", data: { workloadId }, prevState },
       ...appData.bufferAction,
     ]);
+    tabPar.setChangedData(
+      addСhangedData(tabPar.changedData, "educator", [workloadId])
+    );
   };
 
   //! стили позиционирование меню
-  const positStyle =
-    // tabPar.contextPosition.y + 320 > window.innerHeight
-    //   ? {
-    //       position: "fixed",
-    //       top: tabPar.contextPosition.y - 320,
-    //       left: tabPar.contextPosition.x,
-    //     }
-    //   :
-    {
-      position: "fixed",
-      top: tabPar.contextPosition.y,
-      left: tabPar.contextPosition.x,
-    };
+  const positStyle = {
+    position: "fixed",
+    top: tabPar.contextPosition.y,
+    left: tabPar.contextPosition.x,
+  };
 
   return (
     <div

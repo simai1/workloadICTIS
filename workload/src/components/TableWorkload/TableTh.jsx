@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import styles from "./TableWorkload.module.scss";
 import DataContext from "../../context";
 import { SamplePoints } from "../../ui/SamplePoints/SamplePoints";
 
 function TableTh(props) {
-  const { tabPar, basicTabData } = React.useContext(DataContext);
-
+  const { tabPar, basicTabData, checkPar } = React.useContext(DataContext);
   //! открытие модального окна фильтрации столбца
   const clickTh = () => {
     if (tabPar.spShow === props.index) {
@@ -27,7 +26,13 @@ function TableTh(props) {
 
       <div className={styles.th_inner} onClick={clickTh}>
         {props.item.label}
-        <img src="./img/th_fight.svg"></img>
+        <img
+          src={
+            checkPar.isChecked.find((item) => item.itemKey === props.item.key)
+              ? "./img/filterColumn.svg"
+              : "./img/th_fight.svg"
+          }
+        ></img>
       </div>
     </th>
   );

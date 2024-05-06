@@ -73,9 +73,15 @@ function App() {
   const [spShow, setSpShow] = useState(null); // отображение модального окна th
   const [contextMenuShow, setContextMenuShow] = useState(false); // показать скрыть контекст меню
   const [contextPosition, setContextPosition] = useState({ x: 300, y: 300 }); // позиция контекст меню в таблице
-
-  const [isChecked, setIsChecked] = useState([]);
-  const [isAllChecked, setAllChecked] = useState(true);
+  const [changedData, setChangedData] = useState({
+    splitjoin: [],
+    educator: [],
+    hours: [],
+    numberOfStudents: [],
+    deleted: [],
+  }); // храним id и ключь измененных td для подсвечивания
+  const [isChecked, setIsChecked] = useState([]); // состояние инпутов в SamplePoints
+  const [isAllChecked, setAllChecked] = useState(true); // инпут все в SamplePoints
   const checkPar = {
     isChecked,
     setIsChecked,
@@ -115,6 +121,8 @@ function App() {
     setAllCommentsData,
     coloredData,
     setColoredData,
+    changedData,
+    setChangedData,
   };
 
   useEffect(() => {

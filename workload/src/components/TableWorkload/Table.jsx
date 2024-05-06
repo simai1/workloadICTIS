@@ -6,7 +6,7 @@ import DataContext from "../../context";
 import InputCheckbox from "./InputCheckbox";
 
 function Table(props) {
-  const { tabPar, visibleDataPar, basicTabData } =
+  const { tabPar, visibleDataPar, basicTabData, appData } =
     React.useContext(DataContext);
 
   //! определение верхнего отступа таблицы
@@ -42,7 +42,7 @@ function Table(props) {
     });
   };
 
-  //! при клике на tr
+  //! при клике на tr выделяем его
   const clickTr = (itemId) => {
     var len = tabPar.selectedTr.length;
     tabPar.setSelectedTr((prev) => {
@@ -82,9 +82,18 @@ function Table(props) {
     classText = tabPar.selectedTr.includes(itemId)
       ? `${styles.selectedTr}`
       : null;
+
     const item = tabPar.coloredData.find((el) => el.id === itemId);
+
     const colored = item ? `colored${item.color}` : null;
+
     classText = item ? `${classText} ${styles[colored]}` : classText;
+    classText = tabPar.changedData.deleted.find((el) => el === itemId)
+      ? `${classText} ${styles.trDeleted}`
+      : classText;
+    classText = appData.blockedCheckboxes.find((el) => el === itemId)
+      ? `${classText} ${styles.trBlocked}`
+      : classText;
     return classText;
   };
 

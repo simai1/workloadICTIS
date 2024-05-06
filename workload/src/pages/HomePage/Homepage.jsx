@@ -109,7 +109,6 @@ function HomePage() {
   };
   const handleFileChange = () => {
     const file = fileInputRef.current.files[0];
-    // Здесь можно выполнить дополнительную обработку загруженного файла
     console.log("Выбранный файл:", file);
     appData.setFileData(file);
   };

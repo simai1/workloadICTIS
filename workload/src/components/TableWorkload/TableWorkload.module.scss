@@ -114,6 +114,31 @@ $heightCell: 150px;
       box-sizing: border-box;
       // border: 1px solid #a6a6a6;
     }
+
+    .trBlocked {
+      td {
+        background-color: var(--color--blockedBg);
+      }
+      pointer-events: none;
+    }
+    .trDeleted {
+      td {
+        background-color: var(--color--deletedBg);
+      }
+      pointer-events: none;
+    }
+    .tdChanged {
+      .tdInner {
+        background-color: var(--red-color);
+        border-radius: 8px;
+        padding: 5px 0px;
+        color: #fff;
+      }
+      .tdInner:hover {
+        background-color: var(--red-color);
+      }
+    }
+
     .trPlug {
       background-color: #fff;
       padding: 0;
