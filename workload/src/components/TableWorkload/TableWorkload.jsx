@@ -2,7 +2,12 @@ import React, { useContext, useEffect } from "react";
 import { Comment, Workload } from "../../api/services/ApiRequest";
 import Table from "./Table";
 import styles from "./TableWorkload.module.scss";
-import { filteredWorkload, funFixEducator, funSplitData } from "./Function";
+import {
+  filteredWorkload,
+  funFilterSelected,
+  funFixEducator,
+  funSplitData,
+} from "./Function";
 import DataContext from "../../context";
 import ContextMenu from "../../ui/ContextMenu/ContextMenu";
 import { plagData } from "./PlagData";
@@ -164,16 +169,23 @@ function TableWorkload(props) {
   }, [appData.bufferAction]);
 
   //! при переходе с кафедральных на общеинституские и обратно фильтруем основные
+  //! фильтруем по FiltredRows
   useEffect(() => {
     const splitData = funSplitData(
       funFixEducator(basicTabData.workloadData),
       tabPar.dataIsOid
     );
-    basicTabData.setWorkloadDataFix(splitData);
+    const filterSelected = funFilterSelected(
+      splitData,
+      tabPar.selectedFilter,
+      tabPar.coloredData,
+      tabPar.changedData
+    );
+    basicTabData.setWorkloadDataFix(filterSelected);
     tabPar.setSelectedTr([]);
     tabPar.setOnCheckBoxAll(false);
     visibleDataPar.setStartData(0);
-  }, [tabPar.dataIsOid]);
+  }, [tabPar.dataIsOid, tabPar.selectedFilter]);
 
   //! фильтрация по поиску
   useEffect(() => {

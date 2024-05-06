@@ -82,6 +82,5 @@ export function addСhangedData(changedData, dataKey, ids) {
   const existingIds = new Set(cd[dataKey]);
   const uniqueIds = ids.filter((id) => !existingIds.has(id));
   cd[dataKey] = [...existingIds, ...uniqueIds];
-  console.log("cd", cd);
   return cd;
 }

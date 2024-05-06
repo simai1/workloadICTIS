@@ -24,7 +24,6 @@ function HomePage() {
   const [onenModalWind, setOpenModalWind] = useState(false); // переменная закрытия модального окна профиля
   const refProfile = React.useRef(null); // ссылка на модальное окно профиля
   const [educatorIdforLk, setEducatorIdforLk] = useState(""); // id для вывода LK, если пустое то LK не отображается
-  const [SelectedText, setSelectedText] = useState("Все дисциплины"); // текст в FiltredRows
   const handleButtonClick = () => {
     setEducatorIdforLk("");
   };
@@ -220,10 +219,7 @@ function HomePage() {
                   />
                 </>
               )}
-              <FiltredRows
-                SelectedText={SelectedText}
-                setSelectedText={setSelectedText}
-              />
+              <FiltredRows />
             </div>
 
             <div className={styles.right_button}>
@@ -271,7 +267,6 @@ function HomePage() {
               setSearchTerm={setSearchTerm}
               refProfile={refProfile}
               setOpenModalWind={setOpenModalWind}
-              SelectedText={SelectedText}
             />
           ) : selectedComponent === "Teachers" && educatorIdforLk === "" ? (
             <TableTeachers

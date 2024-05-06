@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import styles from "./FiltredRows.module.scss";
 import ArrowImg from "./../../img/arrow-White.svg";
 import Arrowtop from "./../../img/arrow.svg";
 import pencil from "./../../img/pencil.svg";
 import filter from "./../../img/filter.svg";
 import thimbtack from "./../../img/thumbtack.svg";
-const FiltredRows = (props) => {
+import DataContext from "../../context";
+const FiltredRows = () => {
   const [OpenCloseMenu, setOpenCloseMenu] = useState(false);
+  const { tabPar } = useContext(DataContext);
 
   //! закрытие модального окна при нажатии вне него
   const refFR = React.useRef(null);
@@ -27,13 +29,13 @@ const FiltredRows = (props) => {
   };
   const Fuctionmenu = (text) => {
     setOpenCloseMenu(!OpenCloseMenu);
-    props.setSelectedText(text);
+    tabPar.setSelectedFilter(text);
   };
   return (
     <div ref={refFR} className={styles.FiltredRows}>
       <div className={styles.FiltredRows__inner}>
         <button onClick={OpCloseMenu}>
-          {props.SelectedText} <img src={ArrowImg} alt="ArrowImg"></img>
+          {tabPar.selectedFilter} <img src={ArrowImg} alt="ArrowImg"></img>
         </button>
         {OpenCloseMenu && (
           <ul className={styles.FiltredRows__list}>

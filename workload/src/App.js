@@ -66,7 +66,8 @@ function App() {
   };
 
   const [coloredData, setColoredData] = useState([]); // выделенные цветом
-  const [dataIsOid, setDataIsOid] = useState(false);
+  const [dataIsOid, setDataIsOid] = useState(false); // состояние при котором открываются общеинститутские или кафедральные
+  const [selectedFilter, setSelectedFilter] = useState("Все дисциплины"); // текст в FiltredRows
   const [selectedTr, setSelectedTr] = useState([]); //выбранные tr
   const [onCheckBoxAll, setOnCheckBoxAll] = useState(false); //выбранные tr
   const [isSamplePointsData, setSamplePointsData] = useState([]); // данные фильтрации по th
@@ -90,7 +91,7 @@ function App() {
   };
   //! для виртуального скролла
   const [startData, setStartData] = useState(0); // индекс элемента с которого показывается таблица
-  const visibleData = filtredData.length > 10 ? 10 : filtredData.length - 1; // кооличество данных которые мы видим в таблице
+  const visibleData = filtredData.length > 10 ? 10 : filtredData.length; // кооличество данных которые мы видим в таблице
   const heightTd = 150; // высота td
 
   const visibleDataPar = {
@@ -123,6 +124,8 @@ function App() {
     setColoredData,
     changedData,
     setChangedData,
+    selectedFilter,
+    setSelectedFilter,
   };
 
   useEffect(() => {
