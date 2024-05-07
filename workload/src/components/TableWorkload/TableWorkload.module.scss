@@ -121,6 +121,7 @@ $heightCell: 150px;
       }
       pointer-events: none;
     }
+
     .trDeleted {
       td {
         background-color: var(--color--deletedBg);
@@ -191,6 +192,7 @@ $heightCell: 150px;
 
     td:nth-child(1) {
       @include stickyTd(60px, 0);
+      z-index: 1;
     }
     td:nth-child(2) {
       @include stickyTd(60px, 60px);
@@ -250,6 +252,7 @@ $heightCell: 150px;
   }
 
   .InputCheckbox {
+    padding-left: 0 !important;
     input {
       appearance: none;
       -webkit-appearance: none;
@@ -264,6 +267,39 @@ $heightCell: 150px;
     input[type="checkbox"]:checked {
       background-color: var(--blue-color);
       border-color: var(--blue-color);
+    }
+
+    .confirmation {
+      position: absolute;
+      width: 100vw;
+      // height: 100%;
+      opacity: 0;
+      pointer-events: auto;
+      top: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      button {
+        margin-right: 20px;
+        padding: 10px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      .btn_left {
+        background-color: #fff;
+      }
+      .btn_right {
+        background-color: var(--blue-color);
+        color: #fff;
+        border: none;
+      }
+      &:hover {
+        opacity: 1;
+        background-color: #ffffff5d;
+        transition: all ease 0.25s;
+        z-index: 30;
+      }
     }
   }
 }

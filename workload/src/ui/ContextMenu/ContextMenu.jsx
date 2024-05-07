@@ -154,6 +154,7 @@ const ContextMenu = (props) => {
       addСhangedData(tabPar.changedData, "splitjoin", funData.newIds)
     );
     tabPar.setSelectedTr([]);
+    tabPar.setContextMenuShow(false);
   };
 
   //! соединение нагрузок
@@ -184,6 +185,7 @@ const ContextMenu = (props) => {
         addСhangedData(tabPar.changedData, "splitjoin", data.ids)
       );
     }
+    tabPar.setContextMenuShow(false);
 
     tabPar.setSelectedTr([]);
   };
@@ -191,10 +193,6 @@ const ContextMenu = (props) => {
   const handleDeletWorkload = () => {
     setMenuShow("");
     const data = { ids: tabPar.selectedTr };
-    // const newUpdatedData = basicTabData.workloadDataFix.filter(
-    //   (item) => !tabPar.selectedTr.includes(item.id)
-    // );
-    // basicTabData.setWorkloadDataFix(newUpdatedData);
     appData.setBufferAction([
       { request: "deleteWorkload", data },
       ...appData.bufferAction,
@@ -203,6 +201,7 @@ const ContextMenu = (props) => {
       addСhangedData(tabPar.changedData, "deleted", data.ids)
     );
     tabPar.setSelectedTr([]);
+    tabPar.setContextMenuShow(false);
   };
 
   //! удалить преподавателя у нагрузки
@@ -225,6 +224,7 @@ const ContextMenu = (props) => {
     tabPar.setChangedData(
       addСhangedData(tabPar.changedData, "educator", [workloadId])
     );
+    tabPar.setContextMenuShow(false);
   };
 
   //! функция закрепления
@@ -232,6 +232,7 @@ const ContextMenu = (props) => {
     tabPar.setFastenedData((prev) => [
       ...new Set([...tabPar.selectedTr, ...prev]),
     ]);
+    tabPar.setContextMenuShow(false);
   };
 
   //! открепит
@@ -240,6 +241,7 @@ const ContextMenu = (props) => {
       (item) => !tabPar.selectedTr.some((el) => el === item) && item
     );
     tabPar.setFastenedData(mass);
+    tabPar.setContextMenuShow(false);
   };
 
   //! стили позиционирование меню

@@ -76,3 +76,24 @@ export function funfastenedDataSort(data, fastenedData) {
 
   return [...items, ...newData];
 }
+
+//! функция удаления обьекта по id при нажатии на применить удаление
+export function deleteItemBuffer(buff, itemId) {
+  return buff
+    .map((item) => {
+      if (item.request === "deleteWorkload") {
+        let p = { ...item };
+        p.data.ids = p.data.ids.filter((id) => id !== itemId);
+        if (p.data.ids.length > 0) {
+          console.log("p", p, p.data.ids.length);
+          return p;
+        } else {
+          return null;
+        }
+      } else {
+        console.log("item", item);
+        return item;
+      }
+    })
+    .filter(Boolean);
+}

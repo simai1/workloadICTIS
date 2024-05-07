@@ -82,11 +82,8 @@ function Table(props) {
     classText = tabPar.selectedTr.includes(itemId)
       ? `${styles.selectedTr}`
       : null;
-
     const item = tabPar.coloredData.find((el) => el.id === itemId);
-
     const colored = item ? `colored${item.color}` : null;
-
     classText = item ? `${classText} ${styles[colored]}` : classText;
     classText = tabPar.changedData.deleted.find((el) => el === itemId)
       ? `${classText} ${styles.trDeleted}`
@@ -95,6 +92,33 @@ function Table(props) {
       ? `${classText} ${styles.trBlocked}`
       : classText;
     return classText;
+  };
+
+  //! функция опредления заблокирован ли tr, чтобы вывести кнопки отмены подтверждения
+  const getConfirmation = (itemId) => {
+    if (tabPar.changedData.deleted.find((el) => el === itemId)) {
+      return { blocked: true, height: "150px", top: "0" };
+    } else if (appData.blockedCheckboxes.includes(itemId)) {
+      let index = null;
+      let length = 1;
+      appData.bufferAction.map((item) => {
+        if (item.request === "splitWorkload") {
+          if (item.newIds.findIndex((el) => el === itemId) > index) {
+            index = item.newIds.findIndex((el) => el === itemId);
+            length = item.newIds.length;
+          }
+        }
+      });
+      if (index !== -1) {
+        return {
+          blocked: true,
+          height: `${150 * length}px`,
+          top: `${-150 * index}px`,
+        };
+      } else {
+        return { blocked: false, height: "150px", top: "0" };
+      }
+    } else return { blocked: false, height: "150px", top: "0" };
   };
 
   return (
@@ -135,14 +159,23 @@ function Table(props) {
               <tr
                 // выделяем цветом если выбранно для контекстного меню
                 className={getClassNameTr(item.id)}
-                onClick={() => clickTr(item.id)}
-                onContextMenu={() => clickTrContetx(item.id)}
+                onClick={
+                  getConfirmation(item.id).blocked
+                    ? null
+                    : () => clickTr(item.id)
+                }
+                onContextMenu={
+                  getConfirmation(item.id).blocked
+                    ? null
+                    : () => clickTrContetx(item.id)
+                }
                 key={item.id}
               >
                 <InputCheckbox
                   clickTr={clickTr}
                   itemId={item.id + "checkBox"}
                   itid={item.id}
+                  getConfirmation={getConfirmation(item.id)}
                   checked={tabPar.selectedTr.includes(item.id)}
                 />
                 {basicTabData.tableHeaders.map((itemKey) => (
