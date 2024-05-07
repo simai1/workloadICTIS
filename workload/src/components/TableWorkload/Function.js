@@ -26,9 +26,14 @@ export function funSplitData(data, isOid) {
 }
 
 //! функция фильтрации на все измененные выделенные и тд
-export function funFilterSelected(data, selectedFilter, colored, changedData) {
+export function funFilterSelected(
+  data,
+  selectedFilter,
+  colored,
+  changedData,
+  fastenedData
+) {
   const origData = [...data];
-  console.log(selectedFilter, changedData);
   if (selectedFilter === "Выделенные" && colored.length > 0) {
     let fd = [];
     fd = origData.filter((item) => colored.some((el) => el.id === item.id));
@@ -40,7 +45,14 @@ export function funFilterSelected(data, selectedFilter, colored, changedData) {
     let fd = [];
     const massId = Object.values(changedData).flat();
     fd = origData.filter((item) => massId.some((el) => el === item.id));
-    console.log("fd", fd, "massId", massId);
+    if (fd.length > 0) {
+      return fd;
+    } else {
+      return data;
+    }
+  } else if (selectedFilter === "Закрепленные") {
+    let fd = [];
+    fd = origData.filter((item) => fastenedData.some((el) => el === item.id));
     if (fd.length > 0) {
       return fd;
     } else {
@@ -49,4 +61,18 @@ export function funFilterSelected(data, selectedFilter, colored, changedData) {
   } else {
     return data;
   }
+}
+
+//! закрепленные строки поднимаем вверх
+export function funfastenedDataSort(data, fastenedData) {
+  let newData = [...data];
+  let items = [];
+  fastenedData.forEach((itemId) => {
+    const index = newData.findIndex((el) => el.id === itemId);
+    if (index !== -1) {
+      items.push(newData.splice(index, 1)[0]);
+    }
+  });
+
+  return [...items, ...newData];
 }

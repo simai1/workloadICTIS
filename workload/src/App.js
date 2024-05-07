@@ -66,6 +66,7 @@ function App() {
   };
 
   const [coloredData, setColoredData] = useState([]); // выделенные цветом
+  const [fastenedData, setFastenedData] = useState([]); // закрепленные строки (храним их id)
   const [dataIsOid, setDataIsOid] = useState(false); // состояние при котором открываются общеинститутские или кафедральные
   const [selectedFilter, setSelectedFilter] = useState("Все дисциплины"); // текст в FiltredRows
   const [selectedTr, setSelectedTr] = useState([]); //выбранные tr
@@ -120,6 +121,8 @@ function App() {
     setAllOffersData,
     allCommentsData,
     setAllCommentsData,
+    fastenedData,
+    setFastenedData,
     coloredData,
     setColoredData,
     changedData,

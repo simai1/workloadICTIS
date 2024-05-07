@@ -142,6 +142,7 @@ function Table(props) {
                 <InputCheckbox
                   clickTr={clickTr}
                   itemId={item.id + "checkBox"}
+                  itid={item.id}
                   checked={tabPar.selectedTr.includes(item.id)}
                 />
                 {basicTabData.tableHeaders.map((itemKey) => (

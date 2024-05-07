@@ -7,6 +7,7 @@ import {
   funFilterSelected,
   funFixEducator,
   funSplitData,
+  funfastenedDataSort,
 } from "./Function";
 import DataContext from "../../context";
 import ContextMenu from "../../ui/ContextMenu/ContextMenu";
@@ -54,6 +55,14 @@ function TableWorkload(props) {
     //   });
     // });
   }, []);
+
+  //! закрепленные данные ставим в начало таблицы
+  useEffect(() => {
+    // console.log(tabPar.fastenedData);
+    basicTabData.setWorkloadDataFix(
+      funfastenedDataSort(basicTabData.workloadDataFix, tabPar.fastenedData)
+    );
+  }, [tabPar.fastenedData]);
 
   //! при зменении основынх данных записываем их в фильтрованные
   useEffect(() => {
@@ -179,7 +188,8 @@ function TableWorkload(props) {
       splitData,
       tabPar.selectedFilter,
       tabPar.coloredData,
-      tabPar.changedData
+      tabPar.changedData,
+      tabPar.fastenedData
     );
     basicTabData.setWorkloadDataFix(filterSelected);
     tabPar.setSelectedTr([]);

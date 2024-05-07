@@ -227,6 +227,21 @@ const ContextMenu = (props) => {
     );
   };
 
+  //! функция закрепления
+  const pinaCell = () => {
+    tabPar.setFastenedData((prev) => [
+      ...new Set([...tabPar.selectedTr, ...prev]),
+    ]);
+  };
+
+  //! открепит
+  const unPinaCell = () => {
+    const mass = tabPar.fastenedData.filter(
+      (item) => !tabPar.selectedTr.some((el) => el === item) && item
+    );
+    tabPar.setFastenedData(mass);
+  };
+
   //! стили позиционирование меню
   const positStyle = {
     position: "fixed",
@@ -247,13 +262,15 @@ const ContextMenu = (props) => {
           menuShow={menuShow === "educator"}
           img={true}
         />
-
-        <MenuPop
-          btnText={"Удалить преподавателя"}
-          func={removeEducator}
-          img={false}
-        />
-        <MenuPop btnText={"Закрепить"} func={removeEducator} img={false} />
+        {tabPar.selectedTr.length === 1 && (
+          <MenuPop
+            btnText={"Удалить преподавателя"}
+            func={removeEducator}
+            img={false}
+          />
+        )}
+        <MenuPop btnText={"Закрепить"} func={pinaCell} img={false} />
+        <MenuPop btnText={"Открепить"} func={unPinaCell} img={false} />
         <MenuPop
           btnText={"Разделить"}
           func={handleMouseClickPop}

@@ -1,7 +1,8 @@
 import React from "react";
 import styles from "./TableWorkload.module.scss";
-
+import DataContext from "../../context";
 function InputCheckbox(props) {
+  const { tabPar } = React.useContext(DataContext);
   return (
     <>
       {props.th ? (
@@ -23,6 +24,14 @@ function InputCheckbox(props) {
           // }}
           className={styles.InputCheckbox}
         >
+          {tabPar.fastenedData.includes(props.itid) && (
+            <img
+              className={styles.fastenedImg}
+              src="./img/fastened.svg"
+              alt="fastened"
+            ></img>
+          )}
+
           <input
             onChange={() => props.clickTr(props.itemId)}
             type="checkbox"
