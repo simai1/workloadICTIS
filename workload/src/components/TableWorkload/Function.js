@@ -83,6 +83,7 @@ export function deleteItemBuffer(buff, itemId, type) {
     .map((item) => {
       if (item.request === type) {
         let p = { ...item };
+        console.log(p.data.ids);
         p.data.ids = p.data.ids.filter((id) => id !== itemId);
         if (p.data.ids.length > 0) {
           return p;

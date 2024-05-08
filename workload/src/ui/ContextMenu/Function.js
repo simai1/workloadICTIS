@@ -80,6 +80,7 @@ export function combineData(data, selectedTr) {
 export function addСhangedData(changedData, dataKey, ids) {
   const cd = { ...changedData };
   const existingIds = new Set(cd[dataKey]);
+  console.log(ids);
   const uniqueIds = ids.filter((id) => !existingIds.has(id));
   cd[dataKey] = [...existingIds, ...uniqueIds];
   return cd;

@@ -92,7 +92,7 @@ const ContextMenu = (props) => {
         ]);
         //! занесем id измененнных данных в состояние
         tabPar.setChangedData(
-          addСhangedData(tabPar.changedData, "educator", id)
+          addСhangedData(tabPar.changedData, "educator", [id])
         );
       });
     } else if (menuShow === "propose") {
