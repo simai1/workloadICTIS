@@ -1,7 +1,8 @@
 import socketIO from "socket.io-client";
 
 function socketConnect() {
-  const socketUrl = "http://localhost:3002";
+  // const socketUrl = "http://localhost:3002";
+  const socketUrl = process.env.REACT_APP_API_URL;
   const socket = socketIO.connect(socketUrl);
 
   // const socketUrl = "http://localhost:3002";
