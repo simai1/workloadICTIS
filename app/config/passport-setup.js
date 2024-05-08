@@ -18,7 +18,7 @@ passport.deserializeUser((id, done) => {
 passport.use(
     new AzureAdOAuth2Strategy(
         {
-            callbackURL: 'http://localhost/auth/login',
+            callbackURL: 'http://localhost:3002/auth/login',
             clientID: process.env.SFEDU_ID,
             clientSecret: process.env.SFEDU_SECRET,
         },
