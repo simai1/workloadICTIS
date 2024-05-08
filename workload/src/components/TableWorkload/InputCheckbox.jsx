@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./TableWorkload.module.scss";
 import DataContext from "../../context";
-import { deleteWorkload } from "../../api/services/ApiRequest";
+import { deleteWorkload, splitWorkload } from "../../api/services/ApiRequest";
 import { deleteItemBuffer } from "./Function";
 function InputCheckbox(props) {
   const { tabPar, appData } = React.useContext(DataContext);
@@ -41,13 +41,31 @@ function InputCheckbox(props) {
     if (props.getConfirmation.type === 1) {
       deleteWorkload([props.itid]).then(() => {
         appData.setBufferAction(
-          deleteItemBuffer([...appData.bufferAction], props.itid)
+          deleteItemBuffer(
+            [...appData.bufferAction],
+            props.itid,
+            "deleteWorkload"
+          )
         );
         let changed = { ...tabPar.changedData };
         changed.deleted = changed.deleted.filter((item) => item !== props.itid);
         tabPar.setChangedData(changed);
       });
     } else if (props.getConfirmation.type === 2) {
+      splitWorkload([props.itid]).then(() => {
+        appData.setBufferAction(
+          deleteItemBuffer(
+            [...appData.bufferAction],
+            props.itid,
+            "splitWorkload"
+          )
+        );
+        let changed = { ...tabPar.changedData };
+        changed.splitjoin = changed.splitjoin.filter(
+          (item) => item !== props.itid
+        );
+        tabPar.setChangedData(changed);
+      });
     }
   };
 

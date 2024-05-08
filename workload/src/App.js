@@ -12,7 +12,7 @@ function App() {
   const [workload, setWorkload] = useState([]); // данные о нагрузках
   const [allWarningMessage, setAllWarningMessage] = useState([]);
   const [individualCheckboxes, setIndividualCheckboxes] = useState([]); //чекбоксы таблицы
-  const [blockedCheckboxes, setBlockedCheckboxes] = useState([]); //чекбоксы таблицы
+  // const [blockedCheckboxes, setBlockedCheckboxes] = useState([]); //чекбоксы таблицы
   const [fileData, setFileData] = useState(null);
 
   //! данные пользователя ! изменить
@@ -29,6 +29,8 @@ function App() {
   const appData = {
     individualCheckboxes,
     setIndividualCheckboxes,
+    // blockedCheckboxes,
+    // setBlockedCheckboxes,
     educator,
     setEducator,
     positions,
@@ -139,7 +141,7 @@ function App() {
           setBufferAction([0]);
         });
         setSelectedTr([]);
-        setBlockedCheckboxes([]);
+        // setBlockedCheckboxes([]);
         console.log("выполнено и очищено", bufferAction);
       }
     };
