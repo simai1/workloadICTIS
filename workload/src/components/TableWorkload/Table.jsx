@@ -4,6 +4,7 @@ import TableTd from "./TableTd";
 import styles from "./TableWorkload.module.scss";
 import DataContext from "../../context";
 import InputCheckbox from "./InputCheckbox";
+import { funGetConfirmation } from "./Function";
 
 function Table(props) {
   const { tabPar, visibleDataPar, basicTabData, appData } =
@@ -88,7 +89,7 @@ function Table(props) {
     classText = tabPar.changedData.deleted.find((el) => el === itemId)
       ? `${classText} ${styles.trDeleted}`
       : classText;
-    classText = appData.blockedCheckboxes.find((el) => el === itemId)
+    classText = tabPar.changedData.splitjoin.find((el) => el === itemId)
       ? `${classText} ${styles.trBlocked}`
       : classText;
     return classText;
@@ -96,29 +97,7 @@ function Table(props) {
 
   //! функция опредления заблокирован ли tr, чтобы вывести кнопки отмены подтверждения
   const getConfirmation = (itemId) => {
-    if (tabPar.changedData.deleted.find((el) => el === itemId)) {
-      return { blocked: true, height: "150px", top: "0" };
-    } else if (appData.blockedCheckboxes.includes(itemId)) {
-      let index = null;
-      let length = 1;
-      appData.bufferAction.map((item) => {
-        if (item.request === "splitWorkload") {
-          if (item.newIds.findIndex((el) => el === itemId) > index) {
-            index = item.newIds.findIndex((el) => el === itemId);
-            length = item.newIds.length;
-          }
-        }
-      });
-      if (index !== -1) {
-        return {
-          blocked: true,
-          height: `${150 * length}px`,
-          top: `${-150 * index}px`,
-        };
-      } else {
-        return { blocked: false, height: "150px", top: "0" };
-      }
-    } else return { blocked: false, height: "150px", top: "0" };
+    return funGetConfirmation(itemId, tabPar.changedData, appData.bufferAction);
   };
 
   return (

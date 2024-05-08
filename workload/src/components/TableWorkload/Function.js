@@ -78,22 +78,48 @@ export function funfastenedDataSort(data, fastenedData) {
 }
 
 //! функция удаления обьекта по id при нажатии на применить удаление
-export function deleteItemBuffer(buff, itemId) {
+export function deleteItemBuffer(buff, itemId, type) {
   return buff
     .map((item) => {
-      if (item.request === "deleteWorkload") {
+      if (item.request === type) {
         let p = { ...item };
         p.data.ids = p.data.ids.filter((id) => id !== itemId);
         if (p.data.ids.length > 0) {
-          console.log("p", p, p.data.ids.length);
           return p;
         } else {
           return null;
         }
       } else {
-        console.log("item", item);
         return item;
       }
     })
     .filter(Boolean);
 }
+
+//! функция опредления заблокирован ли tr, чтобы вывести кнопки отмены подтверждения
+export const funGetConfirmation = (itemId, changedData, bufferAction) => {
+  if (changedData.deleted.find((el) => el === itemId)) {
+    return { blocked: true, height: "150px", top: "0", type: 1 };
+  } else if (changedData.splitjoin.includes(itemId)) {
+    let index = null;
+    let length = 1;
+    bufferAction.map((item) => {
+      if (item.request === "splitWorkload") {
+        if (item.newIds.findIndex((el) => el === itemId) > index) {
+          index = item.newIds.findIndex((el) => el === itemId);
+          length = item.newIds.length;
+        }
+      }
+    });
+    if (index !== -1) {
+      return {
+        blocked: true,
+        height: `${150 * length}px`,
+        top: `${-150 * index}px`,
+        type: 2,
+      };
+    } else {
+      return { blocked: false, height: "150px", top: "0", type: 0 };
+    }
+  } else return { blocked: false, height: "150px", top: "0", type: 0 };
+};

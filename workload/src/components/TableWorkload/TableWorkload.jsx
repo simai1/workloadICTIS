@@ -28,32 +28,32 @@ function TableWorkload(props) {
 
   //! получаем данные нагрузок с бд
   useEffect(() => {
-    //? удалить
-    const dataBd = plagData;
-    basicTabData.setWorkloadData(dataBd);
-    // зменяем массив преподавателя на его имя
-    const fixData = funFixEducator(dataBd);
-    basicTabData.setWorkloadDataFix(fixData);
-    // разделяем на общеинституские и кафедральные
-    const splitData = funSplitData(fixData, tabPar.dataIsOid);
-    basicTabData.setFiltredData(splitData);
-    //? удалить
+    // //? удалить
+    // const dataBd = plagData;
+    // basicTabData.setWorkloadData(dataBd);
+    // // зменяем массив преподавателя на его имя
+    // const fixData = funFixEducator(dataBd);
+    // basicTabData.setWorkloadDataFix(fixData);
+    // // разделяем на общеинституские и кафедральные
+    // const splitData = funSplitData(fixData, tabPar.dataIsOid);
+    // basicTabData.setFiltredData(splitData);
+    // //? удалить
 
     //! раскомментить
-    // Workload().then((data) => {
-    //   const dataBd = [...data];
-    //   basicTabData.setWorkloadData(dataBd);
-    //   // зменяем массив преподавателя на его имя
-    //   const fixData = funFixEducator(dataBd);
-    //   basicTabData.setWorkloadDataFix(fixData);
-    //   // разделяем на общеинституские и кафедральные
-    //   const splitData = funSplitData(fixData, tabPar.dataIsOid);
-    //   basicTabData.setFiltredData(splitData);
-    //   // получаем все комментарии
-    //   Comment().then((data) => {
-    //     tabPar.setAllCommentsData(data);
-    //   });
-    // });
+    Workload().then((data) => {
+      const dataBd = [...data];
+      basicTabData.setWorkloadData(dataBd);
+      // зменяем массив преподавателя на его имя
+      const fixData = funFixEducator(dataBd);
+      basicTabData.setWorkloadDataFix(fixData);
+      // разделяем на общеинституские и кафедральные
+      const splitData = funSplitData(fixData, tabPar.dataIsOid);
+      basicTabData.setFiltredData(splitData);
+      // получаем все комментарии
+      Comment().then((data) => {
+        tabPar.setAllCommentsData(data);
+      });
+    });
   }, []);
 
   //! закрепленные данные ставим в начало таблицы
@@ -126,7 +126,7 @@ function TableWorkload(props) {
             );
             basicTabData.setWorkloadDataFix(newArray);
             // убираем заблокированные элементы
-            appData.setBlockedCheckboxes((prev) =>
+            tabPar.setChangedData((prev) =>
               prev.filter(
                 (el) =>
                   !appData.bufferAction[0].prevState.some(

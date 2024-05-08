@@ -137,7 +137,9 @@ const ContextMenu = (props) => {
     let updatedData = [...basicTabData.workloadDataFix];
     const funData = splitWorkloadCount(updatedData, tabPar.selectedTr, count);
     basicTabData.setWorkloadDataFix(funData.updatedData);
-    appData.setBlockedCheckboxes((prevent) => [...prevent, ...funData.blocked]);
+    tabPar.setChangedData(
+      addСhangedData(tabPar.changedData, "splitjoin", funData.blocked)
+    );
 
     //! буфер
     appData.setBufferAction([
@@ -170,10 +172,6 @@ const ContextMenu = (props) => {
     if (funData === null) {
       console.error("неправильно соеденяем данные");
     } else {
-      appData.setBlockedCheckboxes((prevent) => [
-        ...prevent,
-        tabPar.selectedTr[0],
-      ]);
       tabPar.setSelectedTr([]);
       basicTabData.setWorkloadDataFix(funData.newUpdatedData);
       //! буфер

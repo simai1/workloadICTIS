@@ -7,24 +7,48 @@ function InputCheckbox(props) {
   const { tabPar, appData } = React.useContext(DataContext);
 
   const cancelChanges = () => {
-    console.log("отмена");
-    appData.setBufferAction(
-      deleteItemBuffer([...appData.bufferAction], props.itid)
-    );
-    let changed = { ...tabPar.changedData };
-    changed.deleted = changed.deleted.filter((item) => item !== props.itid);
-    tabPar.setChangedData(changed);
-  };
-  const confirmChanges = () => {
-    console.log("подтвердить");
-    deleteWorkload([props.itid]).then(() => {
+    console.log("отмена", props.getConfirmation.type);
+    if (props.getConfirmation.type === 1) {
       appData.setBufferAction(
-        deleteItemBuffer([...appData.bufferAction], props.itid)
+        deleteItemBuffer(
+          [...appData.bufferAction],
+          props.itid,
+          "deleteWorkload"
+        )
       );
       let changed = { ...tabPar.changedData };
       changed.deleted = changed.deleted.filter((item) => item !== props.itid);
       tabPar.setChangedData(changed);
-    });
+    } else if (props.getConfirmation.type === 2) {
+      appData.setBufferAction(
+        deleteItemBuffer(
+          [...appData.bufferAction],
+          props.itid.slice(0, -1),
+          "splitWorkload"
+        )
+      );
+      let changed = { ...tabPar.changedData };
+      console.log("changed", changed.splitjoin);
+      changed.splitjoin = changed.splitjoin.filter(
+        (item) => item.slice(0, -1) !== props.itid.slice(0, -1)
+      );
+      tabPar.setChangedData(changed);
+      console.log("changed", changed.splitjoin, "id", props.itid.slice(0, -1));
+    }
+  };
+  const confirmChanges = () => {
+    console.log("подтвердить", props.getConfirmation.type);
+    if (props.getConfirmation.type === 1) {
+      deleteWorkload([props.itid]).then(() => {
+        appData.setBufferAction(
+          deleteItemBuffer([...appData.bufferAction], props.itid)
+        );
+        let changed = { ...tabPar.changedData };
+        changed.deleted = changed.deleted.filter((item) => item !== props.itid);
+        tabPar.setChangedData(changed);
+      });
+    } else if (props.getConfirmation.type === 2) {
+    }
   };
 
   return (

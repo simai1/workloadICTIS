@@ -29,8 +29,6 @@ function App() {
   const appData = {
     individualCheckboxes,
     setIndividualCheckboxes,
-    blockedCheckboxes,
-    setBlockedCheckboxes,
     educator,
     setEducator,
     positions,
