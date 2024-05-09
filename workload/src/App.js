@@ -163,14 +163,14 @@ function App() {
         basicTabData,
       }}
     >
-      <BrowserRouter>
-        <div className="Container">
-          <Routes>
-            <Route path="/" element={<Authorization />}></Route>
-            <Route path="/HomePage" element={<HomePage />}></Route>
-          </Routes>
-        </div>
-      </BrowserRouter>
+    <BrowserRouter basename="/client">
+      <div className="Container">
+        <Routes>
+          <Route path="/" element={<Authorization />}></Route>
+          <Route path="/HomePage" element={<HomePage />}></Route>
+        </Routes>
+      </div>
+    </BrowserRouter>
     </DataContext.Provider>
   );
 }

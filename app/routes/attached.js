@@ -6,24 +6,24 @@ import checkRole from '../middlewares/checkRoles.js';
 import role from '../config/roles.js';
 
 const router = Router();
-//router.use(verify.general);
+router.use(verify.general);
 
 router
     .route('/getAllAttaches')
     .get(
-        //asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST, role.LECTURER, role.EDUCATOR])),
+        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST, role.LECTURER, role.EDUCATOR])),
         asyncRoute(attacheController.getAllAttaches)
     );
 router
     .route('/setAttaches')
     .post(
-        //asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST, role.LECTURER, role.EDUCATOR])),
+        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST, role.LECTURER, role.EDUCATOR])),
         asyncRoute(attacheController.setAttaches)
     );
 router
     .route('/unAttaches/:attachesId')
     .delete(
-        //asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST, role.LECTURER, role.EDUCATOR])),
+        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST, role.LECTURER, role.EDUCATOR])),
         asyncRoute(attacheController.unAttaches)
     );
 export default router;
