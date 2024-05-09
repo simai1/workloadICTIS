@@ -4,7 +4,7 @@ import DataContext from "../../context";
 import { deleteWorkload, splitWorkload } from "../../api/services/ApiRequest";
 import { deleteItemBuffer } from "./Function";
 function InputCheckbox(props) {
-  const { tabPar, appData } = React.useContext(DataContext);
+  const { tabPar, appData, basicTabData } = React.useContext(DataContext);
 
   const cancelChanges = () => {
     console.log("отмена", props.getConfirmation.type);
@@ -14,19 +14,27 @@ function InputCheckbox(props) {
           [...appData.bufferAction],
           props.itid,
           "deleteWorkload"
-        )
+        ).buffer
       );
       let changed = { ...tabPar.changedData };
       changed.deleted = changed.deleted.filter((item) => item !== props.itid);
       tabPar.setChangedData(changed);
     } else if (props.getConfirmation.type === 2) {
-      appData.setBufferAction(
-        deleteItemBuffer(
-          [...appData.bufferAction],
-          props.itid.slice(0, -1),
-          "splitWorkload"
-        )
+      const funData = deleteItemBuffer(
+        [...appData.bufferAction],
+        props.itid.slice(0, -1),
+        "splitWorkload"
       );
+      appData.setBufferAction(funData.buffer);
+      const ind = basicTabData.workloadDataFix.findIndex(
+        (el) => el.id === props.itid
+      );
+      console.log("ind", ind, "prev", funData.item.prevState[0]);
+      let data = basicTabData.workloadDataFix.filter(
+        (item) => item.id.slice(0, -1) !== props.itid.slice(0, -1)
+      );
+      data[ind] = funData.item.prevState[0];
+      basicTabData.setWorkloadDataFix(data);
       let changed = { ...tabPar.changedData };
       console.log("changed", changed.splitjoin);
       changed.splitjoin = changed.splitjoin.filter(
@@ -39,32 +47,45 @@ function InputCheckbox(props) {
   const confirmChanges = () => {
     console.log("подтвердить", props.getConfirmation.type);
     if (props.getConfirmation.type === 1) {
-      deleteWorkload([props.itid]).then(() => {
+      deleteWorkload({ ids: [props.itid] }).then(() => {
         appData.setBufferAction(
           deleteItemBuffer(
             [...appData.bufferAction],
             props.itid,
             "deleteWorkload"
-          )
+          ).buffer
+        );
+        basicTabData.setWorkloadDataFix(
+          basicTabData.workloadDataFix.filter((item) => item.id !== props.itid)
         );
         let changed = { ...tabPar.changedData };
         changed.deleted = changed.deleted.filter((item) => item !== props.itid);
         tabPar.setChangedData(changed);
       });
     } else if (props.getConfirmation.type === 2) {
-      splitWorkload([props.itid]).then(() => {
+      let data = null;
+      appData.bufferAction.map((item) => {
+        if (
+          item.request === "splitWorkload" &&
+          item.data.ids.find((el) => el === props.itid.slice(0, -1))
+        ) {
+          data = { ids: [props.itid.slice(0, -1)], n: item.data.n };
+        }
+      });
+      splitWorkload(data).then(() => {
         appData.setBufferAction(
           deleteItemBuffer(
             [...appData.bufferAction],
             props.itid,
             "splitWorkload"
-          )
+          ).buffer
         );
         let changed = { ...tabPar.changedData };
         changed.splitjoin = changed.splitjoin.filter(
-          (item) => item !== props.itid
+          (item) => item.slice(0, -1) !== props.itid.slice(0, -1)
         );
         tabPar.setChangedData(changed);
+        basicTabData.updateAlldata();
       });
     }
   };

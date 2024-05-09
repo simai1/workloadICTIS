@@ -79,9 +79,24 @@ export function combineData(data, selectedTr) {
 //! добавление данных
 export function addСhangedData(changedData, dataKey, ids) {
   const cd = { ...changedData };
-  const existingIds = new Set(cd[dataKey]);
+  // const existingIds = new Set(cd[dataKey]);
   console.log(ids);
-  const uniqueIds = ids.filter((id) => !existingIds.has(id));
-  cd[dataKey] = [...existingIds, ...uniqueIds];
+  // const uniqueIds = ids.filter((id) => !cd[dataKey]);
+  // const uniqueIds = ids.filter((id) => !cd[dataKey].has(id));
+
+  cd[dataKey] = [...cd[dataKey], ...ids];
+  return cd;
+}
+//! удаление данных с changedData
+export function delChangeData(changedData, dataKey, ids) {
+  const cd = { ...changedData };
+  const dataArray = cd[dataKey];
+  ids.forEach((id) => {
+    const indexToRemove = dataArray.findIndex((item) => item === id);
+
+    if (indexToRemove !== -1) {
+      dataArray.splice(indexToRemove, 1);
+    }
+  });
   return cd;
 }

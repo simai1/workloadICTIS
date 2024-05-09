@@ -22,7 +22,10 @@ export function filteredWorkload(data, text) {
 //! функция разделения на кафедральный и общеинститутские
 export function funSplitData(data, isOid) {
   const origData = [...data];
-  return origData.filter((item) => item.isOid === isOid);
+  const sortedUsers = origData
+    .slice()
+    .sort((a, b) => a.discipline.localeCompare(b.discipline));
+  return sortedUsers.filter((item) => item.isOid === isOid);
 }
 
 //! функция фильтрации на все измененные выделенные и тд
@@ -79,10 +82,12 @@ export function funfastenedDataSort(data, fastenedData) {
 
 //! функция удаления обьекта по id при нажатии на применить удаление
 export function deleteItemBuffer(buff, itemId, type) {
-  return buff
+  let itemData = null;
+  let newBuffer = buff
     .map((item) => {
       if (item.request === type) {
         let p = { ...item };
+        itemData = p;
         console.log(p.data.ids);
         p.data.ids = p.data.ids.filter((id) => id !== itemId);
         if (p.data.ids.length > 0) {
@@ -95,6 +100,7 @@ export function deleteItemBuffer(buff, itemId, type) {
       }
     })
     .filter(Boolean);
+  return { buffer: newBuffer, item: itemData };
 }
 
 //! функция опредления заблокирован ли tr, чтобы вывести кнопки отмены подтверждения
@@ -102,13 +108,13 @@ export const funGetConfirmation = (itemId, changedData, bufferAction) => {
   if (changedData.deleted.find((el) => el === itemId)) {
     return { blocked: true, height: "150px", top: "0", type: 1 };
   } else if (changedData.splitjoin.includes(itemId)) {
-    let index = null;
+    let index = 0;
     let length = 1;
     bufferAction.map((item) => {
       if (item.request === "splitWorkload") {
-        if (item.newIds.findIndex((el) => el === itemId) > index) {
-          index = item.newIds.findIndex((el) => el === itemId);
-          length = item.newIds.length;
+        if (Number(itemId[itemId.length - 1]) > index) {
+          index = Number(itemId[itemId.length - 1]);
+          length = item.data.n;
         }
       }
     });

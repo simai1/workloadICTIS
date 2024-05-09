@@ -5,6 +5,12 @@ import DataContext from "./context";
 import Authorization from "./pages/Authorization/Authorization";
 import { bufferRequestToApi, returnPrevState } from "./bufferFunction";
 import { headers } from "./components/TableWorkload/Data";
+import { Comment, Workload } from "./api/services/ApiRequest";
+import {
+  funFilterSelected,
+  funFixEducator,
+  funSplitData,
+} from "./components/TableWorkload/Function";
 
 function App() {
   const [educator, setEducator] = useState([]); // преподаватели
@@ -12,7 +18,6 @@ function App() {
   const [workload, setWorkload] = useState([]); // данные о нагрузках
   const [allWarningMessage, setAllWarningMessage] = useState([]);
   const [individualCheckboxes, setIndividualCheckboxes] = useState([]); //чекбоксы таблицы
-  // const [blockedCheckboxes, setBlockedCheckboxes] = useState([]); //чекбоксы таблицы
   const [fileData, setFileData] = useState(null);
 
   //! данные пользователя ! изменить
@@ -29,8 +34,6 @@ function App() {
   const appData = {
     individualCheckboxes,
     setIndividualCheckboxes,
-    // blockedCheckboxes,
-    // setBlockedCheckboxes,
     educator,
     setEducator,
     positions,
@@ -50,20 +53,10 @@ function App() {
   const [tableHeaders, setTableHeaders] = useState(headers);
   const [workloadData, setWorkloadData] = useState([]); // данные с бд нагрузок
   const [workloadDataFix, setWorkloadDataFix] = useState([]); //данные с убранным массиовм преподавателя
+  // const [workloadDataFixIsOid, setWorkloadDataFixIsOid] = useState([])
   const [filtredData, setFiltredData] = useState([]); // фильтрованные данные
   const [allCommentsData, setAllCommentsData] = useState([]); // все комментарии
   const [allOffersData, setAllOffersData] = useState([]); // предложения
-
-  const basicTabData = {
-    tableHeaders,
-    setTableHeaders,
-    workloadData,
-    setWorkloadData,
-    workloadDataFix,
-    setWorkloadDataFix,
-    filtredData,
-    setFiltredData,
-  };
 
   const [coloredData, setColoredData] = useState([]); // выделенные цветом
   const [fastenedData, setFastenedData] = useState([]); // закрепленные строки (храним их id)
@@ -131,6 +124,62 @@ function App() {
     setSelectedFilter,
   };
 
+  //! функция обновления всех данных
+  const updateAlldata = () => {
+    Workload().then((data) => {
+      console.log(data);
+      const dataBd = [...data];
+      setWorkloadData(dataBd);
+      // зменяем массив преподавателя на его имя
+      const fixData = funFixEducator(dataBd);
+      // разделяем на общеинституские и кафедральные и сортируем
+      // const splitData = funSplitData(fixData, dataIsOid);
+      setWorkloadDataFix(fixData);
+      setFiltredData(fixData);
+      // получаем все комментарии
+      Comment().then((data) => {
+        setAllCommentsData(data);
+      });
+    });
+  };
+  const basicTabData = {
+    updateAlldata,
+    tableHeaders,
+    setTableHeaders,
+    workloadData,
+    setWorkloadData,
+    workloadDataFix,
+    setWorkloadDataFix,
+    filtredData,
+    setFiltredData,
+  };
+  //! получаем данные нагрузок с бд
+  useEffect(() => {
+    updateAlldata();
+  }, []);
+
+  //! при зменении основынх данных записываем их в фильтрованные
+  // useEffect(() => {
+  //   setFiltredData([...workloadDataFix]);
+  // }, [workloadDataFix]);
+
+  //! при переходе с кафедральных на общеинституские и обратно фильтруем основные
+  //! фильтруем по FiltredRows
+  useEffect(() => {
+    const splitData = funSplitData(workloadDataFix, dataIsOid);
+    const filterSelected = funFilterSelected(
+      splitData,
+      selectedFilter,
+      coloredData,
+      changedData,
+      fastenedData
+    );
+    setFiltredData(filterSelected);
+    setSelectedTr([]);
+    setOnCheckBoxAll(false);
+    setStartData(0);
+  }, [dataIsOid, selectedFilter, workloadDataFix]);
+
   useEffect(() => {
     const handleKeyDown = (event) => {
       //! следим за нажатием ctrl + s для сохранения изменений
@@ -139,9 +188,16 @@ function App() {
         console.log("Сохранено", bufferAction);
         bufferRequestToApi(bufferAction).then(() => {
           setBufferAction([0]);
+          updateAlldata();
         });
         setSelectedTr([]);
-        // setBlockedCheckboxes([]);
+        setChangedData({
+          splitjoin: [],
+          educator: [],
+          hours: [],
+          numberOfStudents: [],
+          deleted: [],
+        });
         console.log("выполнено и очищено", bufferAction);
       }
     };
@@ -163,14 +219,14 @@ function App() {
         basicTabData,
       }}
     >
-    <BrowserRouter basename="/client">
-      <div className="Container">
-        <Routes>
-          <Route path="/" element={<Authorization />}></Route>
-          <Route path="/HomePage" element={<HomePage />}></Route>
-        </Routes>
-      </div>
-    </BrowserRouter>
+      <BrowserRouter basename="/client">
+        <div className="Container">
+          <Routes>
+            <Route path="/" element={<Authorization />}></Route>
+            <Route path="/HomePage" element={<HomePage />}></Route>
+          </Routes>
+        </div>
+      </BrowserRouter>
     </DataContext.Provider>
   );
 }

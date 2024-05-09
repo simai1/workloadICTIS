@@ -92,7 +92,7 @@ const ContextMenu = (props) => {
         ]);
         //! занесем id измененнных данных в состояние
         tabPar.setChangedData(
-          addСhangedData(tabPar.changedData, "educator", [id])
+          addСhangedData(tabPar.changedData, "educator", [tabPar.selectedTr[0]])
         );
       });
     } else if (menuShow === "propose") {
@@ -326,10 +326,7 @@ const ContextMenu = (props) => {
       )}
       {menuShow === "highlight" && (
         // выделение нагрузки
-        <Highlight
-          contextPosition={tabPar.contextPosition}
-          SetColor={SetColor}
-        />
+        <Highlight />
       )}
       {menuShow === "commentsMenu" && (
         <NotificationForm contextPosition={tabPar.contextPosition} />

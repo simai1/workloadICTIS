@@ -1,5 +1,4 @@
 import React, { useContext, useEffect } from "react";
-import { Comment, Workload } from "../../api/services/ApiRequest";
 import Table from "./Table";
 import styles from "./TableWorkload.module.scss";
 import {
@@ -11,8 +10,8 @@ import {
 } from "./Function";
 import DataContext from "../../context";
 import ContextMenu from "../../ui/ContextMenu/ContextMenu";
-import { plagData } from "./PlagData";
 import { returnPrevState } from "../../bufferFunction";
+import { delChangeData } from "../../ui/ContextMenu/Function";
 
 function TableWorkload(props) {
   const { appData, tabPar, visibleDataPar, basicTabData } =
@@ -26,36 +25,6 @@ function TableWorkload(props) {
       );
   };
 
-  //! получаем данные нагрузок с бд
-  useEffect(() => {
-    // //? удалить
-    // const dataBd = plagData;
-    // basicTabData.setWorkloadData(dataBd);
-    // // зменяем массив преподавателя на его имя
-    // const fixData = funFixEducator(dataBd);
-    // basicTabData.setWorkloadDataFix(fixData);
-    // // разделяем на общеинституские и кафедральные
-    // const splitData = funSplitData(fixData, tabPar.dataIsOid);
-    // basicTabData.setFiltredData(splitData);
-    // //? удалить
-
-    //! раскомментить
-    Workload().then((data) => {
-      const dataBd = [...data];
-      basicTabData.setWorkloadData(dataBd);
-      // зменяем массив преподавателя на его имя
-      const fixData = funFixEducator(dataBd);
-      basicTabData.setWorkloadDataFix(fixData);
-      // разделяем на общеинституские и кафедральные
-      const splitData = funSplitData(fixData, tabPar.dataIsOid);
-      basicTabData.setFiltredData(splitData);
-      // получаем все комментарии
-      Comment().then((data) => {
-        tabPar.setAllCommentsData(data);
-      });
-    });
-  }, []);
-
   //! закрепленные данные ставим в начало таблицы
   useEffect(() => {
     // console.log(tabPar.fastenedData);
@@ -63,11 +32,6 @@ function TableWorkload(props) {
       funfastenedDataSort(basicTabData.workloadDataFix, tabPar.fastenedData)
     );
   }, [tabPar.fastenedData]);
-
-  //! при зменении основынх данных записываем их в фильтрованные
-  useEffect(() => {
-    basicTabData.setFiltredData([...basicTabData.workloadDataFix]);
-  }, [basicTabData.workloadDataFix]);
 
   //! обновление таблицы, отмена действия при ctrl+z
   useEffect(() => {
@@ -90,6 +54,13 @@ function TableWorkload(props) {
             appData.bufferAction[0].request === "removeEducatorinWorkload" ||
             appData.bufferAction[0].request === "addEducatorWorkload"
           ) {
+            // убираем выделение с преподавателя
+            tabPar.setChangedData(
+              delChangeData(tabPar.changedData, "educator", [
+                appData.bufferAction[0].data.workloadId,
+              ])
+            );
+
             returnPrevState(
               appData.bufferAction,
               basicTabData.workloadDataFix
@@ -158,7 +129,7 @@ function TableWorkload(props) {
             basicTabData.setWorkloadDataFix([...newData]);
             appData.setBufferAction((prevItems) => prevItems.slice(1));
           } else if (appData.bufferAction[0].request === "deleteWorkload") {
-            // возвращаем улаленную нагрузку
+            // возвращаем удаленную нагрузку
             let cd = tabPar.changedData;
             cd.deleted = cd.deleted.filter(
               (el) =>
@@ -176,26 +147,6 @@ function TableWorkload(props) {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [appData.bufferAction]);
-
-  //! при переходе с кафедральных на общеинституские и обратно фильтруем основные
-  //! фильтруем по FiltredRows
-  useEffect(() => {
-    const splitData = funSplitData(
-      funFixEducator(basicTabData.workloadData),
-      tabPar.dataIsOid
-    );
-    const filterSelected = funFilterSelected(
-      splitData,
-      tabPar.selectedFilter,
-      tabPar.coloredData,
-      tabPar.changedData,
-      tabPar.fastenedData
-    );
-    basicTabData.setWorkloadDataFix(filterSelected);
-    tabPar.setSelectedTr([]);
-    tabPar.setOnCheckBoxAll(false);
-    visibleDataPar.setStartData(0);
-  }, [tabPar.dataIsOid, tabPar.selectedFilter]);
 
   //! фильтрация по поиску
   useEffect(() => {
