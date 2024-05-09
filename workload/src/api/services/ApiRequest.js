@@ -250,7 +250,7 @@ export const getAllColors = async () => {
 export const SubmitFileXLSX = async (data) => {
   console.log("файл ", data);
   try {
-    const response = await http.post(`${server}/parser/uploadWorkload`, data);
+    const response = await http.post(`${server}/parser/parseWorkload/7`, data);
     console.log("response ", response);
     return response.data;
   } catch (error) {
