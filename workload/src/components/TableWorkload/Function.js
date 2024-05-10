@@ -105,17 +105,22 @@ export function deleteItemBuffer(buff, itemId, type) {
 
 //! функция опредления заблокирован ли tr, чтобы вывести кнопки отмены подтверждения
 export const funGetConfirmation = (itemId, changedData, bufferAction) => {
+  // при удалении строки
   if (changedData.deleted.find((el) => el === itemId)) {
     return { blocked: true, height: "150px", top: "0", type: 1 };
-  } else if (changedData.splitjoin.includes(itemId)) {
+  }
+  // при разделении строки
+  else if (changedData.splitjoin.includes(itemId)) {
     let index = 0;
     let length = 1;
     bufferAction.map((item) => {
       if (item.request === "splitWorkload") {
+        //при разделении в конец id добавляется index у первого 0 у втрого 1 и тд
+        // Number(itemId[itemId.length - 1]) определяет этот индекс
         if (Number(itemId[itemId.length - 1]) > index) {
           index = Number(itemId[itemId.length - 1]);
-          length = item.data.n;
         }
+        length = item.data.n;
       }
     });
     if (index !== -1) {

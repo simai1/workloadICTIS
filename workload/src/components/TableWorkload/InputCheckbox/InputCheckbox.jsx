@@ -19,7 +19,6 @@ function InputCheckbox(props) {
       (item) => item.offer?.workloadId === props.itid
     );
   };
-
   const stylesTh = { backgroundColor: props.bgColor, zIndex: "31" };
   const stylesTd = {
     zIndex: `${10 - props.number}`,
