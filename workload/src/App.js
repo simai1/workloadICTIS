@@ -22,7 +22,7 @@ function App() {
 
   //! данные пользователя ! изменить
   const myProfile = {
-    id: "7752d476-d998-48c5-bcb7-9a6ce385f743",
+    id: "0aad278a-23d7-412f-857c-df7bc70f205a",
     name: "Админ Кирилл Николаевич",
     position: "Заведующий кафедры",
     mail: "ivanov@sfedu.ru",
@@ -124,6 +124,13 @@ function App() {
     setSelectedFilter,
   };
 
+  //! функция обновления комментаривев
+  const funUpdateAllComments = () => {
+    Comment().then((data) => {
+      console.log("comments", data);
+      setAllCommentsData(data);
+    });
+  };
   //! функция обновления всех данных
   const updateAlldata = () => {
     Workload().then((data) => {
@@ -137,11 +144,10 @@ function App() {
       setWorkloadDataFix(fixData);
       setFiltredData(fixData);
       // получаем все комментарии
-      Comment().then((data) => {
-        setAllCommentsData(data);
-      });
+      funUpdateAllComments();
     });
   };
+
   const basicTabData = {
     updateAlldata,
     tableHeaders,
@@ -152,6 +158,9 @@ function App() {
     setWorkloadDataFix,
     filtredData,
     setFiltredData,
+    allCommentsData,
+    setAllCommentsData,
+    funUpdateAllComments,
   };
   //! получаем данные нагрузок с бд
   useEffect(() => {

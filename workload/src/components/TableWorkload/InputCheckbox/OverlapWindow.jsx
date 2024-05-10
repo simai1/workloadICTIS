@@ -1,9 +1,15 @@
+//! окно перекрытия блокированных разделенных, соедененных, удаленных строк
+
+import DataContext from "../../../context";
+import styles from "./../TableWorkload.module.scss";
 import React from "react";
-import styles from "./TableWorkload.module.scss";
-import DataContext from "../../context";
-import { deleteWorkload, splitWorkload } from "../../api/services/ApiRequest";
-import { deleteItemBuffer } from "./Function";
-function InputCheckbox(props) {
+import {
+  deleteWorkload,
+  splitWorkload,
+} from "../../../api/services/ApiRequest";
+import { deleteItemBuffer } from "../Function";
+
+function OverlapWindow(props) {
   const { tabPar, appData, basicTabData } = React.useContext(DataContext);
 
   const cancelChanges = () => {
@@ -91,60 +97,24 @@ function InputCheckbox(props) {
   };
 
   return (
-    <>
-      {props.th ? (
-        <th
-          style={{ backgroundColor: props.bgColor, zIndex: "31" }}
-          className={styles.InputCheckbox}
-        >
-          <input
-            onChange={() => props.clickTr(props.itemId)}
-            type="checkbox"
-            checked={props.checked}
-          ></input>
-        </th>
-      ) : (
-        <td
-          style={{ backgroundColor: props.bgColor }}
-          // onClick={(e) => { //! При нажатии на инпут функция вызывается 2 раза исправить !
-          //   e.stopPropagation();
-          // }}
-          className={styles.InputCheckbox}
-        >
-          {tabPar.fastenedData.includes(props.itid) && (
-            <img
-              className={styles.fastenedImg}
-              src="./img/fastened.svg"
-              alt="fastened"
-            ></img>
-          )}
-          {props.getConfirmation.blocked && (
-            <div
-              style={{
-                height: props.getConfirmation.height,
-                top: props.getConfirmation.top,
-              }}
-              key={"confirmation"}
-              className={styles.confirmation}
-            >
-              <button className={styles.btn_left} onClick={cancelChanges}>
-                Отменить
-              </button>
-              <button className={styles.btn_right} onClick={confirmChanges}>
-                Подтвердить
-              </button>
-            </div>
-          )}
-
-          <input
-            onChange={() => props.clickTr(props.itemId)}
-            type="checkbox"
-            checked={props.checked}
-          ></input>
-        </td>
-      )}
-    </>
+    <div className={styles.OverlapWindow}>
+      <div
+        style={{
+          height: props.getConfirmation.height,
+          top: props.getConfirmation.top,
+        }}
+        key={"confirmation"}
+        className={styles.confirmation}
+      >
+        <button className={styles.btn_left} onClick={cancelChanges}>
+          Отменить
+        </button>
+        <button className={styles.btn_right} onClick={confirmChanges}>
+          Подтвердить
+        </button>
+      </div>
+    </div>
   );
 }
 
-export default InputCheckbox;
+export default OverlapWindow;

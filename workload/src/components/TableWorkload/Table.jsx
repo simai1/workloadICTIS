@@ -3,7 +3,7 @@ import TableTh from "./TableTh";
 import TableTd from "./TableTd";
 import styles from "./TableWorkload.module.scss";
 import DataContext from "../../context";
-import InputCheckbox from "./InputCheckbox";
+import InputCheckbox from "./InputCheckbox/InputCheckbox";
 import { funGetConfirmation } from "./Function";
 
 function Table(props) {
@@ -154,6 +154,7 @@ function Table(props) {
                   clickTr={clickTr}
                   itemId={item.id + "checkBox"}
                   itid={item.id}
+                  number={number}
                   getConfirmation={getConfirmation(item.id)}
                   checked={tabPar.selectedTr.includes(item.id)}
                 />

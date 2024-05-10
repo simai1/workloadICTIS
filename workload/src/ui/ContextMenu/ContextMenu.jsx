@@ -13,6 +13,7 @@ import {
   addСhangedData,
 } from "./Function";
 import { NotificationForm } from "../NotificationForm/NotificationForm";
+import CommentsMenu from "./CommentsMenu";
 
 const ContextMenu = (props) => {
   const { appData, tabPar, basicTabData } = React.useContext(DataContext);
@@ -329,7 +330,8 @@ const ContextMenu = (props) => {
         <Highlight />
       )}
       {menuShow === "commentsMenu" && (
-        <NotificationForm contextPosition={tabPar.contextPosition} />
+        // <NotificationForm contextPosition={tabPar.contextPosition} />
+        <CommentsMenu setMenuShow={setMenuShow} />
       )}
     </div>
   );
