@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo, useRef } from "react";
 import styles from "./TableDisciplines.module.scss";
 import { useDispatch, useSelector } from "react-redux";
 import ContextMenu from "../../ui/ContextMenu/ContextMenu";
-import { NotificationForm } from "../../ui/NotificationForm/NotificationForm";
 import { SamplePoints } from "../../ui/SamplePoints/SamplePoints";
 import DataContext from "../../context";
 import { ReactComponent as SvgChackmark } from "./../../img/checkmark.svg";
@@ -500,21 +499,6 @@ function TableDisciplines(props) {
   return (
     <div className={styles.tabledisciplinesMain}>
       <div>
-        {isHovered && (
-          <NotificationForm
-            refHoverd={refHoverd}
-            position={position}
-            setPosition={setPosition}
-            workloadId={idRow}
-            commentAllData={commentAllData}
-            setCommentAllData={setCommentAllData}
-            getDataAllComment={getDataAllComment}
-            setIsHovered={setIsHovered}
-            commentData={commentAllData
-              .filter((item) => item.workloadId === idRow)
-              .reverse()}
-          />
-        )}
         {modalWindowOffer.flag && (
           <OfferModalWindow
             allOffersDataItem={allOffersData.filter(

@@ -3,6 +3,7 @@ import styles from "./../TableWorkload.module.scss";
 import DataContext from "../../../context";
 import OverlapWindow from "./OverlapWindow";
 import Comments from "./Comments";
+import Offers from "./Offers";
 function InputCheckbox(props) {
   const { tabPar, basicTabData } = React.useContext(DataContext);
 
@@ -12,6 +13,13 @@ function InputCheckbox(props) {
       (item) => item.workloadId === props.itid
     );
   };
+  //! функция получения предложений к строке
+  const getOffers = () => {
+    return basicTabData.allOffersData.filter(
+      (item) => item.offer?.workloadId === props.itid
+    );
+  };
+
   const stylesTh = { backgroundColor: props.bgColor, zIndex: "31" };
   const stylesTd = {
     zIndex: `${10 - props.number}`,
@@ -22,7 +30,7 @@ function InputCheckbox(props) {
     <>
       {props.th ? (
         <th style={stylesTh} className={styles.InputCheckbox}>
-          <div className={styles.Comments}></div>
+          <div className={styles.bacground}></div>
           <input
             onChange={() => props.clickTr(props.itemId)}
             type="checkbox"
@@ -38,13 +46,22 @@ function InputCheckbox(props) {
               alt="fastened"
             ></img>
           )}
+          {/* //! перекрытие */}
           {props.getConfirmation.blocked && (
             <OverlapWindow
               getConfirmation={props.getConfirmation}
               itid={props.itid}
             />
           )}
-          <Comments commentData={getComment().reverse()} />
+          <div className={styles.bacground}>
+            {getComment().length > 0 && (
+              <Comments commentData={getComment().reverse()} />
+            )}
+            {getOffers().length > 0 && (
+              <Offers offerData={getOffers().reverse()} />
+            )}
+          </div>
+
           <input
             onChange={() => props.clickTr(props.itemId)}
             type="checkbox"

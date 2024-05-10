@@ -49,3 +49,35 @@
   font-size: $size;
   font-weight: $weight;
 }
+
+@mixin circle($bgColor) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  background-color: $bgColor;
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+}
+
+@mixin line($color) {
+  position: absolute;
+  right: -19px;
+  background-color: $color;
+  width: 4px;
+  height: 40%;
+  margin-top: 70%;
+}
+@mixin button($bgcolor, $textColor, $paddingTB, $paddingLR) {
+  border-radius: 8px;
+  color: $textColor;
+  background-color: $bgcolor;
+  padding: $paddingTB $paddingLR;
+  cursor: pointer;
+  &:hover {
+    opacity: 0.8;
+    transition: all ease 0.15s;
+  }
+}

@@ -74,7 +74,6 @@ function Comments(props) {
           <div className={styles.circle} onClick={circleClick}>
             {props.commentData.length}
           </div>
-          <div className={styles.line}></div>
         </div>
       )}
       {commentWindowShow && (

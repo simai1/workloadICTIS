@@ -12,7 +12,6 @@ import {
   upDateEducator,
   addСhangedData,
 } from "./Function";
-import { NotificationForm } from "../NotificationForm/NotificationForm";
 import CommentsMenu from "./CommentsMenu";
 
 const ContextMenu = (props) => {
@@ -111,7 +110,7 @@ const ContextMenu = (props) => {
             request: "createOffer",
             data: {
               workloadId: tabPar.selectedTr[0],
-              educatorId: appData.myProfile.id,
+              educatorId: Educator.id,
             },
           },
           ...appData.bufferAction,
@@ -330,7 +329,6 @@ const ContextMenu = (props) => {
         <Highlight />
       )}
       {menuShow === "commentsMenu" && (
-        // <NotificationForm contextPosition={tabPar.contextPosition} />
         <CommentsMenu setMenuShow={setMenuShow} />
       )}
     </div>

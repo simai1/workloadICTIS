@@ -303,36 +303,129 @@ $heightCell: 150px;
       }
     }
 
-    .Comments {
+    .bacground {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
       position: absolute;
       left: -64px;
-      top: 0;
+      top: 0px;
       background-color: var(--bgraund);
       width: 64px;
       height: 100%;
+    }
+    .Offers {
       display: flex;
       justify-content: center;
       align-items: center;
+      padding-bottom: 10px;
       .circle {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 30px;
-        height: 30px;
-        background-color: var(--red-color);
-        border-radius: 50%;
-        color: #fff;
-        cursor: pointer;
+        position: relative;
+        margin-top: 4px;
+        @include circle(var(--yellow-color));
+        &::before {
+          content: "";
+          @include line(var(--yellow-color));
+          height: 130%;
+          bottom: -6px;
+        }
       }
       .line {
-        position: absolute;
-        right: 0;
-        top: 0;
-        background-color: var(--red-color);
-        width: 4px;
-        height: 40%;
-        margin-top: 70%;
+        @include line(var(--yellow-color));
+        bottom: 0;
       }
+      .containerOffer {
+        position: absolute;
+        left: 80px;
+        z-index: 40;
+        top: 20px;
+        background-color: #fff;
+        padding: 16px;
+        padding-right: 10px;
+        width: 250px;
+        // height: 160px;
+        @include boxShadow();
+        .offerScroll {
+          overflow-y: auto;
+          max-height: 360px;
+          overflow-x: hidden;
+          @include scrollStyle(5px, 4px);
+        }
+        .offerbox {
+          // display: flex;
+          flex-direction: column;
+          justify-content: left;
+          margin-bottom: 20px;
+        }
+        .offerTitle {
+          @include fontText(16px, 500);
+          text-align: left;
+          padding-bottom: 5px;
+        }
+        .offerCenter {
+          @include fontText(14px, 400);
+          color: #5a5a5a;
+          padding-bottom: 5px;
+          text-align: left;
+        }
+        .offerEducator {
+          @include fontText(16px, 500);
+          text-align: left;
+          padding-bottom: 10px;
+        }
+        .offerButton {
+          display: flex;
+          flex-direction: row;
+          .left {
+            @include button(#fff, #000, 10px, 14px);
+            border: 1px solid #000;
+            margin-right: 10px;
+          }
+          .rigth {
+            @include button(var(--blue-color), #fff, 10px, 22px);
+            border: none;
+          }
+        }
+        .btn_left {
+          display: flex;
+          align-items: center;
+          cursor: pointer;
+          @include fontText(18px, 500);
+          span {
+            padding-right: 4px;
+          }
+          .svg {
+            transform: rotate(180deg);
+          }
+          .svg * {
+            fill: var(--blue-color);
+          }
+          .blue {
+            color: var(--blue-color);
+          }
+        }
+      }
+    }
+    .Comments {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding-bottom: 10px;
+
+      .circle {
+        position: relative;
+        @include circle(var(--red-color));
+        &::before {
+          content: "";
+          @include line(var(--red-color));
+          height: 130%;
+          bottom: -6px;
+        }
+      }
+      // .line {
+      //   @include line(var(--red-color));
+      //   top: 0;
+      // }
       .commentWindow {
         display: flex;
         justify-content: left;
@@ -342,7 +435,7 @@ $heightCell: 150px;
         top: 20px;
         background-color: #fff;
         padding: 16px;
-        width: 230px;
+        width: 250px;
         // height: 160px;
         @include boxShadow();
         .containerScroll {

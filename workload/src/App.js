@@ -3,9 +3,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage/Homepage";
 import DataContext from "./context";
 import Authorization from "./pages/Authorization/Authorization";
-import { bufferRequestToApi, returnPrevState } from "./bufferFunction";
+import { bufferRequestToApi } from "./bufferFunction";
 import { headers } from "./components/TableWorkload/Data";
-import { Comment, Workload } from "./api/services/ApiRequest";
+import { Comment, Workload, getOffers } from "./api/services/ApiRequest";
 import {
   funFilterSelected,
   funFixEducator,
@@ -131,8 +131,17 @@ function App() {
       setAllCommentsData(data);
     });
   };
-  //! функция обновления всех данных
-  const updateAlldata = () => {
+
+  //! функция обновления предложений преподавателей
+  const funUpdateOffers = () => {
+    getOffers().then((data) => {
+      console.log("Offers", data);
+      setAllOffersData(data);
+    });
+  };
+
+  //! функция обновления таблицы
+  const funUpdateTable = () => {
     Workload().then((data) => {
       console.log(data);
       const dataBd = [...data];
@@ -143,9 +152,16 @@ function App() {
       // const splitData = funSplitData(fixData, dataIsOid);
       setWorkloadDataFix(fixData);
       setFiltredData(fixData);
-      // получаем все комментарии
-      funUpdateAllComments();
     });
+  };
+  //! функция обновления всех данных
+  const updateAlldata = () => {
+    // получаем данные таблицы
+    funUpdateTable();
+    // получаем все комментарии
+    funUpdateAllComments();
+    // получение предложений
+    funUpdateOffers();
   };
 
   const basicTabData = {
@@ -159,18 +175,16 @@ function App() {
     filtredData,
     setFiltredData,
     allCommentsData,
+    allOffersData,
     setAllCommentsData,
     funUpdateAllComments,
+    funUpdateOffers,
+    funUpdateTable,
   };
   //! получаем данные нагрузок с бд
   useEffect(() => {
     updateAlldata();
   }, []);
-
-  //! при зменении основынх данных записываем их в фильтрованные
-  // useEffect(() => {
-  //   setFiltredData([...workloadDataFix]);
-  // }, [workloadDataFix]);
 
   //! при переходе с кафедральных на общеинституские и обратно фильтруем основные
   //! фильтруем по FiltredRows
