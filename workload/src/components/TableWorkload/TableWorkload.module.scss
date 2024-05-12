@@ -533,7 +533,9 @@ $heightCell: 150px;
   height: 12px;
 }
 .tabledisciplinesMain::-webkit-scrollbar-track {
-  background: #fff; /* цвет дорожки */
+  background: var(--bgraund); /* цвет дорожки */
+  margin-top: 70px;
+  margin-left: 64px;
 }
 .tabledisciplinesMain::-webkit-scrollbar-thumb,
 .tabledisciplinesMain::-webkit-scrollbar-thumb {

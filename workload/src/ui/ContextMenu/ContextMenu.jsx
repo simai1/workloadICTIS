@@ -3,7 +3,11 @@ import styles from "./ContextMenu.module.scss";
 import { SubMenu } from "./SubMenu";
 import { EducatorMenu } from "./EducatorMenu";
 import DataContext from "../../context";
-import { EducatorLK } from "../../api/services/ApiRequest";
+import {
+  EducatorLK,
+  apiAddAttaches,
+  apiUnAttaches,
+} from "../../api/services/ApiRequest";
 import { Highlight } from "./Highlight";
 import MenuPop from "./MenuPop";
 import {
@@ -227,19 +231,42 @@ const ContextMenu = (props) => {
 
   //! функция закрепления
   const pinaCell = () => {
-    tabPar.setFastenedData((prev) => [
-      ...new Set([...tabPar.selectedTr, ...prev]),
-    ]);
-    tabPar.setContextMenuShow(false);
+    // запрос на закрепление
+    const fastened = tabPar.fastenedData.find(
+      (item) => item.workloadId === tabPar.selectedTr[0]
+    );
+    if (!fastened) {
+      const data = {
+        workloadId: tabPar.selectedTr[0],
+      };
+      console.log("dat", data);
+      apiAddAttaches(data).then(() => {
+        tabPar.setContextMenuShow(false);
+        tabPar.setSelectedTr([]);
+        // запрос на бд для обновления закрепленных данных
+        basicTabData.funUpdateFastenedData();
+      });
+    }
   };
 
-  //! открепит
+  //! открепить
   const unPinaCell = () => {
-    const mass = tabPar.fastenedData.filter(
-      (item) => !tabPar.selectedTr.some((el) => el === item) && item
+    console.log("tabPar.fastenedData", tabPar.fastenedData);
+
+    const fastened = tabPar.fastenedData.find(
+      (item) => item.workloadId === tabPar.selectedTr[0]
     );
-    tabPar.setFastenedData(mass);
-    tabPar.setContextMenuShow(false);
+    if (fastened) {
+      apiUnAttaches(fastened.id).then(() => {
+        const mass = tabPar.fastenedData.filter(
+          (item) =>
+            !tabPar.selectedTr.some((el) => el === item.workloadId) && item
+        );
+        tabPar.setFastenedData(mass);
+        tabPar.setContextMenuShow(false);
+        tabPar.setSelectedTr([]);
+      });
+    }
   };
 
   //! стили позиционирование меню

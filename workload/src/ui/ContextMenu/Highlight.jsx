@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "./ContextMenu.module.scss";
 import DataContext from "../../context";
+import { apiAddColored } from "../../api/services/ApiRequest";
 
 export function Highlight() {
   const { tabPar } = React.useContext(DataContext);
@@ -28,6 +29,11 @@ export function Highlight() {
       });
     }
     tabPar.setColoredData(mass);
+    const data = {
+      color: colorNumber,
+      workloadId: tabPar.selectedTr[0],
+    };
+    apiAddColored(data);
     tabPar.setContextMenuShow(false);
     tabPar.setSelectedTr([]);
   };

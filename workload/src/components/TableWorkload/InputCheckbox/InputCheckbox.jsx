@@ -38,7 +38,7 @@ function InputCheckbox(props) {
         </th>
       ) : (
         <td style={stylesTd} className={styles.InputCheckbox}>
-          {tabPar.fastenedData.includes(props.itid) && ( //отмечаем закрепленные
+          {tabPar.fastenedData.some((el) => el.workloadId === props.itid) && ( //отмечаем закрепленные // сделать проверку на преподавателя который закрепляет
             <img
               className={styles.fastenedImg}
               src="./img/fastened.svg"

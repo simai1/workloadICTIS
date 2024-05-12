@@ -253,10 +253,61 @@ export const getAllColors = async () => {
   }
 };
 
+//! запрос на добавление выделение строци цветом // получает color и workloadId
+export const apiAddColored = async (data) => {
+  console.log("выделение цветом ", data);
+  try {
+    const response = await http.post(`${server}/color/setColor`, data);
+    console.log("response ", response);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
+//! импорт файла
 export const SubmitFileXLSX = async (data) => {
   console.log("файл ", data);
   try {
     const response = await http.post(`${server}/parser/parseWorkload/7`, data);
+    console.log("response ", response);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
+//! получаем закрепленные
+export const getAllAttaches = async () => {
+  try {
+    const response = await http.get(`${server}/attaches/getAllAttaches`);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
+//! добавить закрепленную строку
+export const apiAddAttaches = async (data) => {
+  console.log("закрепленно ", data);
+  try {
+    const response = await http.post(`${server}/attaches/setAttaches`, data);
+    console.log("response ", response);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
+//! запрос убрать закрепленную строку
+export const apiUnAttaches = async (data) => {
+  console.log("открепленно ", data);
+  try {
+    const response = await http.delete(`${server}/attaches/unAttaches/${data}`);
     console.log("response ", response);
     return response.data;
   } catch (error) {

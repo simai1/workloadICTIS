@@ -47,14 +47,14 @@ const FiltredRows = () => {
                 alt="Arrowtop"
               ></img>
             </li>
-            <li onClick={() => Fuctionmenu("Выделенные")}>
-              Выделенные <img src={pencil} alt="pencil"></img>
+            <li onClick={() => Fuctionmenu("Закрепленные")}>
+              Закрепленные <img src={thimbtack} alt="thimbtack"></img>
             </li>
             <li onClick={() => Fuctionmenu("Измененные")}>
               Измененные <img src={filter} alt="filter"></img>
             </li>
-            <li onClick={() => Fuctionmenu("Закрепленные")}>
-              Закрепленные <img src={thimbtack} alt="thimbtack"></img>
+            <li onClick={() => Fuctionmenu("Выделенные")}>
+              Выделенные <img src={pencil} alt="pencil"></img>
             </li>
           </ul>
         )}

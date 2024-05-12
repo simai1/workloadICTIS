@@ -19,13 +19,35 @@ export function filteredWorkload(data, text) {
   });
 }
 
+//! функция поднятия закрпепленных наверх таблицы
+export function funSortedFastened(data, fastenedData) {
+  const fd = [];
+  fastenedData.map((item) => {
+    fd.push(item.workloadId);
+  });
+  const sortedArray = data.sort((a, b) => {
+    const isAInSecondArray = fd.includes(a.id);
+    const isBInSecondArray = fd.includes(b.id);
+    if (isAInSecondArray && !isBInSecondArray) {
+      return -1; // Переместить a вперед
+    }
+    if (!isAInSecondArray && isBInSecondArray) {
+      return 1; // Переместить b вперед
+    }
+    return 0; // Не изменять порядок, если оба элемента в secondArray или оба не в secondArray
+  });
+  return sortedArray;
+}
+
 //! функция разделения на кафедральный и общеинститутские
 export function funSplitData(data, isOid) {
   const origData = [...data];
   const sortedUsers = origData
     .slice()
     .sort((a, b) => a.discipline.localeCompare(b.discipline));
-  return sortedUsers.filter((item) => item.isOid === isOid);
+  // закрепленные переносим в начало таблицы
+  const filteredData = sortedUsers.filter((item) => item.isOid === isOid);
+  return filteredData;
 }
 
 //! функция фильтрации на все измененные выделенные и тд
@@ -39,7 +61,9 @@ export function funFilterSelected(
   const origData = [...data];
   if (selectedFilter === "Выделенные" && colored.length > 0) {
     let fd = [];
-    fd = origData.filter((item) => colored.some((el) => el.id === item.id));
+    fd = origData.filter((item) =>
+      colored.some((el) => el.workloadId === item.id)
+    );
     if (fd.length > 0) {
       return fd;
     }
@@ -55,7 +79,9 @@ export function funFilterSelected(
     }
   } else if (selectedFilter === "Закрепленные") {
     let fd = [];
-    fd = origData.filter((item) => fastenedData.some((el) => el === item.id));
+    fd = origData.filter((item) =>
+      fastenedData.some((el) => el.workloadId === item.id)
+    );
     if (fd.length > 0) {
       return fd;
     } else {

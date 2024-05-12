@@ -5,10 +5,17 @@ import DataContext from "./context";
 import Authorization from "./pages/Authorization/Authorization";
 import { bufferRequestToApi } from "./bufferFunction";
 import { headers } from "./components/TableWorkload/Data";
-import { Comment, Workload, getOffers } from "./api/services/ApiRequest";
+import {
+  Comment,
+  Workload,
+  getAllAttaches,
+  getAllColors,
+  getOffers,
+} from "./api/services/ApiRequest";
 import {
   funFilterSelected,
   funFixEducator,
+  funSortedFastened,
   funSplitData,
 } from "./components/TableWorkload/Function";
 
@@ -135,8 +142,24 @@ function App() {
   //! функция обновления предложений преподавателей
   const funUpdateOffers = () => {
     getOffers().then((data) => {
-      console.log("Offers", data);
+      console.log("предложения", data);
       setAllOffersData(data);
+    });
+  };
+
+  //! функция получения закрепленных строк
+  const funUpdateFastenedData = () => {
+    getAllAttaches().then((data) => {
+      console.log("закрепленные", data);
+      setFastenedData(data);
+    });
+  };
+
+  //! функция получения выделенных цветом строк
+  const funUpdateAllColors = () => {
+    getAllColors().then((data) => {
+      console.log("выделенные", data);
+      setColoredData(data);
     });
   };
 
@@ -162,6 +185,10 @@ function App() {
     funUpdateAllComments();
     // получение предложений
     funUpdateOffers();
+    // получение закрепленных строк
+    funUpdateFastenedData();
+    // получение выделенных строк
+    funUpdateAllColors();
   };
 
   const basicTabData = {
@@ -180,6 +207,7 @@ function App() {
     funUpdateAllComments,
     funUpdateOffers,
     funUpdateTable,
+    funUpdateFastenedData,
   };
   //! получаем данные нагрузок с бд
   useEffect(() => {
@@ -197,11 +225,17 @@ function App() {
       changedData,
       fastenedData
     );
-    setFiltredData(filterSelected);
+    // setFiltredData(filterSelected);
+    setFiltredData(funSortedFastened(filterSelected, fastenedData));
+
     setSelectedTr([]);
     setOnCheckBoxAll(false);
     setStartData(0);
   }, [dataIsOid, selectedFilter, workloadDataFix]);
+
+  useEffect(() => {
+    setFiltredData(funSortedFastened(filtredData, fastenedData));
+  }, [fastenedData, filtredData]);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
