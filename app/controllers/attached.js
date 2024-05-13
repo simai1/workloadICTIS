@@ -15,21 +15,28 @@ export default {
         res.json(attachedDto);
     },
 
-    async setAttaches({ body: { workloadId }, user }, res) {
-        if (!workloadId) throw new AppErrorMissing('workloadId');
-        console.log('user', user);
+    async setAttaches({ body: { workloadIds }, user }, res) {
+        if (!workloadIds || !Array.isArray(workloadIds) || workloadIds.length === 0) {
+            throw new AppErrorMissing('workloadIds');
+        }
         const educator = await Educator.findOne({ where: { userId: user } });
-        console.log('educator', educator);
-        const workload = await Workload.findOne({ where: { id: workloadId } });
-        console.log('workload', workload);
-        const newAttach = await Attaches.create({
-            educatorId: educator.userId,
-            workloadId: workload.id,
-            isAttach: true,
-        });
-        console.log(newAttach);
-        const attachedDto = new AttachedDto(newAttach);
-        res.json(attachedDto);
+        const attachedDtos = [];
+
+        for (const workloadId of workloadIds) {
+            const workload = await Workload.findOne({ where: { id: workloadId } });
+            if (!workload) throw new AppErrorMissing('Workload not found');
+            const newAttach = await Attaches.create({
+                educatorId: educator.userId,
+                workloadId: workload.id,
+                isAttach: true,
+            });
+            console.log(newAttach);
+
+            const attachedDto = new AttachedDto(newAttach);
+            attachedDtos.push(attachedDto);
+        }
+
+        res.json(attachedDtos);
     },
 
     async unAttaches({ params: { attachesId } }, res) {
