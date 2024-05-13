@@ -21,7 +21,7 @@ router
         asyncRoute(attacheController.setAttaches)
     );
 router
-    .route('/unAttaches/:attachesId')
+    .route('/unAttaches')
     .delete(
         asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST, role.LECTURER, role.EDUCATOR])),
         asyncRoute(attacheController.unAttaches)

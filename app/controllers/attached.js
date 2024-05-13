@@ -39,13 +39,16 @@ export default {
         res.json(attachedDtos);
     },
 
-    async unAttaches({ params: { attachesId } }, res) {
-        if (!attachesId) throw new AppErrorMissing('attachedId');
+    async unAttaches({ body: { attachesIds } }, res) {
+        if (!attachesIds || !Array.isArray(attachesIds) || attachesIds.length === 0) {
+            throw new AppErrorMissing('workloadIds');
+        }
+        for (const attachesId of attachesIds) {
+            const attached = await Attaches.findByPk(attachesId);
+            if (!attached) throw new AppErrorMissing('Attached not found');
 
-        const attached = await Attaches.findByPk(attachesId);
-        if (!attached) throw new AppErrorMissing('Attached not found');
-
-        await attached.destroy({ force: true });
+            await attached.destroy({ force: true });
+        }
         res.json('Successfully deleted');
     },
 };
