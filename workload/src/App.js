@@ -29,7 +29,7 @@ function App() {
 
   //! данные пользователя ! изменить
   const myProfile = {
-    id: "0aad278a-23d7-412f-857c-df7bc70f205a",
+    id: "c7b02205-0276-4c98-9be3-4d972072fd60",
     name: "Админ Кирилл Николаевич",
     position: "Заведующий кафедры",
     mail: "ivanov@sfedu.ru",
