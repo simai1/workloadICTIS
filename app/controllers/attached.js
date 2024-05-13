@@ -17,13 +17,11 @@ export default {
 
     async setAttaches({ body: { workloadId }, user }, res) {
         if (!workloadId) throw new AppErrorMissing('workloadId');
-
+        console.log('user', user);
         const educator = await Educator.findOne({ where: { userId: user } });
-
-        const workload = await Workload.findOne({ where: { educatorId: educator.id, id: workloadId } });
-
-        console.log(workload);
-
+        console.log('educator', educator);
+        const workload = await Workload.findOne({ where: { id: workloadId } });
+        console.log('workload', workload);
         const newAttach = await Attaches.create({
             educatorId: educator.userId,
             workloadId: workload.id,
