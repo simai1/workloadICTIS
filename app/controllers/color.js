@@ -21,7 +21,7 @@ export default {
 
         const educator = await Educator.findOne({ where: { userId: user } });
 
-        const workload = await Workload.findOne({ where: { educatorId: educator.id, id: workloadId } });
+        const workload = await Workload.findOne({ where: { id: workloadId } });
 
         const newColor = await Color.create({ color, educatorId: educator.userId, workloadId: workload.id });
         const colorDto = new ColorDto(newColor);
