@@ -265,6 +265,20 @@ export const apiAddColored = async (data) => {
     throw error;
   }
 };
+
+//! запрос обновления цвета
+export const apiUpdateColors = async (data) => {
+  console.log("обновление цветом ", data);
+  try {
+    const response = await http.put(`${server}/color/changeColors`, data);
+    console.log("response ", response);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
 //! запрос удалить цвет
 export const apiDelColors = async (data) => {
   console.log("убрать цвета ", data);

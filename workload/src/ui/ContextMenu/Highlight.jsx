@@ -1,16 +1,20 @@
 import React from "react";
 import styles from "./ContextMenu.module.scss";
 import DataContext from "../../context";
-import { apiAddColored, apiDelColors } from "../../api/services/ApiRequest";
+import {
+  apiAddColored,
+  apiDelColors,
+  apiUpdateColors,
+} from "../../api/services/ApiRequest";
 
 export function Highlight() {
   const { tabPar, basicTabData } = React.useContext(DataContext);
   //! функция занесения выбранных цветов в состояние
   const SetColor = (colorNumber) => {
-    let mass = [...tabPar.coloredData];
+    colorNumber = colorNumber + 1;
     if (colorNumber === 0) {
       //! удаляем выделение
-      const coloerd = mass
+      const coloerd = tabPar.coloredData
         .filter((item) =>
           tabPar.selectedTr.some((el) => el === item.workloadId)
         )
@@ -19,29 +23,39 @@ export function Highlight() {
         colorIds: coloerd,
       };
       apiDelColors(data).then(() => {
-        mass = mass.filter(
-          (item) => !tabPar.selectedTr.includes(item.id) && item
-        );
+        basicTabData.funUpdateAllColors();
       });
     } else {
       //! добалвяем выделение
       const workloadIds = tabPar.selectedTr.filter(
         (item) => !tabPar.coloredData.some((el) => el.workloadId === item)
       );
+      const setWorkloadIds = tabPar.coloredData
+        .filter((item) =>
+          tabPar.selectedTr.some((el) => el === item.workloadId)
+        )
+        .map((el) => el.id);
       const data = {
         color: colorNumber,
         workloadIds: workloadIds,
       };
-      console.log("data", data);
+      const setData = {
+        color: colorNumber,
+        colorIds: setWorkloadIds,
+      };
+      console.log("setData", setData);
 
       if (workloadIds.length > 0) {
         apiAddColored(data).then(() => {
           basicTabData.funUpdateAllColors();
         });
       }
+      if (setWorkloadIds.length > 0) {
+        apiUpdateColors(setData).then(() => {
+          basicTabData.funUpdateAllColors();
+        });
+      }
     }
-    tabPar.setColoredData(mass);
-
     tabPar.setContextMenuShow(false);
     tabPar.setSelectedTr([]);
   };

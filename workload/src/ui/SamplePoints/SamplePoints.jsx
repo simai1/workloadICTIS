@@ -24,7 +24,11 @@ export function SamplePoints(props) {
   //! при нажатии на Input All
   const onAllChecked = () => {
     const checked = checkPar.isAllChecked ? [...filteredData] : [];
-    checkPar.setIsChecked(checked);
+    let check = [];
+    checked.map((item) => {
+      check.push({ value: item, itemKey: props.itemKey });
+    });
+    checkPar.setIsChecked(check);
     checkPar.setAllChecked(!checkPar.isAllChecked);
     // Фильтруем данные
     const fdfix = FilteredSample(

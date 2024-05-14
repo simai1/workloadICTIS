@@ -98,7 +98,7 @@ function TableLks(props) {
   }
 
   return (
-    <div>
+    <div className={styles.TableLks}>
       <button className={styles.buttonBack} onClick={handleNameClick}>
         <img src={ArrowBack} alt="arrow"></img>
         <p>Назад</p>
