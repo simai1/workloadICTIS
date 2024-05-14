@@ -37,7 +37,7 @@ export default {
         res.json(colors);
     },
 
-    async changeColors({ params: { colorIds }, body: { color } }, res) {
+    async changeColors({ body: { color, colorIds } }, res) {
         if (!colorIds || !Array.isArray(colorIds) || colorIds.length === 0) {
             throw new AppErrorMissing('colorIds');
         }

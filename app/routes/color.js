@@ -21,9 +21,9 @@ router
         asyncRoute(colorController.setColor)
     );
 router
-    .route('/changeColor/:colorId')
+    .route('/changeColor')
     .post(
         asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST, role.LECTURER, role.EDUCATOR])),
-        asyncRoute(colorController.changeColor)
+        asyncRoute(colorController.changeColors)
     );
 export default router;
