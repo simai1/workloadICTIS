@@ -265,6 +265,20 @@ export const apiAddColored = async (data) => {
     throw error;
   }
 };
+//! запрос убрать цвет
+export const apiDelColors = async (data) => {
+  console.log("удалены цвета ", data);
+  try {
+    const response = await http.delete(`${server}/color/changeColor`, {
+      data,
+    });
+    console.log("response ", response);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
 
 //! импорт файла
 export const SubmitFileXLSX = async (data) => {
@@ -308,7 +322,7 @@ export const apiUnAttaches = async (data) => {
   console.log("открепленно ", data);
   try {
     const response = await http.delete(`${server}/attaches/unAttaches`, {
-      attachesIds: data,
+      data,
     });
     console.log("response ", response);
     return response.data;

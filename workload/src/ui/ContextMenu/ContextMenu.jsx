@@ -238,9 +238,8 @@ const ContextMenu = (props) => {
     console.log(fastened);
     if (fastened.length > 0) {
       const data = {
-        workloadId: fastened,
+        workloadIds: fastened,
       };
-      console.log("dat", data);
       apiAddAttaches(data).then(() => {
         tabPar.setContextMenuShow(false);
         tabPar.setSelectedTr([]);
@@ -252,13 +251,12 @@ const ContextMenu = (props) => {
 
   //! открепить
   const unPinaCell = () => {
-    console.log("tabPar.fastenedData", tabPar.fastenedData);
     const fastened = tabPar.fastenedData
       .filter((item) => tabPar.selectedTr.find((el) => el === item.workloadId))
       .map((item) => item.id);
 
     if (fastened.length > 0) {
-      apiUnAttaches(fastened).then(() => {
+      apiUnAttaches({ attachesIds: fastened }).then(() => {
         const mass = tabPar.fastenedData.filter(
           (item) =>
             !tabPar.selectedTr.some((el) => el === item.workloadId) && item

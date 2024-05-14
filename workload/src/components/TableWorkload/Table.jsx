@@ -83,7 +83,7 @@ function Table(props) {
     classText = tabPar.selectedTr.includes(itemId)
       ? `${styles.selectedTr}`
       : null;
-    const item = tabPar.coloredData.find((el) => el.id === itemId);
+    const item = tabPar.coloredData.find((el) => el.workloadId === itemId);
     const colored = item ? `colored${item.color}` : null;
     classText = item ? `${classText} ${styles[colored]}` : classText;
     classText = tabPar.changedData.deleted.find((el) => el === itemId)

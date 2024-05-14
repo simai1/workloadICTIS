@@ -1,18 +1,28 @@
 import React from "react";
 import styles from "./ContextMenu.module.scss";
 import DataContext from "../../context";
-import { apiAddColored } from "../../api/services/ApiRequest";
+import { apiAddColored, apiDelColors } from "../../api/services/ApiRequest";
 
 export function Highlight() {
-  const { tabPar } = React.useContext(DataContext);
+  const { tabPar, basicTabData } = React.useContext(DataContext);
   //! функция занесения выбранных цветов в состояние
   const SetColor = (colorNumber) => {
     let mass = [...tabPar.coloredData];
 
     if (colorNumber === 0) {
-      mass = mass.filter(
-        (item) => !tabPar.selectedTr.includes(item.id) && item
-      );
+      const coloerd = tabPar.coloredData
+        .filter((item) =>
+          tabPar.selectedTr.find((el) => el === item.workloadId)
+        )
+        .map((item) => item.id);
+      const data = {
+        workloadIds: coloerd,
+      };
+      apiDelColors(data).then(() => {
+        mass = mass.filter(
+          (item) => !tabPar.selectedTr.includes(item.id) && item
+        );
+      });
     } else {
       tabPar.selectedTr.map((item) => {
         let ind = null;
@@ -29,11 +39,21 @@ export function Highlight() {
       });
     }
     tabPar.setColoredData(mass);
+
+    const colored = tabPar.coloredData
+      .filter((item) => !tabPar.selectedTr.some((e) => e === item.workloadId))
+      .map((el) => el.id);
     const data = {
       color: colorNumber,
-      workloadId: tabPar.selectedTr[0],
+      workloadIds: colored,
     };
-    apiAddColored(data);
+    console.log(colored);
+    if (colored.length > 0) {
+      apiAddColored(data).then(() => {
+        basicTabData.funUpdateAllColors();
+      });
+    }
+
     tabPar.setContextMenuShow(false);
     tabPar.setSelectedTr([]);
   };

@@ -208,6 +208,7 @@ function App() {
     funUpdateOffers,
     funUpdateTable,
     funUpdateFastenedData,
+    funUpdateAllColors,
   };
   //! получаем данные нагрузок с бд
   useEffect(() => {
@@ -233,9 +234,12 @@ function App() {
     setStartData(0);
   }, [dataIsOid, selectedFilter, workloadDataFix]);
 
+  //! при изменении закрпеленных перемещаем их наверх
   useEffect(() => {
     setFiltredData(funSortedFastened(filtredData, fastenedData));
   }, [fastenedData, filtredData]);
+
+  //! при изменении выделенных цветом окрашиваем их
 
   useEffect(() => {
     const handleKeyDown = (event) => {
