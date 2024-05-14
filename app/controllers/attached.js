@@ -41,7 +41,7 @@ export default {
 
     async unAttaches({ body: { attachesIds } }, res) {
         if (!attachesIds || !Array.isArray(attachesIds) || attachesIds.length === 0) {
-            throw new AppErrorMissing('workloadIds');
+            throw new AppErrorMissing('attachesIds');
         }
         for (const attachesId of attachesIds) {
             const attached = await Attaches.findByPk(attachesId);
