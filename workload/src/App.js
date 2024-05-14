@@ -67,6 +67,7 @@ function App() {
 
   const [coloredData, setColoredData] = useState([]); // выделенные цветом
   const [fastenedData, setFastenedData] = useState([]); // закрепленные строки (храним их id)
+  const [selectedTable, setSelectedTable] = useState("Disciplines");
   const [dataIsOid, setDataIsOid] = useState(false); // состояние при котором открываются общеинститутские или кафедральные
   const [selectedFilter, setSelectedFilter] = useState("Все дисциплины"); // текст в FiltredRows
   const [selectedTr, setSelectedTr] = useState([]); //выбранные tr
@@ -105,6 +106,8 @@ function App() {
   const tabPar = {
     dataIsOid,
     setDataIsOid,
+    selectedTable,
+    setSelectedTable,
     selectedTr,
     setSelectedTr,
     setOnCheckBoxAll,
@@ -232,14 +235,12 @@ function App() {
     setSelectedTr([]);
     setOnCheckBoxAll(false);
     setStartData(0);
-  }, [dataIsOid, selectedFilter, workloadDataFix]);
+  }, [dataIsOid, selectedFilter, workloadDataFix, selectedTable]);
 
   //! при изменении закрпеленных перемещаем их наверх
   useEffect(() => {
     setFiltredData(funSortedFastened(filtredData, fastenedData));
   }, [fastenedData, filtredData]);
-
-  //! при изменении выделенных цветом окрашиваем их
 
   useEffect(() => {
     const handleKeyDown = (event) => {

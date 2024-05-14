@@ -41,6 +41,23 @@
   }
 }
 
+@mixin scrollTable($width, $height, $bgraund, $margin-top, $margin-left) {
+  &::-webkit-scrollbar {
+    width: $width; /* ширина scrollbar */
+    height: $height;
+  }
+  &::-webkit-scrollbar-track {
+    background: $bgraund; /* цвет дорожки */
+    margin-top: $margin-top;
+    margin-left: $margin-left;
+  }
+  &::-webkit-scrollbar-thumb,
+  &::-webkit-scrollbar-thumb {
+    background-color: $bgraund;
+    border-radius: 5px;
+  }
+}
+
 @mixin boxShadow() {
   border-radius: 8px;
   box-shadow: 0px 3px 18px rgba(0, 0, 0, 0.15);

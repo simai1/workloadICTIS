@@ -8,15 +8,15 @@ export function Highlight() {
   //! функция занесения выбранных цветов в состояние
   const SetColor = (colorNumber) => {
     let mass = [...tabPar.coloredData];
-
     if (colorNumber === 0) {
-      const coloerd = tabPar.coloredData
+      //! удаляем выделение
+      const coloerd = mass
         .filter((item) =>
-          tabPar.selectedTr.find((el) => el === item.workloadId)
+          tabPar.selectedTr.some((el) => el === item.workloadId)
         )
-        .map((item) => item.id);
+        .map((el) => el.id);
       const data = {
-        workloadIds: coloerd,
+        colorIds: coloerd,
       };
       apiDelColors(data).then(() => {
         mass = mass.filter(
@@ -24,35 +24,23 @@ export function Highlight() {
         );
       });
     } else {
-      tabPar.selectedTr.map((item) => {
-        let ind = null;
-        if (
-          mass.some((el, index) => {
-            ind = index;
-            return el.id === item;
-          })
-        ) {
-          mass[ind].color = colorNumber;
-        } else {
-          mass.push({ id: item, color: colorNumber });
-        }
-      });
+      //! добалвяем выделение
+      const workloadIds = tabPar.selectedTr.filter(
+        (item) => !tabPar.coloredData.some((el) => el.workloadId === item)
+      );
+      const data = {
+        color: colorNumber,
+        workloadIds: workloadIds,
+      };
+      console.log("data", data);
+
+      if (workloadIds.length > 0) {
+        apiAddColored(data).then(() => {
+          basicTabData.funUpdateAllColors();
+        });
+      }
     }
     tabPar.setColoredData(mass);
-
-    const colored = tabPar.coloredData
-      .filter((item) => !tabPar.selectedTr.some((e) => e === item.workloadId))
-      .map((el) => el.id);
-    const data = {
-      color: colorNumber,
-      workloadIds: colored,
-    };
-    console.log(colored);
-    if (colored.length > 0) {
-      apiAddColored(data).then(() => {
-        basicTabData.funUpdateAllColors();
-      });
-    }
 
     tabPar.setContextMenuShow(false);
     tabPar.setSelectedTr([]);

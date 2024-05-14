@@ -41,6 +41,7 @@ function HomePage() {
   ];
   const handleComponentChange = (component) => {
     setSelectedComponent(component);
+    tabPar.setSelectedTable(component);
     if (component === "Disciplines") {
       setTableHeaders(tableHeaders);
     } else {

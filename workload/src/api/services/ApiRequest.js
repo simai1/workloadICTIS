@@ -265,26 +265,13 @@ export const apiAddColored = async (data) => {
     throw error;
   }
 };
-//! запрос убрать цвет
+//! запрос удалить цвет
 export const apiDelColors = async (data) => {
-  console.log("удалены цвета ", data);
+  console.log("убрать цвета ", data);
   try {
-    const response = await http.delete(`${server}/color/changeColor`, {
+    const response = await http.delete(`${server}/color/deleteColors`, {
       data,
     });
-    console.log("response ", response);
-    return response.data;
-  } catch (error) {
-    console.error("Error:", error);
-    throw error;
-  }
-};
-
-//! импорт файла
-export const SubmitFileXLSX = async (data) => {
-  console.log("файл ", data);
-  try {
-    const response = await http.post(`${server}/parser/parseWorkload/7`, data);
     console.log("response ", response);
     return response.data;
   } catch (error) {
@@ -324,6 +311,19 @@ export const apiUnAttaches = async (data) => {
     const response = await http.delete(`${server}/attaches/unAttaches`, {
       data,
     });
+    console.log("response ", response);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
+//! импорт файла
+export const SubmitFileXLSX = async (data) => {
+  console.log("файл ", data);
+  try {
+    const response = await http.post(`${server}/parser/parseWorkload/7`, data);
     console.log("response ", response);
     return response.data;
   } catch (error) {

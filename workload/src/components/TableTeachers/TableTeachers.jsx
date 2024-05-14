@@ -1,9 +1,7 @@
 import styles from "./TableTeachers.module.scss";
 import React, { useState, useEffect } from "react";
-import EditInput from "../EditInput/EditInput";
 import { useDispatch, useSelector } from "react-redux";
 import DataContext from "../../context";
-import { Educator } from "../../api/services/ApiRequest";
 import { getDataEducator } from "../../api/services/AssignApiData";
 
 function TableTeachers(props) {
@@ -29,13 +27,13 @@ function TableTeachers(props) {
   const tableHeaders = [
     { key: "id", label: "№" },
     { key: "name", label: "Преподователь" },
-    { key: "position", label: "Должность" },
-    { key: "typeOfEmployment", label: "Вид занятости" },
     { key: "department", label: "Кафедра" },
+    { key: "position", label: "Должность" },
     { key: "rate", label: "Ставка" },
-    { key: "maxHours", label: "Максимум часов" },
-    { key: "recommendedMaxHours", label: "Рекомендуемый максимум часов" },
-    { key: "minHours", label: "Минимум часов" },
+    { key: "totalHours", label: "Часы" },
+    { key: "hoursFirstPeriod", label: "Часы период 1" },
+    { key: "hoursSecondPeriod", label: "Часы период 2" },
+    { key: "hoursWithoutPeriod", label: "Часы без периода" },
   ];
 
   const handleNameClick = (index, id) => {
@@ -90,10 +88,10 @@ function TableTeachers(props) {
   return (
     <div className={styles.TableTeachers}>
       <div className={styles.TableTeachers__inner}>
-        <table className={styles.TableTeachers}>
+        <table className={styles.table}>
           <thead>
             <tr>
-              {updatedHeader.map((header) => (
+              {tableHeaders.map((header) => (
                 <th key={header.key}>{header.label}</th>
               ))}
             </tr>
