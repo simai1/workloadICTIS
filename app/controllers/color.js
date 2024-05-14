@@ -2,7 +2,7 @@ import ColorDto from '../dtos/color-dto.js';
 import Color from '../models/color.js';
 import Educator from '../models/educator.js';
 import Workload from '../models/workload.js';
-import { AppErrorMissing } from '../utils/errors.js';
+import { AppErrorInvalid, AppErrorMissing } from '../utils/errors.js';
 
 export default {
     async getAllColors(req, res) {
@@ -37,13 +37,25 @@ export default {
         res.json(colors);
     },
 
-    async changeColor({ params: { colorId }, body: { color } }, res) {
-        if (!colorId) throw new AppErrorMissing('colorId');
-        if (!color) throw new AppErrorMissing('color');
-        const newColor = await Color.findByPk(colorId);
-        if (!color) throw new AppErrorMissing('color');
-        await newColor.update({ color });
-        const colorDto = new ColorDto(newColor);
-        res.json(colorDto);
+    async changeColors({ body: { color, colorIds } }, res) {
+        if (!colorIds || !Array.isArray(colorIds) || colorIds.length === 0) {
+            throw new AppErrorMissing('colorIds');
+        }
+        if (!color) {
+            throw new AppErrorMissing('color');
+        }
+
+        // Обновляем цвета по каждому идентификатору в массиве
+        const updatedColors = [];
+        for (const colorId of colorIds) {
+            const existingColor = await Color.findByPk(colorId);
+            if (!existingColor) {
+                throw new AppErrorInvalid(`Color with ID ${colorId} not found`);
+            }
+            await existingColor.update({ color });
+            updatedColors.push(new ColorDto(existingColor));
+        }
+
+        res.json(updatedColors);
     },
 };
