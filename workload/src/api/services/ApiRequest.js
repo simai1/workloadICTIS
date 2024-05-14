@@ -307,7 +307,9 @@ export const apiAddAttaches = async (data) => {
 export const apiUnAttaches = async (data) => {
   console.log("открепленно ", data);
   try {
-    const response = await http.delete(`${server}/attaches/unAttaches/${data}`);
+    const response = await http.delete(`${server}/attaches/unAttaches`, {
+      attachesIds: data,
+    });
     console.log("response ", response);
     return response.data;
   } catch (error) {
