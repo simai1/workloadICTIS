@@ -234,8 +234,12 @@ function App() {
 
     setSelectedTr([]);
     setOnCheckBoxAll(false);
-    setStartData(0);
   }, [dataIsOid, selectedFilter, workloadDataFix, selectedTable]);
+
+  //! обновляем вертуальный скролл при переходе на другуюс таблицу
+  useEffect(() => {
+    setStartData(0);
+  }, [dataIsOid, selectedFilter, selectedTable]);
 
   //! при изменении закрпеленных перемещаем их наверх
   useEffect(() => {
@@ -265,6 +269,7 @@ function App() {
     };
     // Назначьте обработчик события keydown при монтировании компонента
     document.addEventListener("keydown", handleKeyDown);
+
     // Удалите обработчик события keydown при размонтировании компонента
     return () => {
       document.removeEventListener("keydown", handleKeyDown);

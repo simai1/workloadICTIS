@@ -38,12 +38,30 @@ $heightCell: 150px;
     td {
       background-color: #fff;
       box-sizing: border-box;
-    }
-
-    td {
       min-height: $heightCell;
       padding: 4px 10px;
       max-height: $heightCell;
+      .textarea {
+        width: 100%;
+        height: 100%;
+        resize: none !important;
+        border: none;
+        box-shadow: 0px 0px 7px #b3b0b0;
+        border-radius: 8px;
+        padding: 5px;
+      }
+      .svg_textarea {
+        display: flex;
+        justify-content: end;
+        svg {
+          margin: 3px;
+          cursor: pointer;
+        }
+
+        svg:hover * {
+          fill: #3b28cc;
+        }
+      }
     }
 
     tr:hover {

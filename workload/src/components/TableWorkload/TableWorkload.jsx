@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import Table from "./Table";
 import styles from "./TableWorkload.module.scss";
 import {
@@ -12,13 +12,14 @@ import DataContext from "../../context";
 import ContextMenu from "../../ui/ContextMenu/ContextMenu";
 import { returnPrevState } from "../../bufferFunction";
 import { delChangeData } from "../../ui/ContextMenu/Function";
+import { current } from "@reduxjs/toolkit";
 
 function TableWorkload(props) {
   const { appData, tabPar, visibleDataPar, basicTabData } =
     useContext(DataContext);
-
   //! при событии скролл таблицы изменим индекс первого показываемого tr
   const scrollTable = (e) => {
+    console.log(e);
     visibleDataPar.visibleData !== basicTabData.filtredData.length - 1 &&
       visibleDataPar.setStartData(
         Math.floor(e.target.scrollTop / visibleDataPar.heightTd)
@@ -143,6 +144,7 @@ function TableWorkload(props) {
       }
     };
     document.addEventListener("keydown", handleKeyDown);
+
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
