@@ -58,4 +58,21 @@ export default {
 
         res.json(updatedColors);
     },
+
+    async deleteColor({ body: { colorIds } }, res) {
+        if (!colorIds || !Array.isArray(colorIds) || colorIds.length === 0) {
+            throw new AppErrorMissing('colorIds');
+        }
+
+        // Удаляем цвета по каждому идентификатору в массиве
+        for (const colorId of colorIds) {
+            const existingColor = await Color.findByPk(colorId);
+            if (!existingColor) {
+                throw new AppErrorInvalid(`Color with ID ${colorId} not found`);
+            }
+            await existingColor.destroy({ force: true });
+        }
+
+        res.json('Successfully deleted');
+    },
 };

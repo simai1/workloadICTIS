@@ -26,4 +26,10 @@ router
         asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST, role.LECTURER, role.EDUCATOR])),
         asyncRoute(colorController.changeColors)
     );
+router
+    .route('/deleteColors')
+    .delete(
+        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST, role.LECTURER, role.EDUCATOR])),
+        asyncRoute(colorController.deleteColor)
+    );
 export default router;
