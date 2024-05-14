@@ -15,17 +15,26 @@ export default {
         res.json(colorsDto);
     },
 
-    async setColor({ body: { color, workloadId }, user }, res) {
+    async setColor({ body: { color, workloadIds }, user }, res) {
         if (!color) throw new AppErrorMissing('color');
-        if (!workloadId) throw new AppErrorMissing('workloadId');
+        if (!workloadIds || !Array.isArray(workloadIds) || workloadIds.length === 0) {
+            throw new AppErrorMissing('workloadIds');
+        }
 
         const educator = await Educator.findOne({ where: { userId: user } });
 
-        const workload = await Workload.findOne({ where: { id: workloadId } });
+        const workloadColor = { color, educatorId: educator.userId };
 
-        const newColor = await Color.create({ color, educatorId: educator.userId, workloadId: workload.id });
-        const colorDto = new ColorDto(newColor);
-        res.json(colorDto);
+        const colors = [];
+        for (const workloadId of workloadIds) {
+            const workload = await Workload.findOne({ where: { id: workloadId } });
+
+            // Используем общий цвет для всех нагрузок
+            const newColor = await Color.create({ ...workloadColor, workloadId: workload.id });
+            const colorDto = new ColorDto(newColor);
+            colors.push(colorDto);
+        }
+        res.json(colors);
     },
 
     async changeColor({ params: { colorId }, body: { color } }, res) {
