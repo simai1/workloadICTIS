@@ -81,7 +81,7 @@ function TableLks(props) {
   });
 
   const AllHours = EducatorLkData?.totalHours;
-  const OgranHours = "700";
+  const OgranHours = EducatorLkData?.maxHours;
   var BackgroundColorHours = WhyColor(AllHours, OgranHours);
 
   // Функция для определения цвета фона

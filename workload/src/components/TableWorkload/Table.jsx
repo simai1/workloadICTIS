@@ -44,22 +44,27 @@ function Table(props) {
   };
 
   //! при клике на tr выделяем его
-  const clickTr = (itemId) => {
-    var len = tabPar.selectedTr.length;
-    tabPar.setSelectedTr((prev) => {
-      const index = prev.indexOf(itemId);
-      if (index !== -1) {
-        len--;
-        return [...prev.slice(0, index), ...prev.slice(index + 1)];
+  const clickTr = (el, itemId) => {
+    el.stopProgretions();
+    console.log(el.target.nodeName);
+    const a = el.target.nodeName;
+    if (a === "TD" || a === "INPUT") {
+      var len = tabPar.selectedTr.length;
+      tabPar.setSelectedTr((prev) => {
+        const index = prev.indexOf(itemId);
+        if (index !== -1) {
+          len--;
+          return [...prev.slice(0, index), ...prev.slice(index + 1)];
+        } else {
+          len++;
+          return [...prev, itemId];
+        }
+      });
+      if (basicTabData.filtredData.length === len) {
+        tabPar.setOnCheckBoxAll(true);
       } else {
-        len++;
-        return [...prev, itemId];
+        tabPar.setOnCheckBoxAll(false);
       }
-    });
-    if (basicTabData.filtredData.length === len) {
-      tabPar.setOnCheckBoxAll(true);
-    } else {
-      tabPar.setOnCheckBoxAll(false);
     }
   };
 
@@ -141,7 +146,7 @@ function Table(props) {
                 onClick={
                   getConfirmation(item.id).blocked
                     ? null
-                    : () => clickTr(item.id)
+                    : (e) => clickTr(e, item.id)
                 }
                 onContextMenu={
                   getConfirmation(item.id).blocked

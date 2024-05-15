@@ -1,25 +1,17 @@
 import React, { useContext, useEffect, useRef } from "react";
 import Table from "./Table";
 import styles from "./TableWorkload.module.scss";
-import {
-  filteredWorkload,
-  funFilterSelected,
-  funFixEducator,
-  funSplitData,
-  funfastenedDataSort,
-} from "./Function";
+import { filteredWorkload, funfastenedDataSort } from "./Function";
 import DataContext from "../../context";
 import ContextMenu from "../../ui/ContextMenu/ContextMenu";
 import { returnPrevState } from "../../bufferFunction";
 import { delChangeData } from "../../ui/ContextMenu/Function";
-import { current } from "@reduxjs/toolkit";
 
 function TableWorkload(props) {
   const { appData, tabPar, visibleDataPar, basicTabData } =
     useContext(DataContext);
   //! при событии скролл таблицы изменим индекс первого показываемого tr
   const scrollTable = (e) => {
-    console.log(e);
     visibleDataPar.visibleData !== basicTabData.filtredData.length - 1 &&
       visibleDataPar.setStartData(
         Math.floor(e.target.scrollTop / visibleDataPar.heightTd)
@@ -128,6 +120,15 @@ function TableWorkload(props) {
               return item;
             });
             basicTabData.setWorkloadDataFix([...newData]);
+            // убираем заблокированные элементы
+            // убираем выделение с преподавателя
+            tabPar.setChangedData(
+              delChangeData(
+                tabPar.changedData,
+                appData.bufferAction[0].data.key,
+                [appData.bufferAction[0].data.id]
+              )
+            );
             appData.setBufferAction((prevItems) => prevItems.slice(1));
           } else if (appData.bufferAction[0].request === "deleteWorkload") {
             // возвращаем удаленную нагрузку

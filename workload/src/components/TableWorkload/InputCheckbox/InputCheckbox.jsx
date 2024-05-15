@@ -31,7 +31,7 @@ function InputCheckbox(props) {
         <th style={stylesTh} className={styles.InputCheckbox}>
           <div className={styles.bacground}></div>
           <input
-            onChange={() => props.clickTr(props.itemId)}
+            onChange={(e) => props.clickTr(e, props.itemId)}
             type="checkbox"
             checked={props.checked}
           ></input>
@@ -62,7 +62,7 @@ function InputCheckbox(props) {
           </div>
 
           <input
-            onChange={() => props.clickTr(props.itemId)}
+            onChange={(e) => props.clickTr(e, props.itemId)}
             type="checkbox"
             checked={props.checked}
           ></input>
