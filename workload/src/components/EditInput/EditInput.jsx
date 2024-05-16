@@ -4,21 +4,23 @@ import arrow from "./../../img/arrow.svg";
 import { useDispatch } from "react-redux";
 import { actions } from "./../../store/filter/filter.slice";
 import DataContext from "../../context";
-import { headers as hed } from "../TableDisciplines/Data";
+// import { headers as hed } from "../TableDisciplines/Data";
 
-function EditInput({ selectedComponent }) {
+function EditInput({ selectedComponent, originalHeader }) {
   const { basicTabData } = React.useContext(DataContext);
 
-  const headers = hed.slice(3);
+  const headers = [...basicTabData.tableHeaders];
   const [searchResults, setSearchResults] = useState(headers);
   const [isListOpen, setListOpen] = useState(false);
+  const [isAllChecked, setIsAllChecked] = useState(true);
   const [checkedItems, setCheckedItems] = useState(
-    Array(searchResults.length).fill(true)
+    Array(originalHeader.slice(3).length).fill(true)
   );
   const [isChecked, setChecked] = useState([]);
 
   useEffect(() => {
-    setSearchResults(headers);
+    setSearchResults(originalHeader.slice(3));
+    console.log("originalHeader", originalHeader.slice(3));
   }, [basicTabData.tableHeaders, selectedComponent]);
 
   const dispatch = useDispatch();
@@ -56,10 +58,16 @@ function EditInput({ selectedComponent }) {
     }
     setChecked([...checked]);
     // Фильтрация заголовков
-    const filteredHeaders = hed.filter(
+    const filteredHeaders = originalHeader.filter(
       (header) => !checked.includes(header.key)
     );
     basicTabData.setTableHeaders(filteredHeaders);
+
+    if (checked.length === 0) {
+      setIsAllChecked(true);
+    } else {
+      setIsAllChecked(false);
+    }
   };
 
   const handleItemClick = (value) => {
@@ -84,6 +92,23 @@ function EditInput({ selectedComponent }) {
       setSearchResults(headers);
     }
   };
+
+  //! при нажатии все
+  const takeFunctionAll = () => {
+    setIsAllChecked(!isAllChecked);
+    console.log(isChecked);
+    if (isChecked.length !== 0) {
+      setChecked([]);
+      basicTabData.setTableHeaders(originalHeader);
+    } else {
+      setChecked([...originalHeader.slice(3)].map((el) => el.key));
+      basicTabData.setTableHeaders(originalHeader.slice(0, 3));
+    }
+  };
+
+  useEffect(() => {
+    console.log("isChecked", isChecked);
+  }, [isChecked]);
   return (
     <div ref={refLO} className={styles.EditInput}>
       {!isListOpen && (
@@ -108,6 +133,16 @@ function EditInput({ selectedComponent }) {
           />
           <div className={styles.EditInputList}>
             <ul className={styles.fadeinul}>
+              <li>
+                <input
+                  type="checkbox"
+                  onChange={takeFunctionAll}
+                  checked={isAllChecked}
+                  className={styles.customInput}
+                  name="search3"
+                />
+                <p>Все</p>
+              </li>
               {searchResults.map((row, index) => (
                 <li key={index}>
                   <input

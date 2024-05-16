@@ -55,12 +55,14 @@ function TableLks(props) {
 
   useEffect(() => {
     addHeadersTable(filters, tableHeaders, tableData);
+    console.log(filters);
   }, [filters, dispatch, tableHeaders, tableData]);
-
   function addHeadersTable(filters, tableHeaders, tableData) {
     const updatedHeader = tableHeaders.filter((header) =>
       filters.includes(header.key)
     );
+    console.log(tableHeaders, updatedHeader);
+
     const updatedData = tableData.map((data) => {
       const updatedRow = {};
       Object.keys(data).forEach((key) => {
@@ -124,7 +126,11 @@ function TableLks(props) {
         </div>
         {tableData[0] && (
           <div className={styles.EditInput}>
-            <EditInput tableHeaders={tableHeaders} top={60.3} h={64} />
+            <EditInput
+              originalHeader={tableHeaders.slice(3)}
+              top={60.3}
+              h={64}
+            />
           </div>
         )}
       </div>

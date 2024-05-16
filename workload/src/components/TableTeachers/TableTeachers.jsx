@@ -3,14 +3,14 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import DataContext from "../../context";
 import { getDataEducator } from "../../api/services/AssignApiData";
+import { headersEducator } from "../TableWorkload/Data";
 
 function TableTeachers(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]);
   const [updatedData, setUpdatedData] = useState([]);
-  // const [clickedName, setClickedName] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const { appData } = React.useContext(DataContext);
-
+  const tableHeaders = headersEducator;
   useEffect(() => {
     props.changeInput();
   }, []);
@@ -21,20 +21,9 @@ function TableTeachers(props) {
       appData.setEducator(data);
       setFilteredData(data);
       setUpdatedData(data);
+      setUpdatedHeader(tableHeaders);
     });
   }, []);
-
-  const tableHeaders = [
-    { key: "id", label: "№" },
-    { key: "name", label: "Преподователь" },
-    { key: "department", label: "Кафедра" },
-    { key: "position", label: "Должность" },
-    { key: "rate", label: "Ставка" },
-    { key: "totalHours", label: "Часы" },
-    { key: "hoursFirstPeriod", label: "Часы период 1" },
-    { key: "hoursSecondPeriod", label: "Часы период 2" },
-    { key: "hoursWithoutPeriod", label: "Часы без периода" },
-  ];
 
   const handleNameClick = (index, id) => {
     props.setEducatorIdforLk(id);
@@ -91,7 +80,7 @@ function TableTeachers(props) {
         <table className={styles.table}>
           <thead>
             <tr>
-              {tableHeaders.map((header) => (
+              {updatedHeader.map((header) => (
                 <th key={header.key}>{header.label}</th>
               ))}
             </tr>

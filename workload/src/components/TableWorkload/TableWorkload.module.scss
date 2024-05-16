@@ -95,6 +95,11 @@ $heightCell: 150px;
       @include customTd(200px);
     }
 
+    th[name="curriculum"],
+    td[name="curriculum"] {
+      @include customTd(200px);
+    }
+
     td[name="groups"] {
       @include customTdFixWidth;
     }

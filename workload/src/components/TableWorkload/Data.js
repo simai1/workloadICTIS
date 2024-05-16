@@ -23,3 +23,31 @@ export const headers = [
   { key: "ratingControlHours", label: "Часы рейтинг-контроль" },
   { key: "educator", label: "Преподаватель" },
 ];
+
+export const headersEducator = [
+  { key: "id", label: "№" },
+  { key: "name", label: "Преподователь" },
+  { key: "department", label: "Кафедра" },
+  { key: "position", label: "Должность" },
+  { key: "rate", label: "Ставка" },
+  { key: "totalHours", label: "Часы" },
+  { key: "hoursFirstPeriod", label: "Часы период 1" },
+  { key: "hoursSecondPeriod", label: "Часы период 2" },
+  { key: "hoursWithoutPeriod", label: "Часы без периода" },
+];
+
+export const tableHeadersLks = [
+  { key: "workload", label: "Нагрузка" },
+  { key: "department", label: "Кафедра" },
+  { key: "type", label: "Тип" },
+  { key: "curriculumUnit", label: "Подразделение учебного плана" },
+  {
+    key: "specialty",
+    label: "Направление подготовки (специальность)",
+  },
+  { key: "hours", label: "Часы" },
+  { key: "audienceHours", label: "Аудиторные часы" },
+  { key: "hoursFirstPeriod", label: "Часы период 1" },
+  { key: "hoursSecondPeriod", label: "Часы период 2" },
+  { key: "hoursWithoutPeriod", label: "Часы период 3" },
+];
