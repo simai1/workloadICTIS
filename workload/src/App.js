@@ -60,7 +60,7 @@ function App() {
   const [tableHeaders, setTableHeaders] = useState(headers);
   const [workloadData, setWorkloadData] = useState([]); // данные с бд нагрузок
   const [workloadDataFix, setWorkloadDataFix] = useState([]); //данные с убранным массиовм преподавателя
-  // const [workloadDataFixIsOid, setWorkloadDataFixIsOid] = useState([])
+
   const [filtredData, setFiltredData] = useState([]); // фильтрованные данные
   const [allCommentsData, setAllCommentsData] = useState([]); // все комментарии
   const [allOffersData, setAllOffersData] = useState([]); // предложения
@@ -175,12 +175,11 @@ function App() {
       setWorkloadData(dataBd);
       // зменяем массив преподавателя на его имя
       const fixData = funFixEducator(dataBd);
-      // разделяем на общеинституские и кафедральные и сортируем
-      // const splitData = funSplitData(fixData, dataIsOid);
       setWorkloadDataFix(fixData);
       setFiltredData(fixData);
     });
   };
+
   //! функция обновления всех данных
   const updateAlldata = () => {
     // получаем данные таблицы
@@ -214,6 +213,7 @@ function App() {
     funUpdateFastenedData,
     funUpdateAllColors,
   };
+
   //! получаем данные нагрузок с бд
   useEffect(() => {
     updateAlldata();
@@ -232,7 +232,6 @@ function App() {
     );
     // setFiltredData(filterSelected);
     setFiltredData(funSortedFastened(filterSelected, fastenedData));
-
     setSelectedTr([]);
     setOnCheckBoxAll(false);
   }, [dataIsOid, selectedFilter, workloadDataFix, selectedTable]);
@@ -242,7 +241,11 @@ function App() {
     setStartData(0);
   }, [dataIsOid, selectedFilter, selectedTable]);
 
-  //! при изменении закрпеленных перемещаем их наверх
+  // useEffect(() => {
+  //   setFiltredData([...workloadDataFix]);
+  // }, [workloadDataFix]);
+
+  //! при изменении закрпеленных перемещаем их наверх и сортируем массив
   useEffect(() => {
     setFiltredData(funSortedFastened(filtredData, fastenedData));
   }, [fastenedData, filtredData]);
