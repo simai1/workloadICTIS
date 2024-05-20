@@ -16,6 +16,7 @@ import {
   headersEducator,
   tableHeadersLks,
 } from "../../components/TableWorkload/Data";
+import { PopUpFile } from "../../ui/PopUpFile/PopUpFile";
 
 function HomePage() {
   const { appData, tabPar, visibleDataPar, basicTabData } =
@@ -25,7 +26,7 @@ function HomePage() {
   const educatorTableHeaders = headersEducator; // заголовок таблтиц преподавателей
   const educatorLkHeaders = tableHeadersLks; // заголовок страницы личного кабинета
   const [tableHeaders, setTableHeaders] = useState(workloadTableHeaders);
-
+  const [filePopUp, setfilePopUp] = useState(false)
   const [selectedComponent, setSelectedComponent] = useState("Disciplines");
   const [tableMode, setTableMode] = useState("cathedrals"); //выбранный компонент
   const [educatorData, setEducatorData] = useState([]); // данные о преподавателе получаем в TableTeachers
@@ -84,8 +85,8 @@ function HomePage() {
   };
   const handleFileChange = () => {
     const file = fileInputRef.current.files[0];
-    console.log("Выбранный файл:", file);
     appData.setFileData(file);
+    setfilePopUp(!filePopUp);
   };
 
   //! при нажатии на ракету
@@ -226,7 +227,6 @@ function HomePage() {
             </div>
           </div>
         </div>
-
         <div className={styles.Block__tables}>
           {selectedComponent === "Disciplines" ? (
             // <TableDisciplines
@@ -278,6 +278,9 @@ function HomePage() {
           </div>
         </div>
       </div>
+      {filePopUp && 
+          <PopUpFile setfilePopUp={setfilePopUp} handleFileClear={handleFileClear}/>
+         }
     </Layout>
   );
 }
