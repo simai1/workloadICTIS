@@ -1,21 +1,23 @@
 import React from "react";
 import styles from "./ContextMenu.module.scss";
+import DataContext from "../../context";
 
 export function SubMenu(props) {
+  const { tabPar } = React.useContext(DataContext);
   return (
     <div
       className={styles.blockMenuRight}
       style={
-        props.menuPosition.x + 280 + 180 > window.innerWidth
+        tabPar.contextPosition.x + 280 + 180 > window.innerWidth
           ? {
               position: "fixed",
-              top: props.menuPosition.y,
-              left: props.menuPosition.x - 150,
+              top: tabPar.contextPosition.y,
+              left: tabPar.contextPosition.x - 150,
             }
           : {
               position: "fixed",
-              top: props.menuPosition.y,
-              left: props.menuPosition.x + 280,
+              top: tabPar.contextPosition.y,
+              left: tabPar.contextPosition.x + 280,
             }
       }
       // onMouseEnter={handleMouseEnter}

@@ -20,7 +20,7 @@ export default function () {
     Educator.hasMany(Notification);
     Notification.belongsTo(Educator);
 
-    Workload.hasMany(Comment);
+    Workload.hasMany(Comment, { onDelete: 'CASCADE', hooks: true });
     Comment.belongsTo(Workload);
 
     Educator.hasMany(Comment);
@@ -32,12 +32,12 @@ export default function () {
     Educator.hasMany(Color);
     Color.belongsTo(Educator);
 
-    Workload.hasOne(Color);
-    Color.belongsTo(Workload);
+    Workload.hasOne(Color, { onDelete: 'CASCADE', hooks: true });
+    Color.belongsTo(Workload, { foreignKey: 'workloadId' });
 
     Educator.hasMany(Attaches);
     Attaches.belongsTo(Educator);
 
-    Workload.hasOne(Attaches);
-    Attaches.belongsTo(Workload);
+    Workload.hasOne(Attaches, { onDelete: 'CASCADE', hooks: true });
+    Attaches.belongsTo(Workload, { foreignKey: 'workloadId' });
 }

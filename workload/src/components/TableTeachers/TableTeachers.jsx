@@ -1,18 +1,16 @@
 import styles from "./TableTeachers.module.scss";
 import React, { useState, useEffect } from "react";
-import EditInput from "../EditInput/EditInput";
 import { useDispatch, useSelector } from "react-redux";
 import DataContext from "../../context";
-import { Educator } from "../../api/services/ApiRequest";
 import { getDataEducator } from "../../api/services/AssignApiData";
+import { headersEducator } from "../TableWorkload/Data";
 
 function TableTeachers(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]);
   const [updatedData, setUpdatedData] = useState([]);
-  // const [clickedName, setClickedName] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const { appData } = React.useContext(DataContext);
-
+  const tableHeaders = headersEducator;
   useEffect(() => {
     props.changeInput();
   }, []);
@@ -23,20 +21,9 @@ function TableTeachers(props) {
       appData.setEducator(data);
       setFilteredData(data);
       setUpdatedData(data);
+      setUpdatedHeader(tableHeaders);
     });
   }, []);
-
-  const tableHeaders = [
-    { key: "id", label: "№" },
-    { key: "name", label: "Преподователь" },
-    { key: "position", label: "Должность" },
-    { key: "typeOfEmployment", label: "Вид занятости" },
-    { key: "department", label: "Кафедра" },
-    { key: "rate", label: "Ставка" },
-    { key: "maxHours", label: "Максимум часов" },
-    { key: "recommendedMaxHours", label: "Рекомендуемый максимум часов" },
-    { key: "minHours", label: "Минимум часов" },
-  ];
 
   const handleNameClick = (index, id) => {
     props.setEducatorIdforLk(id);
@@ -90,7 +77,7 @@ function TableTeachers(props) {
   return (
     <div className={styles.TableTeachers}>
       <div className={styles.TableTeachers__inner}>
-        <table className={styles.TableTeachers}>
+        <table className={styles.table}>
           <thead>
             <tr>
               {updatedHeader.map((header) => (

@@ -4,7 +4,7 @@ import { asyncRoute } from '../utils/errors.js';
 import verify from '../middlewares/verify-token.js';
 import role from '../config/roles.js';
 import checkRole from '../middlewares/checkRoles.js';
-// import checkHours from '../utils/notification.js';
+ import checkHours from '../utils/notification.js';
 
 const router = Router();
 router.use(verify.general);
@@ -17,7 +17,10 @@ router
     );
 router
     .route('/split')
-    .post(asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE])), asyncRoute(workloadController.splitRow));
+    .post(
+        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE])), 
+        asyncRoute(workloadController.splitRow)
+    );
 router
     .route('/faculty')
     .patch(
@@ -46,7 +49,10 @@ router
     );
 router
     .route('/map')
-    .post(asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE])), asyncRoute(workloadController.mapRow));
+    .post(
+        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE])), 
+        asyncRoute(workloadController.mapRow)
+    );
 router
     .route('/delete/:id')
     .delete(

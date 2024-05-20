@@ -26,7 +26,7 @@ import colorRoute from './routes/color.js';
 import attachesRoute from './routes/attached.js';
 // FIX ME
 import roleRoute from './routes/role.js';
-
+import cors from 'cors';
 import { eventEmitter } from './utils/notification.js';
 
 const app = express();
@@ -68,8 +68,13 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(corsMiddleware);
-
+//app.use(corsMiddleware);
+app.use(cors({
+    credentials: true,
+    origin: true,
+    exposedHeaders: ['*'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use('/comment', commentRoute);
 app.use('/notification', notificationRoute);
 app.use('/educator', eduRoute);

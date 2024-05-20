@@ -1,71 +1,62 @@
 import React, { useEffect, useState } from "react";
 import styles from "./ContextMenu.module.scss";
-import arrow from "./../../img/arrow.svg";
 import { SubMenu } from "./SubMenu";
 import { EducatorMenu } from "./EducatorMenu";
-// import {
-//   addEducatorWorkload,
-//   createOffer,
-//   deleteWorkload,
-//   joinWorkloads,
-//   removeEducatorinWorkload,
-//   splitWorkload,
-// } from "../../api/services/ApiRequest";
 import DataContext from "../../context";
-import { EducatorLK } from "../../api/services/ApiRequest";
+import {
+  EducatorLK,
+  apiAddAttaches,
+  apiUnAttaches,
+} from "../../api/services/ApiRequest";
 import { Highlight } from "./Highlight";
-// import { addDataBuffer } from "../../bufferFunction";
-const ContextMenu = (props) => {
-  const [menuPosition, setMenuPosition] = useState(props.menuPosition);
-  const [showSubMenu, setShowSubMenu] = useState(false);
-  const [educatorMenuShow, setEducatorMenuShow] = useState(false);
-  const [propose, setPropose] = useState(false);
-  const [Highlightshow, setHighlightshow] = useState(false);
+import MenuPop from "./MenuPop";
+import {
+  combineData,
+  splitWorkloadCount,
+  upDateEducator,
+  addСhangedData,
+} from "./Function";
+import CommentsMenu from "./CommentsMenu";
 
-  const { appData } = React.useContext(DataContext);
+const ContextMenu = (props) => {
+  const { appData, tabPar, basicTabData } = React.useContext(DataContext);
+  const [menuShow, setMenuShow] = useState("");
+
   useEffect(() => {
     console.log("bufferAction", appData.bufferAction);
   }, []);
 
   const handleContextMenu = (e) => {
     e.preventDefault();
-    setMenuPosition({ x: e.clientX, y: e.clientY });
   };
 
   //! нажатие на разделить
   const handleMouseClickPop = () => {
-    setShowSubMenu(!showSubMenu);
-    setEducatorMenuShow(false);
-    setPropose(false);
-    setHighlightshow(false);
+    setMenuShow(menuShow === "subMenu" ? "" : "subMenu");
   };
 
   //! нажатие на добавить преподавателя
   const addEducator = () => {
-    setPropose(false);
-    setShowSubMenu(false);
-    setHighlightshow(false);
-    setEducatorMenuShow(!educatorMenuShow);
+    setMenuShow(menuShow === "educator" ? "" : "educator");
   };
 
   //! нажатие на предложить
   const onClickPropose = () => {
-    setEducatorMenuShow(false);
-    setShowSubMenu(false);
-    setHighlightshow(false);
-    setPropose(!propose);
+    setMenuShow(menuShow === "propose" ? "" : "propose");
   };
 
   //! нажатие выделить
   const ClickHighlightshov = () => {
-    setHighlightshow(!Highlightshow);
-    setEducatorMenuShow(false);
-    setShowSubMenu(false);
-    setPropose(false);
+    setMenuShow(menuShow === "highlight" ? "" : "highlight");
+  };
+
+  //! оставить комментарий
+  const onAddComment = () => {
+    console.log("оставить комментарий");
+    setMenuShow(menuShow === "commentsMenu" ? "" : "commentsMenu");
   };
 
   //!функция замены цвета
-
   const SetColor = (colorRows) => {
     const updatedHighlights = [...props.Highlight]; // Создаем копию текущего состояния highlights
     appData.individualCheckboxes.forEach((id) => {
@@ -85,252 +76,203 @@ const ContextMenu = (props) => {
 
   //! Выбор преподавателя
   const selectedEducator = (id) => {
-    props.setShowMenu(false);
+    setMenuShow("");
     const data = {
-      workloadId: appData.individualCheckboxes[0],
+      workloadId: tabPar.selectedTr[0],
       educatorId: id,
     };
-    if (educatorMenuShow) {
-      // получаем преподавателей и изменяем данные в таблице предваритеольно до сохранения
+
+    if (menuShow === "educator") {
       EducatorLK(id).then((dataReq) => {
-        let prevState = null;
-        const newUpdatedData = props.updatedData.map((object) => {
-          if (object.id === appData.individualCheckboxes[0]) {
-            prevState = object.educator;
-            return { ...object, educator: dataReq.name };
-          }
-          return object;
-        });
-        // newUpdatedData.map((item) => console.log("name", item.educator));
-        props.setUpdatedData(newUpdatedData);
-        //! буфер
+        const { newData, prevState } = upDateEducator(
+          basicTabData.workloadDataFix,
+          tabPar.selectedTr[0],
+          dataReq.name
+        );
+        basicTabData.setWorkloadDataFix(newData);
         appData.setBufferAction([
-          { request: "addEducatorWorkload", data: data, prevState: prevState },
+          { request: "addEducatorWorkload", data, prevState },
           ...appData.bufferAction,
         ]);
+        //! занесем id измененнных данных в состояние
+        tabPar.setChangedData(
+          addСhangedData(tabPar.changedData, "educator", [tabPar.selectedTr[0]])
+        );
       });
-
-      //! отправка запроса на добавление преподавателя
-      // addEducatorWorkload(data).then(() => {
-      //   props.getDataTableAll();
-      // });
-      // запросим данные таблицы
-    } else if (propose) {
+    } else if (menuShow === "propose") {
       //! отправляем запрос на добавление предложения
       EducatorLK(id).then((Educator) => {
-        console.log("allOffersData", props.allOffersData);
-        console.log("data", data);
-
         const offer = {
           Educator: appData.myProfile,
-          workloadId: appData.individualCheckboxes[0],
+          workloadId: tabPar.selectedTr[0],
           educatorId: Educator.id,
         };
-        props.setAllOffersData([...props.allOffersData, offer]);
-
-        console.log("offer", offer);
-
+        tabPar.setAllOffersData([...tabPar.allOffersData, offer]);
         //! буфер
         appData.setBufferAction([
           {
             request: "createOffer",
             data: {
-              workloadId: appData.individualCheckboxes[0],
-              educatorId: appData.myProfile.id,
+              workloadId: tabPar.selectedTr[0],
+              educatorId: Educator.id,
             },
           },
           ...appData.bufferAction,
         ]);
+        //! занесем id измененнных данных в состояние
+        tabPar.setChangedData(
+          addСhangedData(tabPar.changedData, "educator", tabPar.selectedTr[0])
+        );
       });
-      // createOffer(data).then(() => {
-      //   props.getDataTableAll();
-      //   console.log("Предложение отправленно ", data);
-      // });
     }
   };
 
   //! Деление нагрузки на count
   const handleSplitWorkload = (count) => {
-    console.log("Разделить на ", count, appData.individualCheckboxes);
+    setMenuShow("");
     const data = {
-      ids: appData.individualCheckboxes,
+      ids: tabPar.selectedTr,
       n: count,
     };
-    console.log("updatedData", props.updatedData);
-
-    const prev = props.updatedData.filter((item) =>
-      appData.individualCheckboxes.some((el) => el === item.id)
+    const prev = basicTabData.workloadDataFix.filter((item) =>
+      tabPar.selectedTr.some((el) => el === item.id)
     );
-    var newIds = [];
     // Создаем новый массив для измененных данных
-    let updatedData = [...props.updatedData];
-    for (let i = 0; i < appData.individualCheckboxes.length; i++) {
-      const elementIndex = updatedData.findIndex(
-        (object) => object.id === appData.individualCheckboxes[i]
-      );
-      // Модифицируем элементы в новом массиве
-      if (elementIndex !== -1) {
-        // берем нагрузку и после нее вставляем count-1 нагрузок
-        for (let j = 1; j < count; j++) {
-          updatedData.splice(elementIndex + j, 0, updatedData[elementIndex]);
-        }
-        updatedData = updatedData.map((el, index) => {
-          if (el.id === appData.individualCheckboxes[i]) {
-            const item = { ...el };
-            const studentsPerGroup = Math.floor(item.numberOfStudents / count);
-            const remainder = item.numberOfStudents % count;
-            if (index < remainder) {
-              // Если индекс группы меньше остатка, добавляем по одному студенту
-              item.numberOfStudents = studentsPerGroup + 1;
-            } else {
-              // В остальных случаях добавляем студентов равномерно
-              item.numberOfStudents = studentsPerGroup;
-            }
-
-            item.educator = null;
-            item.id = `a${el.id}${index}a`; // Уникальный id
-            newIds.push(`a${el.id}${index}a`);
-            // добавляем нугрузки в заблокированные (пока не сохранить)
-            appData.setBlockedCheckboxes((prevent) => [
-              ...prevent,
-              `a${el.id}${index}a`,
-            ]);
-            return item;
-          }
-          return el;
-        });
-      }
-    }
-    console.log("updatedData", updatedData);
-    // Обновляем данные во внешнем компоненте
-    props.setUpdatedData(updatedData);
+    let updatedData = [...basicTabData.workloadDataFix];
+    const funData = splitWorkloadCount(updatedData, tabPar.selectedTr, count);
+    basicTabData.setWorkloadDataFix(funData.updatedData);
+    tabPar.setChangedData(
+      addСhangedData(tabPar.changedData, "splitjoin", funData.blocked)
+    );
 
     //! буфер
     appData.setBufferAction([
-      { request: "splitWorkload", data: data, prevState: prev, newIds: newIds },
+      {
+        request: "splitWorkload",
+        data: data,
+        prevState: prev,
+        newIds: funData.newIds,
+      },
       ...appData.bufferAction,
     ]);
-
-    //! запрос на деление нагрузки
-    // splitWorkload(data).then(() => {
-    //   props.getDataTableAll();
-    // });
+    //! занесем id измененнных данных в состояние
+    tabPar.setChangedData(
+      addСhangedData(tabPar.changedData, "splitjoin", funData.newIds)
+    );
+    tabPar.setSelectedTr([]);
+    tabPar.setContextMenuShow(false);
   };
 
   //! соединение нагрузок
-  const handleJoinWorkloads = (count) => {
-    console.log("соеденить ", count, appData.individualCheckboxes);
+  const handleJoinWorkloads = () => {
+    setMenuShow("");
     const data = {
-      ids: appData.individualCheckboxes,
+      ids: tabPar.selectedTr,
     };
-
-    // берем все обьеденяемые элементы и записываем в предыдущее сотсояние
-    const prevState = props.updatedData.filter((item) => {
-      return Object.values(appData.individualCheckboxes).includes(item.id);
-    });
-
-    // проверим совпадение необходимых параметов для обьединения
-    if (
-      prevState.every((item) => item.workload === prevState[0].workload) &&
-      prevState.every((item) => item.discipline === prevState[0].discipline) &&
-      prevState.every((item) => item.hours === prevState[0].hours)
-    ) {
-      // подсчет общего колличества студентов
-      const sumOfStudents = prevState.reduce(
-        (total, el) => total + el.numberOfStudents,
-        0
-      );
-      // складываем уникальные группы
-      const groups = prevState.reduce((total, el) => {
-        if (!total.includes(el.groups)) {
-          return total + " " + el.groups;
-        }
-        return total;
-      }, "");
-      const individualCB = Object.values(appData.individualCheckboxes).splice(
-        1
-      );
-      // удаляем все обьеденяемые нагрузки кроме первой
-      const upData = props.updatedData.filter((item) => {
-        return !individualCB.includes(item.id);
-      });
-
-      // изменим параметры нагрузки
-      const index = upData.findIndex(
-        (item) => item.id === appData.individualCheckboxes[0]
-      );
-      appData.setBlockedCheckboxes((prevent) => [
-        ...prevent,
-        appData.individualCheckboxes[0],
-      ]);
-
-      if (index !== -1) {
-        const updatedObject = {
-          ...upData[index],
-          groups: groups,
-          numberOfStudents: sumOfStudents,
-        };
-        // Создадим новый массив с обновленным объектом
-        const newUpdatedData = [
-          ...upData.slice(0, index),
-          updatedObject,
-          ...upData.slice(index + 1),
-        ];
-        props.setUpdatedData(newUpdatedData);
-        appData.setIndividualCheckboxes([]);
-      }
-
+    const funData = combineData(
+      basicTabData.workloadDataFix,
+      tabPar.selectedTr
+    );
+    if (funData === null) {
+      console.error("неправильно соеденяем данные");
+    } else {
+      tabPar.setSelectedTr([]);
+      basicTabData.setWorkloadDataFix(funData.newUpdatedData);
       //! буфер
       appData.setBufferAction([
-        { request: "joinWorkloads", data: data, prevState: prevState },
+        { request: "joinWorkloads", data: data, prevState: funData.prevState },
         ...appData.bufferAction,
       ]);
-    } else props.setIsPopUpMenu(true);
+      tabPar.setChangedData(
+        addСhangedData(tabPar.changedData, "splitjoin", data.ids)
+      );
+    }
+    tabPar.setContextMenuShow(false);
+
+    tabPar.setSelectedTr([]);
   };
   //! удаление нагрузки
   const handleDeletWorkload = () => {
-    console.log("удалить ", appData.individualCheckboxes);
-    const data = { ids: appData.individualCheckboxes };
-    const newUpdatedData = appData.updatedData.filter(
-      (item) => !appData.individualCheckboxes.includes(item.id)
-    );
-    props.setUpdatedData(newUpdatedData);
-    //! буфер
+    setMenuShow("");
+    const data = { ids: tabPar.selectedTr };
     appData.setBufferAction([
-      { request: "deleteWorkload", data: data },
+      { request: "deleteWorkload", data },
       ...appData.bufferAction,
     ]);
-    //! запрос на удаление нагрузки
-    // deleteWorkload(data).then(() => {
-    //   props.getDataTableAll();
-    // });
+    tabPar.setChangedData(
+      addСhangedData(tabPar.changedData, "deleted", data.ids)
+    );
+    tabPar.setSelectedTr([]);
+    tabPar.setContextMenuShow(false);
   };
 
   //! удалить преподавателя у нагрузки
   const removeEducator = () => {
-    console.log(appData.individualCheckboxes);
-    const data = {
-      workloadId: appData.individualCheckboxes[0],
-    };
-    let prevState = null;
-    const newUpdatedData = props.updatedData.map((object) => {
-      if (object.id === appData.individualCheckboxes[0]) {
-        prevState = object.educator;
-        return { ...object, educator: null };
-      }
-      return object;
-    });
-    props.setUpdatedData(newUpdatedData);
-
-    //! буфер
+    setMenuShow("");
+    // const { selectedTr, workloadDataFix, setWorkloadDataFix } = tabPar;
+    const workloadId = tabPar.selectedTr[0];
+    const prevState = basicTabData.workloadDataFix.find(
+      (obj) => obj.id === workloadId
+    )?.educator;
+    const newUpdatedData = basicTabData.workloadDataFix.map((obj) =>
+      obj.id === workloadId ? { ...obj, educator: null } : obj
+    );
+    basicTabData.setWorkloadDataFix(newUpdatedData);
+    //! заносим данные в буффер
     appData.setBufferAction([
-      { request: "removeEducatorinWorkload", data: data, prevState: prevState },
+      { request: "removeEducatorinWorkload", data: { workloadId }, prevState },
       ...appData.bufferAction,
     ]);
-    //! запрос на удаление преподавателя с нагрузки
-    // removeEducatorinWorkload(data).then(() => {
-    //   props.getDataTableAll();
-    // });
+    tabPar.setChangedData(
+      addСhangedData(tabPar.changedData, "educator", [workloadId])
+    );
+    tabPar.setContextMenuShow(false);
+  };
+
+  //! функция закрепления
+  const pinaCell = () => {
+    // запрос на закрепление
+    const fastened = tabPar.selectedTr.filter(
+      (item) => !tabPar.fastenedData.some((el) => el.workloadId === item)
+    );
+    console.log(fastened);
+    if (fastened.length > 0) {
+      const data = {
+        workloadIds: fastened,
+      };
+      apiAddAttaches(data).then(() => {
+        tabPar.setContextMenuShow(false);
+        tabPar.setSelectedTr([]);
+        // запрос на бд для обновления закрепленных данных
+        basicTabData.funUpdateFastenedData();
+      });
+    }
+  };
+
+  //! открепить
+  const unPinaCell = () => {
+    const fastened = tabPar.fastenedData
+      .filter((item) => tabPar.selectedTr.find((el) => el === item.workloadId))
+      .map((item) => item.id);
+
+    if (fastened.length > 0) {
+      apiUnAttaches({ attachesIds: fastened }).then(() => {
+        const mass = tabPar.fastenedData.filter(
+          (item) =>
+            !tabPar.selectedTr.some((el) => el === item.workloadId) && item
+        );
+        tabPar.setFastenedData(mass);
+        tabPar.setContextMenuShow(false);
+        tabPar.setSelectedTr([]);
+      });
+    }
+  };
+
+  //! стили позиционирование меню
+  const positStyle = {
+    position: "fixed",
+    top: tabPar.contextPosition.y,
+    left: tabPar.contextPosition.x,
   };
 
   return (
@@ -339,128 +281,81 @@ const ContextMenu = (props) => {
       onContextMenu={handleContextMenu}
       className={styles.ContextMenu}
     >
-      <div
-        style={
-          menuPosition.y + 320 > window.innerHeight
-            ? {
-                position: "fixed",
-                top: menuPosition.y - 320,
-                left: menuPosition.x,
-              }
-            : {
-                position: "fixed",
-                top: menuPosition.y,
-                left: menuPosition.x,
-              }
-        }
-        className={styles.blockMenu}
-      >
-        <div className={styles.blockMenuPop} onClick={addEducator}>
-          <button className={styles.activeStylePointer}>
-            Добавить преподователя
-          </button>
-          <img
-            src={arrow}
-            alt=">"
-            className={educatorMenuShow ? styles.imgOpen : styles.imgClose}
+      <div style={positStyle} className={styles.blockMenu}>
+        <MenuPop
+          btnText={"Добавить преподователя"}
+          func={addEducator}
+          menuShow={menuShow === "educator"}
+          img={true}
+        />
+        {tabPar.selectedTr.length === 1 && (
+          <MenuPop
+            btnText={"Удалить преподавателя"}
+            func={removeEducator}
+            img={false}
           />
-        </div>
-        <div>
-          <button
-            className={styles.activeStylePointer}
-            onClick={removeEducator}
-          >
-            Удалить преподавателя
-          </button>
-        </div>
-        <div>
-          <button
-            className={styles.activeStylePointer}
-            onClick={removeEducator}
-          >
-            Закрепить
-          </button>
-        </div>
-
-        <div onClick={handleMouseClickPop} className={styles.blockMenuPop}>
-          <button className={styles.buttonDel}>Разделить</button>
-
-          {showSubMenu && (
-            <img src={arrow} alt=">" className={styles.imgOpen} />
-          )}
-          {!showSubMenu && (
-            <img src={arrow} alt=">" className={styles.imgClose} />
-          )}
-        </div>
-        {appData.individualCheckboxes.length === 1 && (
-          <div>
-            <button
-              className={styles.activeStylePointer}
-              onClick={props.onAddComment}
-            >
-              Оставить комментарий
-            </button>
-          </div>
         )}
-
-        {appData.individualCheckboxes.length > 1 && (
-          <div>
-            <button
-              className={styles.activeStylePointer}
-              onClick={handleJoinWorkloads}
-            >
-              Объеденить
-            </button>
-          </div>
+        <MenuPop btnText={"Закрепить"} func={pinaCell} img={false} />
+        <MenuPop btnText={"Открепить"} func={unPinaCell} img={false} />
+        <MenuPop
+          btnText={"Разделить"}
+          func={handleMouseClickPop}
+          menuShow={menuShow === "subMenu"}
+          img={true}
+        />
+        {tabPar.selectedTr.length === 1 && (
+          <MenuPop
+            btnText={"Оставить комментарий"}
+            func={onAddComment}
+            menuShow={menuShow === "commentsMenu"}
+            img={true}
+          />
         )}
-        {appData.individualCheckboxes.length === 1 && (
-          <div className={styles.blockMenuPop} onClick={onClickPropose}>
-            <button className={styles.activeStylePointer}>Предложить</button>
-            <img
-              src={arrow}
-              alt=">"
-              className={propose ? styles.imgOpen : styles.imgClose}
-            />
-          </div>
+        {tabPar.selectedTr.length > 1 && (
+          <MenuPop
+            btnText={"Объеденить"}
+            func={handleJoinWorkloads}
+            img={false}
+          />
         )}
-
-        <div>
-          <button
-            className={styles.activeStylePointer}
-            onClick={handleDeletWorkload}
-          >
-            Удалить
-          </button>
-        </div>
-        {/* выделение меню */}
-        <div className={styles.blockMenuPop} onClick={ClickHighlightshov}>
-          <button className={styles.buttonDel}>Выделить</button>
-
-          {Highlightshow && (
-            <img src={arrow} alt=">" className={styles.imgOpen} />
-          )}
-          {!Highlightshow && (
-            <img src={arrow} alt=">" className={styles.imgClose} />
-          )}
-        </div>
+        {tabPar.selectedTr.length === 1 && (
+          <MenuPop
+            btnText={"Предложить"}
+            func={onClickPropose}
+            menuShow={menuShow === "propose"}
+            img={true}
+          />
+        )}
+        <MenuPop btnText={"Удалить"} func={handleDeletWorkload} img={false} />
+        <MenuPop
+          btnText={"Выделить"}
+          func={ClickHighlightshov}
+          menuShow={menuShow === "highlight"}
+          img={true}
+        />
       </div>
-      {showSubMenu && (
+
+      {menuShow === "subMenu" && (
+        // разделение нагрузки
         <SubMenu
-          menuPosition={menuPosition}
+          contextPosition={tabPar.contextPosition}
           handleSplitWorkload={handleSplitWorkload}
         />
       )}
-      {(educatorMenuShow || propose) && (
+      {(menuShow === "educator" || menuShow === "propose") && (
         // меню с выбором преподавалетля
         <EducatorMenu
-          propose={propose}
-          menuPosition={menuPosition}
+          propose={menuShow === "propose"}
+          contextPosition={tabPar.contextPosition}
           selectedEducator={selectedEducator}
         />
       )}
-      {/* выделение меню */}
-      {Highlightshow && (
-        <Highlight menuPosition={menuPosition} SetColor={SetColor} />
+      {menuShow === "highlight" && (
+        // выделение нагрузки
+        <Highlight />
+      )}
+      {menuShow === "commentsMenu" && (
+        <CommentsMenu setMenuShow={setMenuShow} />
       )}
     </div>
   );

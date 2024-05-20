@@ -1,0 +1,96 @@
+import React, { useContext, useState } from "react";
+import styles from "./../TableWorkload.module.scss";
+import DataContext from "../../../context";
+import { ReactComponent as LogoAllComment } from "./../../../img/arrow_down.svg";
+import { AcceptOffer } from "../../../api/services/ApiRequest";
+
+function Offers(props) {
+  const { basicTabData } = useContext(DataContext);
+  const [offerWindowShow, setOfferWindowShow] = useState(false);
+  const [onAllOffersShow, setOnAllOffersShow] = useState(false);
+
+  const circleClick = () => {
+    setOfferWindowShow(!offerWindowShow);
+  };
+  const allOffersClick = () => {
+    setOnAllOffersShow(!onAllOffersShow);
+  };
+  //! функция отклонить
+  const reject = (offerData) => {
+    console.log(offerData);
+    //! отклоняем дирекцией, сделалть зависимость от роли
+    const data = { id: offerData.offer.id, status: 5 };
+    AcceptOffer(data).then(() => {
+      basicTabData.funUpdateOffers();
+      setOfferWindowShow(false);
+    });
+  };
+  //! функция применить
+  const accept = (offerData) => {
+    console.log(offerData);
+    //! принимаем дирекцией, сделалть зависимость от роли
+    const data = { id: offerData.offer.id, status: 4 };
+    AcceptOffer(data).then(() => {
+      setOfferWindowShow(false);
+      // обновляем данные таблицы и предложений
+      basicTabData.funUpdateOffers();
+      basicTabData.funUpdateTable();
+    });
+  };
+  const offerRender = (offerData) => {
+    return (
+      <div key={offerData.offer.id} className={styles.offerbox}>
+        <div className={styles.offerTitle}>{offerData.offer.proposer.name}</div>
+        <div className={styles.offerCenter}>предложил преподавателя</div>
+        <div className={styles.offerEducator}>
+          {offerData.offer.educator.name}
+        </div>
+        <div className={styles.offerButton}>
+          <button className={styles.left} onClick={() => reject(offerData)}>
+            Отклонить
+          </button>
+          <button className={styles.rigth} onClick={() => accept(offerData)}>
+            Принять
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className={styles.Offers} onClick={(e) => e.stopPropagation()}>
+      {props.offerData.length > 0 && (
+        <div>
+          <div className={styles.circle} onClick={circleClick}>
+            {props.offerData.length}
+          </div>
+        </div>
+      )}
+      {offerWindowShow && (
+        <div className={styles.containerOffer}>
+          {onAllOffersShow ? (
+            <div className={styles.offerScroll}>
+              {props.offerData.map((item) => offerRender(item))}
+            </div>
+          ) : (
+            offerRender(props.offerData[0])
+          )}
+          {props.offerData.length > 1 && (
+            <div className={styles.btn_left} onClick={allOffersClick}>
+              <span className={onAllOffersShow ? styles.blue : null}>
+                {props.offerData.length}
+              </span>
+              <LogoAllComment
+                className={onAllOffersShow ? styles.svg : null}
+                height={10}
+                width={15}
+              />
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default Offers;

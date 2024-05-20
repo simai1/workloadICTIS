@@ -8,7 +8,7 @@ export default class ColorDto {
 
     constructor(model) {
         this.id = model.id;
-        this.color = colorMap[model.color];
+        this.color = model.color;
         this.educatorId = model.educatorId;
         this.workloadId = model.workloadId;
     }

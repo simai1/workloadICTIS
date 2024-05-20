@@ -16,7 +16,10 @@ router
     );
 router
     .route('/createOffer')
-    .post(asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.LECTURER])), asyncRoute(offersController.createOffer));
+    .post(
+        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.LECTURER])), 
+        asyncRoute(offersController.createOffer)
+    );
 
 router
     .route('/introduceOrDecline/:offerId')
@@ -26,8 +29,14 @@ router
     );
 router
     .route('/confirmOrReject/:offerId')
-    .post(asyncRoute(checkRole([role.DIRECTORATE])), asyncRoute(offersController.confirmOrReject));
+    .post(
+        asyncRoute(checkRole([role.DIRECTORATE])),
+        asyncRoute(offersController.confirmOrReject)
+    );
 router
     .route('/delete/:offerId')
-    .delete(asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE])), asyncRoute(offersController.deleteOffer));
+    .delete(
+        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE])), 
+        asyncRoute(offersController.deleteOffer)
+    );
 export default router;
