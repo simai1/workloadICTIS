@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./SamplePoints.module.scss";
 import DataContext from "../../context";
 import { FilteredSample } from "./Function";
@@ -10,6 +10,14 @@ export function SamplePoints(props) {
   const handleInputChange = (event) => {
     setSearchText(event.target.value);
   };
+
+  const spRef = useRef(null);
+  useEffect(() => {
+    console.log(spRef.current.clientHeight);
+    if (spRef.current.clientHeight - window.innerWidth > 400) {
+      spRef.current.style.left = "100px";
+    }
+  }, [spRef]);
 
   const filteredData = [
     ...new Set(
@@ -56,7 +64,7 @@ export function SamplePoints(props) {
   };
 
   return (
-    <main className={styles.SamplePoints}>
+    <main className={styles.SamplePoints} ref={spRef}>
       <div className={styles.container}>
         <input
           className={styles.search}

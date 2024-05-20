@@ -6,16 +6,17 @@ $heightCell: 150px;
 
 .DataGrid {
   display: flex;
-  width: 96%;
+  width: 100%;
   height: 80vh;
   padding-left: 64px;
 }
 .tabledisciplinesMain {
   display: flex;
-  width: 96%;
+  // width: 100%;
   height: 76vh;
   overflow: auto;
   padding-left: 64px;
+  margin-right: 52px;
 
   .table {
     width: 100vw;
