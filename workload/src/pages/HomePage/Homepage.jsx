@@ -70,6 +70,15 @@ function HomePage() {
     console.log("Сохранено", appData.bufferAction);
     bufferRequestToApi(appData.bufferAction).then(() => {
       appData.setBufferAction([0]);
+      basicTabData.updateAlldata();
+    });
+    tabPar.setSelectedTr([]);
+    tabPar.setChangedData({
+      splitjoin: [],
+      educator: [],
+      hours: [],
+      numberOfStudents: [],
+      deleted: [],
     });
     console.log("выполнено и очищено", appData.bufferAction);
   };

@@ -62,16 +62,20 @@ function Warnings(props) {
           </div>
           <div className={styles.WarningsList}>
             <ul>
-              {appData.allWarningMessage?.map((item, index) => {
-                return (
-                  <WarningMessage
-                    item={item}
-                    key={item.id}
-                    index={index}
-                    directLks={directLks}
-                  />
-                );
-              })}
+              {appData.allWarningMessage.length > 0 ? (
+                appData.allWarningMessage?.map((item, index) => {
+                  return (
+                    <WarningMessage
+                      item={item}
+                      key={item.id}
+                      index={index}
+                      directLks={directLks}
+                    />
+                  );
+                })
+              ) : (
+                <div className={styles.noWarning}>Предупреждений нет</div>
+              )}
             </ul>
           </div>
         </div>

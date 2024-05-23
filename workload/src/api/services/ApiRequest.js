@@ -19,6 +19,17 @@ export const Educator = async () => {
   }
 };
 
+//! получение данных user
+export const apiGetUser = async () => {
+  try {
+    const response = await http.get(`${server}/user`);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error, `${server}/workload`);
+    throw error;
+  }
+};
+
 //! получаем данных личного кабинета преподавателя
 export const EducatorLK = async (data) => {
   try {

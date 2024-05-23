@@ -99,6 +99,12 @@
   padding-left: 16px 0;
   overflow-y: auto;
   overflow-x: hidden;
+
+  .noWarning {
+    font-size: 16px;
+    display: flex;
+    justify-content: center;
+  }
 }
 .WarningsList::-webkit-scrollbar {
   width: 5px; /* ширина scrollbar */

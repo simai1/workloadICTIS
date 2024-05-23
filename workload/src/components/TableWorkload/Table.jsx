@@ -46,7 +46,6 @@ function Table(props) {
   //! при клике на tr выделяем его
   const clickTr = (el, itemId) => {
     // el.stopProgretions();
-    console.log(el.target.nodeName);
     const a = el.target.nodeName;
     if (a === "TD" || a === "INPUT") {
       var len = tabPar.selectedTr.length;

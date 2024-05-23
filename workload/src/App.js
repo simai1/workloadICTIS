@@ -8,6 +8,7 @@ import { headers } from "./components/TableWorkload/Data";
 import {
   Comment,
   Workload,
+  apiGetUser,
   getAllAttaches,
   getAllColors,
   getOffers,
@@ -26,14 +27,7 @@ function App() {
   const [allWarningMessage, setAllWarningMessage] = useState([]);
   const [individualCheckboxes, setIndividualCheckboxes] = useState([]); //чекбоксы таблицы
   const [fileData, setFileData] = useState(null);
-
-  //! данные пользователя ! изменить
-  const myProfile = {
-    id: "c7b02205-0276-4c98-9be3-4d972072fd60",
-    name: "Админ Кирилл Николаевич",
-    position: "Заведующий кафедры",
-    mail: "ivanov@sfedu.ru",
-  };
+  const [myProfile, setMyProfile] = useState(null);
 
   //! буфер последних действий. Выполняется после кнопки сохранить
   const [bufferAction, setBufferAction] = useState([]);
@@ -213,6 +207,14 @@ function App() {
     funUpdateFastenedData,
     funUpdateAllColors,
   };
+
+  //! получаем и записываем данные usera
+  useEffect(() => {
+    apiGetUser().then((data) => {
+      console.log("user", data);
+      setMyProfile(data);
+    });
+  }, []);
 
   //! получаем данные нагрузок с бд
   useEffect(() => {
