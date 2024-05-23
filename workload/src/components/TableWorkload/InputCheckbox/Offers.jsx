@@ -2,10 +2,10 @@ import React, { useContext, useState } from "react";
 import styles from "./../TableWorkload.module.scss";
 import DataContext from "../../../context";
 import { ReactComponent as LogoAllComment } from "./../../../img/arrow_down.svg";
-import { AcceptOffer } from "../../../api/services/ApiRequest";
+import { AcceptOffer, AcceptOfferZK } from "../../../api/services/ApiRequest";
 
 function Offers(props) {
-  const { basicTabData } = useContext(DataContext);
+  const { appData, basicTabData } = useContext(DataContext);
   const [offerWindowShow, setOfferWindowShow] = useState(false);
   const [onAllOffersShow, setOnAllOffersShow] = useState(false);
 
@@ -19,23 +19,45 @@ function Offers(props) {
   const reject = (offerData) => {
     console.log(offerData);
     //! отклоняем дирекцией, сделалть зависимость от роли
-    const data = { id: offerData.offer.id, status: 5 };
-    AcceptOffer(data).then(() => {
-      basicTabData.funUpdateOffers();
-      setOfferWindowShow(false);
-    });
+    //! отклоняем от зк
+    if (appData.myProfile?.role === "DEPARTMENT_HEAD") {
+      const data = { id: offerData.offer.id, status: 3 };
+      AcceptOfferZK(data).then(() => {
+        basicTabData.funUpdateOffers();
+        setOfferWindowShow(false);
+      });
+    }
+    if (appData.myProfile?.role === "DIRECTORATE") {
+      const data = { id: offerData.offer.id, status: 5 };
+      AcceptOffer(data).then(() => {
+        basicTabData.funUpdateOffers();
+        setOfferWindowShow(false);
+      });
+    }
   };
   //! функция применить
   const accept = (offerData) => {
     console.log(offerData);
-    //! принимаем дирекцией, сделалть зависимость от роли
-    const data = { id: offerData.offer.id, status: 4 };
-    AcceptOffer(data).then(() => {
-      setOfferWindowShow(false);
-      // обновляем данные таблицы и предложений
-      basicTabData.funUpdateOffers();
-      basicTabData.funUpdateTable();
-    });
+    //! принимаем от зк
+    if (appData.myProfile?.role === "DEPARTMENT_HEAD") {
+      const data = { id: offerData.offer.id, status: 2 };
+      AcceptOfferZK(data).then(() => {
+        setOfferWindowShow(false);
+        // обновляем данные таблицы и предложений
+        basicTabData.funUpdateOffers();
+        basicTabData.funUpdateTable();
+      });
+    }
+    //! принимаем от дирекции
+    if (appData.myProfile?.role === "DIRECTORATE") {
+      const data = { id: offerData.offer.id, status: 4 };
+      AcceptOffer(data).then(() => {
+        setOfferWindowShow(false);
+        // обновляем данные таблицы и предложений
+        basicTabData.funUpdateOffers();
+        basicTabData.funUpdateTable();
+      });
+    }
   };
   const offerRender = (offerData) => {
     return (

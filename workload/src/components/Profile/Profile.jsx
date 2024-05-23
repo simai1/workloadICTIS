@@ -11,6 +11,7 @@ function Profile(props) {
     DIRECTORATE: "Директор",
     EDUCATOR: "Преподаватель",
   };
+
   const clickModalWind = () => {
     props.setOpenModalWind(!props.onenModalWind);
   };

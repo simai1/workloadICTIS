@@ -20,8 +20,10 @@ function TableTd(props) {
 
   const getTextAreaOn = () => {
     if (
-      props.itemKey.key === "numberOfStudents" ||
-      props.itemKey.key === "hours"
+      //! проеряем роль
+      appData.metodRole[appData.myProfile?.role]?.some((el) => el === 8) &&
+      (props.itemKey.key === "numberOfStudents" ||
+        props.itemKey.key === "hours")
     ) {
       return onTextArea;
     }
