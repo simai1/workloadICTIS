@@ -8,6 +8,8 @@ import { headers } from "./components/TableWorkload/Data";
 import {
   Comment,
   Workload,
+  apiGetUser,
+  apiGetWorkloadDepartment,
   getAllAttaches,
   getAllColors,
   getOffers,
@@ -26,14 +28,78 @@ function App() {
   const [allWarningMessage, setAllWarningMessage] = useState([]);
   const [individualCheckboxes, setIndividualCheckboxes] = useState([]); //чекбоксы таблицы
   const [fileData, setFileData] = useState(null);
+  const [myProfile, setMyProfile] = useState(null);
 
-  //! данные пользователя ! изменить
-  const myProfile = {
-    id: "c7b02205-0276-4c98-9be3-4d972072fd60",
-    name: "Админ Кирилл Николаевич",
-    position: "Заведующий кафедры",
-    mail: "ivanov@sfedu.ru",
+  //! методы и роли которые могут ими пользоваться
+  const metods = [
+    {
+      id: 1,
+      name: "Получение всех преподавателей",
+    },
+    {
+      id: 2,
+      name: "Получение преподавателей по своей кафедре",
+    },
+    {
+      id: 3,
+      name: "Доступ к таблице преподавателей",
+    },
+    {
+      id: 8,
+      name: "Обновление данных нагрузки",
+    },
+    {
+      id: 9,
+      name: "Добавление преподавателя на нагрузку",
+    },
+    {
+      id: 10,
+      name: "Удаление преподавателя с нагрузки",
+    },
+    {
+      id: 11,
+      name: "Разделение нагрузки",
+    },
+    {
+      id: 12,
+      name: "Соединение нагрузки",
+    },
+    {
+      id: 13,
+      name: "Удаление нагрузки",
+    },
+    {
+      id: 14,
+      name: "Получение всех нагрузок",
+    },
+    {
+      id: 15,
+      name: "Получение нагрузок по кафедре",
+    },
+
+    {
+      id: 17,
+      name: "Получение всех предложений",
+    },
+    {
+      id: 18,
+      name: "Предложить преподавателя",
+    },
+    {
+      id: 20,
+      name: "Получить все комментарии к нагрузке ",
+    },
+  ];
+  const metodRole = {
+    METHODIST: [1, 3, 8, 9, 10, 13, 14, 17, 20],
+    LECTURER: [2, 8, 15, 18],
+    DEPARTMENT_HEAD: [2, 3, 8, 9, 10, 11, 12, 13, 15, 17, 18],
+    DIRECTORATE: [1, 3, 8, 9, 10, 11, 12, 13, 14, 17, 20],
+    EDUCATOR: [15],
   };
+  // appData.metodRole[appData.myProfile?.role]?.some(
+  //   (el) => el === 1
+  // )
 
   //! буфер последних действий. Выполняется после кнопки сохранить
   const [bufferAction, setBufferAction] = useState([]);
@@ -54,6 +120,7 @@ function App() {
     myProfile,
     fileData,
     setFileData,
+    metodRole,
   };
 
   // ! параметры таблицы
@@ -169,25 +236,42 @@ function App() {
 
   //! функция обновления таблицы
   const funUpdateTable = () => {
-    Workload().then((data) => {
-      console.log(data);
-      const dataBd = [...data];
-      setWorkloadData(dataBd);
-      // зменяем массив преподавателя на его имя
-      const fixData = funFixEducator(dataBd);
-      setWorkloadDataFix(fixData);
-      setFiltredData(fixData);
-    });
+    if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
+      apiGetWorkloadDepartment().then((data) => {
+        console.log("нагрузки по кафедре", data);
+        const dataBd = [...data];
+        setWorkloadData(dataBd);
+        // зменяем массив преподавателя на его имя
+        const fixData = funFixEducator(dataBd);
+        setWorkloadDataFix(fixData);
+        setFiltredData(fixData);
+      });
+    }
+    if (metodRole[myProfile?.role]?.some((el) => el === 14)) {
+      Workload().then((data) => {
+        console.log("нагрузки", data);
+        const dataBd = [...data];
+        setWorkloadData(dataBd);
+        // зменяем массив преподавателя на его имя
+        const fixData = funFixEducator(dataBd);
+        setWorkloadDataFix(fixData);
+        setFiltredData(fixData);
+      });
+    }
   };
 
   //! функция обновления всех данных
   const updateAlldata = () => {
     // получаем данные таблицы
     funUpdateTable();
-    // получаем все комментарии
-    funUpdateAllComments();
-    // получение предложений
-    funUpdateOffers();
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 20)) {
+      // получаем все комментарии
+      funUpdateAllComments();
+    }
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 17)) {
+      // получение предложений
+      funUpdateOffers();
+    }
     // получение закрепленных строк
     funUpdateFastenedData();
     // получение выделенных строк
@@ -214,10 +298,18 @@ function App() {
     funUpdateAllColors,
   };
 
+  //! получаем и записываем данные usera
+  useEffect(() => {
+    apiGetUser().then((data) => {
+      console.log("user", data);
+      setMyProfile(data);
+    });
+  }, []);
+
   //! получаем данные нагрузок с бд
   useEffect(() => {
     updateAlldata();
-  }, []);
+  }, [myProfile]);
 
   //! при переходе с кафедральных на общеинституские и обратно фильтруем основные
   //! фильтруем по FiltredRows

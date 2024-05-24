@@ -1,19 +1,27 @@
 import React, { useEffect, useState } from "react";
 import styles from "./ContextMenu.module.scss";
-import { Educator } from "../../api/services/ApiRequest";
+import { Educator, apiEducatorDepartment } from "../../api/services/ApiRequest";
 import DataContext from "../../context";
 
 export function EducatorMenu(props) {
   const [educator, setEductor] = useState([]); //преподы с бд
   const [filtredData, setFiltredData] = useState(educator);
-  const { tabPar } = React.useContext(DataContext);
+  const { tabPar, appData } = React.useContext(DataContext);
 
   useEffect(() => {
-    Educator().then((data) => {
-      setEductor(data);
-      setFiltredData(data);
-    });
-  }, []);
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 2)) {
+      apiEducatorDepartment().then((data) => {
+        setEductor(data);
+        setFiltredData(data);
+      });
+    }
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)) {
+      Educator().then((data) => {
+        setEductor(data);
+        setFiltredData(data);
+      });
+    }
+  }, [appData.myProfile]);
 
   //! поиск
   const handleSearch = (el) => {

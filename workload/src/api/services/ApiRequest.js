@@ -19,6 +19,30 @@ export const Educator = async () => {
   }
 };
 
+//! получаем преподов по кафедре
+export const apiEducatorDepartment = async () => {
+  try {
+    const response = await http.get(
+      `${server}/educator/get/educatorsByDepartment`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
+//! получение данных user
+export const apiGetUser = async () => {
+  try {
+    const response = await http.get(`${server}/user`);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error, `${server}/workload`);
+    throw error;
+  }
+};
+
 //! получаем данных личного кабинета преподавателя
 export const EducatorLK = async (data) => {
   try {
@@ -57,6 +81,17 @@ export const Workload = async () => {
     return response.data;
   } catch (error) {
     console.error("Error:", error, `${server}/workload`);
+    throw error;
+  }
+};
+
+//! получаем нагрузки по кафедре
+export const apiGetWorkloadDepartment = async () => {
+  try {
+    const response = await http.get(`${server}/workload/get/department`);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
     throw error;
   }
 };
@@ -138,7 +173,7 @@ export const joinWorkloads = async (data) => {
 // 2 - подтвердить ЗК
 // 3 - отклонить ЗК При этом, подтверждение не удаляется.
 // 4 - принять Дирекция
-// 5 - отменить Диреуцией
+// 5 - отменить Дирекцией
 
 export const AcceptOffer = async (data) => {
   console.log("Предложение принято ", data);
@@ -155,6 +190,21 @@ export const AcceptOffer = async (data) => {
   }
 };
 
+//! запрос на принятие предложения с акк ЗК
+export const AcceptOfferZK = async (data) => {
+  console.log("Предложение принято ", data);
+  try {
+    const response = await http.post(
+      `${server}/offers/introduceOrDecline/${data.id}`,
+      { status: data.status }
+    );
+    console.log("response ", response);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
 //! запрос на удаление нагрузки
 export const deleteWorkload = async (data) => {
   console.log("Нагрузки удалены ", data);

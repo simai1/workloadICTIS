@@ -5,7 +5,7 @@ import OverlapWindow from "./OverlapWindow";
 import Comments from "./Comments";
 import Offers from "./Offers";
 function InputCheckbox(props) {
-  const { tabPar, basicTabData } = React.useContext(DataContext);
+  const { appData, tabPar, basicTabData } = React.useContext(DataContext);
 
   //! функция определения есть ли комментарии к строке
   const getComment = () => {
@@ -53,9 +53,10 @@ function InputCheckbox(props) {
             />
           )}
           <div className={styles.bacground}>
-            {getComment().length > 0 && (
-              <Comments commentData={getComment().reverse()} />
-            )}
+            {getComment().length > 0 &&
+              appData.metodRole[appData.myProfile?.role]?.some(
+                (el) => el === 20
+              ) && <Comments commentData={getComment().reverse()} />}
             {getOffers().length > 0 && (
               <Offers offerData={getOffers().reverse()} />
             )}

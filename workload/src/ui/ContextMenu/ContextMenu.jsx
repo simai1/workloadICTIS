@@ -282,27 +282,35 @@ const ContextMenu = (props) => {
       className={styles.ContextMenu}
     >
       <div style={positStyle} className={styles.blockMenu}>
-        <MenuPop
-          btnText={"Добавить преподователя"}
-          func={addEducator}
-          menuShow={menuShow === "educator"}
-          img={true}
-        />
-        {tabPar.selectedTr.length === 1 && (
+        {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 9) && (
           <MenuPop
-            btnText={"Удалить преподавателя"}
-            func={removeEducator}
-            img={false}
+            btnText={"Добавить преподователя"}
+            func={addEducator}
+            menuShow={menuShow === "educator"}
+            img={true}
           />
         )}
+        {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 10) &&
+          tabPar.selectedTr.length === 1 && (
+            <MenuPop
+              btnText={"Удалить преподавателя"}
+              func={removeEducator}
+              img={false}
+            />
+          )}
         <MenuPop btnText={"Закрепить"} func={pinaCell} img={false} />
         <MenuPop btnText={"Открепить"} func={unPinaCell} img={false} />
-        <MenuPop
-          btnText={"Разделить"}
-          func={handleMouseClickPop}
-          menuShow={menuShow === "subMenu"}
-          img={true}
-        />
+        {appData.metodRole[appData.myProfile?.role]?.some(
+          (el) => el === 11
+        ) && (
+          <MenuPop
+            btnText={"Разделить"}
+            func={handleMouseClickPop}
+            menuShow={menuShow === "subMenu"}
+            img={true}
+          />
+        )}
+
         {tabPar.selectedTr.length === 1 && (
           <MenuPop
             btnText={"Оставить комментарий"}
@@ -311,22 +319,28 @@ const ContextMenu = (props) => {
             img={true}
           />
         )}
-        {tabPar.selectedTr.length > 1 && (
-          <MenuPop
-            btnText={"Объеденить"}
-            func={handleJoinWorkloads}
-            img={false}
-          />
+        {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 12) &&
+          tabPar.selectedTr.length > 1 && (
+            <MenuPop
+              btnText={"Объеденить"}
+              func={handleJoinWorkloads}
+              img={false}
+            />
+          )}
+        {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 18) &&
+          tabPar.selectedTr.length === 1 && (
+            <MenuPop
+              btnText={"Предложить"}
+              func={onClickPropose}
+              menuShow={menuShow === "propose"}
+              img={true}
+            />
+          )}
+        {appData.metodRole[appData.myProfile?.role]?.some(
+          (el) => el === 13
+        ) && (
+          <MenuPop btnText={"Удалить"} func={handleDeletWorkload} img={false} />
         )}
-        {tabPar.selectedTr.length === 1 && (
-          <MenuPop
-            btnText={"Предложить"}
-            func={onClickPropose}
-            menuShow={menuShow === "propose"}
-            img={true}
-          />
-        )}
-        <MenuPop btnText={"Удалить"} func={handleDeletWorkload} img={false} />
         <MenuPop
           btnText={"Выделить"}
           func={ClickHighlightshov}

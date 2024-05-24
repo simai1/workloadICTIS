@@ -71,6 +71,15 @@ function HomePage() {
     console.log("Сохранено", appData.bufferAction);
     bufferRequestToApi(appData.bufferAction).then(() => {
       appData.setBufferAction([0]);
+      basicTabData.updateAlldata();
+    });
+    tabPar.setSelectedTr([]);
+    tabPar.setChangedData({
+      splitjoin: [],
+      educator: [],
+      hours: [],
+      numberOfStudents: [],
+      deleted: [],
     });
     console.log("выполнено и очищено", appData.bufferAction);
   };
@@ -140,17 +149,22 @@ function HomePage() {
                 }}
                 text="Дисциплины"
               />
-              <Button
-                Bg={selectedComponent === "Teachers" ? "#3B28CC" : "#efedf3"}
-                textColot={
-                  selectedComponent === "Disciplines" ? "#000000" : "#efedf3"
-                }
-                onClick={() => {
-                  handleComponentChange("Teachers");
-                  handleButtonClick();
-                }}
-                text="Преподователи"
-              />
+
+              {appData.metodRole[appData.myProfile?.role]?.some(
+                (el) => el === 3
+              ) && (
+                <Button
+                  Bg={selectedComponent === "Teachers" ? "#3B28CC" : "#efedf3"}
+                  textColot={
+                    selectedComponent === "Disciplines" ? "#000000" : "#efedf3"
+                  }
+                  onClick={() => {
+                    handleComponentChange("Teachers");
+                    handleButtonClick();
+                  }}
+                  text="Преподователи"
+                />
+              )}
             </div>
             <div className={styles.header_left_component}>
               <Warnings
@@ -196,7 +210,7 @@ function HomePage() {
                   />
                 </>
               )}
-              <FiltredRows />
+              {selectedComponent === "Disciplines" && <FiltredRows />}
             </div>
 
             <div className={styles.right_button}>

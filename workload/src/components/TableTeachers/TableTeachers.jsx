@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import DataContext from "../../context";
 import { getDataEducator } from "../../api/services/AssignApiData";
 import { headersEducator } from "../TableWorkload/Data";
+import { apiEducatorDepartment } from "../../api/services/ApiRequest";
 
 function TableTeachers(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]);
@@ -17,12 +18,22 @@ function TableTeachers(props) {
 
   //! заносим данные о преподавателях в состояние
   React.useEffect(() => {
-    getDataEducator().then((data) => {
-      appData.setEducator(data);
-      setFilteredData(data);
-      setUpdatedData(data);
-      setUpdatedHeader(tableHeaders);
-    });
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 2)) {
+      apiEducatorDepartment().then((data) => {
+        appData.setEducator(data);
+        setFilteredData(data);
+        setUpdatedData(data);
+        setUpdatedHeader(tableHeaders);
+      });
+    }
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)) {
+      getDataEducator().then((data) => {
+        appData.setEducator(data);
+        setFilteredData(data);
+        setUpdatedData(data);
+        setUpdatedHeader(tableHeaders);
+      });
+    }
   }, []);
 
   const handleNameClick = (index, id) => {

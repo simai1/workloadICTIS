@@ -11,11 +11,14 @@ export function SamplePoints(props) {
     setSearchText(event.target.value);
   };
 
+  //! чтобы SamplePoints не выходил за пределы таблицы
   const spRef = useRef(null);
   useEffect(() => {
-    console.log(spRef.current.clientHeight);
-    if (spRef.current.clientHeight - window.innerWidth > 400) {
-      spRef.current.style.left = "100px";
+    if (spRef.current) {
+      const divRect = spRef.current.getBoundingClientRect();
+      if (divRect.x + 300 > window.innerWidth) {
+        spRef.current.style.left = "-100px";
+      }
     }
   }, [spRef]);
 
