@@ -384,10 +384,11 @@ export const apiUnAttaches = async (data) => {
 };
 
 //! импорт файла
-export const SubmitFileXLSX = async (data) => {
-  console.log("файл ", data);
+export const SubmitFileXLSX = async (constIdCafedra,file) => {
+ 
+  console.log('constIdCafedra', constIdCafedra)
   try {
-    const response = await http.post(`${server}/parser/parseWorkload/7`, data);
+    const response = await http.post(`${server}/parser/parseWorkload/${constIdCafedra}`, file );
     console.log("response ", response);
     return response.data;
   } catch (error) {

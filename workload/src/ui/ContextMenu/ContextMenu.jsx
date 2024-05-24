@@ -174,7 +174,9 @@ const ContextMenu = (props) => {
       tabPar.selectedTr
     );
     if (funData === null) {
-      console.error("неправильно соеденяем данные");
+      // console.error("неправильно соеденяем данные");
+      appData.seterrorPopUp(true)
+      console.log(appData.errorPopUp)
     } else {
       tabPar.setSelectedTr([]);
       basicTabData.setWorkloadDataFix(funData.newUpdatedData);

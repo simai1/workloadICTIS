@@ -24,6 +24,19 @@
     }
   }
 }
+@mixin input-text($width, $border-radius) {
+  width: $width;
+  outline: none;
+  background-color: #fff;
+  color: #353535;
+  padding: 15px 15px;
+  border: 1px solid #ADADAD;
+  margin-top: 3px;
+  border-radius: $border-radius;
+  &::placeholder {
+    color: #afbbbd;
+  }
+}
 
 @mixin scrollStyle($width, $height) {
   &::-webkit-scrollbar {

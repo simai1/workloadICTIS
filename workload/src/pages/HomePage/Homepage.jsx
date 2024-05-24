@@ -17,6 +17,7 @@ import {
   tableHeadersLks,
 } from "../../components/TableWorkload/Data";
 import { PopUpFile } from "../../ui/PopUpFile/PopUpFile";
+import { PopUpError } from "../../ui/PopUp/PopUpError";
 
 function HomePage() {
   const { appData, tabPar, visibleDataPar, basicTabData } =
@@ -110,32 +111,34 @@ function HomePage() {
       <div className={styles.HomePage}>
         <div className={styles.header}>
           <div className={styles.header_top}>
-            <div>
-              <button
-                style={{
-                  height: "45px",
-                  backgroundColor: "#3b28cc",
-                  color: "#fff",
-                  borderRadius: " 8px",
-                  border: "none",
-                  fontSize: "18px",
-                  padding: "10px 16px",
-                }}
-                onClick={onSaveClick}
-              >
-                Сохранить
-              </button>
-            </div>
-            <div className={styles.header_search}>
-              <input
-                type="text"
-                placeholder="Поиск"
-                id="search"
-                name="search"
-                onChange={handleSearch}
-                className={styles.hedaer_search_inner}
-              />
-              <img src="./img/search.svg"></img>
+            <div className={styles.header_top_save_search}>
+              <div >
+                <button
+                  style={{
+                    height: "45px",
+                    backgroundColor: "#3b28cc",
+                    color: "#fff",
+                    borderRadius: " 8px",
+                    border: "none",
+                    fontSize: "18px",
+                    padding: "10px 16px",
+                  }}
+                  onClick={onSaveClick}
+                >
+                  Сохранить
+                </button>
+              </div>
+              <div className={styles.header_search}>
+                <input
+                  type="text"
+                  placeholder="Поиск"
+                  id="search"
+                  name="search"
+                  onChange={handleSearch}
+                  className={styles.hedaer_search_inner}
+                />
+                <img src="./img/search.svg"></img>
+              </div>
             </div>
             <div className={styles.header_button}>
               <Button
@@ -226,6 +229,7 @@ function HomePage() {
                   />
                 )}
               </div>
+              {selectedComponent === "Disciplines" && (
               <div className={styles.import}>
                 <input
                   type="file"
@@ -233,11 +237,14 @@ function HomePage() {
                   style={{ display: "none" }}
                   onChange={handleFileChange}
                 />
+                 
                 <button onClick={handleFileUpload}>
                   <p>Импорт файла</p>
                   <img src="./img/import.svg" alt=">"></img>
                 </button>
-              </div>
+                </div>
+                )}
+              
             </div>
           </div>
         </div>
@@ -295,6 +302,7 @@ function HomePage() {
       {filePopUp && 
           <PopUpFile setfilePopUp={setfilePopUp} handleFileClear={handleFileClear}/>
          }
+      {appData.errorPopUp &&  <PopUpError/>}
     </Layout>
   );
 }
