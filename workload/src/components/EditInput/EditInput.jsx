@@ -29,7 +29,7 @@ function EditInput({ selectedComponent, originalHeader }) {
     dispatch(actions.initializeFilters(basicTabData.tableHeaders));
   }, [basicTabData.tableHeaders, selectedComponent]);
 
-  // закрытие модального окна при нажатии вне него
+  //! закрытие модального окна при нажатии вне него
   const refLO = useRef(null);
   useEffect(() => {
     const handler = (event) => {

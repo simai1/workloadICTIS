@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./Profile.module.scss";
 import svgExit from "./../../img/exit.svg";
 import DataContext from "../../context";
@@ -11,6 +11,22 @@ function Profile(props) {
     DIRECTORATE: "Директор",
     EDUCATOR: "Преподаватель",
   };
+
+  //! закрытие модального окна при нажати вне него
+  useEffect(() => {
+    const handler = (event) => {
+      if (
+        props.refProfile.current &&
+        !props.refProfile.current.contains(event.target)
+      ) {
+        props.setOpenModalWind(false);
+      }
+    };
+    document.addEventListener("click", handler, true);
+    return () => {
+      document.removeEventListener("click", handler);
+    };
+  }, []);
 
   const clickModalWind = () => {
     props.setOpenModalWind(!props.onenModalWind);

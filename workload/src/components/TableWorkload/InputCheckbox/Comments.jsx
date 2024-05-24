@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import styles from "./../TableWorkload.module.scss";
 import { ReactComponent as LogoAllComment } from "./../../../img/arrow_down.svg";
 import { ReactComponent as CommentsSvg } from "./../../../img/comments.svg";
@@ -67,8 +67,27 @@ function Comments(props) {
     ]);
     setCommentWindowShow(false);
   };
+
+  //! закрытие модального окна при нажати вне него
+  const commentRef = useRef(null);
+  useEffect(() => {
+    const handler = (event) => {
+      if (commentRef.current && !commentRef.current.contains(event.target)) {
+        setCommentWindowShow(false);
+      }
+    };
+    document.addEventListener("click", handler, true);
+    return () => {
+      document.removeEventListener("click", handler);
+    };
+  }, []);
+
   return (
-    <div className={styles.Comments} onClick={(e) => e.stopPropagation()}>
+    <div
+      ref={commentRef}
+      className={styles.Comments}
+      onClick={(e) => e.stopPropagation()}
+    >
       {props.commentData.length > 0 && (
         <div>
           <div className={styles.circle} onClick={circleClick}>
@@ -112,13 +131,22 @@ function Comments(props) {
                 />
               </div>
               <div className={styles.btn_rigth}>
-                <CommentsSvg
-                  onClick={onTextArea}
-                  className={textArea ? styles.svg : null}
-                  height={16}
-                  width={16}
-                />
-                <Checkmark onClick={checkmarkClick} height={16} width={16} />
+                {appData.metodRole[appData.myProfile?.role]?.some(
+                  (el) => el === 22
+                ) && (
+                  <CommentsSvg
+                    onClick={onTextArea}
+                    className={textArea ? styles.svg : null}
+                    height={16}
+                    width={16}
+                  />
+                )}
+
+                {appData.metodRole[appData.myProfile?.role]?.some(
+                  (el) => el === 21
+                ) && (
+                  <Checkmark onClick={checkmarkClick} height={16} width={16} />
+                )}
               </div>
             </div>
             {textArea && (
