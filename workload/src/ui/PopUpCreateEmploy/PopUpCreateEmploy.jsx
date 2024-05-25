@@ -4,17 +4,25 @@ import DataContext from "../../context";
 import Input from "../Input/Input";
 import Button from "../Button/Button";
 import PopUpContainer from "../PopUpContainer/PopUpContainer";
+import List from "../List/List";
 
 export function PopUpCreateEmploy(props) { 
   const {appData} = React.useContext(DataContext);
- const [dataNewEdicator, setdataNewEdicator] = useState([
-    {
-        fio: "",
-        position: "",
-        rate: "",
-        department: "",
-    }
- ])
+    const [dataNewEdicator, setdataNewEdicator] = useState([
+        {
+            fio: "",
+            position: "",
+            rate: "",
+            typeOfEmployment: "",
+            department: "",
+        }
+    ])
+    const dataList = [
+        {id:1, name:'Внешнее совместительство'},
+        {id:2, name:'Внутреннее совместительство'},
+        {id:3, name:'Основное место работы'},
+        {id:4, name:'Почасовая оплата труда'}
+    ];
     const handleInputChange = (name, value) => {
         setdataNewEdicator(prevState => ({ ...prevState, [name]: value }));
         console.log("Worked")
@@ -28,7 +36,7 @@ export function PopUpCreateEmploy(props) {
             <div className={styles.inputBlock}>
                 <Input Textlabel="ФИО" placeholder="Иваннов Иван Михайлович" name={"fio"} handleInputChange={handleInputChange}/>
                 <Input Textlabel="Должность" placeholder="Заведующий кафедрой САПР" name={"position"} handleInputChange={handleInputChange}/>
-                {/* <Input Textlabel="Ставка" placeholder="0,5"/> */}
+                <List dataList={dataList} Textlabel="Вид занятости" defaultValue="Выберите вид занятости" name={"typeOfEmployment"} handleInputChange={handleInputChange}/>
                 <Input Textlabel="Ставка" placeholder="0,5" name={"rate"} handleInputChange={handleInputChange}/>
                 <Input Textlabel="Кафедра" placeholder="САПР" name={"department"} handleInputChange={handleInputChange}/>
             </div>
