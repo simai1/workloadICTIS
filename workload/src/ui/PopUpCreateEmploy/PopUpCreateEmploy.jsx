@@ -5,6 +5,7 @@ import Input from "../Input/Input";
 import Button from "../Button/Button";
 import PopUpContainer from "../PopUpContainer/PopUpContainer";
 import List from "../List/List";
+import { CreateEducator } from "../../api/services/ApiRequest";
 
 export function PopUpCreateEmploy(props) { 
   const {appData} = React.useContext(DataContext);
@@ -28,7 +29,9 @@ export function PopUpCreateEmploy(props) {
         console.log("Worked")
     }
     const handleClicks = () =>{
-        console.log('dataNewEdicator', dataNewEdicator)
+        CreateEducator(dataNewEdicator).then((response)=>{
+            console.log(response)
+        })
     }
   return (
     <PopUpContainer title="Добавление преподавателя" mT="120">
