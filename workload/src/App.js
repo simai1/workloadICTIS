@@ -21,6 +21,7 @@ import {
   funSplitData,
 } from "./components/TableWorkload/Function";
 import { delChangeData } from "./ui/ContextMenu/Function";
+import { getDataEducator } from "./api/services/AssignApiData";
 
 function App() {
   const [educator, setEducator] = useState([]); // преподаватели
@@ -33,10 +34,10 @@ function App() {
 
   //! в файле RoleMetods можно посмотреть назание метода и их id
   const metodRole = {
-    METHODIST: [1, 3, 8, 9, 10, 13, 14, 17, 20, 21],
+    METHODIST: [1, 3, 4, 8, 9, 10, 13, 14, 17, 20, 21],
     LECTURER: [2, 8, 15, 18, 22],
-    DEPARTMENT_HEAD: [2, 3, 8, 9, 10, 11, 12, 13, 15, 17, 18, 22],
-    DIRECTORATE: [1, 3, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21],
+    DEPARTMENT_HEAD: [2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 22],
+    DIRECTORATE: [1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21],
     EDUCATOR: [15],
   };
   // appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)
@@ -78,6 +79,7 @@ function App() {
   const [allCommentsData, setAllCommentsData] = useState([]); // все комментарии
   const [allOffersData, setAllOffersData] = useState([]); // предложения
   const [selectkafedra, setselectkafedra] = useState(""); //state выбранной кафедры
+  const [actionUpdTabTeach, setActionUpdTabTeach] = useState(false); // при изменении обновляется таблицы преподавателей
 
   const basicTabData = {
     updateAlldata,
@@ -98,7 +100,9 @@ function App() {
     funUpdateFastenedData,
     funUpdateAllColors,
     setselectkafedra,
-    selectkafedra
+    selectkafedra,
+    actionUpdTabTeach,
+    setActionUpdTabTeach,
   };
 
   const [coloredData, setColoredData] = useState([]); // выделенные цветом
@@ -265,7 +269,9 @@ function App() {
 
   //! получаем данные нагрузок с бд
   useEffect(() => {
-    updateAlldata();
+    if (myProfile) {
+      updateAlldata();
+    }
   }, [myProfile]);
 
   //! при переходе с кафедральных на общеинституские и обратно фильтруем основные
