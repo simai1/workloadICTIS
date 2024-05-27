@@ -68,7 +68,7 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
-//app.use(corsMiddleware);
+app.use(corsMiddleware);
 app.use(cors({
     credentials: true,
     origin: true,
