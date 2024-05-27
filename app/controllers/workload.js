@@ -22,7 +22,10 @@ export default {
                 res.json(workloadsDto);
             } else if (department){
                 const workloads = await Workload.findAll({
-                    where: { department },
+                    where: {
+                        isOid: false,
+                        department,
+                    },
                     include: { model: Educator },
                     order: [['id', 'ASC']],
                 })
