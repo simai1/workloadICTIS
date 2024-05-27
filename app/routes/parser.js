@@ -26,6 +26,12 @@ router
         upload.single('file'),
         asyncRoute(parserController.parseWorkload)
     )
+router
+    .route('/parseEducators/:numberDepartment')
+    .post(
+        upload.single('file'),
+        asyncRoute(parserController.parseEducators)
+    )
 
 
 export default router;
