@@ -8,6 +8,7 @@ import HeaderTranslation from "../config/header_translation.js";
 export default {
     async parseWorkload(req, res){
         const numberDepartment  = req.params.numberDepartment;
+        console.log()
         await sequelize.query(`DELETE FROM workloads where department=${numberDepartment}`, null);
 
         const workbook = XLSX.readFile(req.file.path);
@@ -23,12 +24,13 @@ export default {
         sheetData.slice(1).map(async row => {
             try {
                 if(Number(row[0])){
+                    console.log(row[0])
                     const obj = {};
                     headers.forEach((header, index) => {
                         const englishHeader = HeaderTranslation[header];
                         obj[englishHeader] = row[index];
                     });
-                    
+
                     obj.department = FullNameDepartments[obj.department];
                     obj.numberOfStudents = obj.numberOfStudents ? Number(obj.numberOfStudents.replace(',00','')) : 0;
                     obj.hours = obj.hours ? parseFloat(obj.hours.replace(',','.')) : 0.00;
