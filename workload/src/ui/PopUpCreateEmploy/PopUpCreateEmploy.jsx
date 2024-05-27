@@ -105,7 +105,6 @@ export function PopUpCreateEmploy(props) {
                 appData.setcreateEdicatorPopUp(false)
            }
         })
-
     }
   return (
     <PopUpContainer title="Добавление преподавателя" mT="120">
