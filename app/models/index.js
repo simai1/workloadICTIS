@@ -4,6 +4,7 @@ import Notification from './notifications.js';
 import Workload from './workload.js';
 import Educator from './educator.js';
 import User from './user.js';
+import UnsavedWorkload from './unsavedWorkload.js';
 import SummaryWorkload from './summary-workload.js';
 import TokenSchema from './token-model.js';
 import Comment from './comment.js';
@@ -18,6 +19,7 @@ export const models = {
     SummaryWorkload,
     Educator,
     Workload,
+    UnsavedWorkload,
     User,
     TokenSchema,
     Color,
