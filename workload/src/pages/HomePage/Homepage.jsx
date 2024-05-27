@@ -69,7 +69,7 @@ function HomePage() {
     // используется в TableWorkload
   };
 
-  const dl = [
+  const dataList = [
     {
       id: 1,
       name: "БИТ",
@@ -116,16 +116,18 @@ function HomePage() {
     },
   ];
 
-  const dataList = [];
-  basicTabData.workloadData.map((item) => {
-    if (!dataList.some((e) => e.name === item.department)) {
-      dataList.push({
-        id: dl.find((el) => el.name === item.department).id,
-        name: item.department,
-      });
-    }
-  });
-  console.log("dataList", dataList);
+  // let dataList = [];
+  // use
+  // basicTabData.workloadData.map((item) => {
+  //   if (!dataList.some((e) => e.name === item.department)) {
+  //     dataList.push({
+  //       id: dl.find((el) => el.name === item.department).id,
+  //       name: item.department,
+  //     });
+  //   }
+  // });
+  // dataList = dataList.length > 0 ? dataList : dl;
+  // console.log("dataList", dataList);
 
   //! сохранение буфера
   const onSaveClick = () => {
@@ -263,8 +265,7 @@ function HomePage() {
                     onClick={() => {
                       setTableMode("genInstitute");
                       EditTableData("genInstitute");
-                      basicTabData.funUpdateTable("0")
-
+                      basicTabData.funUpdateTable("0");
                     }}
                   />
                 </>
