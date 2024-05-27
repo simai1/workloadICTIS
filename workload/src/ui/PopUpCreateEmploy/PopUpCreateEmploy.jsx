@@ -12,6 +12,7 @@ export function PopUpCreateEmploy(props) {
     const [dataNewEdicator, setdataNewEdicator] = useState([
         {
             fio: "",
+            email: "",
             position: "",
             rate: "",
             typeOfEmployment: "",
@@ -38,6 +39,7 @@ export function PopUpCreateEmploy(props) {
         <div className={styles.mainPop__inner}>
             <div className={styles.inputBlock}>
                 <Input Textlabel="ФИО" placeholder="Иваннов Иван Михайлович" name={"fio"} handleInputChange={handleInputChange}/>
+                <Input Textlabel="Почта" placeholder="aaa@sfedu.ru" name={"email"} handleInputChange={handleInputChange}/>
                 <Input Textlabel="Должность" placeholder="Заведующий кафедрой САПР" name={"position"} handleInputChange={handleInputChange}/>
                 <List dataList={dataList} Textlabel="Вид занятости" defaultValue="Выберите вид занятости" name={"typeOfEmployment"} handleInputChange={handleInputChange}/>
                 <Input Textlabel="Ставка" placeholder="0,5" name={"rate"} handleInputChange={handleInputChange}/>

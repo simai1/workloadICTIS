@@ -56,7 +56,7 @@ export const EducatorLK = async (data) => {
 
 export const CreateEducator = async (data) => {
   try {
-    const response = await http.post(`${server}/educator/`, data);
+    const response = await http.post(`${server}/educator`, data);
     return response.data;
   } catch (error) {
     console.error("Error:", error);
