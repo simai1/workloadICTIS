@@ -81,7 +81,7 @@ export default {
         if (!rate) throw new AppErrorMissing('rate');
         if (!email) throw new AppErrorMissing('email');
         if (!department) throw new AppErrorMissing('department');
-        const checkEducator = await Educator.findOne({ where: { name } });
+        const checkEducator = await Educator.findOne({ where: { email } });
         if (checkEducator) throw new AppErrorAlreadyExists('educator');
 
         const educator = await Educator.create({

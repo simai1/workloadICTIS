@@ -1,8 +1,8 @@
 //? Здесь все запросы к апи, присвоение этих данных состояниями в AssingApiData
 
 import axios from "axios";
-const server = "http://localhost:3002";
-// const server = process.env.REACT_APP_API_URL;
+// const server = "http://localhost:3002";
+const server = process.env.REACT_APP_API_URL;
 const http = axios.create({
   withCredentials: true,
 });
@@ -154,7 +154,7 @@ export const addEducatorWorkload = async (data) => {
 
 //! запрос на разделение нагрузки
 export const splitWorkload = async (data) => {
-  console.log("Раздление нагрузки ", data);
+  console.log("Разделение нагрузки ", data);
   try {
     const response = await http.post(`${server}/workload/split`, data);
     console.log("response ", response);
