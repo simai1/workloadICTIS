@@ -12,9 +12,9 @@ export default {
     // Получение нагрузки
     async getAllWorkload({query: {isOid, department}}, res) {
         try {
-            if (isOid){
+            if (!(typeof isOid === "undefined")){
                 const workloads = await Workload.findAll({
-                    where: { isOid: true },
+                    where: { isOid },
                     include: { model: Educator },
                     order: [['id', 'ASC']],
                 })
@@ -22,7 +22,10 @@ export default {
                 res.json(workloadsDto);
             } else if (department){
                 const workloads = await Workload.findAll({
-                    where: { department },
+                    where: {
+                        isOid: false,
+                        department,
+                    },
                     include: { model: Educator },
                     order: [['id', 'ASC']],
                 })
