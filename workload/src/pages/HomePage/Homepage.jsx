@@ -114,7 +114,7 @@ function HomePage() {
             <div className={styles.header_top_save_search}>
               <div className={styles.saveBuffre}>
                 <button onClick={onSaveClick}>Сохранить</button>
-                <img src="./img/backBuffer.svg" />
+                <img src="./img/backBuffer.svg" onClick={appData.backBuffer} />
               </div>
               <div className={styles.header_search}>
                 <input

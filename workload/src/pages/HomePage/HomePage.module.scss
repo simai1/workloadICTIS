@@ -1,7 +1,11 @@
+@import "./../../style/colors.scss";
+@import "./../../style/mixin.scss";
+
 @font-face {
   font-family: "Noto_Sans";
   src: url(./../../../public/font/Noto_Sans/NotoSans-Variable.ttf);
 }
+
 * {
   font-family: "Noto_Sans", sans-serif;
 }
@@ -181,6 +185,7 @@ body {
     display: flex;
     flex-direction: row;
     button {
+      @include button(var(--blue-color), #fff, 10px, 5px);
       height: 45px;
       background-color: #3b28cc;
       color: #fff;
@@ -192,6 +197,7 @@ body {
     }
     img {
       display: flex;
+      cursor: pointer;
     }
   }
 }

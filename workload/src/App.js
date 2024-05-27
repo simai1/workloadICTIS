@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage/Homepage";
 import DataContext from "./context";
 import Authorization from "./pages/Authorization/Authorization";
-import { bufferRequestToApi } from "./bufferFunction";
+import { bufferRequestToApi, returnPrevState } from "./bufferFunction";
 import { headers } from "./components/TableWorkload/Data";
 import {
   Comment,
@@ -20,6 +20,7 @@ import {
   funSortedFastened,
   funSplitData,
 } from "./components/TableWorkload/Function";
+import { delChangeData } from "./ui/ContextMenu/Function";
 
 function App() {
   const [educator, setEducator] = useState([]); // преподаватели
@@ -42,8 +43,8 @@ function App() {
 
   //! буфер последних действий. Выполняется после кнопки сохранить
   const [bufferAction, setBufferAction] = useState([]);
-  const [errorPopUp, seterrorPopUp] = useState(false);//popUp error visible
-  const [createEdicatorPopUp, setcreateEdicatorPopUp] = useState(false);//popUp error visible
+  const [errorPopUp, seterrorPopUp] = useState(false); //popUp error visible
+  const [createEdicatorPopUp, setcreateEdicatorPopUp] = useState(false); //popUp error visible
 
   const appData = {
     individualCheckboxes,
@@ -65,7 +66,8 @@ function App() {
     seterrorPopUp,
     errorPopUp,
     setcreateEdicatorPopUp,
-    createEdicatorPopUp
+    createEdicatorPopUp,
+    backBuffer,
   };
 
   // ! параметры таблицы
@@ -75,6 +77,26 @@ function App() {
   const [filtredData, setFiltredData] = useState([]); // фильтрованные данные
   const [allCommentsData, setAllCommentsData] = useState([]); // все комментарии
   const [allOffersData, setAllOffersData] = useState([]); // предложения
+
+  const basicTabData = {
+    updateAlldata,
+    tableHeaders,
+    setTableHeaders,
+    workloadData,
+    setWorkloadData,
+    workloadDataFix,
+    setWorkloadDataFix,
+    filtredData,
+    setFiltredData,
+    allCommentsData,
+    allOffersData,
+    setAllCommentsData,
+    funUpdateAllComments,
+    funUpdateOffers,
+    funUpdateTable,
+    funUpdateFastenedData,
+    funUpdateAllColors,
+  };
 
   const [coloredData, setColoredData] = useState([]); // выделенные цветом
   const [fastenedData, setFastenedData] = useState([]); // закрепленные строки (храним их id)
@@ -147,39 +169,39 @@ function App() {
   };
 
   //! функция обновления комментаривев
-  const funUpdateAllComments = () => {
+  function funUpdateAllComments() {
     Comment().then((data) => {
       console.log("comments", data);
       setAllCommentsData(data);
     });
-  };
+  }
 
   //! функция обновления предложений преподавателей
-  const funUpdateOffers = () => {
+  function funUpdateOffers() {
     getOffers().then((data) => {
       console.log("предложения", data);
       setAllOffersData(data);
     });
-  };
+  }
 
   //! функция получения закрепленных строк
-  const funUpdateFastenedData = () => {
+  function funUpdateFastenedData() {
     getAllAttaches().then((data) => {
       console.log("закрепленные", data);
       setFastenedData(data);
     });
-  };
+  }
 
   //! функция получения выделенных цветом строк
-  const funUpdateAllColors = () => {
+  function funUpdateAllColors() {
     getAllColors().then((data) => {
       console.log("выделенные", data);
       setColoredData(data);
     });
-  };
+  }
 
   //! функция обновления таблицы
-  const funUpdateTable = () => {
+  function funUpdateTable() {
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
       apiGetWorkloadDepartment().then((data) => {
         console.log("нагрузки по кафедре", data);
@@ -202,10 +224,10 @@ function App() {
         setFiltredData(fixData);
       });
     }
-  };
+  }
 
   //! функция обновления всех данных
-  const updateAlldata = () => {
+  function updateAlldata() {
     // получаем данные таблицы
     funUpdateTable();
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 20)) {
@@ -220,28 +242,7 @@ function App() {
     funUpdateFastenedData();
     // получение выделенных строк
     funUpdateAllColors();
-  };
-
-  const basicTabData = {
-    updateAlldata,
-    tableHeaders,
-    setTableHeaders,
-    workloadData,
-    setWorkloadData,
-    workloadDataFix,
-    setWorkloadDataFix,
-    filtredData,
-    setFiltredData,
-    allCommentsData,
-    allOffersData,
-    setAllCommentsData,
-    funUpdateAllComments,
-    funUpdateOffers,
-    funUpdateTable,
-    funUpdateFastenedData,
-    funUpdateAllColors,
-    
-  };
+  }
 
   //! получаем и записываем данные usera
   useEffect(() => {
@@ -312,6 +313,108 @@ function App() {
     document.addEventListener("keydown", handleKeyDown);
 
     // Удалите обработчик события keydown при размонтировании компонента
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [bufferAction]);
+
+  //! функция отмены последенего действия с буффера
+  function backBuffer() {
+    console.log("отеменено последнее действие", bufferAction);
+    //! отмена последнего действия
+    if (bufferAction.length > 0) {
+      if (
+        bufferAction[0].request === "removeEducatorinWorkload" ||
+        bufferAction[0].request === "addEducatorWorkload"
+      ) {
+        // убираем выделение с преподавателя
+        setChangedData(
+          delChangeData(changedData, "educator", [
+            bufferAction[0].data.workloadId,
+          ])
+        );
+
+        returnPrevState(bufferAction, workloadDataFix).then((data) => {
+          setWorkloadDataFix(data);
+          setBufferAction((prevItems) => prevItems.slice(1));
+        });
+      } else if (bufferAction[0].request === "deleteComment") {
+        setAllCommentsData([...allCommentsData, ...bufferAction[0].prevState]);
+        setBufferAction((prevItems) => prevItems.slice(1));
+      } else if (bufferAction[0].request === "joinWorkloads") {
+        // удаляем нагрузку которую обьеденили
+        const dataTable = workloadDataFix.filter(
+          (item) => !bufferAction[0].prevState.some((el) => el.id === item.id)
+        );
+        // сохраняем индекс удаленного элемента
+        const deletedIndex = workloadDataFix.findIndex((item) =>
+          bufferAction[0].prevState.some((el) => el.id === item.id)
+        );
+        const newArray = [...dataTable];
+        newArray.splice(deletedIndex, 0, ...bufferAction[0].prevState);
+        setWorkloadDataFix(newArray);
+        // убираем заблокированные элементы
+        setChangedData((prev) =>
+          prev.filter(
+            (el) => !bufferAction[0].prevState.some((item) => item.id !== el)
+          )
+        );
+      } else if (bufferAction[0].request === "splitWorkload") {
+        // отмена разделения нагрузки
+        setWorkloadDataFix(
+          workloadDataFix.filter(
+            (item) => !bufferAction[0].newIds.includes(item.id)
+          )
+        );
+        setWorkloadDataFix((prev) => [bufferAction[0].prevState[0], ...prev]);
+      } else if (bufferAction[0].request === "workloadUpdata") {
+        //отмена изменения даннных textarea
+        const newData = [...workloadDataFix];
+        newData.map((item) => {
+          if (item.id === bufferAction[0].data.id) {
+            item[bufferAction[0].data.key] = bufferAction[0].prevState;
+          }
+          return item;
+        });
+        setWorkloadDataFix([...newData]);
+        // убираем заблокированные элементы
+        // убираем выделение с преподавателя
+        setChangedData(
+          delChangeData(changedData, bufferAction[0].data.key, [
+            bufferAction[0].data.id,
+          ])
+        );
+        setBufferAction((prevItems) => prevItems.slice(1));
+      } else if (bufferAction[0].request === "deleteWorkload") {
+        // возвращаем удаленную нагрузку
+        let cd = changedData;
+        cd.deleted = cd.deleted.filter(
+          (el) => !bufferAction[0].data.ids.some((item) => item === el) && el
+        );
+        setChangedData(cd);
+        setBufferAction((prevItems) => prevItems.slice(1));
+      }
+    }
+  }
+  //! обновление таблицы, отмена действия при ctrl+z
+  useEffect(() => {
+    if (bufferAction[0] === 0) {
+      setBufferAction([]);
+    }
+    const handleKeyDown = (event) => {
+      //! следим за нажатием ctrl + z для отмены последнего действияы
+      if (
+        (event.ctrlKey || event.comand) &&
+        (event.key === "z" ||
+          event.key === "я" ||
+          event.key === "Z" ||
+          event.key === "Я")
+      ) {
+        backBuffer();
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
