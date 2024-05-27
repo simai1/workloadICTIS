@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import styles from "./HomePage.module.scss";
-import TableDisciplines from "../../components/TableDisciplines/TableDisciplines";
 import TableTeachers from "../../components/TableTeachers/TableTeachers";
 import Button from "../../ui/Button/Button";
 import Layout from "../../ui/Layout/Layout";
@@ -11,82 +10,61 @@ import EditInput from "../../components/EditInput/EditInput";
 import DataContext from "../../context";
 import { bufferRequestToApi } from "../../bufferFunction";
 import FiltredRows from "../../ui/FiltredRows/FiltredRows";
-import { getDataTable } from "../../api/services/AssignApiData";
+import TableWorkload from "../../components/TableWorkload/TableWorkload";
+import {
+  headers,
+  headersEducator,
+  tableHeadersLks,
+} from "../../components/TableWorkload/Data";
+import { PopUpFile } from "../../ui/PopUpFile/PopUpFile";
+import { PopUpError } from "../../ui/PopUp/PopUpError";
 
 function HomePage() {
-  const { appData } = React.useContext(DataContext);
-
+  const { appData, tabPar, visibleDataPar, basicTabData } =
+    React.useContext(DataContext);
+  //! заголовки таблиц
+  const workloadTableHeaders = headers; // заголовок таблицы на главной странице
+  const educatorTableHeaders = headersEducator; // заголовок таблтиц преподавателей
+  const educatorLkHeaders = tableHeadersLks; // заголовок страницы личного кабинета
+  const [tableHeaders, setTableHeaders] = useState(workloadTableHeaders);
+  const [filePopUp, setfilePopUp] = useState(false);
   const [selectedComponent, setSelectedComponent] = useState("Disciplines");
   const [tableMode, setTableMode] = useState("cathedrals"); //выбранный компонент
-
   const [educatorData, setEducatorData] = useState([]); // данные о преподавателе получаем в TableTeachers
   const [searchTerm, setSearchTerm] = useState(""); //поиск по таблице
   const [onenModalWind, setOpenModalWind] = useState(false); // переменная закрытия модального окна профиля
   const refProfile = React.useRef(null); // ссылка на модальное окно профиля
   const [educatorIdforLk, setEducatorIdforLk] = useState(""); // id для вывода LK, если пустое то LK не отображается
-  const [SelectedText, setSelectedText] = useState("Все дисциплины"); // текст в FiltredRows
   const handleButtonClick = () => {
     setEducatorIdforLk("");
   };
 
-  const tableHeaders2 = [
-    { key: "id", label: "№" },
-    { key: "name", label: "Преподователь" },
-    { key: "position", label: "Должность" },
-    { key: "typeOfEmployment", label: "Вид занятости" },
-    { key: "department", label: "Кафедра" },
-    { key: "rate", label: "Ставка" },
-    { key: "maxHours", label: "Максимум часов" },
-    { key: "recommendedMaxHours", label: "Рекомендуемый максимум часов" },
-    { key: "minHours", label: "Минимум часов" },
-  ];
   const handleComponentChange = (component) => {
     setSelectedComponent(component);
+    tabPar.setSelectedTable(component);
     if (component === "Disciplines") {
-      setTableHeaders(tableHeaders);
+      basicTabData.setTableHeaders(workloadTableHeaders);
+    } else if (component === "Teachers") {
+      console.log(component);
+      basicTabData.setTableHeaders(educatorTableHeaders);
     } else {
-      setTableHeaders(tableHeaders2);
+      basicTabData.setTableHeaders(educatorLkHeaders);
     }
   };
 
   const changeInput = () => {
-    setTableHeaders(tableHeaders2);
+    setTableHeaders(educatorTableHeaders);
   };
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
   };
 
-  const EditTableData = (selectedComponent) => {
-    console.log(selectedComponent);
+  const EditTableData = (tableMode) => {
+    tabPar.setDataIsOid(tableMode === "genInstitute");
     //тут написать функцию которая будет подгружать нужное содержимое tableData и tableHeaders
+    // используется в TableWorkload
   };
-  const tableHeaders = [
-    { key: "id", label: "№" },
-    { key: "discipline", label: "Дисциплина" },
-    { key: "workload", label: "Нагрузка" },
-    { key: "groups", label: "Группа" },
-    { key: "department", label: "Кафедра" },
-    { key: "block", label: "Блок" },
-    { key: "semester", label: "Семестр" },
-    { key: "period", label: "Период" },
-    { key: "curriculum", label: "Учебный план" },
-    { key: "curriculumUnit", label: "Подразделение учебного плана" },
-    { key: "formOfEducation", label: "Форма обучения" },
-    { key: "levelOfTraining", label: "Уровень подготовки" },
-    {
-      key: "specialty",
-      label: "Направление подготовки (специальность)",
-    },
-    { key: "core", label: "Профиль" },
-    { key: "numberOfStudents", label: "Количество студентов" },
-    { key: "hours", label: "Часы" },
-    { key: "audienceHours", label: "Аудиторные часы" },
-    { key: "ratingControlHours", label: "Часы рейтинг-контроль" },
-    { key: "educator", label: "Преподаватель" },
-  ];
-
-  const [tableHeadersTeacher, setTableHeaders] = useState(tableHeaders);
 
   //! сохранение буфера
   const onSaveClick = () => {
@@ -94,6 +72,15 @@ function HomePage() {
     console.log("Сохранено", appData.bufferAction);
     bufferRequestToApi(appData.bufferAction).then(() => {
       appData.setBufferAction([0]);
+      basicTabData.updateAlldata();
+    });
+    tabPar.setSelectedTr([]);
+    tabPar.setChangedData({
+      splitjoin: [],
+      educator: [],
+      hours: [],
+      numberOfStudents: [],
+      deleted: [],
     });
     console.log("выполнено и очищено", appData.bufferAction);
   };
@@ -103,14 +90,20 @@ function HomePage() {
   const handleFileUpload = () => {
     fileInputRef.current.click();
   };
-  const handleFileClear = () =>{
-    fileInputRef.current.value = null
-  }
+  const handleFileClear = () => {
+    fileInputRef.current.value = null;
+  };
   const handleFileChange = () => {
     const file = fileInputRef.current.files[0];
-    // Здесь можно выполнить дополнительную обработку загруженного файла
-    console.log("Выбранный файл:", file);
-    appData.setFileData(file)
+    appData.setFileData(file);
+    setfilePopUp(!filePopUp);
+  };
+
+  //! при нажатии на ракету
+  const raketClick = () => {
+    visibleDataPar.setStartData(0);
+    const table = document.querySelector("table");
+    table.scrollIntoView(true);
   };
 
   return (
@@ -118,32 +111,22 @@ function HomePage() {
       <div className={styles.HomePage}>
         <div className={styles.header}>
           <div className={styles.header_top}>
-            <div>
-              <button
-                style={{
-                  height: "45px",
-                  backgroundColor: "#3b28cc",
-                  color: "#fff",
-                  borderRadius: " 8px",
-                  border: "none",
-                  fontSize: "18px",
-                  padding:"10px 16px"
-                }}
-                onClick={onSaveClick}
-              >
-                Сохранить
-              </button>
-            </div>
-            <div className={styles.header_search}>
-              <input
-                type="text"
-                placeholder="Поиск"
-                id="search"
-                name="search"
-                onChange={handleSearch}
-                className={styles.hedaer_search_inner}
-              />
-              <img src="./img/search.svg"></img>
+            <div className={styles.header_top_save_search}>
+              <div className={styles.saveBuffre}>
+                <button onClick={onSaveClick}>Сохранить</button>
+                <img src="./img/backBuffer.svg" onClick={appData.backBuffer} />
+              </div>
+              <div className={styles.header_search}>
+                <input
+                  type="text"
+                  placeholder="Поиск"
+                  id="search"
+                  name="search"
+                  onChange={handleSearch}
+                  className={styles.hedaer_search_inner}
+                />
+                <img src="./img/search.svg"></img>
+              </div>
             </div>
             <div className={styles.header_button}>
               <Button
@@ -157,17 +140,22 @@ function HomePage() {
                 }}
                 text="Дисциплины"
               />
-              <Button
-                Bg={selectedComponent === "Teachers" ? "#3B28CC" : "#efedf3"}
-                textColot={
-                  selectedComponent === "Disciplines" ? "#000000" : "#efedf3"
-                }
-                onClick={() => {
-                  handleComponentChange("Teachers");
-                  handleButtonClick();
-                }}
-                text="Преподователи"
-              />
+
+              {appData.metodRole[appData.myProfile?.role]?.some(
+                (el) => el === 3
+              ) && (
+                <Button
+                  Bg={selectedComponent === "Teachers" ? "#3B28CC" : "#efedf3"}
+                  textColot={
+                    selectedComponent === "Disciplines" ? "#000000" : "#efedf3"
+                  }
+                  onClick={() => {
+                    handleComponentChange("Teachers");
+                    handleButtonClick();
+                  }}
+                  text="Преподователи"
+                />
+              )}
             </div>
             <div className={styles.header_left_component}>
               <Warnings
@@ -197,7 +185,7 @@ function HomePage() {
                     text="Кафедральные"
                     onClick={() => {
                       setTableMode("cathedrals");
-                      EditTableData(tableMode);
+                      EditTableData("cathedrals");
                     }}
                   />
                   <Button
@@ -208,45 +196,58 @@ function HomePage() {
                     text="Общеинститутские"
                     onClick={() => {
                       setTableMode("genInstitute");
-                      EditTableData(tableMode);
+                      EditTableData("genInstitute");
                     }}
                   />
                 </>
               )}
-              <FiltredRows
-                SelectedText={SelectedText}
-                setSelectedText={setSelectedText}
-              />
+              {selectedComponent === "Disciplines" && <FiltredRows />}
             </div>
 
             <div className={styles.right_button}>
               <div className={styles.EditInput}>
                 {educatorIdforLk === "" && (
                   <EditInput
-                    selectedComponent={selectedComponent} //! исправить не обновляется
-                    tableHeaders={tableHeadersTeacher}
+                    selectedComponent={selectedComponent}
+                    originalHeader={
+                      selectedComponent === "Disciplines"
+                        ? workloadTableHeaders
+                        : educatorTableHeaders
+                    } //! исправить не обновляется
                   />
                 )}
               </div>
-              <div className={styles.import}>
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  style={{ display: "none" }}
-                  onChange={handleFileChange}
-                />
-                <button onClick={handleFileUpload}>
-                  <p>Импорт файла</p>
-                  <img src="./img/import.svg" alt=">"></img>
-                </button>
-              </div>
+              {selectedComponent === "Disciplines" && (
+                <div className={styles.import}>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    style={{ display: "none" }}
+                    onChange={handleFileChange}
+                  />
+
+                  <button onClick={handleFileUpload}>
+                    <p>Импорт файла</p>
+                    <img src="./img/import.svg" alt=">"></img>
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
-
         <div className={styles.Block__tables}>
           {selectedComponent === "Disciplines" ? (
-            <TableDisciplines
+            // <TableDisciplines
+            //   handleFileClear={handleFileClear}
+            //   tableMode={tableMode}
+            //   tableHeaders={tableHeaders}
+            //   searchTerm={searchTerm}
+            //   setSearchTerm={setSearchTerm}
+            //   refProfile={refProfile}
+            //   setOpenModalWind={setOpenModalWind}
+            //   SelectedText={SelectedText}
+            // />
+            <TableWorkload
               handleFileClear={handleFileClear}
               tableMode={tableMode}
               tableHeaders={tableHeaders}
@@ -254,14 +255,13 @@ function HomePage() {
               setSearchTerm={setSearchTerm}
               refProfile={refProfile}
               setOpenModalWind={setOpenModalWind}
-              SelectedText={SelectedText}
             />
           ) : selectedComponent === "Teachers" && educatorIdforLk === "" ? (
             <TableTeachers
               setEducatorIdforLk={setEducatorIdforLk}
               changeInput={changeInput}
               setTableHeaders={setTableHeaders}
-              tableHeaders={tableHeadersTeacher}
+              tableHeaders={tableHeaders}
               searchTerm={searchTerm}
               setSearchTerm={setSearchTerm}
               setEducatorData={setEducatorData}
@@ -276,7 +276,7 @@ function HomePage() {
             />
           ) : null}
         </div>
-        <a href="#">
+        <div onClick={raketClick}>
           <div className={styles.rocket}>
             <img
               className={styles.rocket_img}
@@ -284,8 +284,15 @@ function HomePage() {
               alt="up"
             />
           </div>
-        </a>
+        </div>
       </div>
+      {filePopUp && (
+        <PopUpFile
+          setfilePopUp={setfilePopUp}
+          handleFileClear={handleFileClear}
+        />
+      )}
+      {appData.errorPopUp && <PopUpError />}
     </Layout>
   );
 }

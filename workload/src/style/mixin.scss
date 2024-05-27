@@ -1,0 +1,113 @@
+@mixin stickyTd($width, $left) {
+  position: sticky;
+  width: $width;
+  min-width: $width;
+  max-width: $width;
+  left: $left;
+  box-sizing: border-box;
+}
+
+@mixin customTd($width) {
+  min-width: $width;
+  max-width: $width;
+}
+
+@mixin customTdFixWidth() {
+  .tdInner {
+    overflow: hidden; // Скрыть контент, выходящий за пределы обертки
+    white-space: nowrap; // Запретить перенос строк
+    text-overflow: ellipsis; // Добавить многоточие в конце обрезанного текста
+    &:hover {
+      overflow: visible; // Показать полный текст при наведении
+      white-space: normal; // Разрешить перенос строк при наведении
+      text-overflow: unset; // Убрать многоточие при наведении
+    }
+  }
+}
+@mixin input-text($width, $border-radius) {
+  width: $width;
+  outline: none;
+  background-color: #fff;
+  color: #353535;
+  padding: 15px 15px;
+  border: 1px solid #ADADAD;
+  margin-top: 3px;
+  border-radius: $border-radius;
+  &::placeholder {
+    color: #afbbbd;
+  }
+}
+
+@mixin scrollStyle($width, $height) {
+  &::-webkit-scrollbar {
+    width: $width; /* ширина scrollbar */
+    height: $height;
+  }
+  &::-webkit-scrollbar-track {
+    background: #fff; /* цвет дорожки */
+  }
+  &::-webkit-scrollbar-thumb,
+  &::-webkit-scrollbar-thumb {
+    background-color: #a6a6a6;
+    border-radius: 5px;
+    border: 3px solid #a6a6a6;
+  }
+}
+
+@mixin scrollTable($width, $height, $bgraund, $margin-top, $margin-left) {
+  &::-webkit-scrollbar {
+    width: $width; /* ширина scrollbar */
+    height: $height;
+  }
+  &::-webkit-scrollbar-track {
+    background: $bgraund; /* цвет дорожки */
+    margin-top: $margin-top;
+    margin-left: $margin-left;
+  }
+  &::-webkit-scrollbar-thumb,
+  &::-webkit-scrollbar-thumb {
+    background-color: $bgraund;
+    border-radius: 5px;
+  }
+}
+
+@mixin boxShadow() {
+  border-radius: 8px;
+  box-shadow: 0px 3px 18px rgba(0, 0, 0, 0.15);
+}
+@mixin fontText($size, $weight) {
+  font-size: $size;
+  font-weight: $weight;
+}
+
+@mixin circle($bgColor) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  background-color: $bgColor;
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+}
+
+@mixin line($color) {
+  position: absolute;
+  right: -19px;
+  background-color: $color;
+  width: 4px;
+  height: 40%;
+  margin-top: 70%;
+}
+@mixin button($bgcolor, $textColor, $paddingTB, $paddingLR) {
+  border-radius: 8px;
+  color: $textColor;
+  background-color: $bgcolor;
+  padding: $paddingTB $paddingLR;
+  cursor: pointer;
+  &:hover {
+    opacity: 0.8;
+    transition: all ease 0.15s;
+  }
+}

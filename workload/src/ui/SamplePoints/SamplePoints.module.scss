@@ -1,16 +1,15 @@
 .SamplePoints {
   position: absolute;
+  top: 110px;
   max-height: 280px;
   background-color: #fff;
-  max-width: 340px;
-  //   top: 100px;
-  //   left: 200px;
+  max-width: 300px;
+  min-width: 200px;
   box-shadow: 9px 3px 18px rgba(0, 0, 0, 0.2);
-  z-index: 200;
   padding: 16px;
   display: flex;
-  justify-content: center;
   border-radius: 8px;
+  z-index: 100;
   .search {
     width: 95%;
     position: relative;
@@ -24,8 +23,10 @@
   .points {
     position: relative;
     overflow-y: auto;
+    overflow-x: hidden;
     height: 70%;
     font-size: 16px;
+    margin-top: 10px;
     input {
       position: absolute;
       display: flex;
@@ -36,6 +37,11 @@
       width: 20px;
       height: 20px;
       cursor: pointer;
+    }
+    p {
+      font-size: 16px;
+      font-weight: 400;
+      text-align: left;
     }
   }
   .points::-webkit-scrollbar {

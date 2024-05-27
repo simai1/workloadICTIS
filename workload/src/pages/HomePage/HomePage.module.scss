@@ -1,7 +1,11 @@
+@import "./../../style/colors.scss";
+@import "./../../style/mixin.scss";
+
 @font-face {
   font-family: "Noto_Sans";
   src: url(./../../../public/font/Noto_Sans/NotoSans-Variable.ttf);
 }
+
 * {
   font-family: "Noto_Sans", sans-serif;
 }
@@ -11,7 +15,7 @@ body {
 .HomePage {
   .header {
     position: relative;
-    z-index: 200 !important;
+    // z-index: 200 !important;
     background-color: #efedf3;
     width: 100%;
     display: flex;
@@ -22,36 +26,39 @@ body {
       width: 100%;
       display: flex;
       justify-content: space-between;
-
-      .header_button {
+      .header_top_save_search {
         display: flex;
-      }
-      .header_search {
-        display: flex;
-        align-items: center;
-        width: 310px;
-        height: 45px;
-        box-sizing: border-box;
-        padding: 10px;
-        border: 1px solid #b0b0b0;
-        border-radius: 8px;
-        color: #b0b0b0;
-
-        .hedaer_search_inner {
-          width: 100%;
+        .header_button {
           display: flex;
-          position: relative;
-          padding: 0;
-          border: none;
-          outline: none;
-          margin: 0;
-          background-color: #efedf3;
-          font-size: 18px;
-          font-weight: 500;
-          color: #929292;
         }
-        .hedaer_search::-webkit-input-placeholder {
+        .header_search {
+          display: flex;
+          align-items: center;
+          width: 310px;
+          height: 45px;
+          box-sizing: border-box;
+          padding: 10px;
+          border: 1px solid #b0b0b0;
+          border-radius: 8px;
           color: #b0b0b0;
+          margin-left: 20px;
+
+          .hedaer_search_inner {
+            width: 100%;
+            display: flex;
+            position: relative;
+            padding: 0;
+            border: none;
+            outline: none;
+            margin: 0;
+            background-color: #efedf3;
+            font-size: 18px;
+            font-weight: 500;
+            color: #929292;
+          }
+          .hedaer_search::-webkit-input-placeholder {
+            color: #b0b0b0;
+          }
         }
       }
       .header_left_component {
@@ -147,7 +154,7 @@ body {
   .Block__tables {
     height: auto;
     position: relative;
-    margin-right: 64px;
+    // margin-right: 64px;
     z-index: 100;
   }
 
@@ -172,5 +179,25 @@ body {
   .rocket:hover {
     opacity: 70%;
     transition: opacity 0.15s linear;
+  }
+
+  .saveBuffre {
+    display: flex;
+    flex-direction: row;
+    button {
+      @include button(var(--blue-color), #fff, 10px, 5px);
+      height: 45px;
+      background-color: #3b28cc;
+      color: #fff;
+      border-radius: 8px;
+      border: none;
+      font-size: 18px;
+      padding: 10px 16px;
+      margin-right: 10px;
+    }
+    img {
+      display: flex;
+      cursor: pointer;
+    }
   }
 }
