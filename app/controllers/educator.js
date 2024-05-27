@@ -6,8 +6,6 @@ import { map as mapPositions } from '../config/position.js';
 import { map as mapTypeOfEmployments } from '../config/type-of-employment.js';
 import Workload from '../models/workload.js';
 import SummaryWorkload from '../models/summary-workload.js';
-import WorkloadDto from '../dtos/workload-dto.js';
-import User from '../models/user.js';
 import WorkloadProfileDto from "../dtos/workload-profile-dto.js";
 import EducatorListDto from "../dtos/educator-list-dto.js";
 
@@ -76,17 +74,19 @@ export default {
         res.json(educator);
     },
     // Создаем преподователя
-    async create({ body: { name, position, typeOfEmployment, rate, department } }, res) {
+    async create({ body: { name, position, typeOfEmployment, rate, email, department } }, res) {
         if (!name) throw new AppErrorMissing('name');
         if (!position) throw new AppErrorMissing('position');
         if (!typeOfEmployment) throw new AppErrorMissing('typeOfEmployment');
         if (!rate) throw new AppErrorMissing('rate');
+        if (!email) throw new AppErrorMissing('email');
         if (!department) throw new AppErrorMissing('department');
         const checkEducator = await Educator.findOne({ where: { name } });
         if (checkEducator) throw new AppErrorAlreadyExists('educator');
 
         const educator = await Educator.create({
             name,
+            email,
             position,
             typeOfEmployment,
             rate,
