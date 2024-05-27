@@ -95,7 +95,7 @@ io.on('connection', socket => {
         console.log('Уведомление отправилось клиенту', eventData);
     });
 
-    socket.on('response', data => {
+    socket.on('response', () => {
         socket.emit('response', 'data received');
     });
 
