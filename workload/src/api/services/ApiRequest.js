@@ -395,3 +395,16 @@ export const SubmitFileXLSX = async (data) => {
     throw error;
   }
 };
+
+//!Получение роли 
+
+export const GetRole = async () => {
+  try {
+    const response = await axios.get(`${server}/user`);
+    console.log("GetRole", response)
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
