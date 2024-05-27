@@ -78,6 +78,7 @@ function App() {
   const [filtredData, setFiltredData] = useState([]); // фильтрованные данные
   const [allCommentsData, setAllCommentsData] = useState([]); // все комментарии
   const [allOffersData, setAllOffersData] = useState([]); // предложения
+  const [selectkafedra, setselectkafedra] = useState(""); //state выбранной кафедры
   const [actionUpdTabTeach, setActionUpdTabTeach] = useState(false); // при изменении обновляется таблицы преподавателей
 
   const basicTabData = {
@@ -98,6 +99,8 @@ function App() {
     funUpdateTable,
     funUpdateFastenedData,
     funUpdateAllColors,
+    setselectkafedra,
+    selectkafedra,
     actionUpdTabTeach,
     setActionUpdTabTeach,
   };
@@ -205,7 +208,7 @@ function App() {
   }
 
   //! функция обновления таблицы
-  function funUpdateTable(param = "") {
+  function funUpdateTable(param = "1") {
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
       apiGetWorkloadDepartment().then((data) => {
         console.log("нагрузки по кафедре", data);
@@ -220,10 +223,13 @@ function App() {
     // без параметров - вся абсолютно нагрузка,
     // ?isOid=true - вся ОИД нагрузка,
     // ?isOid=false - вся кафедральная нагрузка,
-    // ?department=номер кафедры - нагрузка одной кафедры
-
+    // ?department={номер кафедры} - нагрузка одной кафедры
+    let url = "";
+    (param != "0") ?  url = `?department=${param}` : url = "?isOid=true"
+     
+      console.log(url)
     if (metodRole[myProfile?.role]?.some((el) => el === 14)) {
-      Workload(param).then((data) => {
+      Workload(`${url}`).then((data) => {
         console.log("нагрузки", data);
         const dataBd = [...data];
         setWorkloadData(dataBd);

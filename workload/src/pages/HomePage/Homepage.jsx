@@ -263,6 +263,8 @@ function HomePage() {
                     onClick={() => {
                       setTableMode("genInstitute");
                       EditTableData("genInstitute");
+                      basicTabData.funUpdateTable("0")
+
                     }}
                   />
                 </>
