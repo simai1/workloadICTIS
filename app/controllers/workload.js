@@ -3,10 +3,12 @@ import departments from '../config/departments.js';
 import Workload from '../models/workload.js';
 import Educator from '../models/educator.js';
 import Notification from '../models/notifications.js';
-
+import {map as mapDepartments} from "../config/departments.js";
 import WorkloadDto from '../dtos/workload-dto.js';
 import SummaryWorkload from '../models/summary-workload.js';
 import checkHours from '../utils/notification.js';
+import { sequelize } from "../models/index.js";
+
 
 export default {
     // Получение нагрузки
@@ -307,6 +309,19 @@ export default {
 
         const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
         res.json(workloadsDto);
+    },
+    async getUsableDepartments(req, res){
+        const queryResult = await sequelize.query('SELECT DISTINCT department FROM workloads ORDER BY department ASC;');
+        const usableDepartments = [];
+        for (const usableDepartment of queryResult[0]) {
+            const department = mapDepartments[usableDepartment.department];
+            usableDepartments.push({
+                    id: usableDepartment.department,
+                    name: department,
+            })
+        }
+        //const departValues = queryResult.rows.map(row => row.depart.toString());
+        res.json(usableDepartments);
     },
     async changeColorWorkload(req, res) {},
 };
