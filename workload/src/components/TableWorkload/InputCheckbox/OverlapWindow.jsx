@@ -90,6 +90,8 @@ function OverlapWindow(props) {
         changed.splitjoin = changed.splitjoin.filter(
           (item) => item.slice(0, -1) !== props.itid.slice(0, -1)
         );
+        console.log(changed);
+
         tabPar.setChangedData(changed);
         basicTabData.updateAlldata();
       });
