@@ -292,7 +292,6 @@ function HomePage() {
           </div>
         </div>
       </div>
-      <NoSaveData onSaveClick={onSaveClick} />
     </Layout>
   );
 }

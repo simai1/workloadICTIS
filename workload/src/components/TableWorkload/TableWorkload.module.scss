@@ -436,6 +436,33 @@ $heightCell: 150px;
       align-items: center;
       padding-bottom: 10px;
 
+      .confirmationDel {
+        display: flex;
+        flex-direction: column;
+        width: 230px;
+        .text {
+          display: flex;
+          width: 100%;
+          justify-content: center;
+          text-align: center;
+          padding-bottom: 10px;
+        }
+        .btn {
+          display: flex;
+          width: 100%;
+          justify-content: center;
+          .btn_left {
+            @include button(#fff, #000, 5px, 10px);
+            margin-right: 5px;
+          }
+          .btn_rig {
+            @include button(var(--blue-color), #fff, 5px, 10px);
+            font-size: 12px;
+            border: none;
+          }
+        }
+      }
+
       .circle {
         position: relative;
         @include circle(var(--red-color));

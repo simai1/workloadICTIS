@@ -186,11 +186,12 @@
       width: 100%;
       justify-content: center;
       .btn_left {
-        @include button(#fff, var(--blue-color), 5px, 10px);
+        @include button(#fff, #000, 5px, 10px);
       }
       .btn_rig {
         @include button(var(--blue-color), #fff, 5px, 10px);
         font-size: 14px;
+        border: none;
       }
     }
   }
