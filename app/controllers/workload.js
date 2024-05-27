@@ -296,6 +296,7 @@ export default {
 
     async getDepartmentWorkload(req, res) {
         const userId = req.user;
+        console.log(userId);
         const educator = await Educator.findOne({ where: { userId } });
 
         const department = educator.department;

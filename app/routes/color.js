@@ -6,24 +6,30 @@ import checkRole from '../middlewares/checkRoles.js';
 import role from '../config/roles.js';
 
 const router = Router();
-//router.use(verify.general);
+router.use(verify.general);
 
 router
     .route('/getAllColors')
     .get(
-        //asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST, role.LECTURER, role.EDUCATOR])),
+        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST, role.LECTURER, role.EDUCATOR])),
         asyncRoute(colorController.getAllColors)
     );
 router
     .route('/setColor')
     .post(
-        //asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST, role.LECTURER, role.EDUCATOR])),
+        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST, role.LECTURER, role.EDUCATOR])),
         asyncRoute(colorController.setColor)
     );
 router
-    .route('/changeColor/:colorId')
+    .route('/changeColor')
     .post(
-        //asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST, role.LECTURER, role.EDUCATOR])),
-        asyncRoute(colorController.changeColor)
+        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST, role.LECTURER, role.EDUCATOR])),
+        asyncRoute(colorController.changeColors)
+    );
+router
+    .route('/deleteColors')
+    .delete(
+        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST, role.LECTURER, role.EDUCATOR])),
+        asyncRoute(colorController.deleteColor)
     );
 export default router;

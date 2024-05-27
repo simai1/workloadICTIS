@@ -9,7 +9,7 @@ function Authorization() {
         <h2>Авторизация</h2>
         <a
           className={styles.button}
-          href="http://localhost:3002/auth/loginSfedu"
+          href="https://df72-95-174-102-181.ngrok-free.app/auth/loginSfedu"
         >
           Войти через сервис Microsoft
         </a>
