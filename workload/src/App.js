@@ -214,12 +214,12 @@ function App() {
       });
     }
     // без параметров - вся абсолютно нагрузка,
-    // isOid=true - вся ОИД нагрузка,
-    // isOid=false - вся кафедральная нагрузка,
-    // department={номер кафедры} - нагрузка одной кафедры
+    // ?isOid=true - вся ОИД нагрузка,
+    // ?isOid=false - вся кафедральная нагрузка,
+    // ?department={номер кафедры} - нагрузка одной кафедры
 
     if (metodRole[myProfile?.role]?.some((el) => el === 14)) {
-      Workload("?department=7").then((data) => {
+      Workload("").then((data) => {
         console.log("нагрузки", data);
         const dataBd = [...data];
         setWorkloadData(dataBd);
