@@ -6,20 +6,26 @@ import { map as mapPositions } from '../config/position.js';
 import { map as mapTypeOfEmployments } from '../config/type-of-employment.js';
 import Workload from '../models/workload.js';
 import SummaryWorkload from '../models/summary-workload.js';
+import WorkloadProfileDto from "../dtos/workload-profile-dto.js";
+import EducatorListDto from "../dtos/educator-list-dto.js";
+
 
 export default {
     async getAll(params, res) {
-        const educators = await Educator.findAll();
+        const educators = await Educator.findAll({
+            include: [{
+                model: SummaryWorkload,
+            }]
+        });
         const educatorDtos = [];
         for (const educator of educators) {
-            const educatorDto = new EducatorDto(educator);
+            const educatorDto = new EducatorListDto(educator);
             educatorDtos.push(educatorDto);
         }
         if (!educatorDtos.length) {
             // Если нет преподавателей, отправляем 404 и выходим из функции
             return res.status(404).json('Educator not found');
         }
-
         res.json(educatorDtos);
     },
     async getOne({ params: { educatorId } }, res) {
@@ -38,7 +44,11 @@ export default {
                 educatorId,
             },
         });
-        educatorProfileDto.workloads.push(workloads);
+        const workloadsDto = [];
+        for (const workload of workloads) {
+            workloadsDto.push(new WorkloadProfileDto(workload))
+        }
+        educatorProfileDto.workloads.push(workloadsDto);
         res.json(educatorProfileDto);
     },
 
@@ -61,20 +71,22 @@ export default {
             rate,
         });
 
-        res.json({ status: 'OK' });
+        res.json(educator);
     },
     // Создаем преподователя
-    async create({ body: { name, position, typeOfEmployment, rate, department } }, res) {
+    async create({ body: { name, position, typeOfEmployment, rate, email, department } }, res) {
         if (!name) throw new AppErrorMissing('name');
         if (!position) throw new AppErrorMissing('position');
         if (!typeOfEmployment) throw new AppErrorMissing('typeOfEmployment');
         if (!rate) throw new AppErrorMissing('rate');
+        if (!email) throw new AppErrorMissing('email');
         if (!department) throw new AppErrorMissing('department');
         const checkEducator = await Educator.findOne({ where: { name } });
         if (checkEducator) throw new AppErrorAlreadyExists('educator');
 
         const educator = await Educator.create({
             name,
+            email,
             position,
             typeOfEmployment,
             rate,
@@ -102,5 +114,16 @@ export default {
         await educator.destroy({ force: true });
 
         res.status(200).json('Successfully deleted');
+    },
+    async getEducatorsByDepartment(req, res) {
+        const userId = req.user;
+
+        const educator = await Educator.findOne({ where: { userId } });
+
+        const department = educator.department;
+
+        const educators = await Educator.findAll({ where: { department } });
+        const educatorsDto = educators.map(educator => new EducatorDto(educator));
+        res.json(educatorsDto);
     },
 };

@@ -30,6 +30,7 @@ async function fillWorkload() {
                 audienceHours: x.audienceHours,
                 isSplit: x.isSplit,
                 educatorId: null,
+                isOid: x.isOid,
                 kafedralAutumnWorkload: x.kafedralAutumnWorkload,
                 kafedralSpringWorkload: x.kafedralSpringWorkload,
                 kafedralAdditionalWorkload: x.kafedralAdditionalWorkload,
@@ -52,6 +53,7 @@ async function fillEducators() {
             await Educator.create({
                 name: x.name,
                 position: x.position,
+                email: x.email || null,
                 department: x.department,
                 typeOfEmployment: x.typeOfEmployment,
                 rate: x.rate,

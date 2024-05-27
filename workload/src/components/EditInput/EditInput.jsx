@@ -4,9 +4,8 @@ import arrow from "./../../img/arrow.svg";
 import { useDispatch } from "react-redux";
 import { actions } from "./../../store/filter/filter.slice";
 
-function EditInput({ tableHeaders }) {
+function EditInput({ tableHeaders, selectedComponent }) {
   const [searchResults, setSearchResults] = useState(tableHeaders.slice(3));
-
   const [isListOpen, setListOpen] = useState(false);
   const [checkedItems, setCheckedItems] = useState(
     Array(searchResults.length).fill(true)
@@ -14,12 +13,17 @@ function EditInput({ tableHeaders }) {
 
   const [isChecked, setChecked] = useState(tableHeaders.slice(3));
 
+  useEffect(() => {
+    setSearchResults(tableHeaders.slice(3));
+    setChecked(tableHeaders.slice(3));
+  }, [tableHeaders, selectedComponent]);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(actions.initializeFilters(tableHeaders));
-  }, []);
-
+  }, [tableHeaders, selectedComponent]);
+  // console.log("EditInput", tableHeaders);
   // закрытие модального окна при нажатии вне него
   const refLO = useRef(null);
   useEffect(() => {
@@ -88,7 +92,7 @@ function EditInput({ tableHeaders }) {
         </button>
       )}
       {isListOpen && (
-        <div className={styles.EditInputOpen}>
+        <div className={`${styles.EditInputOpen} ${styles.fadein}`}>
           <button onClick={toggleList}>
             <p>Редактирование полей</p>
             <img src={arrow} alt="arrow"></img>
@@ -102,7 +106,7 @@ function EditInput({ tableHeaders }) {
             name="search2"
           />
           <div className={styles.EditInputList}>
-            <ul>
+            <ul className={styles.fadeinul}>
               {searchResults.map((row, index) => (
                 <li key={index}>
                   <input

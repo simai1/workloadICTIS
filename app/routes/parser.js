@@ -2,6 +2,7 @@ import {Router} from "express";
 import multer from "multer";
 import {asyncRoute} from "../utils/errors.js";
 import parserController from '../controllers/parser.js';
+import parser from "../controllers/parser.js";
 
 const router = Router();
 
@@ -18,12 +19,13 @@ const storage = multer.diskStorage({
 const upload = multer({ // multer settings
     storage: storage
 });
-// fixme: привести к человеческому виду
-router.post('/xlsx', upload.single('file'), function (req, res) {
-    const fileLocation = req.file.path;
-    console.log(fileLocation);
-    asyncRoute(parserController.parseFromXlsx(fileLocation, res));
-});
+
+router
+    .route('/parseWorkload/:numberDepartment')
+    .post(
+        upload.single('file'),
+        asyncRoute(parserController.parseWorkload)
+    )
 
 
 export default router;

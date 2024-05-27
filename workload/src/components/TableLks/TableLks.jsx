@@ -3,62 +3,51 @@ import styles from "./TableLks.module.scss";
 import EditInput from "../EditInput/EditInput";
 import ArrowBack from "./../../img/arrow-back.svg";
 import { useDispatch, useSelector } from "react-redux";
+import { getDataEducatorLK } from "../../api/services/AssignApiData";
 
-function TableLks({ delNameChange, NameTeachers, educatorData }) {
-  const [updatedHeader, setUpdatedHeader] = useState([]); // State to hold the updated table headers
-  const [updatedData, setUpdatedData] = useState([]); // State to hold the updated table headers
-  const [searchTerm, setSearchTerm] = useState(""); // State to hold the search term
+function TableLks(props) {
+  const [updatedHeader, setUpdatedHeader] = useState([]);
+  const [updatedData, setUpdatedData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [EducatorLkData, setEducatorLkData] = useState([]);
+
+  const [tableData, setTableData] = useState([]);
+
+  //! получаем данные личного кабинета преподавателя
+  useEffect(() => {
+    getDataEducatorLK(props.educatorIdforLk, setEducatorLkData, setTableData);
+  }, [props.educatorIdforLk]);
+
+  console.log("EducatorLkData", EducatorLkData);
+  console.log("tableData", tableData);
+
+  //! то что введено в поисковую строку, обновляет данные компонента
+  useEffect(() => {
+    setSearchTerm(props.searchTerm);
+  }, [props.searchTerm]);
 
   const tableHeaders = useMemo(() => {
     return [
-      { key: "id", label: "№" },
-      { key: "discipline", label: "Дисциплина" },
       { key: "workload", label: "Нагрузка" },
+      { key: "department", label: "Кафедра" },
       { key: "type", label: "Тип" },
-      { key: "division", label: "Подразделение учебного плана" },
-      { key: "direction", label: "Направление подготовки" },
+      { key: "curriculumUnit", label: "Подразделение учебного плана" },
+      {
+        key: "specialty",
+        label: "Направление подготовки (специальность)",
+      },
       { key: "hours", label: "Часы" },
-      { key: "hours_period_1", label: "Часы период 1" },
-      { key: "hours_period_2", label: "Часы период 2" },
-      { key: "hours_without_a_period", label: "Часы без периода" },
-      { key: "classroom_hours", label: "Ауд. часы" },
+      { key: "audienceHours", label: "Аудиторные часы" },
+      { key: "hoursFirstPeriod", label: "Часы период 1" },
+      { key: "hoursSecondPeriod", label: "Часы период 2" },
+      { key: "hoursWithoutPeriod", label: "Часы период 3" },
     ];
   }, []);
 
-  const tableData = useMemo(
-    () => [
-      {
-        id: 1,
-        discipline: "Технологии программирования",
-        workload: "Лекционные",
-        type: "ОИД",
-        division: "ИКТИБ ИРТСУ",
-        direction: "Направление подготовки",
-        hours: "50",
-        hours_period_1: "25",
-        hours_period_2: "25",
-        hours_without_a_period: "0",
-        classroom_hours: "3",
-      },
-      {
-        id: 2,
-        discipline: "Методы оптимизации",
-        workload: "Практические",
-        type: "ОИД",
-        division: "ИКТИБ ИРТСУ",
-        direction: "Направление подготовки",
-        hours: "50",
-        hours_period_1: "30",
-        hours_period_2: "20",
-        hours_without_a_period: "0",
-        classroom_hours: "3",
-      },
-    ],
-    []
-  );
-
-  const handleNameClick = (name) => {
-    delNameChange(name);
+  //! клик на стрелку назад
+  const handleNameClick = () => {
+    props.setEducatorIdforLk("");
+    props.changeInput();
   };
 
   const dispatch = useDispatch();
@@ -84,9 +73,6 @@ function TableLks({ delNameChange, NameTeachers, educatorData }) {
     setUpdatedHeader(updatedHeader);
     setUpdatedData(updatedData);
   }
-  const handleSearch = (event) => {
-    setSearchTerm(event.target.value);
-  };
 
   const filteredData = updatedData.filter((row) => {
     return Object.values(row).some((value) =>
@@ -94,8 +80,8 @@ function TableLks({ delNameChange, NameTeachers, educatorData }) {
     );
   });
 
-  const AllHours = "405";
-  const OgranHours = "800";
+  const AllHours = EducatorLkData?.totalHours;
+  const OgranHours = "700";
   var BackgroundColorHours = WhyColor(AllHours, OgranHours);
 
   // Функция для определения цвета фона
@@ -111,24 +97,9 @@ function TableLks({ delNameChange, NameTeachers, educatorData }) {
     return bg;
   }
 
-  console.log(BackgroundColorHours);
-
   return (
     <div>
-      <div className={styles.tabledisciplinesMain_search}>
-        <input
-          type="text"
-          placeholder="Поиск"
-          id="search"
-          name="search"
-          value={searchTerm}
-          onChange={handleSearch}
-          className={styles.search}
-        />
-        <img src="./img/search.svg"></img>
-      </div>
-
-      <button className={styles.buttonBack} onClick={() => handleNameClick("")}>
+      <button className={styles.buttonBack} onClick={handleNameClick}>
         <img src={ArrowBack} alt="arrow"></img>
         <p>Назад</p>
       </button>
@@ -136,7 +107,7 @@ function TableLks({ delNameChange, NameTeachers, educatorData }) {
       <div className={styles.DataLks}>
         <div className={styles.DataLksInner}>
           <div className={styles.DataLksHead}>
-            <h1>{educatorData.name}</h1>
+            <h1>{EducatorLkData?.name}</h1>
             <div
               className={styles.DataLksHeadSchet}
               style={{ backgroundColor: BackgroundColorHours }}
@@ -147,36 +118,39 @@ function TableLks({ delNameChange, NameTeachers, educatorData }) {
             </div>
           </div>
 
-          <p>{educatorData.department}</p>
-          <p>{educatorData.position}</p>
-          <p>Ставка: {educatorData.rate}</p>
+          <p>{EducatorLkData?.department}</p>
+          <p>{EducatorLkData?.position}</p>
+          <p>Ставка: {EducatorLkData?.rate}</p>
         </div>
-        <div className={styles.EditInput}>
-          <EditInput tableHeaders={tableHeaders} top={60.3} h={64} />
-        </div>
+        {tableData[0] && (
+          <div className={styles.EditInput}>
+            <EditInput tableHeaders={tableHeaders} top={60.3} h={64} />
+          </div>
+        )}
       </div>
 
-      <div className={styles.TableLks__inner}>
-        <table className={styles.TableLks}>
-          <thead>
-            <tr>
-              {updatedHeader.map((header) => (
-                <th key={header.key}>{header.label}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {filteredData.map((row, index) => (
-              <tr key={index}>
-                {Object.keys(row).map((key) => (
-                  <td key={key}>{row[key]}</td>
+      {tableData[0] && (
+        <div className={styles.TableLks__inner}>
+          <table className={styles.TableLks}>
+            <thead>
+              <tr>
+                {updatedHeader.map((header) => (
+                  <th key={header.key}>{header.label}</th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      {/* <div className={styles.Block__tables__shadow}></div> */}
+            </thead>
+            <tbody>
+              {filteredData.map((row, index) => (
+                <tr key={index}>
+                  {Object.keys(row).map((key) => (
+                    <td key={key}>{key === "id" ? index + 1 : row[key]}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }

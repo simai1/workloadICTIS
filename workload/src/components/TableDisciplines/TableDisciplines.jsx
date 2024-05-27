@@ -1,57 +1,302 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import styles from "./TableDisciplines.module.scss";
-import Button from "../../ui/Button/Button";
-import EditInput from "../EditInput/EditInput";
 import { useDispatch, useSelector } from "react-redux";
 import ContextMenu from "../../ui/ContextMenu/ContextMenu";
 import { NotificationForm } from "../../ui/NotificationForm/NotificationForm";
 import { SamplePoints } from "../../ui/SamplePoints/SamplePoints";
 import DataContext from "../../context";
-import { Workload } from "../../api/services/ApiGetData";
 
-function TableDisciplines() {
+import { ReactComponent as SvgChackmark } from "./../../img/checkmark.svg";
+import { ReactComponent as SvgCross } from "./../../img/cross.svg";
+
+import {
+  funcGetAllColors,
+  getAllOffers,
+  getAllWarnin,
+  getDataAllComment,
+  getDataTable,
+} from "../../api/services/AssignApiData";
+import OfferModalWindow from "../OfferModalWindow/OfferModalWindow";
+import { returnPrevState } from "../../bufferFunction";
+import { PopUpError } from "../../ui/PopUp/PopUpError";
+import { EducatorLK, getAllColors } from "../../api/services/ApiRequest";
+import { PopUpFile } from "../../ui/PopUpFile/PopUpFile";
+
+function TableDisciplines(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]); //заголовок обновленный для Redux сортировки
   const [updatedData, setUpdatedData] = useState([]); //массив обновленный для Redux сортировки
-  const [searchTerm, setSearchTerm] = useState(""); //поиск по таблице
-  const [selectedComponent, setSelectedComponent] = useState("cathedrals"); //выбранный компонент
+  const [tableData, setTableData] = useState([]); // соберем из данных апи общие для таблицы
+  const [filteredData, setFilteredData] = useState([]);
+  const [sortData, setSortData] = useState([]); // данные при выборе высе дисциплины измененные выделенные и тд
   const [isHovered, setIsHovered] = useState(false); // флаг открытия уведомлений от преподавателей
+  const [isPopUpMenu, setIsPopUpMenu] = useState(false); // флаг открытия PopUp меню
+  const [isPopUpFile, setIsPopUpFile] = useState(false); // флаг открытия PopUp меню
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [positionFigth, setPositionFigth] = useState({ x: 0, y: 0 });
   const [idRow, setIdrow] = useState(0);
   const [isSamplePointsShow, setSamplePointsShow] = useState(false);
   const [isSamplePointsData, setSamplePointsData] = useState("");
   const [isCheckedGlobal, setIsCheckedGlobal] = useState(false); //главный чекбокс таблицы
-  const [individualCheckboxes, setIndividualCheckboxes] = useState([]); //чекбоксы таблицы
   const [isChecked, setChecked] = useState([]);
   const [showMenu, setShowMenu] = useState(false); //меню
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 }); //меню
-  const [tableData, setTableData] = useState([]); // соберем из данных апи общие для таблицы
-  const [filteredData, setFilteredData] = useState([]);
+  const [commentAllData, setCommentAllData] = useState([]); // все комментарии
+  const [allOffersData, setAllOffersData] = useState([]);
+  const [allColorsData, setAllColorsData] = useState([]); // выделенные цветом храним id
 
-  //данные вытянутые из контекста
+  const [Highlight, setHighlight] = useState([]); // массив хранения выделенных цветом (хранится id нагрузки и номер цвета)
+
+  const [modalWindowOffer, setModalWindowOffer] = useState({
+    id: null,
+    flag: false,
+  });
+
+  const [generalInstituteData, setGeneralInstituteData] = useState([]); // общеинститутские данные
+  const [cathedralData, setCathedralData] = useState([]); // кафедральыне данные
+  const [changeNumberOfStudents, setChangeNumberOfStudents] = useState([]); // храним id нагрузок у которых изменили количество студентво
+  const [changeHours, setChangHours] = useState([]); // храним id нагрузок у которых изменили час
+  const [changeEducator, setChangEducator] = useState([]); // храним id нагрузок у которых изменили преподавателя
+  const [allChangeData, setAllChangeData] = useState([]); // все измененные данные
+  //! данные вытянутые из контекста
   const { appData } = React.useContext(DataContext);
 
-  function getDataTable() {
-    Workload().then((data) => {
-      console.log(data);
-      const updatedWorkload = data.map((item) => {
-        const { isSplit, ...rest } = item; // убираем isSplit из массива
-        return {
-          ...rest,
-          educator: item.educator && item.educator.name,
-        };
-      });
-      appData.setWorkload(updatedWorkload); //данные с апи нагрузки
-      setUpdatedData(updatedWorkload);
-      setFilteredData(updatedWorkload);
-    });
-    setTableData(appData.workload);
-  }
-
-  // заносим данные о преподавателях в состояние
+  // при изменении количесвтва студентов или часов id этих нагрузок будут записываться в состояние а затем выделяться цветом
   useEffect(() => {
-    getDataTable();
+    setChangeNumberOfStudents(
+      appData.bufferAction
+        .filter((item) => item.data?.key === "numberOfStudents")
+        .map((el) => el.data.id)
+    );
+    setChangHours(
+      appData.bufferAction
+        .filter((item) => item.data?.key === "hours")
+        .map((el) => el.data.id)
+    );
+    setChangEducator(
+      appData.bufferAction
+        .filter((item) => item.request === "addEducatorWorkload")
+        .map((el) => el.data.workloadId)
+    );
+  }, [appData.bufferAction]);
+
+  useEffect(() => {
+    setAllChangeData([
+      ...changeEducator,
+      ...changeHours,
+      ...changeNumberOfStudents,
+    ]);
+  }, [changeEducator, changeHours, changeNumberOfStudents]);
+  console.log("allChange", allChangeData);
+
+  const getDataTableAll = () => {
+    getDataTable().then((data) => {
+      appData.setWorkload(data);
+      // выводим данные в зависимостри кафедральные или общеинститутские
+      const dataIsOid =
+        props.tableMode === "genInstitute"
+          ? data.filter((item) => item.isOid === false)
+          : data.filter((item) => item.isOid === true);
+
+      setUpdatedData(dataIsOid);
+      setFilteredData(dataIsOid);
+      setSortData(dataIsOid);
+      setGeneralInstituteData(data.filter((item) => item.isOid === false));
+      setCathedralData(data.filter((item) => item.isOid === true));
+
+      getAllOffers(setAllOffersData);
+      // funcGetAllColors(setAllColorsData); // получение цветов
+      appData.setIndividualCheckboxes([]);
+      console.log("Таблица обноленна");
+    });
+  };
+
+  //! заносим данные в состояния
+  useEffect(() => {
+    getDataTableAll();
+    setTableData(appData.workload);
+    getDataAllComment(setCommentAllData); // получение комментариев
+    getAllWarnin(appData.setAllWarningMessage); // предупреждения
+    getAllOffers(setAllOffersData); // предложения
   }, []);
+
+  //! при изменении буфера
+  // useEffect(() => {
+  //   setUpdatedData([...appData.workload]);
+  //   setGeneralInstituteData(
+  //     appData.workload.filter((item) => item.isOid === false)
+  //   );
+  //   setCathedralData(appData.workload.filter((item) => item.isOid === true));
+  //   console.log("appData.bufferAction", appData.bufferAction);
+  //   for (var i = appData.bufferAction.length - 1; i >= 0; i--) {
+  //     console.log("setUpdatedData", i);
+  //     if (appData.bufferAction[i].request === "workloadUpdata") {
+  //       const updatedArray = updatedData.map((item) => {
+  //         if (item.id === appData.bufferAction[i].data.id) {
+  //           return {
+  //             ...item,
+  //             [appData.bufferAction[i].data.key]:
+  //               appData.bufferAction[i].data.value,
+  //           };
+  //         }
+  //         return item;
+  //       });
+  //       setUpdatedData([...updatedArray]);
+  //     }
+  //     if (appData.bufferAction[i].request === "addEducatorWorkload") {
+  //       EducatorLK(appData.bufferAction[i].data.educatorId).then((dataReq) => {
+  //         const newUpdatedData = updatedData.map((object) => {
+  //           if (object.id === appData.individualCheckboxes[0]) {
+  //             return { ...object, educator: dataReq.name };
+  //           }
+  //           return object;
+  //         });
+  //         // newUpdatedData.map((item) => console.log("name", item.educator));
+  //         setUpdatedData([...newUpdatedData]);
+  //       });
+  //     }
+  //   }
+  // }, [appData.bufferAction]);
+
+  //! фильтрация при выборе всех дисциплин измененных выделенных и тд
+  useEffect(() => {
+    if (props.SelectedText === "Выделенные") {
+      setSortData(
+        updatedData.filter((item) => Highlight.some((el) => el.id === item.id))
+      );
+    }
+    if (props.SelectedText === "Все дисциплины") {
+      setSortData(updatedData);
+    }
+    if (props.SelectedText === "Измененные") {
+      setSortData(
+        updatedData.filter((item) => allChangeData.some((el) => el === item.id))
+      );
+    }
+  }, [props.SelectedText, updatedData]);
+
+  //! при изменении SortData обновим таблицу
+  useEffect(() => {
+    setFilteredData(sortData);
+  }, [sortData]);
+
+  //! обновляем таблицу если перешли между кафедральным и общенститутским
+  useEffect(() => {
+    if (props.tableMode === "genInstitute") {
+      setUpdatedData(generalInstituteData);
+      setFilteredData(generalInstituteData);
+    } else {
+      setUpdatedData(cathedralData);
+      setFilteredData(cathedralData);
+    }
+    // убираем выделенные нагрузки
+    appData.setIndividualCheckboxes([]);
+  }, [props.tableMode]);
+
+  //! при обновлении updatedData запосним наши данные
+  useEffect(() => {
+    if (props.tableMode === "genInstitute") {
+      setGeneralInstituteData(updatedData);
+    } else {
+      setCathedralData(updatedData);
+    }
+  }, [updatedData]);
+
+  //! обновление таблицы, отмена действия при ctrl+z
+  useEffect(() => {
+    if (appData.bufferAction[0] === 0) {
+      getDataTableAll();
+      getDataAllComment(setCommentAllData); // получение комментариев
+      console.log("Таблица обноленна после буффера");
+      appData.setBufferAction([]);
+    }
+    const handleKeyDown = (event) => {
+      //! следим за нажатием ctrl + z для отмены последнего действияы
+      if (
+        (event.ctrlKey || event.comand) &&
+        (event.key === "z" ||
+          event.key === "я" ||
+          event.key === "Z" ||
+          event.key === "Я")
+      ) {
+        console.log("отеменено последнее действие", appData.bufferAction);
+        //! отмена последнего действия
+        if (appData.bufferAction.length > 0) {
+          if (
+            appData.bufferAction[0].request === "removeEducatorinWorkload" ||
+            appData.bufferAction[0].request === "addEducatorWorkload"
+          ) {
+            returnPrevState(appData.bufferAction, updatedData).then((data) => {
+              setUpdatedData(data);
+              appData.setBufferAction((prevItems) => prevItems.slice(1));
+            });
+          } else if (appData.bufferAction[0].request === "deleteComment") {
+            setCommentAllData([
+              ...commentAllData,
+              ...appData.bufferAction[0].prevState,
+            ]);
+            appData.setBufferAction((prevItems) => prevItems.slice(1));
+          } else if (appData.bufferAction[0].request === "joinWorkloads") {
+            // удаляем нагрузку которую обьеденили
+            const dataTable = updatedData.filter(
+              (item) =>
+                !appData.bufferAction[0].prevState.some(
+                  (el) => el.id === item.id
+                )
+            );
+            // сохраняем индекс удаленного элемента
+            const deletedIndex = updatedData.findIndex((item) =>
+              appData.bufferAction[0].prevState.some((el) => el.id === item.id)
+            );
+            const newArray = [...dataTable];
+            newArray.splice(
+              deletedIndex,
+              0,
+              ...appData.bufferAction[0].prevState
+            );
+            setUpdatedData(newArray);
+            // убираем заблокированные элементы
+            appData.setBlockedCheckboxes((prev) =>
+              prev.filter(
+                (el) =>
+                  !appData.bufferAction[0].prevState.some(
+                    (item) => item.id !== el
+                  )
+              )
+            );
+          } else if (appData.bufferAction[0].request === "splitWorkload") {
+            // отмена разделения нагрузки
+            setUpdatedData(
+              updatedData.filter(
+                (item) => !appData.bufferAction[0].newIds.includes(item.id)
+              )
+            );
+            setUpdatedData((prev) => [
+              appData.bufferAction[0].prevState[0],
+              ...prev,
+            ]);
+          } else if (appData.bufferAction[0].request === "workloadUpdata") {
+            //отмена изменения даннных textarea
+            const newData = [...updatedData];
+            newData.map((item) => {
+              if (item.id === appData.bufferAction[0].data.id) {
+                item[appData.bufferAction[0].data.key] =
+                  appData.bufferAction[0].prevState;
+              }
+              return item;
+            });
+            setUpdatedData([...newData]);
+            appData.setBufferAction((prevItems) => prevItems.slice(1));
+          }
+        }
+
+        //функция отмены последенего действия находится в TableDisciplines
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [appData.bufferAction]);
 
   //! сортировака (по hedars) пришедших данных из апи
   useEffect(() => {
@@ -62,16 +307,38 @@ function TableDisciplines() {
     setTableData(sortedArray);
   }, [appData.workload]);
 
-  // закрытие модального окна при нажатии вне него
+  //! закрытие модального окна при нажатии вне него
   const refSP = useRef(null);
   const refHoverd = useRef(null);
+  const refOffer = useRef(null);
+  const refContextMenu = useRef(null);
+  const refTextArea = useRef(null);
   useEffect(() => {
     const handler = (event) => {
       if (refSP.current && !refSP.current.contains(event.target)) {
         setSamplePointsShow(false);
       }
+      if (refOffer.current && !refOffer.current.contains(event.target)) {
+        setModalWindowOffer({ id: modalWindowOffer.id, flag: false });
+      }
+      if (
+        props.refProfile.current &&
+        !props.refProfile.current.contains(event.target)
+      ) {
+        props.setOpenModalWind(false);
+      }
       if (refHoverd.current && !refHoverd.current.contains(event.target)) {
         setIsHovered(false);
+      }
+      if (
+        refContextMenu.current &&
+        !refContextMenu.current.contains(event.target)
+      ) {
+        setShowMenu(false);
+      }
+      if (refTextArea.current && !refTextArea.current.contains(event.target)) {
+        setCellNumber(null);
+        setTextareaTd(null);
       }
     };
 
@@ -81,24 +348,36 @@ function TableDisciplines() {
     };
   }, []);
 
-  //чекбоксы
+  //! чекбоксы
   const handleGlobalCheckboxChange = () => {
+    // выделяем нагрузку если ее нет в блокированных (при нажатии на "выделить все")
     setIsCheckedGlobal(!isCheckedGlobal);
     !isCheckedGlobal
-      ? setIndividualCheckboxes(filteredData.map((el) => el.id))
-      : setIndividualCheckboxes([]);
+      ? appData.setIndividualCheckboxes(
+          filteredData.map((el) => {
+            if (!appData.blockedCheckboxes.includes(el.id)) {
+              return el.id;
+            }
+          })
+        )
+      : appData.setIndividualCheckboxes([]);
   };
 
   const handleIndividualCheckboxChange = (el, index) => {
-    if (el.target.tagName !== "DIV") {
-      let ic = [...individualCheckboxes];
+    if (
+      el.target.tagName !== "DIV" &&
+      el.target.tagName !== "TEXTAREA" &&
+      el.target.tagName !== "svg" &&
+      el.target.tagName !== "path"
+    ) {
+      let ic = [...appData.individualCheckboxes];
 
       if (ic.includes(filteredData[index].id)) {
         ic = ic.filter((el) => el !== filteredData[index].id);
       } else {
         ic = [...ic, filteredData[index].id];
       }
-      setIndividualCheckboxes(ic);
+      appData.setIndividualCheckboxes(ic);
 
       if (ic.length === filteredData.length) {
         setIsCheckedGlobal(true);
@@ -108,20 +387,40 @@ function TableDisciplines() {
     }
   };
 
-  // при нажатии на кружок уведомления
+  //! при нажатии на кружок уведомления
   const handleClicNotice = (el, index) => {
     setIsHovered(!isHovered);
-    setPosition({ x: el.clientX - 40, y: el.clientY - 200 });
-    setIdrow(index);
+    setPosition({ x: el.pageX - 40, y: el.pageY - 200 });
+    setIdrow(filteredData[index].id);
   };
 
-  // клик на th, открытие МО фильтры к колонке
+  //! при нажатии на кружок предложения
+  const handleClicOffer = (el, id_workload, index) => {
+    console.log("id", index, id_workload, allOffersData[index]);
+    setModalWindowOffer({
+      id: allOffersData.find(
+        (item) => item.workloadId === filteredData[index].id
+      ).id,
+      flag: !modalWindowOffer.flag,
+    });
+    setPosition({ x: el.pageX - 40, y: el.pageY - 260 });
+  };
+
+  //! добавить комментарий к нагрузке из контекстного меню
+  const onAddComment = () => {
+    setShowMenu(false);
+    setIdrow(appData.individualCheckboxes[0]);
+    setIsHovered(true);
+    setPosition({ x: menuPosition.x - 60, y: menuPosition.y - 125 });
+  };
+
+  //! клик на th, открытие МО фильтры к колонке
   const clickFigth = (event, index) => {
     setSamplePointsShow(!isSamplePointsShow);
     if (event.clientX + 372 > window.innerWidth) {
-      setPositionFigth({ x: window.innerWidth - 500, y: event.clientY - 100 });
+      setPositionFigth({ x: event.pageX - 50, y: event.pageY - 150 });
     } else {
-      setPositionFigth({ x: event.clientX - 50, y: event.clientY - 100 });
+      setPositionFigth({ x: event.pageX - 50, y: event.pageY - 150 });
     }
 
     const keyTd = tableHeaders[index].key;
@@ -134,30 +433,8 @@ function TableDisciplines() {
     setSamplePointsData(data);
   };
 
-  //данные сраницы "Поттом все будет подшгружаться из API"
-  const notice = [
-    {
-      id: 0,
-      id_row: 0,
-      name: "Данильченко Владислав Иванович",
-      text: "Пары неверно назначены преподавателю, должен быть другой",
-    },
-    {
-      id: 1,
-      id_row: 1,
-      name: "Иванов Иван Иванович",
-      text: "Пары неверно назначены преподавателю, должен быть другой",
-    },
-    {
-      id: 2,
-      id_row: 1,
-      name: "Смирнов Иван Николаевич",
-      text: "Пары неверно назначены преподавателю, должен быть другой",
-    },
-  ];
-
   //выбор компонента
-
+  // ! заголовки
   const tableHeaders = useMemo(() => {
     return [
       { key: "id", label: "№" },
@@ -185,10 +462,6 @@ function TableDisciplines() {
     ];
   }, []);
 
-  const handleComponentChange = (component) => {
-    setSelectedComponent(component);
-  };
-
   //! работа с таблицами через REDUX
   const dispatch = useDispatch();
   const filters = useSelector((state) => state.filters);
@@ -214,57 +487,38 @@ function TableDisciplines() {
     setUpdatedData(updatedData);
   }
 
-  //! поиск и фильтрация таблицы
-  const handleSearch = (event) => {
-    const searchTerm = event.target.value;
-    setSearchTerm(searchTerm);
-    let fd;
-    if (searchTerm === "") {
-      fd = updatedData;
-    } else {
-      fd = updatedData.filter((row) => {
-        return Object.values(row).some(
-          (value) =>
-            value !== null &&
-            value !== undefined &&
-            value.toString().toLowerCase().includes(searchTerm.toLowerCase())
-        );
-      });
-    }
-    setFilteredData(fd);
-  };
+  //! компонет поиска выведен в родительский
+  //! useEffect следит за изменение searchTerm
   useEffect(() => {
     let fd;
-    if (searchTerm === "") {
-      fd = updatedData;
+    if (props.searchTerm === "") {
+      fd = sortData;
     } else {
-      fd = updatedData.filter((row) => {
+      fd = sortData.filter((row) => {
         return Object.values(row).some(
           (value) =>
             value !== null &&
             value !== undefined &&
-            value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+            value
+              .toString()
+              .toLowerCase()
+              .includes(props.searchTerm.toLowerCase())
         );
       });
     }
     setFilteredData(fd);
-  }, [updatedData, searchTerm]);
-
-  const EditTableData = (selectedComponent) => {
-    console.log(selectedComponent);
-    //тут написать функцию которая будет подгружать нужное содержимое tableData и tableHeaders
-  };
+  }, [updatedData, props.searchTerm]);
 
   //! меню при нажатии пкм
-  const handleContextMenu = (e) => {
+  const handleContextMenu = (e, index) => {
     e.preventDefault();
+    // console.log(index);
     setShowMenu(!showMenu);
-    setMenuPosition({ x: e.clientX, y: e.clientY });
-  };
-
-  //! добавление преподавателя на нагрузку
-  const handleMenuClick = () => {
-    console.log("handleMenuClick");
+    if (e.clientX + 260 > window.innerWidth) {
+      setMenuPosition({ x: e.clientX - 260, y: e.clientY });
+    } else {
+      setMenuPosition({ x: e.clientX, y: e.clientY });
+    }
   };
 
   //! расчет left для статических блоков таблицы
@@ -287,57 +541,80 @@ function TableDisciplines() {
   }
   const arrLeft = [
     widthsTableHeader[0],
-    widthsTableHeader[0] + widthsTableHeader[1],
+    widthsTableHeader[0] + widthsTableHeader[1] + 0.5,
     widthsTableHeader[0] + widthsTableHeader[1] + widthsTableHeader[2],
   ];
 
+  //! функция изменения значения td при двойном клике
+  const [cellNumber, setCellNumber] = useState([]);
+  const changeValueTd = (index, ind) => {
+    // console.log("изменить ", index, ind);
+    if (ind === 15 || ind == 14) {
+      setCellNumber({ index, ind });
+    }
+    // console.log(cellNumber);
+  };
+  const [textareaTd, setTextareaTd] = useState("");
+  const onChangeTextareaTd = (event) => {
+    setTextareaTd(event.target.value);
+    console.log(event.target.value);
+  };
+console.log(appData.fileData)
+  const onClickButton = (id, key) => {
+    let parsedValue = parseFloat(textareaTd);
+    let numberValue = isNaN(parsedValue) ? textareaTd : parsedValue;
+    //! параметры запроса на изменение данных
+    const data = { id: id, key: key.key, value: numberValue };
+    const item = updatedData.find((item) => item.id === id);
+    if (numberValue) {
+      const updatedArray = updatedData.map((item) => {
+        if (item.id === id) {
+          return { ...item, [key.key]: numberValue };
+        }
+        return item;
+      });
+      setUpdatedData(updatedArray);
+    }
+    numberValue &&
+      //! буфер
+      appData.setBufferAction([
+        { request: "workloadUpdata", data: data, prevState: item[key.key] },
+        ...appData.bufferAction,
+      ]);
+    setCellNumber([]);
+    setTextareaTd(null);
+  };
   //! содержимое
   return (
     <div className={styles.tabledisciplinesMain}>
-      <div className={styles.tabledisciplinesMain_search}>
-        <input
-          type="text"
-          placeholder="Поиск"
-          id="search"
-          name="search"
-          value={searchTerm}
-          onChange={handleSearch}
-          className={styles.search}
-        />
-        <img src="./img/search.svg"></img>
-      </div>
-
-      <div className={styles.ButtonCaf_gen}>
-        <Button
-          Bg={selectedComponent === "cathedrals" ? "#3B28CC" : "#efedf3"}
-          textColot={selectedComponent === "cathedrals" ? "#efedf3" : "#000000"}
-          text="Кафедральные"
-          onClick={() => {
-            handleComponentChange("cathedrals");
-            EditTableData(selectedComponent);
-          }}
-        />
-        <Button
-          Bg={selectedComponent === "genInstitute" ? "#3B28CC" : "#efedf3"}
-          textColot={selectedComponent === "cathedrals" ? "#000000" : "#efedf3"}
-          text="Общеинститутские"
-          onClick={() => {
-            handleComponentChange("genInstitute");
-            EditTableData(selectedComponent);
-          }}
-        />
-      </div>
-      <div className={styles.EditInput}>
-        <EditInput tableHeaders={tableHeaders} />
-      </div>
       <div>
-        {/* <div className={styles.TableDisciplines__inner}> */}
         {isHovered && (
           <NotificationForm
             refHoverd={refHoverd}
             position={position}
-            notice={notice.filter((item) => item.id_row === idRow)}
-            idRow={idRow}
+            setPosition={setPosition}
+            workloadId={idRow}
+            commentAllData={commentAllData}
+            setCommentAllData={setCommentAllData}
+            getDataAllComment={getDataAllComment}
+            setIsHovered={setIsHovered}
+            commentData={commentAllData
+              .filter((item) => item.workloadId === idRow)
+              .reverse()}
+          />
+        )}
+
+        {modalWindowOffer.flag && (
+          <OfferModalWindow
+            allOffersDataItem={allOffersData.filter(
+              (item) => item.id === modalWindowOffer.id
+            )}
+            modalWindowOffer={modalWindowOffer}
+            setModalWindowOffer={setModalWindowOffer}
+            position={position}
+            refOffer={refOffer}
+            workloadId={modalWindowOffer.id}
+            getDataTableAll={getDataTableAll}
           />
         )}
 
@@ -353,27 +630,30 @@ function TableDisciplines() {
         )}
         {showMenu && (
           <ContextMenu
+            Highlight={Highlight}
+            setHighlight={setHighlight}
+            isPopUpMenu={isPopUpMenu}
+            setIsPopUpMenu={setIsPopUpMenu}
+            refContextMenu={refContextMenu}
             showMenu={showMenu}
             menuPosition={menuPosition}
-            handleMenuClick={handleMenuClick}
             setShowMenu={setShowMenu}
-            individualCheckboxes={individualCheckboxes}
-            getDataTable={getDataTable}
+            getDataTableAll={getDataTableAll}
+            onAddComment={onAddComment}
+            updatedData={updatedData}
+            setUpdatedData={setUpdatedData}
+            setAllOffersData={setAllOffersData}
+            allOffersData={allOffersData}
           />
         )}
         <div className={styles.table_container}>
           {/* уведомления от преподавателей  */}
-          {/* <TableNotice
-            filteredData={filteredData}
-            isChecked={isChecked}
-            notice={notice}
-            handleClicNotice={handleClicNotice}
-          /> */}
           <div className={styles.TableDisciplines__inner}>
             <table className={styles.taleDestiplinesMainTable}>
               <thead>
                 <tr ref={trRef} className={styles.tr_thead}>
                   <th className={styles.checkboxHeader} style={{ left: "0" }}>
+                    <div className={styles.input_left}></div>
                     <input
                       type="checkbox"
                       className={styles.custom__checkbox}
@@ -415,29 +695,133 @@ function TableDisciplines() {
                     return (
                       <tr
                         key={index}
-                        onContextMenu={handleContextMenu}
-                        className={styles.table_tr}
+                        onContextMenu={(e) => handleContextMenu(e, index)}
+                        className={`
+                          ${
+                            appData.individualCheckboxes.includes(
+                              filteredData[index].id
+                            )
+                              ? styles.colorChecked
+                              : ""
+                          }
+                          ${
+                            appData.blockedCheckboxes.includes(
+                              filteredData[index].id
+                            )
+                              ? styles.clorBlocked
+                              : ""
+                          }
+                          ${
+                            !Highlight.some((item) =>
+                              item.id.includes(filteredData[index].id)
+                            )
+                              ? ""
+                              : Highlight.find((item) =>
+                                  item.id.includes(filteredData[index].id)
+                                ).color === 1
+                              ? styles.colorBlue
+                              : Highlight.find((item) =>
+                                  item.id.includes(filteredData[index].id)
+                                ).color === 2
+                              ? styles.colorGreen
+                              : Highlight.find((item) =>
+                                  item.id.includes(filteredData[index].id)
+                                ).color === 3
+                              ? styles.colorYellow
+                              : ""
+                          }
+                        `}
                         onClick={(el) =>
                           handleIndividualCheckboxChange(el, index)
                         }
-                        style={
-                          individualCheckboxes.includes(filteredData[index].id)
-                            ? { backgroundColor: "rgb(234, 234, 250)" }
-                            : null
-                        }
                       >
                         <td className={styles.checkbox} style={{ left: "0" }}>
-                          {notice.some((item) => item.id_row === index) && (
-                            <div
-                              key={index}
-                              className={styles.notice}
-                              onClick={(el) => handleClicNotice(el, index)}
-                            >
-                              {
-                                notice.filter((item) => item.id_row === index)
-                                  .length
-                              }
-                            </div>
+                          {/* //!вывод комментарие  */}
+                          {commentAllData.map(
+                            (item) =>
+                              item.workloadId === filteredData[index].id && (
+                                <div
+                                  key={item.id}
+                                  className={styles.notice}
+                                  onClick={(el) => handleClicNotice(el, index)}
+                                  style={
+                                    allOffersData.some(
+                                      (el) => el.workloadId === item.workloadId
+                                    )
+                                      ? {
+                                          transform: "translateY(+18px)",
+                                        }
+                                      : null
+                                  }
+                                >
+                                  {
+                                    commentAllData.filter(
+                                      (item) =>
+                                        item.workloadId ===
+                                        filteredData[index].id
+                                    ).length
+                                  }
+                                  <div
+                                    className={
+                                      allOffersData.some(
+                                        (el) =>
+                                          el.workloadId === item.workloadId
+                                      )
+                                        ? styles.notis_rigth_two
+                                        : styles.notis_rigth_one
+                                    }
+                                  ></div>
+                                </div>
+                              )
+                          )}
+
+                          {/* //! вывод предложений */}
+
+                          {allOffersData.map(
+                            (item) =>
+                              item.workloadId === filteredData[index].id && (
+                                <div
+                                  key={item.id}
+                                  className={styles.notice}
+                                  style={
+                                    commentAllData.some(
+                                      (el) => el.workloadId === item.workloadId
+                                    )
+                                      ? {
+                                          backgroundColor: "#FFD600",
+                                          transform: "translateY(-18px)",
+                                        }
+                                      : {
+                                          backgroundColor: "#FFD600",
+                                        }
+                                  }
+                                  onClick={(el, item) =>
+                                    handleClicOffer(
+                                      el,
+                                      filteredData[index].id,
+                                      index
+                                    )
+                                  }
+                                >
+                                  {
+                                    allOffersData.filter(
+                                      (item) =>
+                                        item.workloadId ===
+                                        filteredData[index].id
+                                    ).length
+                                  }
+                                  <div
+                                    className={
+                                      commentAllData.some(
+                                        (el) =>
+                                          el.workloadId === item.workloadId
+                                      )
+                                        ? styles.notis_rigth_two
+                                        : styles.notis_rigth_one
+                                    }
+                                  ></div>
+                                </div>
+                              )
                           )}
 
                           <input
@@ -446,7 +830,7 @@ function TableDisciplines() {
                             name="dataRow"
                             id={`dataRow-${index}`}
                             checked={
-                              individualCheckboxes.includes(
+                              appData.individualCheckboxes.includes(
                                 filteredData[index].id
                               )
                                 ? true
@@ -470,11 +854,72 @@ function TableDisciplines() {
                             }
                             style={{ left: arrLeft[ind] || "0" }}
                           >
-                            {row[updatedHeader[ind].key] === null
-                              ? "0"
-                              : updatedHeader[ind].key === "id"
-                              ? index + 1
-                              : row[updatedHeader[ind].key]}
+                            <div
+                              className={styles.td_inner}
+                              onDoubleClick={() => changeValueTd(index, ind)}
+                              style={
+                                changeNumberOfStudents.some(
+                                  (el) => el === row.id
+                                ) &&
+                                updatedHeader[ind].key === "numberOfStudents"
+                                  ? {
+                                      backgroundColor: "rgb(255 135 135)",
+                                      borderRadius: "8px",
+                                    }
+                                  : changeHours.some((el) => el === row.id) &&
+                                    updatedHeader[ind].key === "hours"
+                                  ? {
+                                      backgroundColor: "rgb(255 135 135)",
+                                      borderRadius: "8px",
+                                    }
+                                  : changeEducator.some(
+                                      (el) => el === row.id
+                                    ) && updatedHeader[ind].key === "educator"
+                                  ? {
+                                      backgroundColor: "rgb(255 135 135)",
+                                      borderRadius: "8px",
+                                    }
+                                  : null
+                              }
+                            >
+                              {/* редактирование поля нагрузки при двойном клике на нее */}
+                              {cellNumber &&
+                              cellNumber.index === index &&
+                              cellNumber.ind === ind ? (
+                                <div
+                                  className={styles.textarea_title}
+                                  ref={refTextArea}
+                                >
+                                  <textarea
+                                    className={styles.textarea}
+                                    type="text"
+                                    defaultValue={row[updatedHeader[ind].key]}
+                                    onChange={onChangeTextareaTd}
+                                  ></textarea>
+                                  <div className={styles.svg_textarea}>
+                                    {textareaTd?.trim() && (
+                                      <SvgChackmark
+                                        className={styles.SvgChackmark_green}
+                                        onClick={() =>
+                                          onClickButton(row.id, key)
+                                        }
+                                      />
+                                    )}
+                                    <SvgCross
+                                      onClick={() => {
+                                        setCellNumber([]);
+                                      }}
+                                    />
+                                  </div>
+                                </div>
+                              ) : row[updatedHeader[ind].key] === null ? (
+                                "0"
+                              ) : updatedHeader[ind].key === "id" ? (
+                                index + 1
+                              ) : (
+                                row[updatedHeader[ind].key]
+                              )}
+                            </div>
                           </td>
                         ))}
                       </tr>
@@ -488,6 +933,9 @@ function TableDisciplines() {
         </div>
       </div>
       <div className={styles.Block__tables__shadow}></div>
+
+      {isPopUpMenu && <PopUpError setIsPopUpMenu={setIsPopUpMenu} />}
+      {appData.fileData !== null && <PopUpFile setIsPopUpFile={setIsPopUpFile} handleFileClear={props.handleFileClear}/>}
     </div>
   );
 }

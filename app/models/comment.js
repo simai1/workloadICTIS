@@ -12,7 +12,7 @@ export default class Comment extends Model {
                 },
                 text: {
                     type: DataTypes.STRING,
-                    allowNull: false,
+                    allowNull: true,
                 },
                 educatorId: {
                     type: DataTypes.UUID,

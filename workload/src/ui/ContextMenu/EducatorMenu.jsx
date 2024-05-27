@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./ContextMenu.module.scss";
-import { Educator } from "../../api/services/ApiGetData";
+import { Educator } from "../../api/services/ApiRequest";
 
 export function EducatorMenu(props) {
   const [educator, setEductor] = useState([]); //преподы с бд
@@ -24,11 +24,19 @@ export function EducatorMenu(props) {
   return (
     <div
       className={styles.EducatorMenu}
-      style={{
-        position: "fixed",
-        top: props.menuPosition.y,
-        left: props.menuPosition.x + 280,
-      }}
+      style={
+        props.menuPosition.x + 280 + 180 > window.innerWidth
+          ? {
+              position: "fixed",
+              top: props.menuPosition.y,
+              left: props.menuPosition.x - 200,
+            }
+          : {
+              position: "fixed",
+              top: props.menuPosition.y,
+              left: props.menuPosition.x + 280,
+            }
+      }
     >
       <input
         type="text"
