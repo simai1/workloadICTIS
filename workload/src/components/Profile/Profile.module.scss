@@ -50,8 +50,11 @@
       color: red;
       display: flex;
       cursor: pointer;
-      span {
+      a {
         margin-right: 8px;
+        text-decoration: none;
+        outline: none;
+        color: red;
       }
     }
     .exid:hover {

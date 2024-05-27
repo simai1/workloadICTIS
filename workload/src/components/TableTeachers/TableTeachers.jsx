@@ -91,14 +91,18 @@ function TableTeachers(props) {
 
   return (
     <div className={styles.TableTeachers}>
-      <Button
-        text="Создать преподавателя"
-        Bg="#3b28cc"
-        textColot="#fff"
-        onClick={() => {
-          appData.setcreateEdicatorPopUp(true);
-        }}
-      />
+      {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 4) ? (
+        <Button
+          text="Создать преподавателя"
+          Bg="#3b28cc"
+          textColot="#fff"
+          onClick={() => {
+            appData.setcreateEdicatorPopUp(true);
+          }}
+        />
+      ) : (
+        <div style={{ height: "59px" }}></div>
+      )}
       <div className={styles.TableTeachers__inner}>
         <table className={styles.table}>
           <thead>
