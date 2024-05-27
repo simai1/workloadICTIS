@@ -68,7 +68,8 @@ function HomePage() {
     //тут написать функцию которая будет подгружать нужное содержимое tableData и tableHeaders
     // используется в TableWorkload
   };
-  const dataList = [
+
+  const dl = [
     {
       id: 1,
       name: "БИТ",
@@ -114,6 +115,17 @@ function HomePage() {
       name: "СиПУ",
     },
   ];
+
+  const dataList = [];
+  basicTabData.workloadData.map((item) => {
+    if (!dataList.some((e) => e.name === item.department)) {
+      dataList.push({
+        id: dl.find((el) => el.name === item.department).id,
+        name: item.department,
+      });
+    }
+  });
+  console.log("dataList", dataList);
 
   //! сохранение буфера
   const onSaveClick = () => {
