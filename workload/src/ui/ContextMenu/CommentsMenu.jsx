@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./ContextMenu.module.scss";
 import DataContext from "../../context";
 import { createComment } from "../../api/services/ApiRequest";
@@ -16,15 +16,14 @@ function CommentsMenu(props) {
         workloadId: tabPar.selectedTr[0],
         text: textAreaValue,
       };
-      //создаем комментарий и обновляем комментарии
-      createComment(data).then(() => {
-        basicTabData.funUpdateAllComments();
-      });
+      props.setPopupCommentAction(data);
       setError(false);
-      setTextAreaValue("");
+      props.setPopupComment(true);
       props.setMenuShow("");
+      setTextAreaValue("");
     }
   };
+
   const textAreaChange = (e) => {
     setTextAreaValue(e.target.value);
     setError(false);

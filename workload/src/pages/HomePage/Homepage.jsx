@@ -30,7 +30,7 @@ function HomePage() {
   const educatorTableHeaders = headersEducator; // заголовок таблтиц преподавателей
   const educatorLkHeaders = tableHeadersLks; // заголовок страницы личного кабинета
   const [tableHeaders, setTableHeaders] = useState(workloadTableHeaders);
-  const [filePopUp, setfilePopUp] = useState(false)
+  const [filePopUp, setfilePopUp] = useState(false);
   const [selectedComponent, setSelectedComponent] = useState("Disciplines");
   const [tableMode, setTableMode] = useState("cathedrals"); //выбранный компонент
   const [educatorData, setEducatorData] = useState([]); // данные о преподавателе получаем в TableTeachers
@@ -68,7 +68,7 @@ function HomePage() {
     //тут написать функцию которая будет подгружать нужное содержимое tableData и tableHeaders
     // используется в TableWorkload
   };
-  const dataList=[
+  const dataList = [
     {
       id: 1,
       name: "БИТ",
@@ -115,7 +115,6 @@ function HomePage() {
     },
   ];
 
-  
   //! сохранение буфера
   const onSaveClick = () => {
     //! отправляем все запросы на обработку
@@ -162,21 +161,9 @@ function HomePage() {
         <div className={styles.header}>
           <div className={styles.header_top}>
             <div className={styles.header_top_save_search}>
-              <div >
-                <button
-                  style={{
-                    height: "45px",
-                    backgroundColor: "#3b28cc",
-                    color: "#fff",
-                    borderRadius: " 8px",
-                    border: "none",
-                    fontSize: "18px",
-                    padding: "10px 16px",
-                  }}
-                  onClick={onSaveClick}
-                >
-                  Сохранить
-                </button>
+              <div className={styles.saveBuffre}>
+                <button onClick={onSaveClick}>Сохранить</button>
+                <img src="./img/backBuffer.svg" onClick={appData.backBuffer} />
               </div>
               <div className={styles.header_search}>
                 <input
@@ -250,7 +237,11 @@ function HomePage() {
                       EditTableData("cathedrals");
                     }}
                   /> */}
-                  <ListKaf dataList={dataList} defaultValue="БИТ" setTableMode={setTableMode}/>
+                  <ListKaf
+                    dataList={dataList}
+                    defaultValue="БИТ"
+                    setTableMode={setTableMode}
+                  />
                   <Button
                     Bg={tableMode === "genInstitute" ? "#3B28CC" : "#efedf3"}
                     textColot={
@@ -281,21 +272,20 @@ function HomePage() {
                 )}
               </div>
               {selectedComponent === "Disciplines" && (
-              <div className={styles.import}>
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  style={{ display: "none" }}
-                  onChange={handleFileChange}
-                />
-                 
-                <button onClick={handleFileUpload}>
-                  <p>Импорт файла</p>
-                  <img src="./img/import.svg" alt=">"></img>
-                </button>
+                <div className={styles.import}>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    style={{ display: "none" }}
+                    onChange={handleFileChange}
+                  />
+
+                  <button onClick={handleFileUpload}>
+                    <p>Импорт файла</p>
+                    <img src="./img/import.svg" alt=">"></img>
+                  </button>
                 </div>
-                )}
-              
+              )}
             </div>
           </div>
         </div>
@@ -350,13 +340,14 @@ function HomePage() {
           </div>
         </div>
       </div>
-      {filePopUp && 
-          <PopUpFile setfilePopUp={setfilePopUp} handleFileClear={handleFileClear}/>
-         }
-          {
-        appData.createEdicatorPopUp && <PopUpCreateEmploy/>
-      }
-      {appData.errorPopUp &&  <PopUpError/>}
+      {filePopUp && (
+        <PopUpFile
+          setfilePopUp={setfilePopUp}
+          handleFileClear={handleFileClear}
+        />
+      )}
+      {appData.createEdicatorPopUp && <PopUpCreateEmploy />}
+      {appData.errorPopUp && <PopUpError />}
     </Layout>
   );
 }

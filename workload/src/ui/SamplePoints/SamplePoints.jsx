@@ -22,6 +22,19 @@ export function SamplePoints(props) {
     }
   }, [spRef]);
 
+  //! закрытие модального окна при нажати вне него
+  useEffect(() => {
+    const handler = (event) => {
+      if (spRef.current && !spRef.current.contains(event.target)) {
+        tabPar.setSpShow("");
+      }
+    };
+    document.addEventListener("click", handler, true);
+    return () => {
+      document.removeEventListener("click", handler);
+    };
+  }, []);
+
   const filteredData = [
     ...new Set(
       tabPar.isSamplePointsData.filter((el) => {

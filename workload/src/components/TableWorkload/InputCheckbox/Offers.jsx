@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import styles from "./../TableWorkload.module.scss";
 import DataContext from "../../../context";
 import { ReactComponent as LogoAllComment } from "./../../../img/arrow_down.svg";
@@ -79,8 +79,26 @@ function Offers(props) {
     );
   };
 
+  //! закрытие модального окна при нажати вне него
+  const offerRef = useRef(null);
+  useEffect(() => {
+    const handler = (event) => {
+      if (offerRef.current && !offerRef.current.contains(event.target)) {
+        setOfferWindowShow(false);
+      }
+    };
+    document.addEventListener("click", handler, true);
+    return () => {
+      document.removeEventListener("click", handler);
+    };
+  }, []);
+
   return (
-    <div className={styles.Offers} onClick={(e) => e.stopPropagation()}>
+    <div
+      ref={offerRef}
+      className={styles.Offers}
+      onClick={(e) => e.stopPropagation()}
+    >
       {props.offerData.length > 0 && (
         <div>
           <div className={styles.circle} onClick={circleClick}>

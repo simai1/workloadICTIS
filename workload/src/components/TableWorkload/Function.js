@@ -138,15 +138,18 @@ export const funGetConfirmation = (itemId, changedData, bufferAction) => {
   // при разделении строки
   else if (changedData.splitjoin.includes(itemId)) {
     let index = 0;
-    let length = 1;
+    let length = 0;
     bufferAction.map((item) => {
       if (item.request === "splitWorkload") {
         //при разделении в конец id добавляется index у первого 0 у втрого 1 и тд
         // Number(itemId[itemId.length - 1]) определяет этот индекс
+        index = 0;
         if (Number(itemId[itemId.length - 1]) > index) {
           index = Number(itemId[itemId.length - 1]);
         }
-        length = item.data.n;
+        if (item.data.ids.some((e) => e === itemId.slice(0, -1))) {
+          length = item.data.n;
+        }
       }
     });
     if (index !== -1) {

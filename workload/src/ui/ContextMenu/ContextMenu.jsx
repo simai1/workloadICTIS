@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./ContextMenu.module.scss";
 import { SubMenu } from "./SubMenu";
 import { EducatorMenu } from "./EducatorMenu";
@@ -7,6 +7,8 @@ import {
   EducatorLK,
   apiAddAttaches,
   apiUnAttaches,
+  createComment,
+  createOffer,
 } from "../../api/services/ApiRequest";
 import { Highlight } from "./Highlight";
 import MenuPop from "./MenuPop";
@@ -17,10 +19,15 @@ import {
   addСhangedData,
 } from "./Function";
 import CommentsMenu from "./CommentsMenu";
+import PopupOffer from "./PopupOffer";
 
 const ContextMenu = (props) => {
   const { appData, tabPar, basicTabData } = React.useContext(DataContext);
   const [menuShow, setMenuShow] = useState("");
+  //! функция которая открывает попап подтверждения отправки предложения
+  const [popupOffer, setPopupOffer] = useState(null);
+  const [popupComment, setPopupComment] = useState(false);
+  const [popupCommentAction, setPopupCommentAction] = useState(null);
 
   useEffect(() => {
     console.log("bufferAction", appData.bufferAction);
@@ -56,24 +63,6 @@ const ContextMenu = (props) => {
     setMenuShow(menuShow === "commentsMenu" ? "" : "commentsMenu");
   };
 
-  //!функция замены цвета
-  const SetColor = (colorRows) => {
-    const updatedHighlights = [...props.Highlight]; // Создаем копию текущего состояния highlights
-    appData.individualCheckboxes.forEach((id) => {
-      const existingIndex = updatedHighlights.findIndex((el) => el.id === id);
-      if (existingIndex !== -1) {
-        updatedHighlights[existingIndex] = {
-          ...updatedHighlights[existingIndex],
-          color: colorRows,
-        };
-      } else {
-        updatedHighlights.push({ id: id, color: colorRows }); // Добавляем новый элемент в массив
-      }
-    });
-    props.setHighlight(updatedHighlights); // Обновляем состояние highlights
-    console.log(props.Highlight);
-  };
-
   //! Выбор преподавателя
   const selectedEducator = (id) => {
     setMenuShow("");
@@ -100,6 +89,15 @@ const ContextMenu = (props) => {
         );
       });
     } else if (menuShow === "propose") {
+      console.log("popup");
+      setPopupOffer(id);
+    }
+  };
+
+  //! функция для подтверждения или отмены отправки предложения
+  const onClickOfferPopup = (action) => {
+    const id = popupOffer;
+    if (action) {
       //! отправляем запрос на добавление предложения
       EducatorLK(id).then((Educator) => {
         const offer = {
@@ -108,22 +106,27 @@ const ContextMenu = (props) => {
           educatorId: Educator.id,
         };
         tabPar.setAllOffersData([...tabPar.allOffersData, offer]);
-        //! буфер
-        appData.setBufferAction([
-          {
-            request: "createOffer",
-            data: {
-              workloadId: tabPar.selectedTr[0],
-              educatorId: Educator.id,
-            },
-          },
-          ...appData.bufferAction,
-        ]);
-        //! занесем id измененнных данных в состояние
-        tabPar.setChangedData(
-          addСhangedData(tabPar.changedData, "educator", tabPar.selectedTr[0])
-        );
+        createOffer(offer).then(() => {
+          setPopupOffer(null);
+          tabPar.setContextMenuShow(false);
+          basicTabData.funUpdateOffers();
+        });
       });
+    } else {
+      setPopupOffer(null);
+      tabPar.setContextMenuShow(false);
+    }
+  };
+
+  //! попап при отправке комментрия
+  const onClickCommentPopup = (action) => {
+    if (action) {
+      createComment(popupCommentAction).then(() => {
+        basicTabData.funUpdateAllComments();
+      });
+      setPopupComment(false);
+    } else {
+      setPopupComment(false);
     }
   };
 
@@ -134,6 +137,7 @@ const ContextMenu = (props) => {
       ids: tabPar.selectedTr,
       n: count,
     };
+    console.log(data);
     const prev = basicTabData.workloadDataFix.filter((item) =>
       tabPar.selectedTr.some((el) => el === item.id)
     );
@@ -175,8 +179,8 @@ const ContextMenu = (props) => {
     );
     if (funData === null) {
       // console.error("неправильно соеденяем данные");
-      appData.seterrorPopUp(true)
-      console.log(appData.errorPopUp)
+      appData.seterrorPopUp(true);
+      console.log(appData.errorPopUp);
     } else {
       tabPar.setSelectedTr([]);
       basicTabData.setWorkloadDataFix(funData.newUpdatedData);
@@ -277,12 +281,42 @@ const ContextMenu = (props) => {
     left: tabPar.contextPosition.x,
   };
 
+  //! закрытие модального окна при нажати вне него
+  const conxextMenuRef = useRef(null);
+  useEffect(() => {
+    const handler = (event) => {
+      if (
+        conxextMenuRef.current &&
+        !conxextMenuRef.current.contains(event.target)
+      ) {
+        tabPar.setContextMenuShow(false);
+      }
+    };
+    document.addEventListener("click", handler, true);
+    return () => {
+      document.removeEventListener("click", handler);
+    };
+  }, []);
+
   return (
     <div
-      ref={props.refContextMenu}
+      // ref={props.refContextMenu}
+      ref={conxextMenuRef}
       onContextMenu={handleContextMenu}
       className={styles.ContextMenu}
     >
+      {popupOffer && (
+        <PopupOffer
+          onClickOfferPopup={onClickOfferPopup}
+          title={"Вы уверенны что хотите отправить предложение?"}
+        />
+      )}
+      {popupComment && (
+        <PopupOffer
+          onClickOfferPopup={onClickCommentPopup}
+          title={"Вы уверенны что хотите отправить комментарий?"}
+        />
+      )}
       <div style={positStyle} className={styles.blockMenu}>
         {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 9) && (
           <MenuPop
@@ -313,14 +347,15 @@ const ContextMenu = (props) => {
           />
         )}
 
-        {tabPar.selectedTr.length === 1 && (
-          <MenuPop
-            btnText={"Оставить комментарий"}
-            func={onAddComment}
-            menuShow={menuShow === "commentsMenu"}
-            img={true}
-          />
-        )}
+        {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 22) &&
+          tabPar.selectedTr.length === 1 && (
+            <MenuPop
+              btnText={"Оставить комментарий"}
+              func={onAddComment}
+              menuShow={menuShow === "commentsMenu"}
+              img={true}
+            />
+          )}
         {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 12) &&
           tabPar.selectedTr.length > 1 && (
             <MenuPop
@@ -371,7 +406,12 @@ const ContextMenu = (props) => {
         <Highlight />
       )}
       {menuShow === "commentsMenu" && (
-        <CommentsMenu setMenuShow={setMenuShow} />
+        <CommentsMenu
+          setMenuShow={setMenuShow}
+          setPopupComment={setPopupComment}
+          popupCommentAction={popupCommentAction}
+          setPopupCommentAction={setPopupCommentAction}
+        />
       )}
     </div>
   );
