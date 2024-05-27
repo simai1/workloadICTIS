@@ -68,7 +68,7 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
-//app.use(corsMiddleware);
+app.use(corsMiddleware);
 app.use(cors({
     credentials: true,
     origin: true,
@@ -95,7 +95,7 @@ io.on('connection', socket => {
         console.log('Уведомление отправилось клиенту', eventData);
     });
 
-    socket.on('response', data => {
+    socket.on('response', () => {
         socket.emit('response', 'data received');
     });
 
