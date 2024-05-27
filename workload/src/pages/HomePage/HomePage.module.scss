@@ -22,7 +22,7 @@ body {
       width: 100%;
       display: flex;
       justify-content: space-between;
-      .header_top_save_search{
+      .header_top_save_search {
         display: flex;
         .header_button {
           display: flex;
@@ -38,7 +38,7 @@ body {
           border-radius: 8px;
           color: #b0b0b0;
           margin-left: 20px;
-          
+
           .hedaer_search_inner {
             width: 100%;
             display: flex;
@@ -55,8 +55,7 @@ body {
           .hedaer_search::-webkit-input-placeholder {
             color: #b0b0b0;
           }
-      }
-     
+        }
       }
       .header_left_component {
         display: flex;
@@ -176,5 +175,23 @@ body {
   .rocket:hover {
     opacity: 70%;
     transition: opacity 0.15s linear;
+  }
+
+  .saveBuffre {
+    display: flex;
+    flex-direction: row;
+    button {
+      height: 45px;
+      background-color: #3b28cc;
+      color: #fff;
+      border-radius: 8px;
+      border: none;
+      font-size: 18px;
+      padding: 10px 16px;
+      margin-right: 10px;
+    }
+    img {
+      display: flex;
+    }
   }
 }
