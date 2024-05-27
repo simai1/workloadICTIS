@@ -7,6 +7,15 @@ import Notification from '../models/notifications.js';
 import WorkloadDto from '../dtos/workload-dto.js';
 import SummaryWorkload from '../models/summary-workload.js';
 import checkHours from '../utils/notification.js';
+import History from "../models/history.js";
+
+const getIds = (modelsArr) => {
+    const arr = [];
+    for (const el of modelsArr){
+        arr.push(el.id);
+    }
+    return arr;
+};
 
 export default {
     // Получение нагрузки
@@ -116,6 +125,12 @@ export default {
             // Удаляем изначальную нагрузку
             await workload.destroy({ force: true });
         }
+
+        await History.create({
+            type: 1,
+            before: getIds(existingWorkloads),
+            after: getIds(newWorkloads),
+        })
 
         res.json(newWorkloads);
     },
