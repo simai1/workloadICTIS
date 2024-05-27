@@ -14,7 +14,7 @@ export default {
         try {
             if (isOid){
                 const workloads = await Workload.findAll({
-                    where: { isOid: true },
+                    where: { isOid },
                     include: { model: Educator },
                     order: [['id', 'ASC']],
                 })
