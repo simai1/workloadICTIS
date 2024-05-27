@@ -4,6 +4,12 @@
 .TableTeachers {
   padding-left: 64px;
   margin-right: 64px;
+  position: relative;
+  top: -60px;
+  z-index: 220!important;
+  button{
+    margin-bottom: 15px;
+  }
   .tabledisciplinesMain_search {
     margin-bottom: 10px;
     position: absolute;

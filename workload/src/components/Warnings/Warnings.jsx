@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./Warnings.module.scss";
 import WarningMessage from "../../ui/WarningMessage/WarningMessage";
-import socketConnect from "../../api/services/socket";
+// import socketConnect from "../../api/services/socket";
 import DataContext from "../../context";
 import { ReactComponent as SvgNotification } from "./../../img/notification.svg";
 import { Educator } from "../../api/services/ApiRequest";
@@ -21,12 +21,12 @@ function Warnings(props) {
     props.setEducatorIdforLk(id);
   };
 
-  useEffect(() => {
-    socketConnect().then((data) => {
-      console.log("socketConnect", data);
-      getAllWarnin(appData.setAllWarningMessage);
-    });
-  }, []);
+  // useEffect(() => {
+  //   socketConnect().then((data) => {
+  //     console.log("socketConnect", data);
+  //     getAllWarnin(appData.setAllWarningMessage);
+  //   });
+  // }, []);
 
   //! закрытие модального окна при нажатии вне него
   const refLO = useRef(null);

@@ -54,6 +54,16 @@ export const EducatorLK = async (data) => {
   }
 };
 
+export const CreateEducator = async (data) => {
+  try {
+    const response = await http.post(`${server}/educator/`, data);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
 export const Positions = async () => {
   try {
     const response = await http.get(`${server}/educatorget/positions`);
@@ -384,10 +394,11 @@ export const apiUnAttaches = async (data) => {
 };
 
 //! импорт файла
-export const SubmitFileXLSX = async (data) => {
-  console.log("файл ", data);
+export const SubmitFileXLSX = async (constIdCafedra,file) => {
+ 
+  console.log('constIdCafedra', constIdCafedra)
   try {
-    const response = await http.post(`${server}/parser/parseWorkload/7`, data);
+    const response = await http.post(`${server}/parser/parseWorkload/${constIdCafedra}`, file );
     console.log("response ", response);
     return response.data;
   } catch (error) {

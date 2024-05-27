@@ -42,6 +42,8 @@ function App() {
 
   //! буфер последних действий. Выполняется после кнопки сохранить
   const [bufferAction, setBufferAction] = useState([]);
+  const [errorPopUp, seterrorPopUp] = useState(false);//popUp error visible
+  const [createEdicatorPopUp, setcreateEdicatorPopUp] = useState(false);//popUp error visible
 
   const appData = {
     individualCheckboxes,
@@ -60,13 +62,16 @@ function App() {
     fileData,
     setFileData,
     metodRole,
+    seterrorPopUp,
+    errorPopUp,
+    setcreateEdicatorPopUp,
+    createEdicatorPopUp
   };
 
   // ! параметры таблицы
   const [tableHeaders, setTableHeaders] = useState(headers);
   const [workloadData, setWorkloadData] = useState([]); // данные с бд нагрузок
   const [workloadDataFix, setWorkloadDataFix] = useState([]); //данные с убранным массиовм преподавателя
-
   const [filtredData, setFiltredData] = useState([]); // фильтрованные данные
   const [allCommentsData, setAllCommentsData] = useState([]); // все комментарии
   const [allOffersData, setAllOffersData] = useState([]); // предложения
@@ -235,6 +240,7 @@ function App() {
     funUpdateTable,
     funUpdateFastenedData,
     funUpdateAllColors,
+    
   };
 
   //! получаем и записываем данные usera

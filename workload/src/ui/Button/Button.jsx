@@ -6,6 +6,10 @@ function Button(props) {
     if (props.onClick) {
       props.onClick();
     }
+    if(props.handleClicks){
+      props.handleClicks();
+    }
+
   };
 
   return (
