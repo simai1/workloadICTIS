@@ -5,7 +5,7 @@ import arrowWhite from "./../../img/arrow-White.svg";
 import arrowBlack from "./../../img/arrow_down.svg";
 
 function ListKaf({ dataList, Textlabel, defaultValue, name, setTableMode }) {
-  const { tabPar } = React.useContext(DataContext);
+  const { tabPar, basicTabData } = React.useContext(DataContext);
 
   const [activeList, setactiveList] = useState(false);
   const [nameKaf, setnameKaf] = useState(defaultValue);
@@ -15,6 +15,7 @@ function ListKaf({ dataList, Textlabel, defaultValue, name, setTableMode }) {
     setactiveList(!activeList)
     tabPar.setDataIsOid(false)
     setTableMode("cathedrals");
+    basicTabData.funUpdateTable(el.id)
   };
 
   return (
