@@ -28,12 +28,15 @@ router
         asyncRoute(checkRole([role.DIRECTORATE, role.DEPARTMENT_HEAD, role.METHODIST])),
         asyncRoute(eduController.getAll)
     )
-    .post(
-        asyncRoute(
-            checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST]),
-            asyncRoute(eduController.create)
-        )
-    );
+
+router
+  .route('/create')
+  .post(
+    asyncRoute(
+      checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST]),
+      asyncRoute(eduController.create)
+    )
+  );
 router
     .route('/get/positions')
     .get(
