@@ -20,6 +20,7 @@ import { PopUpFile } from "../../ui/PopUpFile/PopUpFile";
 import { PopUpError } from "../../ui/PopUp/PopUpError";
 import List from "../../ui/List/List";
 import ListKaf from "../../ui/ListKaf/ListKaf";
+import { PopUpCreateEmploy } from "../../ui/PopUpCreateEmploy/PopUpCreateEmploy";
 
 function HomePage() {
   const { appData, tabPar, visibleDataPar, basicTabData } =
@@ -352,6 +353,9 @@ function HomePage() {
       {filePopUp && 
           <PopUpFile setfilePopUp={setfilePopUp} handleFileClear={handleFileClear}/>
          }
+          {
+        appData.createEdicatorPopUp && <PopUpCreateEmploy/>
+      }
       {appData.errorPopUp &&  <PopUpError/>}
     </Layout>
   );
