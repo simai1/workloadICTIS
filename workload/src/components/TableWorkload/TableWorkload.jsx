@@ -4,8 +4,6 @@ import styles from "./TableWorkload.module.scss";
 import { filteredWorkload, funfastenedDataSort } from "./Function";
 import DataContext from "../../context";
 import ContextMenu from "../../ui/ContextMenu/ContextMenu";
-import { returnPrevState } from "../../bufferFunction";
-import { delChangeData } from "../../ui/ContextMenu/Function";
 
 function TableWorkload(props) {
   const { appData, tabPar, visibleDataPar, basicTabData } =
