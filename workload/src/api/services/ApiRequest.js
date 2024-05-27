@@ -85,9 +85,9 @@ export const TypeOfEmployments = async () => {
 };
 
 //! получаем нагрузки
-export const Workload = async () => {
+export const Workload = async (param) => {
   try {
-    const response = await http.get(`${server}/workload`);
+    const response = await http.get(`${server}/workload${param}`);
     return response.data;
   } catch (error) {
     console.error("Error:", error, `${server}/workload`);
@@ -180,8 +180,6 @@ export const joinWorkloads = async (data) => {
 
 //! запрос на принятие предложения
 // 1 - предложить
-// 2 - подтвердить ЗК
-// 3 - отклонить ЗК При этом, подтверждение не удаляется.
 // 4 - принять Дирекция
 // 5 - отменить Дирекцией
 
@@ -201,6 +199,9 @@ export const AcceptOffer = async (data) => {
 };
 
 //! запрос на принятие предложения с акк ЗК
+// 2 - подтвердить ЗК
+// 3 - отклонить ЗК При этом, подтверждение не удаляется.
+
 export const AcceptOfferZK = async (data) => {
   console.log("Предложение принято ", data);
   try {
@@ -231,7 +232,7 @@ export const deleteWorkload = async (data) => {
   }
 };
 
-// ! запрос на удаление преподавателя с нагрузки
+//! запрос на удаление преподавателя с нагрузки
 export const removeEducatorinWorkload = async (data) => {
   console.log("Преподаватель удален с нагрузки ", data);
   try {
@@ -394,11 +395,13 @@ export const apiUnAttaches = async (data) => {
 };
 
 //! импорт файла
-export const SubmitFileXLSX = async (constIdCafedra,file) => {
- 
-  console.log('constIdCafedra', constIdCafedra)
+export const SubmitFileXLSX = async (constIdCafedra, file) => {
+  console.log("constIdCafedra", constIdCafedra);
   try {
-    const response = await http.post(`${server}/parser/parseWorkload/${constIdCafedra}`, file );
+    const response = await http.post(
+      `${server}/parser/parseWorkload/${constIdCafedra}`,
+      file
+    );
     console.log("response ", response);
     return response.data;
   } catch (error) {
@@ -407,12 +410,12 @@ export const SubmitFileXLSX = async (constIdCafedra,file) => {
   }
 };
 
-//!Получение роли 
+//!Получение роли
 
 export const GetRole = async () => {
   try {
     const response = await axios.get(`${server}/user`);
-    console.log("GetRole", response)
+    console.log("GetRole", response);
     return response;
   } catch (error) {
     console.error("Error:", error);
