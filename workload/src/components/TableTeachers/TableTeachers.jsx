@@ -126,9 +126,7 @@ function TableTeachers(props) {
           </tbody>
         </table>
       </div>
-      {
-        appData.createEdicatorPopUp && <PopUpCreateEmploy/>
-      }
+
 
     </div>
   );

@@ -9,7 +9,7 @@ import passport from 'passport';
 
 import 'dotenv/config';
 
-import corsMiddleware from './middlewares/cors.js';
+// import corsMiddleware from './middlewares/cors.js';
 
 import dbUtils from './utils/db.js';
 import testUtils from './utils/test-data.js';
@@ -68,7 +68,7 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(corsMiddleware);
+// app.use(corsMiddleware);
 app.use(cors({
     credentials: true,
     origin: true,
