@@ -10,16 +10,32 @@ import checkHours from '../utils/notification.js';
 
 export default {
     // Получение нагрузки
-    async getAllWorkload(req, res) {
+    async getAllWorkload({query: {isOid, department}}, res) {
         try {
-            const workloads = await Workload.findAll({
-                include: { model: Educator },
-                order: [['id', 'ASC']],
-            });
-
-            const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
-
-            res.json(workloadsDto);
+            if (isOid){
+                const workloads = await Workload.findAll({
+                    where: { isOid: true },
+                    include: { model: Educator },
+                    order: [['id', 'ASC']],
+                })
+                const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
+                res.json(workloadsDto);
+            } else if (department){
+                const workloads = await Workload.findAll({
+                    where: { department },
+                    include: { model: Educator },
+                    order: [['id', 'ASC']],
+                })
+                const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
+                res.json(workloadsDto);
+            } else {
+                const workloads = await Workload.findAll({
+                    include: { model: Educator },
+                    order: [['id', 'ASC']],
+                });
+                const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
+                res.json(workloadsDto);
+            }
         } catch (error) {
             res.status(500).json({ error: 'Internal Server Error' });
         }
