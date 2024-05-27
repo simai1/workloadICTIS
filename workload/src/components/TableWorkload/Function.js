@@ -39,7 +39,7 @@ export function funSortedFastened(data, fastenedData) {
   return sortedArray;
 }
 
-//! функция разделения на кафедральный и общеинститутские
+//! функция разделения на кафедральный и общеинститутские и сортировки
 export function funSplitData(data, isOid) {
   const origData = [...data];
   const sortedUsers = origData

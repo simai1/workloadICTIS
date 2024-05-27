@@ -12,8 +12,8 @@ function TableTeachers(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]);
   const [updatedData, setUpdatedData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const { appData } = React.useContext(DataContext);
-  const [createEdicatorPopUp, setcreateEdicatorPopUp] = useState(false);//popUp error visible
+  const { appData, basicTabData } = React.useContext(DataContext);
+  const [createEdicatorPopUp, setcreateEdicatorPopUp] = useState(false); //popUp error visible
 
   const tableHeaders = headersEducator;
   useEffect(() => {
@@ -38,7 +38,7 @@ function TableTeachers(props) {
         setUpdatedHeader(tableHeaders);
       });
     }
-  }, []);
+  }, [basicTabData.actionUpdTabTeach]);
 
   const handleNameClick = (index, id) => {
     props.setEducatorIdforLk(id);
@@ -91,7 +91,14 @@ function TableTeachers(props) {
 
   return (
     <div className={styles.TableTeachers}>
-      <Button text="Создать преподавателя" Bg="#3b28cc" textColot="#fff" onClick={()=>{appData.setcreateEdicatorPopUp(true)}}/>
+      <Button
+        text="Создать преподавателя"
+        Bg="#3b28cc"
+        textColot="#fff"
+        onClick={() => {
+          appData.setcreateEdicatorPopUp(true);
+        }}
+      />
       <div className={styles.TableTeachers__inner}>
         <table className={styles.table}>
           <thead>
@@ -126,8 +133,6 @@ function TableTeachers(props) {
           </tbody>
         </table>
       </div>
-
-
     </div>
   );
 }

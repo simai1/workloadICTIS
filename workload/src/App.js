@@ -21,6 +21,7 @@ import {
   funSplitData,
 } from "./components/TableWorkload/Function";
 import { delChangeData } from "./ui/ContextMenu/Function";
+import { getDataEducator } from "./api/services/AssignApiData";
 
 function App() {
   const [educator, setEducator] = useState([]); // преподаватели
@@ -77,6 +78,7 @@ function App() {
   const [filtredData, setFiltredData] = useState([]); // фильтрованные данные
   const [allCommentsData, setAllCommentsData] = useState([]); // все комментарии
   const [allOffersData, setAllOffersData] = useState([]); // предложения
+  const [actionUpdTabTeach, setActionUpdTabTeach] = useState(false); // при изменении обновляется таблицы преподавателей
 
   const basicTabData = {
     updateAlldata,
@@ -96,6 +98,8 @@ function App() {
     funUpdateTable,
     funUpdateFastenedData,
     funUpdateAllColors,
+    actionUpdTabTeach,
+    setActionUpdTabTeach,
   };
 
   const [coloredData, setColoredData] = useState([]); // выделенные цветом
@@ -201,7 +205,7 @@ function App() {
   }
 
   //! функция обновления таблицы
-  function funUpdateTable() {
+  function funUpdateTable(param = "") {
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
       apiGetWorkloadDepartment().then((data) => {
         console.log("нагрузки по кафедре", data);
@@ -216,10 +220,10 @@ function App() {
     // без параметров - вся абсолютно нагрузка,
     // ?isOid=true - вся ОИД нагрузка,
     // ?isOid=false - вся кафедральная нагрузка,
-    // ?department={номер кафедры} - нагрузка одной кафедры
+    // ?department=номер кафедры - нагрузка одной кафедры
 
     if (metodRole[myProfile?.role]?.some((el) => el === 14)) {
-      Workload("").then((data) => {
+      Workload(param).then((data) => {
         console.log("нагрузки", data);
         const dataBd = [...data];
         setWorkloadData(dataBd);
