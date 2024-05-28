@@ -12,6 +12,7 @@ const departments = {
     САИТ: 9,
     САПР: 10,
     СиПУ: 11,
+    ОИД: 12,
 };
 
 export default departments;
