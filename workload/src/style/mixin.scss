@@ -30,7 +30,7 @@
   background-color: #fff;
   color: #353535;
   padding: 15px 15px;
-  border: 1px solid #ADADAD;
+  border: 1px solid #adadad;
   margin-top: 3px;
   border-radius: $border-radius;
   &::placeholder {
@@ -110,4 +110,16 @@
     opacity: 0.8;
     transition: all ease 0.15s;
   }
+}
+
+@mixin triangle() {
+  position: absolute;
+  top: -15px;
+  left: 174px;
+  width: 26px;
+  height: 14px;
+  border-left: 11px solid transparent;
+  border-right: 11px solid transparent;
+  border-bottom: 24px solid #fff;
+  border-radius: 100%;
 }

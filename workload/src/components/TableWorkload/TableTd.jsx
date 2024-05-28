@@ -92,6 +92,9 @@ function TableTd(props) {
         props.item[props.itemKey.key] === ""
       ) {
         return "___";
+      }
+      if (props.itemKey.key === "id") {
+        return props.index + 1;
       } else {
         return props.item[props.itemKey.key];
       }

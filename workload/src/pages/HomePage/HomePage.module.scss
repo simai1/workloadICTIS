@@ -184,20 +184,18 @@ body {
   .saveBuffre {
     display: flex;
     flex-direction: row;
-    button {
-      @include button(var(--blue-color), #fff, 10px, 5px);
-      height: 45px;
-      background-color: #3b28cc;
-      color: #fff;
-      border-radius: 8px;
-      border: none;
-      font-size: 18px;
-      padding: 10px 16px;
-      margin-right: 10px;
-    }
-    img {
+    .btnMenuBox {
+      position: relative;
       display: flex;
+      background-color: #fff;
+      border-radius: 8px;
+      width: 45px;
+      height: 45px;
+      padding: 12px;
       cursor: pointer;
+    }
+    .btnMenuBox:nth-child(1) {
+      margin-right: 15px;
     }
   }
 }
