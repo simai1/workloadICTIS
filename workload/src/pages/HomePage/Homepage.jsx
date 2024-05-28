@@ -91,17 +91,9 @@ function HomePage() {
   };
 
   const fileInputRef = useRef(null);
-  //! функции для импорта файла
-  const handleFileUpload = () => {
-    fileInputRef.current.click();
-  };
-  const handleFileClear = () => {
-    fileInputRef.current.value = null;
-  };
-  const handleFileChange = () => {
-    const file = fileInputRef.current.files[0];
-    appData.setFileData(file);
-    setfilePopUp(!filePopUp);
+  // //! функции для импорта файла
+  const OpenPoPUpFile = () => {
+    setfilePopUp(!filePopUp)
   };
 
   //! при нажатии на ракету
@@ -230,14 +222,14 @@ function HomePage() {
               </div>
               {selectedComponent === "Disciplines" && (
                 <div className={styles.import}>
-                  <input
+                  {/* <input
                     type="file"
                     ref={fileInputRef}
                     style={{ display: "none" }}
-                    onChange={handleFileChange}
-                  />
+                    // onChange={handleFileChange}
+                  /> */}
 
-                  <button onClick={handleFileUpload}>
+                  <button onClick={OpenPoPUpFile}>
                     <p>Импорт файла</p>
                     <img src="./img/import.svg" alt=">"></img>
                   </button>
@@ -259,7 +251,7 @@ function HomePage() {
             //   SelectedText={SelectedText}
             // />
             <TableWorkload
-              handleFileClear={handleFileClear}
+              // handleFileClear={handleFileClear}
               tableMode={tableMode}
               tableHeaders={tableHeaders}
               searchTerm={searchTerm}
@@ -300,7 +292,7 @@ function HomePage() {
       {filePopUp && (
         <PopUpFile
           setfilePopUp={setfilePopUp}
-          handleFileClear={handleFileClear}
+          // handleFileClear={handleFileClear}
         />
       )}
       {appData.createEdicatorPopUp && <PopUpCreateEmploy />}
