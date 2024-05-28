@@ -235,7 +235,6 @@ function HomePage() {
                   /> */}
                   <ListKaf
                     dataList={basicTabData?.tableDepartment}
-                    defaultValue="БИТ"
                     setTableMode={setTableMode}
                   />
                   <Button

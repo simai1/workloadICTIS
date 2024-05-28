@@ -50,7 +50,7 @@ function ListKaf({ dataList, Textlabel, defaultValue, name, setTableMode }) {
               color: nameKaf && !tabPar.dataIsOid ? "#fff" : "#000",
             }}
             onClick={() => setactiveList(!activeList)}
-            value={nameKaf}
+            value={basicTabData.tableDepartment[0].name}
             placeholder={defaultValue}
             className={styles.inputList}
           />
