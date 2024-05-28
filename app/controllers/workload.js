@@ -25,7 +25,10 @@ export default {
                 const workloads = await Workload.findAll({
                     where: { isOid },
                     include: { model: Educator },
-                    order: [['id', 'ASC']],
+                    order: [
+                        ['discipline', 'ASC'],
+                        ['workload', 'ASC']
+                    ],
                 })
                 const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
                 res.json(workloadsDto);
@@ -36,14 +39,20 @@ export default {
                         department,
                     },
                     include: { model: Educator },
-                    order: [['id', 'ASC']],
+                    order: [
+                        ['discipline', 'ASC'],
+                        ['workload', 'ASC']
+                    ],
                 })
                 const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
                 res.json(workloadsDto);
             } else {
                 const workloads = await Workload.findAll({
                     include: { model: Educator },
-                    order: [['id', 'ASC']],
+                    order: [
+                        ['discipline', 'ASC'],
+                        ['workload', 'ASC']
+                    ],
                 });
                 const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
                 res.json(workloadsDto);
@@ -63,6 +72,7 @@ export default {
         const workloads = await Workload.findAll({
             where: { department },
             include: { model: Educator },
+            order: ["name", "ASC"],
         });
         // res.json(workloads);
         const workloadsDto = [];
@@ -270,6 +280,12 @@ export default {
         // Удаляем записи которые учавствовали в совмещении
         await Promise.allSettled(workloads.map(workload => workload.destroy({ force: true })));
 
+        await History.create({
+            type: 2,
+            before: getIds(workloads),
+            after: getIds(createdWorkload),
+        })
+
         const responseData = {
             id: createdWorkload.id,
             ...mergeWorkload,
@@ -314,15 +330,18 @@ export default {
 
     async getDepartmentWorkload(req, res) {
         const userId = req.user;
-        console.log(userId);
         const educator = await Educator.findOne({ where: { userId } });
 
         const department = educator.department;
+
         const workloads = await Workload.findAll({
             where: { department },
+            order: [
+                ['discipline', 'ASC'],
+                ['workload', 'ASC']
+            ],
             include: { model: Educator },
         });
-
         const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
         res.json(workloadsDto);
     },

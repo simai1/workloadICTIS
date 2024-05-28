@@ -44,7 +44,7 @@ export function funSplitData(data, isOid) {
   const origData = [...data];
   const sortedUsers = origData
     .slice()
-    .sort((a, b) => a.discipline.localeCompare(b.discipline));
+    // .sort((a, b) => a.discipline.localeCompare(b.discipline));
   // закрепленные переносим в начало таблицы
   const filteredData = sortedUsers.filter((item) => item.isOid === isOid);
   return filteredData;

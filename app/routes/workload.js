@@ -16,7 +16,7 @@ router
     asyncRoute(workloadController.splitRow)
   );
 router
-    .route('/get/:department')
+    .route('/getDepartment/:department')
     .get(
         asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST])),
         asyncRoute(workloadController.getDepartment)
