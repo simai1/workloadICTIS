@@ -6,16 +6,16 @@ import arrowBlack from "./../../img/arrow_down.svg";
 
 function ListKaf({ dataList, Textlabel, defaultValue, name, setTableMode }) {
   const { tabPar, basicTabData } = React.useContext(DataContext);
-
   const [activeList, setactiveList] = useState(false);
-  const [nameKaf, setnameKaf] = useState("");
-  useEffect(()=>{
-    setnameKaf(defaultValue)
-  },[defaultValue])
+
+  // useEffect(()=>{
+  //   const defWalue = basicTabData.funGetDepartment()
+  //   console.log('defWalue', defWalue)
+  // },[basicTabData.nameKaf])
 
   const addClient = (el) => {
     console.log(el);
-    setnameKaf(el.name);
+    basicTabData.setnameKaf(el.name);
     setactiveList(!activeList);
     tabPar.setDataIsOid(false);
     setTableMode("cathedrals");
@@ -56,7 +56,7 @@ function ListKaf({ dataList, Textlabel, defaultValue, name, setTableMode }) {
               color: !tabPar.dataIsOid ? "#fff" : "#000",
             }}
             onClick={() => setactiveList(!activeList)}
-            value={nameKaf}
+            value={basicTabData.nameKaf}
             placeholder={defaultValue}
             className={styles.inputList}
           />

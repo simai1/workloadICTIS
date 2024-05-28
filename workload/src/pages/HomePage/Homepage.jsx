@@ -42,10 +42,16 @@ function HomePage() {
   const [educatorIdforLk, setEducatorIdforLk] = useState(""); // id для вывода LK, если пустое то LK не отображается
   const [popupSaveAll, setPopupSaveAll] = useState(false); // открыть/закрыть попап подтверждения сохранения
   const [popupExport, setPopupExport] = useState(false); // открыть/закрыть попап подтверждения блокировки таблицы
-
+  const [departments, setdepartments] = useState([]);
   const handleButtonClick = () => {
     setEducatorIdforLk("");
   };
+  useEffect(()=>{
+    // setdepartments(basicTabData.tableDepartment)
+    GetDepartment().then((response)=>{
+      setdepartments(response.data)
+    })
+  },[basicTabData.tableDepartment])
 
   const handleComponentChange = (component) => {
     setSelectedComponent(component);
@@ -222,19 +228,8 @@ function HomePage() {
             <div className={styles.header_bottom_button}>
               {selectedComponent === "Disciplines" && (
                 <>
-                  {/* <Button
-                    Bg={tableMode === "cathedrals" ? "#3B28CC" : "#efedf3"}
-                    textColot={
-                      tableMode === "cathedrals" ? "#efedf3" : "#000000"
-                    }
-                    text="Кафедральные"
-                    onClick={() => {
-                      setTableMode("cathedrals");
-                      EditTableData("cathedrals");
-                    }}
-                  /> */}
                   <ListKaf
-                    dataList={basicTabData?.tableDepartment}
+                    dataList={departments}
                     defaultValue={basicTabData.tableDepartment[0]?.name}
                     setTableMode={setTableMode}
                   />
