@@ -102,9 +102,15 @@ $heightCell: 150px;
       // @include customTdFixWidth;
     }
 
-    td[name="groups"] {
-      @include customTdFixWidth;
-    }
+    // td[name="groups"] {
+    //   @include customTdFixWidth;
+    // }
+    // td[name="core"] {
+    //   // @include customTdFixWidth;
+    //   overflow: hidden;
+    //   text-overflow: ellipsis;
+    //   white-space: normal;
+    // }
 
     th[name="period"],
     td[name="period"] {

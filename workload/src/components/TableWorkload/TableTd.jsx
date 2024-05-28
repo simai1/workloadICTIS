@@ -81,16 +81,54 @@ function TableTd(props) {
     setOnTextArea(false);
   };
 
+  const [showFullText, setShowFullText] = useState(false);
+  const gettdInnerText = () => {
+    if (showFullText) {
+      return props.item[props.itemKey.key];
+    } else {
+      if (props.itemKey.key === "id") {
+        return props.index + 1;
+      } else if (
+        props.item[props.itemKey.key] === null ||
+        props.item[props.itemKey.key] === undefined ||
+        props.item[props.itemKey.key] === ""
+      ) {
+        return "___";
+      } else if (
+        typeof props.item[props.itemKey.key] === "string" &&
+        props.item[props.itemKey.key].length > 100
+      ) {
+        return props.item[props.itemKey.key].slice(0, 100) + "...";
+      } else {
+        return props.item[props.itemKey.key];
+      }
+    }
+  };
+
   return (
     <td
+      onMouseEnter={() => setShowFullText(true)}
+      onMouseLeave={() => setShowFullText(false)}
       name={props.itemKey.key}
       key={props.item.id + "_" + props.itemKey.key}
       className={getClassNameTr()}
+      style={showFullText ? { position: "relative" } : null}
     >
       <div
         key={props.item.id + "div" + props.itemKey.key}
         className={styles.tdInner}
         onDoubleClick={funDubleClick}
+        style={
+          showFullText && props.item[props.itemKey.key].length > 100
+            ? {
+                position: "absolute",
+                backgroundColor: "#fff",
+                border: "1px solid #000",
+                width: "100%",
+                top: "0",
+              }
+            : null
+        }
       >
         {getTextAreaOn() ? (
           <div>
@@ -108,14 +146,8 @@ function TableTd(props) {
               <SvgCross onClick={crossClick} />
             </div>
           </div>
-        ) : props.itemKey.key !== "id" ? (
-          props.item[props.itemKey.key] === null ? (
-            "0"
-          ) : (
-            props.item[props.itemKey.key]
-          )
         ) : (
-          props.index + 1
+          gettdInnerText()
         )}
       </div>
     </td>
