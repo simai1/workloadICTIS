@@ -235,6 +235,7 @@ function HomePage() {
                   /> */}
                   <ListKaf
                     dataList={basicTabData?.tableDepartment}
+                    defaultValue={basicTabData.tableDepartment[0]?.name}
                     setTableMode={setTableMode}
                   />
                   <Button
