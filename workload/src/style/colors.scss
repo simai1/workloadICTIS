@@ -1,4 +1,5 @@
 :root {
+  --bgraund: #efedf3;
   --black-color: #000000;
   --gray-color: #e2e0e5;
   --white-color: #ffffff;
@@ -11,9 +12,15 @@
   --curcle-color: #e81414;
   --formBg-color: #cccccc;
   --blue-color: #3b28cc;
-  --color--blueBg:#E6ECFD;
-  --color--greenBg:#E8F9E7;
-  --color--yellowBg:#FFFBE6;
-  --color--checkedBg:rgb(234, 234, 250);
-  --color--blockedBg:rgb(238 238 238);
+  --color--blueBg: #e6ecfd;
+  --color--greenBg: #e8f9e7;
+  --color--yellowBg: #fffbe6;
+  --color--checkedBg: rgb(234, 234, 250);
+  --color--blockedBg: rgb(238 238 238);
+  --tr-bg: rgb(242, 242, 242);
+  --td-bg: rgba(0, 0, 0, 0.05);
+  --colored1: rgb(228, 244, 255);
+  --colored2: rgb(233, 249, 231);
+  --colored3: rgb(255, 251, 230);
+  --color--deletedBg: rgb(243, 243, 243);
 }

@@ -9,7 +9,7 @@ import passport from 'passport';
 
 import 'dotenv/config';
 
-import corsMiddleware from './middlewares/cors.js';
+// import corsMiddleware from './middlewares/cors.js';
 
 import dbUtils from './utils/db.js';
 import testUtils from './utils/test-data.js';
@@ -24,6 +24,7 @@ import offerRoute from './routes/offers.js';
 import userRoute from './routes/user.js';
 import colorRoute from './routes/color.js';
 import attachesRoute from './routes/attached.js';
+import historyRoute from './routes/history.js';
 // FIX ME
 import roleRoute from './routes/role.js';
 import cors from 'cors';
@@ -68,7 +69,7 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(corsMiddleware);
+// app.use(corsMiddleware);
 app.use(cors({
     credentials: true,
     origin: true,
@@ -86,6 +87,7 @@ app.use('/offers', offerRoute);
 app.use('/role', roleRoute);
 app.use('/color', colorRoute);
 app.use('/attaches', attachesRoute);
+app.use('/history', historyRoute);
 
 io.on('connection', socket => {
     console.log(`socket ${socket.id} connected`);

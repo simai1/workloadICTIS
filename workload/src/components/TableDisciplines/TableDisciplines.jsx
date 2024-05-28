@@ -2,12 +2,9 @@ import React, { useState, useEffect, useMemo, useRef } from "react";
 import styles from "./TableDisciplines.module.scss";
 import { useDispatch, useSelector } from "react-redux";
 import ContextMenu from "../../ui/ContextMenu/ContextMenu";
-import { NotificationForm } from "../../ui/NotificationForm/NotificationForm";
 import { SamplePoints } from "../../ui/SamplePoints/SamplePoints";
 import DataContext from "../../context";
-
 import { ReactComponent as SvgChackmark } from "./../../img/checkmark.svg";
-import { ReactComponent as SvgCross } from "./../../img/cross.svg";
 
 import {
   funcGetAllColors,
@@ -21,13 +18,15 @@ import { returnPrevState } from "../../bufferFunction";
 import { PopUpError } from "../../ui/PopUp/PopUpError";
 import { EducatorLK, getAllColors } from "../../api/services/ApiRequest";
 import { PopUpFile } from "../../ui/PopUpFile/PopUpFile";
+import Table from "./Table";
+import { headers } from "./Data";
 
 function TableDisciplines(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]); //заголовок обновленный для Redux сортировки
   const [updatedData, setUpdatedData] = useState([]); //массив обновленный для Redux сортировки
   const [tableData, setTableData] = useState([]); // соберем из данных апи общие для таблицы
   const [filteredData, setFilteredData] = useState([]);
-  const [sortData, setSortData] = useState([]); // данные при выборе высе дисциплины измененные выделенные и тд
+  const [sortData, setSortData] = useState([]); // данные при выборе все дисциплины измененные выделенные и тд
   const [isHovered, setIsHovered] = useState(false); // флаг открытия уведомлений от преподавателей
   const [isPopUpMenu, setIsPopUpMenu] = useState(false); // флаг открытия PopUp меню
   const [isPopUpFile, setIsPopUpFile] = useState(false); // флаг открытия PopUp меню
@@ -43,23 +42,20 @@ function TableDisciplines(props) {
   const [commentAllData, setCommentAllData] = useState([]); // все комментарии
   const [allOffersData, setAllOffersData] = useState([]);
   const [allColorsData, setAllColorsData] = useState([]); // выделенные цветом храним id
-
   const [Highlight, setHighlight] = useState([]); // массив хранения выделенных цветом (хранится id нагрузки и номер цвета)
-
   const [modalWindowOffer, setModalWindowOffer] = useState({
     id: null,
     flag: false,
   });
-
   const [generalInstituteData, setGeneralInstituteData] = useState([]); // общеинститутские данные
   const [cathedralData, setCathedralData] = useState([]); // кафедральыне данные
   const [changeNumberOfStudents, setChangeNumberOfStudents] = useState([]); // храним id нагрузок у которых изменили количество студентво
   const [changeHours, setChangHours] = useState([]); // храним id нагрузок у которых изменили час
   const [changeEducator, setChangEducator] = useState([]); // храним id нагрузок у которых изменили преподавателя
   const [allChangeData, setAllChangeData] = useState([]); // все измененные данные
+  const tableHeaders = headers;
   //! данные вытянутые из контекста
   const { appData } = React.useContext(DataContext);
-
   // при изменении количесвтва студентов или часов id этих нагрузок будут записываться в состояние а затем выделяться цветом
   useEffect(() => {
     setChangeNumberOfStudents(
@@ -86,27 +82,24 @@ function TableDisciplines(props) {
       ...changeNumberOfStudents,
     ]);
   }, [changeEducator, changeHours, changeNumberOfStudents]);
-  console.log("allChange", allChangeData);
 
   const getDataTableAll = () => {
     getDataTable().then((data) => {
       appData.setWorkload(data);
+      let reqData = data;
       // выводим данные в зависимостри кафедральные или общеинститутские
       const dataIsOid =
         props.tableMode === "genInstitute"
-          ? data.filter((item) => item.isOid === false)
-          : data.filter((item) => item.isOid === true);
-
+          ? reqData.filter((item) => item.isOid === true)
+          : reqData.filter((item) => item.isOid === false);
       setUpdatedData(dataIsOid);
-      setFilteredData(dataIsOid);
+      setFilteredData(data);
       setSortData(dataIsOid);
-      setGeneralInstituteData(data.filter((item) => item.isOid === false));
-      setCathedralData(data.filter((item) => item.isOid === true));
-
+      setGeneralInstituteData(reqData.filter((item) => item.isOid === true));
+      setCathedralData(reqData.filter((item) => item.isOid === false));
       getAllOffers(setAllOffersData);
       // funcGetAllColors(setAllColorsData); // получение цветов
       appData.setIndividualCheckboxes([]);
-      console.log("Таблица обноленна");
     });
   };
 
@@ -118,44 +111,6 @@ function TableDisciplines(props) {
     getAllWarnin(appData.setAllWarningMessage); // предупреждения
     getAllOffers(setAllOffersData); // предложения
   }, []);
-
-  //! при изменении буфера
-  // useEffect(() => {
-  //   setUpdatedData([...appData.workload]);
-  //   setGeneralInstituteData(
-  //     appData.workload.filter((item) => item.isOid === false)
-  //   );
-  //   setCathedralData(appData.workload.filter((item) => item.isOid === true));
-  //   console.log("appData.bufferAction", appData.bufferAction);
-  //   for (var i = appData.bufferAction.length - 1; i >= 0; i--) {
-  //     console.log("setUpdatedData", i);
-  //     if (appData.bufferAction[i].request === "workloadUpdata") {
-  //       const updatedArray = updatedData.map((item) => {
-  //         if (item.id === appData.bufferAction[i].data.id) {
-  //           return {
-  //             ...item,
-  //             [appData.bufferAction[i].data.key]:
-  //               appData.bufferAction[i].data.value,
-  //           };
-  //         }
-  //         return item;
-  //       });
-  //       setUpdatedData([...updatedArray]);
-  //     }
-  //     if (appData.bufferAction[i].request === "addEducatorWorkload") {
-  //       EducatorLK(appData.bufferAction[i].data.educatorId).then((dataReq) => {
-  //         const newUpdatedData = updatedData.map((object) => {
-  //           if (object.id === appData.individualCheckboxes[0]) {
-  //             return { ...object, educator: dataReq.name };
-  //           }
-  //           return object;
-  //         });
-  //         // newUpdatedData.map((item) => console.log("name", item.educator));
-  //         setUpdatedData([...newUpdatedData]);
-  //       });
-  //     }
-  //   }
-  // }, [appData.bufferAction]);
 
   //! фильтрация при выборе всех дисциплин измененных выделенных и тд
   useEffect(() => {
@@ -206,7 +161,6 @@ function TableDisciplines(props) {
     if (appData.bufferAction[0] === 0) {
       getDataTableAll();
       getDataAllComment(setCommentAllData); // получение комментариев
-      console.log("Таблица обноленна после буффера");
       appData.setBufferAction([]);
     }
     const handleKeyDown = (event) => {
@@ -288,8 +242,6 @@ function TableDisciplines(props) {
             appData.setBufferAction((prevItems) => prevItems.slice(1));
           }
         }
-
-        //функция отмены последенего действия находится в TableDisciplines
       }
     };
     document.addEventListener("keydown", handleKeyDown);
@@ -341,7 +293,6 @@ function TableDisciplines(props) {
         setTextareaTd(null);
       }
     };
-
     document.addEventListener("click", handler, true);
     return () => {
       document.removeEventListener("click", handler);
@@ -371,14 +322,12 @@ function TableDisciplines(props) {
       el.target.tagName !== "path"
     ) {
       let ic = [...appData.individualCheckboxes];
-
       if (ic.includes(filteredData[index].id)) {
         ic = ic.filter((el) => el !== filteredData[index].id);
       } else {
         ic = [...ic, filteredData[index].id];
       }
       appData.setIndividualCheckboxes(ic);
-
       if (ic.length === filteredData.length) {
         setIsCheckedGlobal(true);
       } else {
@@ -395,8 +344,7 @@ function TableDisciplines(props) {
   };
 
   //! при нажатии на кружок предложения
-  const handleClicOffer = (el, id_workload, index) => {
-    console.log("id", index, id_workload, allOffersData[index]);
+  const handleClicOffer = (el, index) => {
     setModalWindowOffer({
       id: allOffersData.find(
         (item) => item.workloadId === filteredData[index].id
@@ -416,51 +364,20 @@ function TableDisciplines(props) {
 
   //! клик на th, открытие МО фильтры к колонке
   const clickFigth = (event, index) => {
+    console.log(event, index);
     setSamplePointsShow(!isSamplePointsShow);
     if (event.clientX + 372 > window.innerWidth) {
       setPositionFigth({ x: event.pageX - 50, y: event.pageY - 150 });
     } else {
       setPositionFigth({ x: event.pageX - 50, y: event.pageY - 150 });
     }
-
     const keyTd = tableHeaders[index].key;
-
     const td = filteredData
       .map((item) => item[keyTd])
       .filter((value, i, arr) => arr.indexOf(value) === i);
-
     const data = { td, keyTd };
     setSamplePointsData(data);
   };
-
-  //выбор компонента
-  // ! заголовки
-  const tableHeaders = useMemo(() => {
-    return [
-      { key: "id", label: "№" },
-      { key: "discipline", label: "Дисциплина" },
-      { key: "workload", label: "Нагрузка" },
-      { key: "groups", label: "Группа" },
-      { key: "department", label: "Кафедра" },
-      { key: "block", label: "Блок" },
-      { key: "semester", label: "Семестр" },
-      { key: "period", label: "Период" },
-      { key: "curriculum", label: "Учебный план" },
-      { key: "curriculumUnit", label: "Подразделение учебного плана" },
-      { key: "formOfEducation", label: "Форма обучения" },
-      { key: "levelOfTraining", label: "Уровень подготовки" },
-      {
-        key: "specialty",
-        label: "Направление подготовки (специальность)",
-      },
-      { key: "core", label: "Профиль" },
-      { key: "numberOfStudents", label: "Количество студентов" },
-      { key: "hours", label: "Часы" },
-      { key: "audienceHours", label: "Аудиторные часы" },
-      { key: "ratingControlHours", label: "Часы рейтинг-контроль" },
-      { key: "educator", label: "Преподаватель" },
-    ];
-  }, []);
 
   //! работа с таблицами через REDUX
   const dispatch = useDispatch();
@@ -468,7 +385,6 @@ function TableDisciplines(props) {
   useEffect(() => {
     addHeadersTable(filters, tableHeaders, tableData);
   }, [filters, dispatch]);
-
   function addHeadersTable(filters, tableHeaders, tableData) {
     const updatedHeader = tableHeaders.filter((header) =>
       filters.includes(header.key)
@@ -482,7 +398,6 @@ function TableDisciplines(props) {
       });
       return updatedRow;
     });
-
     setUpdatedHeader(updatedHeader);
     setUpdatedData(updatedData);
   }
@@ -493,8 +408,9 @@ function TableDisciplines(props) {
     let fd;
     if (props.searchTerm === "") {
       fd = sortData;
+      setFilteredData(fd);
     } else {
-      fd = sortData.filter((row) => {
+      fd = appData.workload.filter((row) => {
         return Object.values(row).some(
           (value) =>
             value !== null &&
@@ -505,14 +421,13 @@ function TableDisciplines(props) {
               .includes(props.searchTerm.toLowerCase())
         );
       });
+      setFilteredData(fd);
     }
-    setFilteredData(fd);
   }, [updatedData, props.searchTerm]);
 
   //! меню при нажатии пкм
-  const handleContextMenu = (e, index) => {
+  const handleContextMenu = (e) => {
     e.preventDefault();
-    // console.log(index);
     setShowMenu(!showMenu);
     if (e.clientX + 260 > window.innerWidth) {
       setMenuPosition({ x: e.clientX - 260, y: e.clientY });
@@ -548,18 +463,14 @@ function TableDisciplines(props) {
   //! функция изменения значения td при двойном клике
   const [cellNumber, setCellNumber] = useState([]);
   const changeValueTd = (index, ind) => {
-    // console.log("изменить ", index, ind);
-    if (ind === 15 || ind == 14) {
+    if (ind === 15 || ind === 14) {
       setCellNumber({ index, ind });
     }
-    // console.log(cellNumber);
   };
   const [textareaTd, setTextareaTd] = useState("");
   const onChangeTextareaTd = (event) => {
     setTextareaTd(event.target.value);
-    console.log(event.target.value);
   };
-console.log(appData.fileData)
   const onClickButton = (id, key) => {
     let parsedValue = parseFloat(textareaTd);
     let numberValue = isNaN(parsedValue) ? textareaTd : parsedValue;
@@ -588,22 +499,6 @@ console.log(appData.fileData)
   return (
     <div className={styles.tabledisciplinesMain}>
       <div>
-        {isHovered && (
-          <NotificationForm
-            refHoverd={refHoverd}
-            position={position}
-            setPosition={setPosition}
-            workloadId={idRow}
-            commentAllData={commentAllData}
-            setCommentAllData={setCommentAllData}
-            getDataAllComment={getDataAllComment}
-            setIsHovered={setIsHovered}
-            commentData={commentAllData
-              .filter((item) => item.workloadId === idRow)
-              .reverse()}
-          />
-        )}
-
         {modalWindowOffer.flag && (
           <OfferModalWindow
             allOffersDataItem={allOffersData.filter(
@@ -617,7 +512,6 @@ console.log(appData.fileData)
             getDataTableAll={getDataTableAll}
           />
         )}
-
         {isSamplePointsShow && (
           <SamplePoints
             refSP={refSP}
@@ -649,295 +543,41 @@ console.log(appData.fileData)
         <div className={styles.table_container}>
           {/* уведомления от преподавателей  */}
           <div className={styles.TableDisciplines__inner}>
-            <table className={styles.taleDestiplinesMainTable}>
-              <thead>
-                <tr ref={trRef} className={styles.tr_thead}>
-                  <th className={styles.checkboxHeader} style={{ left: "0" }}>
-                    <div className={styles.input_left}></div>
-                    <input
-                      type="checkbox"
-                      className={styles.custom__checkbox}
-                      id="dataRowGlobal"
-                      name="dataRowGlobal"
-                      checked={isCheckedGlobal}
-                      onChange={handleGlobalCheckboxChange}
-                    />
-                    <label htmlFor="dataRowGlobal"></label>
-                  </th>
-                  {updatedHeader.map((header, index) => (
-                    <th
-                      key={header.key}
-                      onClick={(event) => clickFigth(event, index)}
-                      className={
-                        header.key === "discipline" ||
-                        header.key === "id" ||
-                        header.key === "workload"
-                          ? styles.stytic_th
-                          : null
-                      }
-                      style={{ left: arrLeft[index] || "0" }}
-                    >
-                      <div className={styles.th_inner}>
-                        {header.label}
-                        <img src="./img/th_fight.svg" alt=">"></img>
-                      </div>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-
-              <tbody>
-                {filteredData.map((row, index) => {
-                  const checkValues = Object.values(row).some((value) =>
-                    isChecked.includes(value)
-                  );
-                  if (!checkValues) {
-                    return (
-                      <tr
-                        key={index}
-                        onContextMenu={(e) => handleContextMenu(e, index)}
-                        className={`
-                          ${
-                            appData.individualCheckboxes.includes(
-                              filteredData[index].id
-                            )
-                              ? styles.colorChecked
-                              : ""
-                          }
-                          ${
-                            appData.blockedCheckboxes.includes(
-                              filteredData[index].id
-                            )
-                              ? styles.clorBlocked
-                              : ""
-                          }
-                          ${
-                            !Highlight.some((item) =>
-                              item.id.includes(filteredData[index].id)
-                            )
-                              ? ""
-                              : Highlight.find((item) =>
-                                  item.id.includes(filteredData[index].id)
-                                ).color === 1
-                              ? styles.colorBlue
-                              : Highlight.find((item) =>
-                                  item.id.includes(filteredData[index].id)
-                                ).color === 2
-                              ? styles.colorGreen
-                              : Highlight.find((item) =>
-                                  item.id.includes(filteredData[index].id)
-                                ).color === 3
-                              ? styles.colorYellow
-                              : ""
-                          }
-                        `}
-                        onClick={(el) =>
-                          handleIndividualCheckboxChange(el, index)
-                        }
-                      >
-                        <td className={styles.checkbox} style={{ left: "0" }}>
-                          {/* //!вывод комментарие  */}
-                          {commentAllData.map(
-                            (item) =>
-                              item.workloadId === filteredData[index].id && (
-                                <div
-                                  key={item.id}
-                                  className={styles.notice}
-                                  onClick={(el) => handleClicNotice(el, index)}
-                                  style={
-                                    allOffersData.some(
-                                      (el) => el.workloadId === item.workloadId
-                                    )
-                                      ? {
-                                          transform: "translateY(+18px)",
-                                        }
-                                      : null
-                                  }
-                                >
-                                  {
-                                    commentAllData.filter(
-                                      (item) =>
-                                        item.workloadId ===
-                                        filteredData[index].id
-                                    ).length
-                                  }
-                                  <div
-                                    className={
-                                      allOffersData.some(
-                                        (el) =>
-                                          el.workloadId === item.workloadId
-                                      )
-                                        ? styles.notis_rigth_two
-                                        : styles.notis_rigth_one
-                                    }
-                                  ></div>
-                                </div>
-                              )
-                          )}
-
-                          {/* //! вывод предложений */}
-
-                          {allOffersData.map(
-                            (item) =>
-                              item.workloadId === filteredData[index].id && (
-                                <div
-                                  key={item.id}
-                                  className={styles.notice}
-                                  style={
-                                    commentAllData.some(
-                                      (el) => el.workloadId === item.workloadId
-                                    )
-                                      ? {
-                                          backgroundColor: "#FFD600",
-                                          transform: "translateY(-18px)",
-                                        }
-                                      : {
-                                          backgroundColor: "#FFD600",
-                                        }
-                                  }
-                                  onClick={(el, item) =>
-                                    handleClicOffer(
-                                      el,
-                                      filteredData[index].id,
-                                      index
-                                    )
-                                  }
-                                >
-                                  {
-                                    allOffersData.filter(
-                                      (item) =>
-                                        item.workloadId ===
-                                        filteredData[index].id
-                                    ).length
-                                  }
-                                  <div
-                                    className={
-                                      commentAllData.some(
-                                        (el) =>
-                                          el.workloadId === item.workloadId
-                                      )
-                                        ? styles.notis_rigth_two
-                                        : styles.notis_rigth_one
-                                    }
-                                  ></div>
-                                </div>
-                              )
-                          )}
-
-                          <input
-                            type="checkbox"
-                            className={styles.custom__checkbox}
-                            name="dataRow"
-                            id={`dataRow-${index}`}
-                            checked={
-                              appData.individualCheckboxes.includes(
-                                filteredData[index].id
-                              )
-                                ? true
-                                : false
-                            }
-                            onChange={(el) =>
-                              handleIndividualCheckboxChange(el, index)
-                            }
-                          />
-                          <label htmlFor={`dataRow-${index}`}></label>
-                        </td>
-                        {updatedHeader.map((key, ind) => (
-                          <td
-                            key={updatedHeader[ind].key}
-                            className={
-                              updatedHeader[ind].key === "discipline" ||
-                              updatedHeader[ind].key === "id" ||
-                              updatedHeader[ind].key === "workload"
-                                ? styles.stytic_td
-                                : null
-                            }
-                            style={{ left: arrLeft[ind] || "0" }}
-                          >
-                            <div
-                              className={styles.td_inner}
-                              onDoubleClick={() => changeValueTd(index, ind)}
-                              style={
-                                changeNumberOfStudents.some(
-                                  (el) => el === row.id
-                                ) &&
-                                updatedHeader[ind].key === "numberOfStudents"
-                                  ? {
-                                      backgroundColor: "rgb(255 135 135)",
-                                      borderRadius: "8px",
-                                    }
-                                  : changeHours.some((el) => el === row.id) &&
-                                    updatedHeader[ind].key === "hours"
-                                  ? {
-                                      backgroundColor: "rgb(255 135 135)",
-                                      borderRadius: "8px",
-                                    }
-                                  : changeEducator.some(
-                                      (el) => el === row.id
-                                    ) && updatedHeader[ind].key === "educator"
-                                  ? {
-                                      backgroundColor: "rgb(255 135 135)",
-                                      borderRadius: "8px",
-                                    }
-                                  : null
-                              }
-                            >
-                              {/* редактирование поля нагрузки при двойном клике на нее */}
-                              {cellNumber &&
-                              cellNumber.index === index &&
-                              cellNumber.ind === ind ? (
-                                <div
-                                  className={styles.textarea_title}
-                                  ref={refTextArea}
-                                >
-                                  <textarea
-                                    className={styles.textarea}
-                                    type="text"
-                                    defaultValue={row[updatedHeader[ind].key]}
-                                    onChange={onChangeTextareaTd}
-                                  ></textarea>
-                                  <div className={styles.svg_textarea}>
-                                    {textareaTd?.trim() && (
-                                      <SvgChackmark
-                                        className={styles.SvgChackmark_green}
-                                        onClick={() =>
-                                          onClickButton(row.id, key)
-                                        }
-                                      />
-                                    )}
-                                    <SvgCross
-                                      onClick={() => {
-                                        setCellNumber([]);
-                                      }}
-                                    />
-                                  </div>
-                                </div>
-                              ) : row[updatedHeader[ind].key] === null ? (
-                                "0"
-                              ) : updatedHeader[ind].key === "id" ? (
-                                index + 1
-                              ) : (
-                                row[updatedHeader[ind].key]
-                              )}
-                            </div>
-                          </td>
-                        ))}
-                      </tr>
-                    );
-                  }
-                  return null;
-                })}
-              </tbody>
-            </table>
+            <Table
+              trRef={trRef}
+              filteredData={filteredData}
+              handleIndividualCheckboxChange={handleIndividualCheckboxChange}
+              commentAllData={commentAllData}
+              allOffersData={allOffersData}
+              handleClicOffer={handleClicOffer}
+              updatedHeader={updatedHeader}
+              arrLeft={arrLeft}
+              refTextArea={refTextArea}
+              onChangeTextareaTd={onChangeTextareaTd}
+              textareaTd={textareaTd}
+              SvgChackmark={SvgChackmark}
+              onClickButton={onClickButton}
+              handleContextMenu={handleContextMenu}
+              handleGlobalCheckboxChange={handleGlobalCheckboxChange}
+              clickFigth={clickFigth}
+              changeValueTd={changeValueTd}
+              setCellNumber={setCellNumber}
+              cellNumber={cellNumber}
+              handleClicNotice={handleClicNotice}
+            />
           </div>
         </div>
       </div>
       <div className={styles.Block__tables__shadow}></div>
 
       {isPopUpMenu && <PopUpError setIsPopUpMenu={setIsPopUpMenu} />}
-      {appData.fileData !== null && <PopUpFile setIsPopUpFile={setIsPopUpFile} handleFileClear={props.handleFileClear}/>}
+      {appData.fileData !== null && (
+        <PopUpFile
+          setIsPopUpFile={setIsPopUpFile}
+          handleFileClear={props.handleFileClear}
+        />
+      )}
     </div>
   );
 }
-
 export default TableDisciplines;

@@ -1,42 +1,44 @@
 import styles from "./TableTeachers.module.scss";
 import React, { useState, useEffect } from "react";
-import EditInput from "../EditInput/EditInput";
 import { useDispatch, useSelector } from "react-redux";
 import DataContext from "../../context";
-import { Educator } from "../../api/services/ApiRequest";
 import { getDataEducator } from "../../api/services/AssignApiData";
+import { headersEducator } from "../TableWorkload/Data";
+import { apiEducatorDepartment } from "../../api/services/ApiRequest";
+import Button from "../../ui/Button/Button";
+import { PopUpCreateEmploy } from "../../ui/PopUpCreateEmploy/PopUpCreateEmploy";
 
 function TableTeachers(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]);
   const [updatedData, setUpdatedData] = useState([]);
-  // const [clickedName, setClickedName] = useState("");
   const [filteredData, setFilteredData] = useState([]);
-  const { appData } = React.useContext(DataContext);
+  const { appData, basicTabData } = React.useContext(DataContext);
+  const [createEdicatorPopUp, setcreateEdicatorPopUp] = useState(false); //popUp error visible
 
+  const tableHeaders = headersEducator;
   useEffect(() => {
     props.changeInput();
   }, []);
 
   //! заносим данные о преподавателях в состояние
   React.useEffect(() => {
-    getDataEducator().then((data) => {
-      appData.setEducator(data);
-      setFilteredData(data);
-      setUpdatedData(data);
-    });
-  }, []);
-
-  const tableHeaders = [
-    { key: "id", label: "№" },
-    { key: "name", label: "Преподователь" },
-    { key: "position", label: "Должность" },
-    { key: "typeOfEmployment", label: "Вид занятости" },
-    { key: "department", label: "Кафедра" },
-    { key: "rate", label: "Ставка" },
-    { key: "maxHours", label: "Максимум часов" },
-    { key: "recommendedMaxHours", label: "Рекомендуемый максимум часов" },
-    { key: "minHours", label: "Минимум часов" },
-  ];
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 2)) {
+      apiEducatorDepartment().then((data) => {
+        appData.setEducator(data);
+        setFilteredData(data);
+        setUpdatedData(data);
+        setUpdatedHeader(tableHeaders);
+      });
+    }
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)) {
+      getDataEducator().then((data) => {
+        appData.setEducator(data);
+        setFilteredData(data);
+        setUpdatedData(data);
+        setUpdatedHeader(tableHeaders);
+      });
+    }
+  }, [basicTabData.actionUpdTabTeach]);
 
   const handleNameClick = (index, id) => {
     props.setEducatorIdforLk(id);
@@ -89,8 +91,20 @@ function TableTeachers(props) {
 
   return (
     <div className={styles.TableTeachers}>
+      {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 4) ? (
+        <Button
+          text="Создать преподавателя"
+          Bg="#3b28cc"
+          textColot="#fff"
+          onClick={() => {
+            appData.setcreateEdicatorPopUp(true);
+          }}
+        />
+      ) : (
+        <div style={{ height: "59px" }}></div>
+      )}
       <div className={styles.TableTeachers__inner}>
-        <table className={styles.TableTeachers}>
+        <table className={styles.table}>
           <thead>
             <tr>
               {updatedHeader.map((header) => (

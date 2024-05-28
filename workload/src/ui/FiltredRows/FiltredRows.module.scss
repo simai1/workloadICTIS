@@ -1,55 +1,59 @@
 @import "./../../style/colors.scss";
 
-.FiltredRows{
-    margin-left: 8px;
-    .FiltredRows__inner{
-        button{
-            border: none;
-            background: var(--blue-color);
-            color: #fff;
-            font-size: 18px;
-            padding: 9px 16px;
-            border-radius: 8px;
-            align-items: center;
-            transition: 0.15s linear all;
-            img{
-                position: relative;
-                top: -2px;
-            }
-        }
-        button:hover{
-            cursor: pointer;
-            opacity: 0.8;
-        }
-        .FiltredRows__list{
-            list-style: none;
-            background-color: #fff;
-            box-shadow: 4px 4px 20px 0px #00000026;
-            border-radius: 8px;
-            position: relative;
-            top: -64px;
-            font-size: 18px;
-            text-align: left;
-            padding: 10px 16px 10px 16px;
-            li{
-                margin-top: 5px;
-                transition: 0.15s linear all;
-                align-items: center;
-                text-align: center;
-                .FirstImg{
-                    transform: rotate(180deg);
-                    position: relative;
-                    top: -2px;
-                }
-                img{
-                    margin-left: 10px;
-                }
-            }
-            li:hover{
-                cursor: pointer;
-                opacity: 0.8;
-            }
-        }
-        
+.FiltredRows {
+  margin-left: 8px;
+
+  .FiltredRows__inner {
+    button {
+      border: none;
+      background: var(--blue-color);
+      color: #fff;
+      font-size: 18px;
+      padding: 9px 16px;
+      border-radius: 8px;
+      align-items: center;
+      transition: 0.15s linear all;
+      img {
+        position: relative;
+        top: -2px;
+      }
     }
+    button:hover {
+      cursor: pointer;
+      opacity: 0.8;
+    }
+    .FiltredRows__list {
+      display: flex;
+      justify-content: left;
+      flex-direction: column;
+      list-style: none;
+      background-color: #fff;
+      box-shadow: 4px 4px 20px 0px #00000026;
+      border-radius: 8px;
+      position: relative;
+      top: -64px;
+      font-size: 18px;
+      text-align: left;
+      padding: 10px 16px 10px 16px;
+      z-index: 120;
+      li {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 5px;
+        transition: 0.15s linear all;
+        .FirstImg {
+          transform: rotate(180deg);
+          position: relative;
+          top: -2px;
+        }
+        img {
+          margin-left: 10px;
+        }
+      }
+      li:hover {
+        cursor: pointer;
+        opacity: 0.8;
+      }
+    }
+  }
 }
