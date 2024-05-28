@@ -1,4 +1,4 @@
-import { AppErrorInvalid, AppErrorMissing } from '../utils/errors.js';
+import { AppErrorInvalid, AppErrorMissing, AppErrorNotExist } from "../utils/errors.js";
 import departments from '../config/departments.js';
 import Workload from '../models/workload.js';
 import Educator from '../models/educator.js';
@@ -133,7 +133,7 @@ export default {
             }
 
             // Удаляем изначальную нагрузку
-            await workload.destroy({ force: true });
+            await workload.destroy();
         }
 
         await History.create({
@@ -183,13 +183,23 @@ export default {
     async facultyEducator({ body: { educatorId, workloadId } }, res) {
         if (!educatorId) throw new AppErrorMissing('educatorId');
         if (!workloadId) throw new AppErrorMissing('workloadId');
-        await Workload.update(
+        const checkWorkload = await Workload.findByPk(workloadId);
+        if (!checkWorkload) throw new AppErrorNotExist('workload');
+
+         await Workload.update(
             { educatorId },
             {
                 where: { id: workloadId },
                 individualHooks: true,
             }
         );
+
+        await History.create({
+            type: 3,
+            before: [],
+            after: [workloadId],
+        })
+
         res.json({ status: 'OK' });
     },
 
@@ -205,12 +215,19 @@ export default {
 
         if (remainingWorkloads === 0) {
             // Если нет нагрузок, удаляем предупреждение
-            await Notification.destroy({ where: { educatorId }, force: true }); // Предположим, что у вас есть метод для удаления summaryWorkload по educatorId
+            await Notification.destroy({ where: { educatorId }}); // Предположим, что у вас есть метод для удаления summaryWorkload по educatorId
         } else {
             // Если остались нагрузки, все равно вызываем проверку часов
             const summaryWorkload = await SummaryWorkload.findOne({ where: { educatorId } });
             await checkHours(summaryWorkload); // Передаем summaryWorkload в функцию checkHours
         }
+
+        await History.create({
+            type: 3,
+            before: [workloadId],
+            after: [],
+        })
+
         res.json({ status: 'OK' });
     },
 
@@ -278,12 +295,12 @@ export default {
 
         const createdWorkload = await Workload.create(mergeWorkload);
         // Удаляем записи которые учавствовали в совмещении
-        await Promise.allSettled(workloads.map(workload => workload.destroy({ force: true })));
+        await Promise.allSettled(workloads.map(workload => workload.destroy()));
 
         await History.create({
             type: 2,
             before: getIds(workloads),
-            after: getIds(createdWorkload),
+            after: [createdWorkload.id],
         })
 
         const responseData = {
