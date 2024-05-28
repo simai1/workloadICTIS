@@ -218,7 +218,7 @@ function funGetDepartment(){
   }
 
   //! функция обновления таблицы
-  function funUpdateTable(param = "1") {
+  function funUpdateTable(param = "") {
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
       apiGetWorkloadDepartment().then((data) => {
         console.log("нагрузки по кафедре", data);
@@ -235,9 +235,9 @@ function funGetDepartment(){
     // ?isOid=false - вся кафедральная нагрузка,
     // ?department={номер кафедры} - нагрузка одной кафедры
     let url = "";
-    (param != "0") ?  url = `?department=${param}` : url = "?isOid=true"
-     
-      console.log(url)
+    param != "0" ? (url = `?department=${param}`) : (url = "?isOid=true");
+
+    console.log(url);
     if (metodRole[myProfile?.role]?.some((el) => el === 14)) {
       Workload(`${url}`).then((data) => {
         console.log("нагрузки", data);

@@ -66,8 +66,6 @@ function HomePage() {
 
   const EditTableData = (tableMode) => {
     tabPar.setDataIsOid(tableMode === "genInstitute");
-    //тут написать функцию которая будет подгружать нужное содержимое tableData и tableHeaders
-    // используется в TableWorkload
   };
   useEffect(()=>{
       basicTabData.funGetDepartment()
@@ -209,8 +207,7 @@ function HomePage() {
                     onClick={() => {
                       setTableMode("genInstitute");
                       EditTableData("genInstitute");
-                      basicTabData.funUpdateTable("0")
-
+                      basicTabData.funUpdateTable("0");
                     }}
                   />
                 </>
