@@ -67,9 +67,9 @@ function HomePage() {
   const EditTableData = (tableMode) => {
     tabPar.setDataIsOid(tableMode === "genInstitute");
   };
-  useEffect(()=>{
-      basicTabData.funGetDepartment()
-  },[])
+  useEffect(() => {
+    basicTabData.funGetDepartment();
+  }, []);
 
   //! сохранение буфера
   const onSaveClick = () => {
