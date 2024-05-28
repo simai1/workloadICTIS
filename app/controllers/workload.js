@@ -1,8 +1,10 @@
 import { AppErrorInvalid, AppErrorMissing } from '../utils/errors.js';
+// eslint-disable-next-line import/no-duplicates
 import departments from '../config/departments.js';
 import Workload from '../models/workload.js';
 import Educator from '../models/educator.js';
 import Notification from '../models/notifications.js';
+// eslint-disable-next-line import/no-duplicates
 import {map as mapDepartments} from "../config/departments.js";
 import WorkloadDto from '../dtos/workload-dto.js';
 import SummaryWorkload from '../models/summary-workload.js';
