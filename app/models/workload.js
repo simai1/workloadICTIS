@@ -43,11 +43,11 @@ export default class Workload extends Model {
                     type: DataTypes.SMALLINT,
                 },
                 curriculum: {
-                    type: DataTypes.STRING(600),
+                    type: DataTypes.STRING(1000),
                     allowNull: false,
                 },
                 curriculumUnit: {
-                    type: DataTypes.STRING(600),
+                    type: DataTypes.STRING(1000),
                     allowNull: false,
                 },
                 formOfEducation: {
