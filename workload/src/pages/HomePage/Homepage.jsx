@@ -40,7 +40,8 @@ function HomePage() {
   const [onenModalWind, setOpenModalWind] = useState(false); // переменная закрытия модального окна профиля
   const refProfile = React.useRef(null); // ссылка на модальное окно профиля
   const [educatorIdforLk, setEducatorIdforLk] = useState(""); // id для вывода LK, если пустое то LK не отображается
-  const [popupSaveAll, setPopupSaveAll] = useState(false);
+  const [popupSaveAll, setPopupSaveAll] = useState(false); // открыть/закрыть попап подтверждения сохранения
+  const [popupExport, setPopupExport] = useState(false); // открыть/закрыть попап подтверждения блокировки таблицы
 
   const handleButtonClick = () => {
     setEducatorIdforLk("");
@@ -74,9 +75,22 @@ function HomePage() {
     basicTabData.funGetDepartment();
   }, []);
 
-  //! сохранение буфера
+  //! открыть попап
   const onSaveClick = () => {
     setPopupSaveAll(!popupSaveAll);
+  };
+  //! открыть попап
+  const onExportClick = () => {
+    setPopupExport(!popupExport);
+  };
+
+  //! при клике на подтверждение блокировки таблицы
+  const exportClick = (action) => {
+    if (action) {
+      alert("Жду БЭК");
+    } else {
+      setPopupExport(false);
+    }
   };
 
   //! при нажатии на подтвердить сохранение изменений
@@ -145,12 +159,12 @@ function HomePage() {
                     />
                   )}
                 </div>
-                <div className={styles.btnMenuBox} onClick={onSaveClick}>
-                  <img className={styles.btnLeft} src="./img/saveButton.svg" />
-                  {popupSaveAll && (
+                <div className={styles.btnMenuBox} onClick={onExportClick}>
+                  <img className={styles.btnLeft} src="./img/export.svg" />
+                  {popupExport && (
                     <ConfirmSaving
                       title={"Вы уверены, что хотите отправить таблицу?"}
-                      confirmClick={confirmClick}
+                      confirmClick={exportClick}
                     />
                   )}
                 </div>
