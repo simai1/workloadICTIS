@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./HomePage.module.scss";
 import TableTeachers from "../../components/TableTeachers/TableTeachers";
 import Button from "../../ui/Button/Button";
@@ -21,6 +21,7 @@ import { PopUpError } from "../../ui/PopUp/PopUpError";
 import List from "../../ui/List/List";
 import ListKaf from "../../ui/ListKaf/ListKaf";
 import { PopUpCreateEmploy } from "../../ui/PopUpCreateEmploy/PopUpCreateEmploy";
+import { GetDepartment } from "../../api/services/ApiRequest";
 
 function HomePage() {
   const { appData, tabPar, visibleDataPar, basicTabData } =
@@ -65,56 +66,10 @@ function HomePage() {
 
   const EditTableData = (tableMode) => {
     tabPar.setDataIsOid(tableMode === "genInstitute");
-    //тут написать функцию которая будет подгружать нужное содержимое tableData и tableHeaders
-    // используется в TableWorkload
   };
-
-  const dataList = [
-    {
-      id: 1,
-      name: "БИТ",
-    },
-    {
-      id: 2,
-      name: "ВМ",
-    },
-    {
-      id: 3,
-      name: "ВТ",
-    },
-    {
-      id: 4,
-      name: "ИАСБ",
-    },
-    {
-      id: 5,
-      name: "ИБТКС",
-    },
-    {
-      id: 6,
-      name: "ИМС",
-    },
-    {
-      id: 7,
-      name: "МОП ЭВМ",
-    },
-    {
-      id: 8,
-      name: "ПиБЖ",
-    },
-    {
-      id: 9,
-      name: "САИТ",
-    },
-    {
-      id: 10,
-      name: "САПР",
-    },
-    {
-      id: 11,
-      name: "СиПУ",
-    },
-  ];
+  useEffect(() => {
+    basicTabData.funGetDepartment();
+  }, []);
 
   //! сохранение буфера
   const onSaveClick = () => {
@@ -239,7 +194,7 @@ function HomePage() {
                     }}
                   /> */}
                   <ListKaf
-                    dataList={dataList}
+                    dataList={basicTabData?.tableDepartment}
                     defaultValue="БИТ"
                     setTableMode={setTableMode}
                   />

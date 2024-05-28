@@ -7,6 +7,7 @@ import { bufferRequestToApi, returnPrevState } from "./bufferFunction";
 import { headers } from "./components/TableWorkload/Data";
 import {
   Comment,
+  GetDepartment,
   Workload,
   apiGetUser,
   apiGetWorkloadDepartment,
@@ -80,7 +81,7 @@ function App() {
   const [allOffersData, setAllOffersData] = useState([]); // предложения
   const [selectkafedra, setselectkafedra] = useState(""); //state выбранной кафедры
   const [actionUpdTabTeach, setActionUpdTabTeach] = useState(false); // при изменении обновляется таблицы преподавателей
-
+  const  [tableDepartment, settableDepartment] = useState([])
   const basicTabData = {
     updateAlldata,
     tableHeaders,
@@ -100,9 +101,11 @@ function App() {
     funUpdateFastenedData,
     funUpdateAllColors,
     setselectkafedra,
+    funGetDepartment,
     selectkafedra,
     actionUpdTabTeach,
     setActionUpdTabTeach,
+    tableDepartment
   };
 
   const [coloredData, setColoredData] = useState([]); // выделенные цветом
@@ -198,6 +201,13 @@ function App() {
       setFastenedData(data);
     });
   }
+//! Функция обновления существующих кафедр таблицы 
+function funGetDepartment(){
+  GetDepartment().then((response)=>{
+    settableDepartment(response.data)
+  })
+}
+
 
   //! функция получения выделенных цветом строк
   function funUpdateAllColors() {

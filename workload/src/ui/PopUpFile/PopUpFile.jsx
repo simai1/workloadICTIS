@@ -20,7 +20,8 @@ export function PopUpFile(props) {
     { name: "ПиБЖ", id: 8 },
     { name: "САИТ", id: 9 },
     { name: "САПР", id: 10 },
-    { name: "СиПУ", id: 11 }
+    { name: "СиПУ", id: 11 },
+    { name: "ОИД", id: 12 }
   ];
   
   const closeMenuPopFile = () => {
@@ -37,7 +38,11 @@ export function PopUpFile(props) {
     const formData = new FormData();
     formData.append('file', fileData);
     console.log("файл ", formData);
-    SubmitFileXLSX(constIdCafedra, formData)
+    SubmitFileXLSX(constIdCafedra, formData).then((resp)=>{
+      if(resp){
+        basicTabData.funGetDepartment()
+      }
+    })
   };
  
   const setCaf = (e) => {
@@ -75,6 +80,7 @@ console.log("file", appData.fileData?.name)
                 <p onClick={setCaf}>САИТ</p>
                 <p onClick={setCaf}>САПР</p>
                 <p onClick={setCaf}>СиПУ</p>
+                <p onClick={setCaf}>ОИД</p>
               </div>
             </div>
           )}
