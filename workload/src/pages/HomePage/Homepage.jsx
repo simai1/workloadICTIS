@@ -116,19 +116,6 @@ function HomePage() {
     },
   ];
 
-  // let dataList = [];
-  // use
-  // basicTabData.workloadData.map((item) => {
-  //   if (!dataList.some((e) => e.name === item.department)) {
-  //     dataList.push({
-  //       id: dl.find((el) => el.name === item.department).id,
-  //       name: item.department,
-  //     });
-  //   }
-  // });
-  // dataList = dataList.length > 0 ? dataList : dl;
-  // console.log("dataList", dataList);
-
   //! сохранение буфера
   const onSaveClick = () => {
     //! отправляем все запросы на обработку

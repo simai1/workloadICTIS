@@ -81,10 +81,20 @@ function TableTd(props) {
     setOnTextArea(false);
   };
 
-  const [showFullText, setShowFullText] = useState(false);
+  const [showFullText, setShowFullText] = useState(false); // при наведении на td показывает весь текст ячейки
+  const lenSlice = props.itemKey.key === "groups" ? 50 : 100;
+  //! фуункция котороя определяет какой формат текста выводить
   const gettdInnerText = () => {
     if (showFullText) {
-      return props.item[props.itemKey.key];
+      if (
+        props.item[props.itemKey.key] === null ||
+        props.item[props.itemKey.key] === undefined ||
+        props.item[props.itemKey.key] === ""
+      ) {
+        return "___";
+      } else {
+        return props.item[props.itemKey.key];
+      }
     } else {
       if (props.itemKey.key === "id") {
         return props.index + 1;
@@ -96,9 +106,9 @@ function TableTd(props) {
         return "___";
       } else if (
         typeof props.item[props.itemKey.key] === "string" &&
-        props.item[props.itemKey.key].length > 100
+        props.item[props.itemKey.key].length > lenSlice
       ) {
-        return props.item[props.itemKey.key].slice(0, 100) + "...";
+        return props.item[props.itemKey.key].slice(0, lenSlice) + "...";
       } else {
         return props.item[props.itemKey.key];
       }
@@ -112,20 +122,26 @@ function TableTd(props) {
       name={props.itemKey.key}
       key={props.item.id + "_" + props.itemKey.key}
       className={getClassNameTr()}
-      style={showFullText ? { position: "relative" } : null}
+      style={
+        showFullText && props.item[props.itemKey.key].length > lenSlice
+          ? { position: "relative" }
+          : null
+      }
     >
       <div
         key={props.item.id + "div" + props.itemKey.key}
         className={styles.tdInner}
         onDoubleClick={funDubleClick}
         style={
-          showFullText && props.item[props.itemKey.key].length > 100
+          showFullText && props.item[props.itemKey.key].length > lenSlice
             ? {
                 position: "absolute",
-                backgroundColor: "#fff",
-                border: "1px solid #000",
+                backgroundColor: "inherit",
                 width: "100%",
-                top: "0",
+                top: "10px",
+                padding: "4px",
+                boxShadow: "0px 3px 18px rgba(0, 0, 0, 0.15)",
+                zIndex: "1",
               }
             : null
         }

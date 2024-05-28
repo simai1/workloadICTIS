@@ -131,6 +131,17 @@ $heightCell: 150px;
     td[name="audienceHours"] {
       @include customTd(120px);
     }
+    td[name="workload"] {
+      &::after {
+        content: "";
+        position: absolute;
+        background-color: var(--color--blueBg);
+        width: 2px;
+        height: 100%;
+        right: 0;
+        top: 0;
+      }
+    }
 
     th[name="ratingControlHours"],
     td[name="ratingControlHours"] {
