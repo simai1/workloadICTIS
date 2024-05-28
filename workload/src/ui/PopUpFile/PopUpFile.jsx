@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./PopUpFile.module.scss";
 import Button from "../Button/Button";
 import DataContext from "../../context";
@@ -9,6 +9,7 @@ export function PopUpFile(props) {
   const { appData, basicTabData } = React.useContext(DataContext);
   const [valueCafedra, setvalueCafedra] = useState("");
   const [openListFlag, setopenListFlag] = useState(false);
+  const [fileData, setfileData] = useState(null)
   const cafData = [
     { name: "БИТ", id: 1 },
     { name: "ВМ", id: 2 },
@@ -23,43 +24,77 @@ export function PopUpFile(props) {
     { name: "СиПУ", id: 11 },
     { name: "ОИД", id: 12 }
   ];
-  
+  const fileInputRef = useRef(null);
+
   const closeMenuPopFile = () => {
-    props.handleFileClear();
     appData.setFileData(null);
     props.setfilePopUp(false);
   };
 
   const UpdateTable = () => {
-    basicTabData.funUpdateTable();
+   
     closeMenuPopFile();
     const constIdCafedra = cafData.find((e)=>(e.name === valueCafedra)).id 
     const fileData = appData?.fileData;
     const formData = new FormData();
     formData.append('file', fileData);
-    console.log("файл ", formData);
     SubmitFileXLSX(constIdCafedra, formData).then((resp)=>{
       if(resp){
-        basicTabData.funGetDepartment()
+        basicTabData.funGetDepartment();
+        basicTabData.funUpdateTable();
       }
     })
   };
  
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    setfileData(file);
+    appData.setFileData(file);
+  };
+
+  const clickFile = ()=>{
+    fileInputRef.current.click();  
+  }
+
   const setCaf = (e) => {
     setvalueCafedra(e.target.textContent);
     setopenListFlag(false);
   };
+
   useEffect(()=>{
-console.log("file", appData.fileData?.name)
+    console.log("file", appData.fileData?.name)
   },[])
   return (
     <div className={styles.mainPop}>
       <div className={styles.mainPop__inner}>
-        <p>
-          Ваш файл : <span style={{ color: "#0040e5" }}>{appData.fileData?.name}</span>
-        </p>
-        <div>
-          <p>Выберите кафедру:</p>
+        <div className={styles.import_blockFirst}>
+          <div>
+            <h3>Импорт файла</h3>
+          </div>
+          <div onClick={closeMenuPopFile}>
+            <img src="./img/close.svg"/>
+          </div>
+        </div>
+        <div className={styles.import_blocktwo}>
+          <div className={styles.clickBlock} onClick={clickFile}>
+            <input
+              type="file"
+              ref={fileInputRef}
+              style={{display: "none"}}
+              onChange={handleFileChange} // Attach the onChange event here
+            />
+            <div>
+              <img src="./img/doc.svg"/>
+            </div>
+            <div>
+              <p>{fileData ? fileData.name : "Загрузите документ"}</p>
+            </div>
+          </div>
+        </div>
+        <div className={styles.import_blockThree}>
+          <div>
+            <p>Выберите кафедру:</p>
+          </div>
           <div className={styles.SelectCafInput} onClick={() => setopenListFlag(!openListFlag)}>
             <div className={styles.SelectCafInput__inner}>
               <input placeholder="Выберите кафедру" value={valueCafedra} readOnly onClick={() => setopenListFlag(true)} />
@@ -85,23 +120,13 @@ console.log("file", appData.fileData?.name)
             </div>
           )}
         </div>
-        <p>
-          Вы уверены, что хотите обновить все данные в таблице? Данное действие <span style={{ color: "red" }}>нельзя будет отменить!</span>
-        </p>
-        <Button
-          onClick={closeMenuPopFile}
-          text="Закрыть"
-          Bg="#0040e5"
-          textColot="#fff"
-          className={styles.buttonConfirm}
-        />
-        <Button
-          onClick={UpdateTable}
-          text="Подтвердить"
-          Bg="red"
-          textColot="#fff"
-          className={styles.buttonConfirm}
-        />
+        <div className={styles.block4}>
+          <p>Вы уверены, что хотите импортировать новые данные в таблицу? Данное действие нельзя будет отменить!</p>
+        </div>
+        <div className={styles.blockButton}>
+          <button onClick={closeMenuPopFile}>Нет</button>
+          <button onClick={UpdateTable}>Да</button>
+        </div>
       </div>
     </div>
   );
