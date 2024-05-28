@@ -219,7 +219,7 @@ function funGetDepartment(){
 
  
   //! функция обновления таблицы
-  function funUpdateTable(param = tableDepartment[0].id) {
+  function funUpdateTable(param = tableDepartment[0]?.id) {
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
       apiGetWorkloadDepartment().then((data) => {
         console.log("нагрузки по кафедре", data);
