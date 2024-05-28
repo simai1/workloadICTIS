@@ -10,16 +10,16 @@ const router = Router();
 //router.use(verify.general);
 
 router
-    .route('/:department')
+  .route('/split')
+  .post(
+    asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE])),
+    asyncRoute(workloadController.splitRow)
+  );
+router
+    .route('/getDepartment/:department')
     .get(
         asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST])),
         asyncRoute(workloadController.getDepartment)
-    );
-router
-    .route('/split')
-    .post(
-        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE])),
-        asyncRoute(workloadController.splitRow)
     );
 router
     .route('/faculty')
