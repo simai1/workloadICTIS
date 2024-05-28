@@ -156,7 +156,7 @@ export function PopUpCreateEmploy(props) {
             display: "flex",
             justifyContent: "end",
             position: "relative",
-            bottom: "-20px",
+            bottom: "-10px",
           }}
         >
           <Button
