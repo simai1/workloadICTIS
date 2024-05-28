@@ -22,6 +22,7 @@ import List from "../../ui/List/List";
 import ListKaf from "../../ui/ListKaf/ListKaf";
 import { PopUpCreateEmploy } from "../../ui/PopUpCreateEmploy/PopUpCreateEmploy";
 import { GetDepartment } from "../../api/services/ApiRequest";
+import ConfirmSaving from "../../ui/ConfirmSaving/ConfirmSaving";
 
 function HomePage() {
   const { appData, tabPar, visibleDataPar, basicTabData } =
@@ -39,6 +40,9 @@ function HomePage() {
   const [onenModalWind, setOpenModalWind] = useState(false); // переменная закрытия модального окна профиля
   const refProfile = React.useRef(null); // ссылка на модальное окно профиля
   const [educatorIdforLk, setEducatorIdforLk] = useState(""); // id для вывода LK, если пустое то LK не отображается
+  const [popupSaveAll, setPopupSaveAll] = useState(false); // открыть/закрыть попап подтверждения сохранения
+  const [popupExport, setPopupExport] = useState(false); // открыть/закрыть попап подтверждения блокировки таблицы
+
   const handleButtonClick = () => {
     setEducatorIdforLk("");
   };
@@ -71,23 +75,45 @@ function HomePage() {
     basicTabData.funGetDepartment();
   }, []);
 
-  //! сохранение буфера
+  //! открыть попап
   const onSaveClick = () => {
-    //! отправляем все запросы на обработку
-    console.log("Сохранено", appData.bufferAction);
-    bufferRequestToApi(appData.bufferAction).then(() => {
-      appData.setBufferAction([0]);
-      basicTabData.updateAlldata();
-    });
-    tabPar.setSelectedTr([]);
-    tabPar.setChangedData({
-      splitjoin: [],
-      educator: [],
-      hours: [],
-      numberOfStudents: [],
-      deleted: [],
-    });
-    console.log("выполнено и очищено", appData.bufferAction);
+    setPopupSaveAll(!popupSaveAll);
+  };
+  //! открыть попап
+  const onExportClick = () => {
+    setPopupExport(!popupExport);
+  };
+
+  //! при клике на подтверждение блокировки таблицы
+  const exportClick = (action) => {
+    if (action) {
+      alert("Жду БЭК");
+    } else {
+      setPopupExport(false);
+    }
+  };
+
+  //! при нажатии на подтвердить сохранение изменений
+  const confirmClick = (action) => {
+    if (action) {
+      //! отправляем все запросы на обработку
+      console.log("Сохранено", appData.bufferAction);
+      bufferRequestToApi(appData.bufferAction).then(() => {
+        appData.setBufferAction([0]);
+        basicTabData.updateAlldata();
+      });
+      tabPar.setSelectedTr([]);
+      tabPar.setChangedData({
+        splitjoin: [],
+        educator: [],
+        hours: [],
+        numberOfStudents: [],
+        deleted: [],
+      });
+      console.log("выполнено и очищено", appData.bufferAction);
+    } else {
+      setPopupSaveAll(false);
+    }
   };
 
   const fileInputRef = useRef(null);
@@ -110,8 +136,30 @@ function HomePage() {
           <div className={styles.header_top}>
             <div className={styles.header_top_save_search}>
               <div className={styles.saveBuffre}>
-                <button onClick={onSaveClick}>Сохранить</button>
-                <img src="./img/backBuffer.svg" onClick={appData.backBuffer} />
+                <div className={styles.btnMenuBox}>
+                  <img
+                    src="./img/backBuffer.svg"
+                    onClick={appData.backBuffer}
+                  />
+                </div>
+                <div className={styles.btnMenuBox} onClick={onSaveClick}>
+                  <img className={styles.btnLeft} src="./img/saveButton.svg" />
+                  {popupSaveAll && (
+                    <ConfirmSaving
+                      title={"Вы уверены, что хотите сохранить изменения?"}
+                      confirmClick={confirmClick}
+                    />
+                  )}
+                </div>
+                <div className={styles.btnMenuBox} onClick={onExportClick}>
+                  <img className={styles.btnLeft} src="./img/export.svg" />
+                  {popupExport && (
+                    <ConfirmSaving
+                      title={"Вы уверены, что хотите отправить таблицу?"}
+                      confirmClick={exportClick}
+                    />
+                  )}
+                </div>
               </div>
               <div className={styles.header_search}>
                 <input
