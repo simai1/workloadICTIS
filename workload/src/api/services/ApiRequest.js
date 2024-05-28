@@ -330,7 +330,7 @@ export const apiAddColored = async (data) => {
 export const apiUpdateColors = async (data) => {
   console.log("обновление цветом ", data);
   try {
-    const response = await http.put(`${server}/color/changeColors`, data);
+    const response = await http.patch(`${server}/color/changeColor`, data);
     console.log("response ", response);
     return response.data;
   } catch (error) {
