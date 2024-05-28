@@ -1,24 +1,13 @@
-import { AppErrorInvalid, AppErrorMissing, AppErrorNotExist } from "../utils/errors.js";
-// eslint-disable-next-line import/no-duplicates
+import { AppErrorInvalid, AppErrorMissing } from '../utils/errors.js';
 import departments from '../config/departments.js';
 import Workload from '../models/workload.js';
 import Educator from '../models/educator.js';
 import Notification from '../models/notifications.js';
-// eslint-disable-next-line import/no-duplicates
 import {map as mapDepartments} from "../config/departments.js";
 import WorkloadDto from '../dtos/workload-dto.js';
 import SummaryWorkload from '../models/summary-workload.js';
 import checkHours from '../utils/notification.js';
-import History from "../models/history.js";
 import { sequelize } from "../models/index.js";
-
-const getIds = (modelsArr) => {
-    const arr = [];
-    for (const el of modelsArr){
-        arr.push(el.id);
-    }
-    return arr;
-};
 
 
 export default {
@@ -29,10 +18,7 @@ export default {
                 const workloads = await Workload.findAll({
                     where: { isOid },
                     include: { model: Educator },
-                    order: [
-                        ['discipline', 'ASC'],
-                        ['workload', 'ASC']
-                    ],
+                    order: [['id', 'ASC']],
                 })
                 const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
                 res.json(workloadsDto);
@@ -43,20 +29,14 @@ export default {
                         department,
                     },
                     include: { model: Educator },
-                    order: [
-                        ['discipline', 'ASC'],
-                        ['workload', 'ASC']
-                    ],
+                    order: [['id', 'ASC']],
                 })
                 const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
                 res.json(workloadsDto);
             } else {
                 const workloads = await Workload.findAll({
                     include: { model: Educator },
-                    order: [
-                        ['discipline', 'ASC'],
-                        ['workload', 'ASC']
-                    ],
+                    order: [['id', 'ASC']],
                 });
                 const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
                 res.json(workloadsDto);
@@ -76,7 +56,6 @@ export default {
         const workloads = await Workload.findAll({
             where: { department },
             include: { model: Educator },
-            order: ["name", "ASC"],
         });
         // res.json(workloads);
         const workloadsDto = [];
@@ -137,14 +116,8 @@ export default {
             }
 
             // Удаляем изначальную нагрузку
-            await workload.destroy();
+            await workload.destroy({ force: true });
         }
-
-        await History.create({
-            type: 1,
-            before: getIds(existingWorkloads),
-            after: getIds(newWorkloads),
-        })
 
         res.json(newWorkloads);
     },
@@ -187,23 +160,13 @@ export default {
     async facultyEducator({ body: { educatorId, workloadId } }, res) {
         if (!educatorId) throw new AppErrorMissing('educatorId');
         if (!workloadId) throw new AppErrorMissing('workloadId');
-        const checkWorkload = await Workload.findByPk(workloadId);
-        if (!checkWorkload) throw new AppErrorNotExist('workload');
-
-         await Workload.update(
+        await Workload.update(
             { educatorId },
             {
                 where: { id: workloadId },
                 individualHooks: true,
             }
         );
-
-        await History.create({
-            type: 3,
-            before: [],
-            after: [workloadId],
-        })
-
         res.json({ status: 'OK' });
     },
 
@@ -219,19 +182,12 @@ export default {
 
         if (remainingWorkloads === 0) {
             // Если нет нагрузок, удаляем предупреждение
-            await Notification.destroy({ where: { educatorId }}); // Предположим, что у вас есть метод для удаления summaryWorkload по educatorId
+            await Notification.destroy({ where: { educatorId }, force: true }); // Предположим, что у вас есть метод для удаления summaryWorkload по educatorId
         } else {
             // Если остались нагрузки, все равно вызываем проверку часов
             const summaryWorkload = await SummaryWorkload.findOne({ where: { educatorId } });
             await checkHours(summaryWorkload); // Передаем summaryWorkload в функцию checkHours
         }
-
-        await History.create({
-            type: 3,
-            before: [workloadId],
-            after: [],
-        })
-
         res.json({ status: 'OK' });
     },
 
@@ -299,13 +255,7 @@ export default {
 
         const createdWorkload = await Workload.create(mergeWorkload);
         // Удаляем записи которые учавствовали в совмещении
-        await Promise.allSettled(workloads.map(workload => workload.destroy()));
-
-        await History.create({
-            type: 2,
-            before: getIds(workloads),
-            after: [createdWorkload.id],
-        })
+        await Promise.allSettled(workloads.map(workload => workload.destroy({ force: true })));
 
         const responseData = {
             id: createdWorkload.id,
@@ -351,31 +301,29 @@ export default {
 
     async getDepartmentWorkload(req, res) {
         const userId = req.user;
+        console.log(userId);
         const educator = await Educator.findOne({ where: { userId } });
 
         const department = educator.department;
-
         const workloads = await Workload.findAll({
             where: { department },
-            order: [
-                ['discipline', 'ASC'],
-                ['workload', 'ASC']
-            ],
             include: { model: Educator },
         });
+
         const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
         res.json(workloadsDto);
     },
     async getUsableDepartments(req, res){
-        const queryResult = await sequelize.query('SELECT DISTINCT department FROM workloads WHERE department < 12 ORDER BY department ASC;');
+        const queryResult = await sequelize.query('SELECT DISTINCT department FROM workloads ORDER BY department ASC;');
         const usableDepartments = [];
         for (const usableDepartment of queryResult[0]) {
             const department = mapDepartments[usableDepartment.department];
             usableDepartments.push({
-                id: usableDepartment.department,
-                name: department,
+                    id: usableDepartment.department,
+                    name: department,
             })
         }
+        //const departValues = queryResult.rows.map(row => row.depart.toString());
         res.json(usableDepartments);
     },
     async changeColorWorkload(req, res) {},

@@ -8,7 +8,6 @@ export default {
     async getAllAttaches(req, res) {
         const userId = req.user;
         const educator = await Educator.findOne({ where: { userId } });
-        if (!educator) res.json({});
 
         const attached = await Attaches.findAll({ where: { educatorId: educator.userId } });
 

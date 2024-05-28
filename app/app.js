@@ -24,7 +24,6 @@ import offerRoute from './routes/offers.js';
 import userRoute from './routes/user.js';
 import colorRoute from './routes/color.js';
 import attachesRoute from './routes/attached.js';
-import historyRoute from './routes/history.js';
 // FIX ME
 import roleRoute from './routes/role.js';
 import cors from 'cors';
@@ -87,7 +86,6 @@ app.use('/offers', offerRoute);
 app.use('/role', roleRoute);
 app.use('/color', colorRoute);
 app.use('/attaches', attachesRoute);
-app.use('/history', historyRoute);
 
 io.on('connection', socket => {
     console.log(`socket ${socket.id} connected`);

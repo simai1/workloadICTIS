@@ -2,15 +2,14 @@ import ColorDto from '../dtos/color-dto.js';
 import Color from '../models/color.js';
 import Educator from '../models/educator.js';
 import Workload from '../models/workload.js';
-import { AppErrorInvalid, AppErrorMissing } from "../utils/errors.js";
+import { AppErrorInvalid, AppErrorMissing } from '../utils/errors.js';
 
 export default {
     async getAllColors(req, res) {
         const userId = req.user;
         const educator = await Educator.findOne({ where: { userId } });
 
-        if (!educator) res.json({});
-        const colors = await Color.findAll({ where: { educatorId: userId } });
+        const colors = await Color.findAll({ where: { educatorId: educator.userId } });
 
         const colorsDto = colors.map(color => new ColorDto(color));
         res.json(colorsDto);

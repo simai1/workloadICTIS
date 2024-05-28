@@ -20,11 +20,11 @@ router.get(
 
 router.get('/login', passport.authenticate('azure_ad_oauth2'), (req, res) => {
     // res.send('redirect URI')
-    res.redirect(`${process.env.WEB_URL}/HomePage`);
+    res.redirect(`${process.env.WEB_URL}/client/HomePage`);
 });
 
 router.get('/logout', (req, res) => {
     req.logout();
-    res.redirect(`${process.env.WEB_URL}`);
+    res.redirect('/');
 });
 export default router;
