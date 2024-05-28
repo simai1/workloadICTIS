@@ -137,6 +137,7 @@ const ContextMenu = (props) => {
       ids: tabPar.selectedTr,
       n: count,
     };
+    console.log(data);
     const prev = basicTabData.workloadDataFix.filter((item) =>
       tabPar.selectedTr.some((el) => el === item.id)
     );
@@ -178,8 +179,8 @@ const ContextMenu = (props) => {
     );
     if (funData === null) {
       // console.error("неправильно соеденяем данные");
-      appData.seterrorPopUp(true)
-      console.log(appData.errorPopUp)
+      appData.seterrorPopUp(true);
+      console.log(appData.errorPopUp);
     } else {
       tabPar.setSelectedTr([]);
       basicTabData.setWorkloadDataFix(funData.newUpdatedData);

@@ -99,12 +99,18 @@ $heightCell: 150px;
     th[name="curriculum"],
     td[name="curriculum"] {
       @include customTd(200px);
-        // @include customTdFixWidth;
+      // @include customTdFixWidth;
     }
 
-    td[name="groups"] {
-      @include customTdFixWidth;
-    }
+    // td[name="groups"] {
+    //   @include customTdFixWidth;
+    // }
+    // td[name="core"] {
+    //   // @include customTdFixWidth;
+    //   overflow: hidden;
+    //   text-overflow: ellipsis;
+    //   white-space: normal;
+    // }
 
     th[name="period"],
     td[name="period"] {
@@ -257,19 +263,19 @@ $heightCell: 150px;
   }
 
   //выбор цветов
-  .colored1 {
+  .colored2 {
     background-color: var(--colored1);
     td {
       background-color: var(--colored1);
     }
   }
-  .colored2 {
+  .colored3 {
     background-color: var(--colored2);
     td {
       background-color: var(--colored2);
     }
   }
-  .colored3 {
+  .colored4 {
     background-color: var(--colored3);
     td {
       background-color: var(--colored3);

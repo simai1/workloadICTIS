@@ -39,7 +39,6 @@ export const apiGetUser = async () => {
     return response.data;
   } catch (error) {
     console.error("Error:", error, `${server}/workload`);
-    throw error;
   }
 };
 

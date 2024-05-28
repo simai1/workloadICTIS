@@ -21,6 +21,7 @@ import {
   funSplitData,
 } from "./components/TableWorkload/Function";
 import { delChangeData } from "./ui/ContextMenu/Function";
+import { getDataEducator } from "./api/services/AssignApiData";
 
 function App() {
   const [educator, setEducator] = useState([]); // преподаватели
@@ -33,10 +34,10 @@ function App() {
 
   //! в файле RoleMetods можно посмотреть назание метода и их id
   const metodRole = {
-    METHODIST: [1, 3, 8, 9, 10, 13, 14, 17, 20, 21],
+    METHODIST: [1, 3, 4, 8, 9, 10, 13, 14, 17, 20, 21],
     LECTURER: [2, 8, 15, 18, 22],
-    DEPARTMENT_HEAD: [2, 3, 8, 9, 10, 11, 12, 13, 15, 17, 18, 22],
-    DIRECTORATE: [1, 3, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21],
+    DEPARTMENT_HEAD: [2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 22],
+    DIRECTORATE: [1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21],
     EDUCATOR: [15],
   };
   // appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)
@@ -77,6 +78,8 @@ function App() {
   const [filtredData, setFiltredData] = useState([]); // фильтрованные данные
   const [allCommentsData, setAllCommentsData] = useState([]); // все комментарии
   const [allOffersData, setAllOffersData] = useState([]); // предложения
+  const [selectkafedra, setselectkafedra] = useState(""); //state выбранной кафедры
+  const [actionUpdTabTeach, setActionUpdTabTeach] = useState(false); // при изменении обновляется таблицы преподавателей
 
   const basicTabData = {
     updateAlldata,
@@ -96,6 +99,10 @@ function App() {
     funUpdateTable,
     funUpdateFastenedData,
     funUpdateAllColors,
+    setselectkafedra,
+    selectkafedra,
+    actionUpdTabTeach,
+    setActionUpdTabTeach,
   };
 
   const [coloredData, setColoredData] = useState([]); // выделенные цветом
@@ -201,7 +208,7 @@ function App() {
   }
 
   //! функция обновления таблицы
-  function funUpdateTable() {
+  function funUpdateTable(param = "") {
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
       apiGetWorkloadDepartment().then((data) => {
         console.log("нагрузки по кафедре", data);
@@ -214,12 +221,15 @@ function App() {
       });
     }
     // без параметров - вся абсолютно нагрузка,
-    // isOid=true - вся ОИД нагрузка,
-    // isOid=false - вся кафедральная нагрузка,
-    // department={номер кафедры} - нагрузка одной кафедры
+    // ?isOid=true - вся ОИД нагрузка,
+    // ?isOid=false - вся кафедральная нагрузка,
+    // ?department={номер кафедры} - нагрузка одной кафедры
+    let url = "";
+    param != "0" ? (url = `?department=${param}`) : (url = "?isOid=true");
 
+    console.log(url);
     if (metodRole[myProfile?.role]?.some((el) => el === 14)) {
-      Workload("?department=7").then((data) => {
+      Workload(`${url}`).then((data) => {
         console.log("нагрузки", data);
         const dataBd = [...data];
         setWorkloadData(dataBd);
@@ -259,7 +269,9 @@ function App() {
 
   //! получаем данные нагрузок с бд
   useEffect(() => {
-    updateAlldata();
+    if (myProfile) {
+      updateAlldata();
+    }
   }, [myProfile]);
 
   //! при переходе с кафедральных на общеинституские и обратно фильтруем основные
