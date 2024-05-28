@@ -311,16 +311,15 @@ export default {
         res.json(workloadsDto);
     },
     async getUsableDepartments(req, res){
-        const queryResult = await sequelize.query('SELECT DISTINCT department FROM workloads ORDER BY department ASC;');
+        const queryResult = await sequelize.query('SELECT DISTINCT department FROM workloads WHERE department < 12 ORDER BY department ASC;');
         const usableDepartments = [];
         for (const usableDepartment of queryResult[0]) {
             const department = mapDepartments[usableDepartment.department];
             usableDepartments.push({
-                    id: usableDepartment.department,
-                    name: department,
+                id: usableDepartment.department,
+                name: department,
             })
         }
-        //const departValues = queryResult.rows.map(row => row.depart.toString());
         res.json(usableDepartments);
     },
     async changeColorWorkload(req, res) {},
