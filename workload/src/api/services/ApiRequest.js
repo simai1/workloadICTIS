@@ -330,7 +330,7 @@ export const apiAddColored = async (data) => {
 export const apiUpdateColors = async (data) => {
   console.log("обновление цветом ", data);
   try {
-    const response = await http.put(`${server}/color/changeColors`, data);
+    const response = await http.patch(`${server}/color/changeColors`, data);
     console.log("response ", response);
     return response.data;
   } catch (error) {
@@ -424,7 +424,9 @@ export const GetRole = async () => {
 
 export const GetDepartment = async () => {
   try {
-    const response = await axios.get(`${server}/workload/get/usableDepartments`);
+    const response = await axios.get(
+      `${server}/workload/get/usableDepartments`
+    );
     console.log("GetDepartment", response);
     return response;
   } catch (error) {
