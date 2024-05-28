@@ -15,7 +15,7 @@ function ListKaf({ dataList, Textlabel, defaultValue, name, setTableMode }) {
     setactiveList(!activeList);
     tabPar.setDataIsOid(false);
     setTableMode("cathedrals");
-    basicTabData.funUpdateTable(el.id)
+    basicTabData.funUpdateTable(el.id);
   };
 
   const refDiv = useRef(null);
@@ -50,7 +50,7 @@ function ListKaf({ dataList, Textlabel, defaultValue, name, setTableMode }) {
               color: nameKaf && !tabPar.dataIsOid ? "#fff" : "#000",
             }}
             onClick={() => setactiveList(!activeList)}
-            value={basicTabData.tableDepartment[0].name}
+            value={basicTabData.tableDepartment[0]?.name}
             placeholder={defaultValue}
             className={styles.inputList}
           />

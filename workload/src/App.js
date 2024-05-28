@@ -81,7 +81,7 @@ function App() {
   const [allOffersData, setAllOffersData] = useState([]); // предложения
   const [selectkafedra, setselectkafedra] = useState(""); //state выбранной кафедры
   const [actionUpdTabTeach, setActionUpdTabTeach] = useState(false); // при изменении обновляется таблицы преподавателей
-  const  [tableDepartment, settableDepartment] = useState([])
+  const [tableDepartment, settableDepartment] = useState([]);
   const basicTabData = {
     updateAlldata,
     tableHeaders,
@@ -105,7 +105,7 @@ function App() {
     selectkafedra,
     actionUpdTabTeach,
     setActionUpdTabTeach,
-    tableDepartment
+    tableDepartment,
   };
 
   const [coloredData, setColoredData] = useState([]); // выделенные цветом
@@ -201,13 +201,12 @@ function App() {
       setFastenedData(data);
     });
   }
-//! Функция обновления существующих кафедр таблицы 
-function funGetDepartment(){
-  GetDepartment().then((response)=>{
-    settableDepartment(response.data)
-  })
-}
-
+  //! Функция обновления существующих кафедр таблицы
+  function funGetDepartment() {
+    GetDepartment().then((response) => {
+      settableDepartment(response.data);
+    });
+  }
 
   //! функция получения выделенных цветом строк
   function funUpdateAllColors() {
@@ -217,9 +216,8 @@ function funGetDepartment(){
     });
   }
 
- 
   //! функция обновления таблицы
-  function funUpdateTable(param = tableDepartment[0].id) {
+  function funUpdateTable(param = tableDepartment[0]?.id) {
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
       apiGetWorkloadDepartment().then((data) => {
         console.log("нагрузки по кафедре", data);
