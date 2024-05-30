@@ -19,13 +19,13 @@ function ListKaf({ dataList, Textlabel, defaultValue, name, setTableMode }) {
     setactiveList(!activeList);
     tabPar.setDataIsOid(false);
     setTableMode("cathedrals");
-    basicTabData.funUpdateTable(el.id)
+    basicTabData.funUpdateTable(el.id);
   };
 
   const refDiv = useRef(null);
   //! закрытие модального окна при нажати вне него
   useEffect(() => {
-    console.log('defaultValue', defaultValue);
+    console.log("defaultValue", defaultValue);
     const handler = (event) => {
       if (refDiv.current && !refDiv.current.contains(event.target)) {
         setactiveList(false);
@@ -35,7 +35,6 @@ function ListKaf({ dataList, Textlabel, defaultValue, name, setTableMode }) {
     return () => {
       document.removeEventListener("click", handler);
     };
-  
   }, []);
 
   return (
@@ -51,8 +50,7 @@ function ListKaf({ dataList, Textlabel, defaultValue, name, setTableMode }) {
           <input
             readOnly
             style={{
-              backgroundColor:
-                !tabPar.dataIsOid ? "#3b28cc" : "#fff",
+              backgroundColor: !tabPar.dataIsOid ? "#3b28cc" : "#fff",
               color: !tabPar.dataIsOid ? "#fff" : "#000",
             }}
             onClick={() => setactiveList(!activeList)}

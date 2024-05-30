@@ -90,7 +90,7 @@ export const Workload = async (param) => {
     return response.data;
   } catch (error) {
     console.error("Error:", error, `${server}/workload`);
-    throw error;
+    return [];
   }
 };
 
@@ -153,7 +153,7 @@ export const addEducatorWorkload = async (data) => {
 
 //! запрос на разделение нагрузки
 export const splitWorkload = async (data) => {
-  console.log("Раздление нагрузки ", data);
+  console.log("Разделение нагрузки ", data);
   try {
     const response = await http.post(`${server}/workload/split`, data);
     console.log("response ", response);
@@ -330,7 +330,7 @@ export const apiAddColored = async (data) => {
 export const apiUpdateColors = async (data) => {
   console.log("обновление цветом ", data);
   try {
-    const response = await http.put(`${server}/color/changeColors`, data);
+    const response = await http.patch(`${server}/color/changeColor`, data);
     console.log("response ", response);
     return response.data;
   } catch (error) {

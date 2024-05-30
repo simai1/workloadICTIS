@@ -22,7 +22,7 @@ router
     );
 router
     .route('/changeColor')
-    .post(
+    .patch(
         asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST, role.LECTURER, role.EDUCATOR])),
         asyncRoute(colorController.changeColors)
     );

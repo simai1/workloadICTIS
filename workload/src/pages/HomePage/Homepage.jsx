@@ -125,7 +125,7 @@ function HomePage() {
   const fileInputRef = useRef(null);
   // //! функции для импорта файла
   const OpenPoPUpFile = () => {
-    setfilePopUp(!filePopUp)
+    setfilePopUp(!filePopUp);
   };
 
   //! при нажатии на ракету
@@ -134,6 +134,9 @@ function HomePage() {
     const table = document.querySelector("table");
     table.scrollIntoView(true);
   };
+
+  //! отслеживаем обновление и закрытие страницы
+  const [showDialog, setShowDialog] = useState(false);
 
   return (
     <Layout>

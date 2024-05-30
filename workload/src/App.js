@@ -109,7 +109,7 @@ function App() {
     setActionUpdTabTeach,
     tableDepartment,
     nameKaf,
-    setnameKaf
+    setnameKaf,
   };
 
   const [coloredData, setColoredData] = useState([]); // выделенные цветом
@@ -205,15 +205,13 @@ function App() {
       setFastenedData(data);
     });
   }
-//! Функция обновления существующих кафедр таблицы 
-function funGetDepartment(){
-  GetDepartment().then((response)=>{
-    settableDepartment(response.data)
-    setnameKaf(response.data[0].name)
-  })
-}
-
-
+  //! Функция обновления существующих кафедр таблицы
+  function funGetDepartment() {
+    GetDepartment().then((response) => {
+      settableDepartment(response.data);
+      setnameKaf(response.data[0].name);
+    });
+  }
 
   //! функция получения выделенных цветом строк
   function funUpdateAllColors() {
@@ -223,9 +221,9 @@ function funGetDepartment(){
     });
   }
 
-  useEffect(()=>{
-console.log(nameKaf)
-  },[nameKaf])
+  useEffect(() => {
+    console.log(nameKaf);
+  }, [nameKaf]);
   //! функция обновления таблицы
   function funUpdateTable(param = tableDepartment[0]?.id) {
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
@@ -244,7 +242,7 @@ console.log(nameKaf)
     // ?isOid=false - вся кафедральная нагрузка,
     // ?department={номер кафедры} - нагрузка одной кафедры
     let url = "";
-      param != "0" ? (url = `?department=${param}`) : (url = "?isOid=true");
+    param != "0" ? (url = `?department=${param}`) : (url = "?isOid=true");
     console.log(url);
     if (metodRole[myProfile?.role]?.some((el) => el === 14)) {
       Workload(`${url}`).then((data) => {
