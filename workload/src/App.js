@@ -288,7 +288,7 @@ function App() {
     if (myProfile) {
       updateAlldata();
     }
-  }, [myProfile]);
+  }, [myProfile, tableDepartment[0]]);
 
   //! при переходе с кафедральных на общеинституские и обратно фильтруем основные
   //! фильтруем по FiltredRows
