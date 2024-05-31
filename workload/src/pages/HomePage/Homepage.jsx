@@ -59,7 +59,7 @@ function HomePage() {
     });
   }, [basicTabData.tableDepartment]);
 
-  //! связть с сокетом
+  //! связь с сокетом
   useEffect(() => {
     socketConnect();
     getAllWarningMessage().then((res) => {
