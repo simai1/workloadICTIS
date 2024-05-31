@@ -1,4 +1,4 @@
-const HeaderTranslation = {
+const HeaderTranslationEducators = {
     'ФИО':'name',
     'Сруктурное подразделение':'',
     'Должность':'position',
@@ -7,4 +7,4 @@ const HeaderTranslation = {
 };
 
 
-export default HeaderTranslation;
+export default HeaderTranslationEducators;
