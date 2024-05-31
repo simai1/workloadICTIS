@@ -45,6 +45,7 @@ function TableTd(props) {
 
   //! при клтике отмена техтаре
   const crossClick = (e) => {
+    setTextareaTd(props.item[props.itemKey.key]);
     setOnTextArea(false);
   };
 
@@ -86,8 +87,7 @@ function TableTd(props) {
       tabPar.setChangedData(cd);
       setOnTextArea(false);
     }
-
-    // setTextareaTd(null);
+    // setTextareaTd(props.item[props.itemKey.key]);
   };
 
   const [showFullText, setShowFullText] = useState(false); // при наведении на td показывает весь текст ячейки
@@ -135,8 +135,11 @@ function TableTd(props) {
       key={props.item.id + "_" + props.itemKey.key}
       className={getClassNameTr()}
       style={
-        showFullText && props.item[props.itemKey.key].length > lenSlice
-          ? { position: "relative" }
+        showFullText && props.item[props.itemKey.key]?.length > lenSlice
+          ? props.itemKey.key === "discipline" ||
+            props.itemKey.key === "workload"
+            ? { position: "sticky" }
+            : { position: "relative" }
           : null
       }
     >
@@ -145,15 +148,15 @@ function TableTd(props) {
         className={styles.tdInner}
         onDoubleClick={funDubleClick}
         style={
-          showFullText && props.item[props.itemKey.key].length > lenSlice
+          showFullText && props.item[props.itemKey.key]?.length > lenSlice
             ? {
                 position: "absolute",
                 backgroundColor: "inherit",
-                width: "100%",
+                width: "90%",
                 top: "10px",
                 padding: "4px",
                 boxShadow: "0px 3px 18px rgba(0, 0, 0, 0.15)",
-                zIndex: "1",
+                zIndex: "200",
               }
             : null
         }
@@ -166,9 +169,12 @@ function TableTd(props) {
               onChange={onChangeTextareaTd}
               className={styles.textarea}
               type="text"
+              style={
+                Number(textareaTd) > 2000 ? { border: "3px solid red" } : null
+              }
             ></textarea>
             <div className={styles.svg_textarea}>
-              {textareaTd !== "" && (
+              {textareaTd !== "" && Number(textareaTd) <= 2000 && (
                 <SvgChackmark
                   onClick={onClickButton}
                   className={styles.SvgChackmark_green}

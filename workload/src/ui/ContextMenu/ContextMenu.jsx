@@ -133,13 +133,16 @@ const ContextMenu = (props) => {
   };
 
   //! Деление нагрузки на count
-  const handleSplitWorkload = (count) => {
+  const handleSplitWorkload = (cou) => {
+    const count = Number(cou);
     setMenuShow("");
-    const data = {
-      ids: tabPar.selectedTr,
+    console.log("tabPar.selectedTr", tabPar.selectedTr);
+    const dataSel = {
+      ids: [...tabPar.selectedTr],
       n: count,
     };
-    console.log(data);
+    console.log("dataContextMenu", dataSel);
+
     const prev = basicTabData.workloadDataFix.filter((item) =>
       tabPar.selectedTr.some((el) => el === item.id)
     );
@@ -148,22 +151,21 @@ const ContextMenu = (props) => {
     const funData = splitWorkloadCount(updatedData, tabPar.selectedTr, count);
     basicTabData.setWorkloadDataFix(funData.updatedData);
     tabPar.setChangedData(
-      addСhangedData(tabPar.changedData, "splitjoin", funData.blocked)
+      addСhangedData(tabPar.changedData, "split", funData.blocked)
     );
-
     //! буфер
     appData.setBufferAction([
       {
         request: "splitWorkload",
-        data: data,
-        prevState: prev,
-        newIds: funData.newIds,
+        data: dataSel,
+        prevState: [...prev],
+        newIds: [...funData.newIds],
       },
       ...appData.bufferAction,
     ]);
     //! занесем id измененнных данных в состояние
     tabPar.setChangedData(
-      addСhangedData(tabPar.changedData, "splitjoin", funData.newIds)
+      addСhangedData(tabPar.changedData, "split", funData.newIds)
     );
     tabPar.setSelectedTr([]);
     tabPar.setContextMenuShow(false);
@@ -192,7 +194,7 @@ const ContextMenu = (props) => {
         ...appData.bufferAction,
       ]);
       tabPar.setChangedData(
-        addСhangedData(tabPar.changedData, "splitjoin", data.ids)
+        addСhangedData(tabPar.changedData, "join", data.ids)
       );
     }
     tabPar.setContextMenuShow(false);

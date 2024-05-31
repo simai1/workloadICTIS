@@ -136,34 +136,66 @@ export function deleteItemBuffer(buff, itemId, type) {
 export const funGetConfirmation = (itemId, changedData, bufferAction) => {
   // при удалении строки
   if (changedData.deleted.find((el) => el === itemId)) {
-    return { blocked: true, height: "150px", top: "0", type: 1 };
+    return { blocked: true, height: "150px", top: "0", type: 1, data: itemId };
   }
   // при разделении строки
-  else if (changedData.splitjoin.includes(itemId)) {
-    let index = 0;
-    let length = 0;
-    bufferAction.map((item) => {
-      if (item.request === "splitWorkload") {
-        //при разделении в конец id добавляется index у первого 0 у втрого 1 и тд
-        // Number(itemId[itemId.length - 1]) определяет этот индекс
-        index = 0;
-        if (Number(itemId[itemId.length - 1]) > index) {
-          index = Number(itemId[itemId.length - 1]);
-        }
-        if (item.data.ids.some((e) => e === itemId.slice(0, -1))) {
-          length = item.data.n;
-        }
+  else if (changedData.split.includes(itemId)) {
+    // получим нужную строку из буффера
+    const buff = bufferAction.filter(
+      (el) =>
+        el.request === "splitWorkload" && el.newIds.some((e) => e === itemId)
+    )[0];
+    let data = { ...buff };
+    if (data.data) {
+      data.data.ids = [itemId.slice(0, -1)];
+      data.newIds = data.newIds.filter(
+        (el) => el.slice(0, -1) === itemId.slice(0, -1)
+      );
+      data.prevState = [
+        data.prevState.find((e) => e.id === itemId.slice(0, -1)),
+      ];
+
+      const length = data.data.n;
+      const index = data.newIds.findIndex((e) => e === itemId);
+      if (data.data.n) {
+        return {
+          blocked: true,
+          height: `${150 * length}px`,
+          top: `${-150 * index}px`,
+          type: 2,
+          data: data,
+        };
+      } else {
+        return { blocked: false, height: "150px", top: "0", type: 0 };
       }
-    });
-    if (index !== -1) {
-      return {
-        blocked: true,
-        height: `${150 * length}px`,
-        top: `${-150 * index}px`,
-        type: 2,
-      };
     } else {
       return { blocked: false, height: "150px", top: "0", type: 0 };
     }
+
+    // bufferAction.map((item) => {
+    //   if (item.request === "splitWorkload") {
+    //     // при разделении в конец id добавляется index у первого 0 у втрого 1 и тд
+    //     // Number(itemId[itemId.length - 1]) определяет этот индекс
+    //     index = 0;
+    //     if (Number(itemId[itemId.length - 1]) > index) {
+    //       index = Number(itemId[itemId.length - 1]);
+    //     }
+    //     if (item.data.ids.some((e) => e === itemId.slice(0, -1))) {
+    //       length = item.data.n;
+    //     }
+    //   }
+    // });
+    // if (index !== -1) {
+    //   return {
+    //     blocked: true,
+    //     height: `${150 * length}px`,
+    //     top: `${-150 * index}px`,
+    //     type: 2,
+    //   };
+    // } else {
+    //   return { blocked: false, height: "150px", top: "0", type: 0 };
+    // }
+  } else if (changedData.join.includes(itemId)) {
+    return { blocked: true, height: "150px", top: "0", type: 3 };
   } else return { blocked: false, height: "150px", top: "0", type: 0 };
 };
