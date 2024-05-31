@@ -155,7 +155,7 @@ function Table(props) {
                 key={item.id}
               >
                 <InputCheckbox
-                  clickTr={clickTr}
+                  clickTr={()=>{}}
                   itemId={item.id + "checkBox"}
                   itid={item.id}
                   number={number}

@@ -52,13 +52,6 @@ function HomePage() {
     setEducatorIdforLk("");
   };
 
-  useEffect(() => {
-    // setdepartments(basicTabData.tableDepartment)
-    GetDepartment().then((response) => {
-      setdepartments(response.data);
-    });
-  }, [basicTabData.tableDepartment]);
-
   //! связь с сокетом
   useEffect(() => {
     socketConnect();
@@ -67,6 +60,12 @@ function HomePage() {
       appData.setAllWarningMessage(res);
     });
   }, []);
+
+  useEffect(() => {
+    GetDepartment().then((response) => {
+      setdepartments([...response.data, { id: 13, name: "Все" }]);
+    });
+  }, [basicTabData.tableDepartment]);
 
   const handleComponentChange = (component) => {
     setSelectedComponent(component);
@@ -99,10 +98,12 @@ function HomePage() {
   //! открыть попап
   const onSaveClick = () => {
     setPopupSaveAll(!popupSaveAll);
+    popupExport == true && setPopupExport(false);
   };
   //! открыть попап
   const onExportClick = () => {
     setPopupExport(!popupExport);
+    popupSaveAll == true && setPopupSaveAll(false);
   };
 
   //! при клике на подтверждение блокировки таблицы
@@ -156,11 +157,8 @@ function HomePage() {
           <div className={styles.header_top}>
             <div className={styles.header_top_save_search}>
               <div className={styles.saveBuffre}>
-                <div className={styles.btnMenuBox}>
-                  <img
-                    src="./img/backBuffer.svg"
-                    onClick={appData.backBuffer}
-                  />
+                <div className={styles.btnMenuBox} onClick={appData.backBuffer}>
+                  <img src="./img/backBuffer.svg" />
                 </div>
                 <div className={styles.btnMenuBox} onClick={onSaveClick}>
                   <img className={styles.btnLeft} src="./img/saveButton.svg" />
@@ -168,6 +166,7 @@ function HomePage() {
                     <ConfirmSaving
                       title={"Вы уверены, что хотите сохранить изменения?"}
                       confirmClick={confirmClick}
+                      setShow={setPopupSaveAll}
                     />
                   )}
                 </div>
@@ -177,6 +176,7 @@ function HomePage() {
                     <ConfirmSaving
                       title={"Вы уверены, что хотите отправить таблицу?"}
                       confirmClick={exportClick}
+                      setShow={setPopupExport}
                     />
                   )}
                 </div>
