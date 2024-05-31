@@ -5,6 +5,7 @@ import styles from "./../TableWorkload.module.scss";
 import React from "react";
 import {
   deleteWorkload,
+  joinWorkloads,
   splitWorkload,
 } from "../../../api/services/ApiRequest";
 import { deleteItemBuffer } from "../Function";
@@ -26,10 +27,41 @@ function OverlapWindow(props) {
       changed.deleted = changed.deleted.filter((item) => item !== props.itid);
       tabPar.setChangedData(changed);
     } else if (props.getConfirmation.type === 2) {
+      const dat = props.getConfirmation.data;
+      console.log("dat", dat);
+      // const funData = deleteItemBuffer(
+      //   [...appData.bufferAction],
+      //   props.itid.slice(0, -1),
+      //   "splitWorkload"
+      // );
+      // appData.setBufferAction(funData.buffer);
+      // const ind = basicTabData.workloadDataFix.findIndex(
+      //   (el) => el.id === props.itid
+      // );
+
+      // console.log("ind", ind, "prev", funData.item.prevState[0]);
+      // let data = basicTabData.workloadDataFix.filter(
+      //   (item) => item.id.slice(0, -1) !== props.itid.slice(0, -1)
+      // );
+      // data = [
+      //   ...data.slice(0, ind),
+      //   funData.item.prevState[0],
+      //   ...data.slice(ind),
+      // ];
+      // data[ind] = funData.item.prevState[0];
+
+      // basicTabData.setWorkloadDataFix(data);
+      // let changed = { ...tabPar.changedData };
+      // console.log("changed", changed.split);
+      // changed.split = changed.split.filter(
+      //   (item) => item.slice(0, -1) !== props.itid.slice(0, -1)
+      // );
+      // tabPar.setChangedData(changed);
+    } else if (props.getConfirmation.type === 3) {
       const funData = deleteItemBuffer(
         [...appData.bufferAction],
         props.itid.slice(0, -1),
-        "splitWorkload"
+        "joinWorkload"
       );
       appData.setBufferAction(funData.buffer);
       const ind = basicTabData.workloadDataFix.findIndex(
@@ -42,16 +74,18 @@ function OverlapWindow(props) {
       data[ind] = funData.item.prevState[0];
       basicTabData.setWorkloadDataFix(data);
       let changed = { ...tabPar.changedData };
-      console.log("changed", changed.splitjoin);
-      changed.splitjoin = changed.splitjoin.filter(
+      console.log("changed", changed.join);
+      changed.join = changed.join.filter(
         (item) => item.slice(0, -1) !== props.itid.slice(0, -1)
       );
       tabPar.setChangedData(changed);
-      console.log("changed", changed.splitjoin, "id", props.itid.slice(0, -1));
+      console.log("changed", changed.join, "id", props.itid.slice(0, -1));
     }
   };
+
   const confirmChanges = () => {
     console.log("подтвердить", props.getConfirmation.type);
+    // удаляем нагрузку
     if (props.getConfirmation.type === 1) {
       deleteWorkload({ ids: [props.itid] }).then(() => {
         appData.setBufferAction(
@@ -68,17 +102,10 @@ function OverlapWindow(props) {
         changed.deleted = changed.deleted.filter((item) => item !== props.itid);
         tabPar.setChangedData(changed);
       });
-    } else if (props.getConfirmation.type === 2) {
-      let data = null;
-      appData.bufferAction.map((item) => {
-        if (
-          item.request === "splitWorkload" &&
-          item.data.ids.find((el) => el === props.itid.slice(0, -1))
-        ) {
-          data = { ids: [props.itid.slice(0, -1)], n: item.data.n };
-        }
-      });
-      splitWorkload(data).then(() => {
+    }
+    // разделяем нагрузку
+    else if (props.getConfirmation.type === 2) {
+      splitWorkload(props.getConfirmation.data.data).then(() => {
         appData.setBufferAction(
           deleteItemBuffer(
             [...appData.bufferAction],
@@ -87,9 +114,34 @@ function OverlapWindow(props) {
           ).buffer
         );
         let changed = { ...tabPar.changedData };
-        changed.splitjoin = changed.splitjoin.filter(
+        changed.split = changed.split.filter(
           (item) => item.slice(0, -1) !== props.itid.slice(0, -1)
         );
+        console.log(changed);
+
+        tabPar.setChangedData(changed);
+        basicTabData.updateAlldata();
+      });
+    } else if (props.getConfirmation.type === 3) {
+      let data = null;
+      appData.bufferAction.map((item) => {
+        if (
+          item.request === "joinWorkload" &&
+          item.data.ids.find((el) => el === props.itid)
+        ) {
+          data = item.data;
+        }
+      });
+      joinWorkloads(data).then(() => {
+        appData.setBufferAction(
+          deleteItemBuffer(
+            [...appData.bufferAction],
+            props.itid,
+            "joinWorkload"
+          ).buffer
+        );
+        let changed = { ...tabPar.changedData };
+        changed.join = changed.join.filter((item) => item !== props.itid);
         console.log(changed);
 
         tabPar.setChangedData(changed);

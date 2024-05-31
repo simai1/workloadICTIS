@@ -123,14 +123,18 @@ function App() {
   const [spShow, setSpShow] = useState(null); // отображение модального окна th
   const [contextMenuShow, setContextMenuShow] = useState(false); // показать скрыть контекст меню
   const [contextPosition, setContextPosition] = useState({ x: 300, y: 300 }); // позиция контекст меню в таблице
-  const [changedData, setChangedData] = useState({
-    // храним id и ключь измененных td для подсвечивания
-    splitjoin: [],
+
+  const changedDataObj = {
+    split: [],
+    join: [],
     educator: [],
     hours: [],
     numberOfStudents: [],
     deleted: [],
-  });
+  };
+  // храним id и ключь измененных td для подсвечивания
+  const [changedData, setChangedData] = useState(changedDataObj);
+
   const [isChecked, setIsChecked] = useState([]); // состояние инпутов в SamplePoints
   const [isAllChecked, setAllChecked] = useState(true); // инпут все в SamplePoints
   const checkPar = {
@@ -176,6 +180,7 @@ function App() {
     setFastenedData,
     coloredData,
     setColoredData,
+    changedDataObj,
     changedData,
     setChangedData,
     selectedFilter,
@@ -208,7 +213,7 @@ function App() {
   //! Функция обновления существующих кафедр таблицы
   function funGetDepartment() {
     GetDepartment().then((response) => {
-      settableDepartment([...response.data, {id: 13, name: "Все"}]);
+      settableDepartment([...response.data, { id: 13, name: "Все" }]);
       setnameKaf(response.data[0].name);
     });
   }
@@ -243,14 +248,15 @@ function App() {
     // ?isOid=false - вся кафедральная нагрузка,
     // ?department={номер кафедры} - нагрузка одной кафедры
     let url = "";
-    if(param == "0"){
-      url = "?isOid=true"
-    } if(param == "13"){
-      url = ``
-    }else if(param != 13 && param != 0){
-      url = `?department=${param}`
+    if (param == "0") {
+      url = "?isOid=true";
     }
-    console.log('url', url);
+    if (param == "13") {
+      url = ``;
+    } else if (param != 13 && param != 0) {
+      url = `?department=${param}`;
+    }
+    console.log("url", url);
     if (metodRole[myProfile?.role]?.some((el) => el === 14)) {
       Workload(`${url}`).then((data) => {
         console.log("нагрузки", data);
@@ -330,11 +336,11 @@ function App() {
   //! при изменении закрпеленных перемещаем их наверх и сортируем массив
   useEffect(() => {
     setFiltredData(funSortedFastened(filtredData, fastenedData));
-  }, [fastenedData, filtredData, workloadDataFix]);
+  }, [fastenedData, filtredData]);
 
+  //! следим за нажатием ctrl + s для сохранения изменений
   useEffect(() => {
     const handleKeyDown = (event) => {
-      //! следим за нажатием ctrl + s для сохранения изменений
       if (event.ctrlKey && (event.key === "s" || event.key === "ы")) {
         event.preventDefault();
         console.log("Сохранено", bufferAction);
@@ -343,13 +349,7 @@ function App() {
           updateAlldata();
         });
         setSelectedTr([]);
-        setChangedData({
-          splitjoin: [],
-          educator: [],
-          hours: [],
-          numberOfStudents: [],
-          deleted: [],
-        });
+        setChangedData(changedDataObj);
         console.log("выполнено и очищено", bufferAction);
       }
     };

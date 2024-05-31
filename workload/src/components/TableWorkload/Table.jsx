@@ -93,9 +93,11 @@ function Table(props) {
     classText = tabPar.changedData.deleted.find((el) => el === itemId)
       ? `${classText} ${styles.trDeleted}`
       : classText;
-    classText = tabPar.changedData.splitjoin.find((el) => el === itemId)
-      ? `${classText} ${styles.trBlocked}`
-      : classText;
+    classText =
+      tabPar.changedData.split.find((el) => el === itemId) ||
+      tabPar.changedData.join.find((el) => el === itemId)
+        ? `${classText} ${styles.trBlocked}`
+        : classText;
     return classText;
   };
 
@@ -155,7 +157,7 @@ function Table(props) {
                 key={item.id}
               >
                 <InputCheckbox
-                  clickTr={()=>{}}
+                  clickTr={() => {}}
                   itemId={item.id + "checkBox"}
                   itid={item.id}
                   number={number}
