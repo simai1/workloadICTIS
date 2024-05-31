@@ -82,7 +82,9 @@ function App() {
   const [selectkafedra, setselectkafedra] = useState(""); //state выбранной кафедры
   const [actionUpdTabTeach, setActionUpdTabTeach] = useState(false); // при изменении обновляется таблицы преподавателей
   const [tableDepartment, settableDepartment] = useState([]);
-  const [nameKaf, setnameKaf] = useState("");
+  // const [nameKaf, setnameKaf] = useState("");
+  const [nameKaf, setnameKaf] = useState("Все");
+
 
   const basicTabData = {
     updateAlldata,
@@ -209,7 +211,7 @@ function App() {
   function funGetDepartment() {
     GetDepartment().then((response) => {
       settableDepartment([...response.data, {id: 13, name: "Все"}]);
-      setnameKaf(response.data[0].name);
+      // setnameKaf(response.data[0].name);
     });
   }
 
@@ -226,7 +228,7 @@ function App() {
   }, [nameKaf]);
 
   //! функция обновления таблицы
-  function funUpdateTable(param = tableDepartment[0]?.id) {
+  function funUpdateTable(param = 13) { //param = tableDepartment[0]?.id
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
       apiGetWorkloadDepartment().then((data) => {
         console.log("нагрузки по кафедре", data);
