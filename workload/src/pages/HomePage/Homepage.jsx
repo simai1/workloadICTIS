@@ -331,6 +331,7 @@ function HomePage() {
               setEducatorIdforLk={setEducatorIdforLk}
               educatorIdforLk={educatorIdforLk}
               changeInput={changeInput}
+              setTableHeaders={setTableHeaders}
               searchTerm={searchTerm}
               educatorData={educatorData}
             />

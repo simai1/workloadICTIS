@@ -217,24 +217,34 @@ const ContextMenu = (props) => {
   //! удалить преподавателя у нагрузки
   const removeEducator = () => {
     setMenuShow("");
+    console.log('tabPar.selectedTr', tabPar.selectedTr)
     // const { selectedTr, workloadDataFix, setWorkloadDataFix } = tabPar;
     const workloadId = tabPar.selectedTr[0];
+    console.log("workloadId", workloadId)
     const prevState = basicTabData.workloadDataFix.find(
       (obj) => obj.id === workloadId
     )?.educator;
+    console.log("prevState", prevState)
     const newUpdatedData = basicTabData.workloadDataFix.map((obj) =>
       obj.id === workloadId ? { ...obj, educator: null } : obj
     );
     basicTabData.setWorkloadDataFix(newUpdatedData);
     //! заносим данные в буффер
-    appData.setBufferAction([
-      { request: "removeEducatorinWorkload", data: { workloadId }, prevState },
-      ...appData.bufferAction,
-    ]);
-    tabPar.setChangedData(
-      addСhangedData(tabPar.changedData, "educator", [workloadId])
-    );
-    tabPar.setContextMenuShow(false);
+    if(prevState == 0 || prevState == undefined || prevState =="-"){
+      tabPar.setContextMenuShow(false);
+      appData.seterrorPopUp(true)
+    }else{
+      appData.setBufferAction([
+        { request: "removeEducatorinWorkload", data: { workloadId }, prevState },
+        ...appData.bufferAction,
+      ]);
+      tabPar.setChangedData(
+        addСhangedData(tabPar.changedData, "educator", [workloadId])
+      );
+  
+      tabPar.setContextMenuShow(false);
+    }
+    
   };
 
   //! функция закрепления
