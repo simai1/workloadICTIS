@@ -47,11 +47,11 @@ function HomePage() {
     setEducatorIdforLk("");
   };
   useEffect(()=>{
-    // setdepartments(basicTabData.tableDepartment)
     GetDepartment().then((response)=>{
-      setdepartments(response.data)
-    })
+      setdepartments([...response.data, {id: 13, name: "Все"}]);
+      })
   },[basicTabData.tableDepartment])
+
 
   const handleComponentChange = (component) => {
     setSelectedComponent(component);
@@ -84,10 +84,13 @@ function HomePage() {
   //! открыть попап
   const onSaveClick = () => {
     setPopupSaveAll(!popupSaveAll);
+    popupExport == true && setPopupExport(false);
+
   };
   //! открыть попап
   const onExportClick = () => {
     setPopupExport(!popupExport);
+    popupSaveAll == true &&  setPopupSaveAll(false);
   };
 
   //! при клике на подтверждение блокировки таблицы
@@ -122,7 +125,6 @@ function HomePage() {
     }
   };
 
-  const fileInputRef = useRef(null);
   // //! функции для импорта файла
   const OpenPoPUpFile = () => {
     setfilePopUp(!filePopUp);
@@ -145,27 +147,28 @@ function HomePage() {
           <div className={styles.header_top}>
             <div className={styles.header_top_save_search}>
               <div className={styles.saveBuffre}>
-                <div className={styles.btnMenuBox}>
+                <div className={styles.btnMenuBox} onClick={appData.backBuffer}>
                   <img
                     src="./img/backBuffer.svg"
-                    onClick={appData.backBuffer}
                   />
                 </div>
-                <div className={styles.btnMenuBox} onClick={onSaveClick}>
+                <div className={styles.btnMenuBox} onClick={onSaveClick} >
                   <img className={styles.btnLeft} src="./img/saveButton.svg" />
-                  {popupSaveAll && (
+                  {popupSaveAll &&  (
                     <ConfirmSaving
                       title={"Вы уверены, что хотите сохранить изменения?"}
                       confirmClick={confirmClick}
+                      setShow={setPopupSaveAll}
                     />
                   )}
                 </div>
-                <div className={styles.btnMenuBox} onClick={onExportClick}>
+                <div className={styles.btnMenuBox} onClick={onExportClick} >
                   <img className={styles.btnLeft} src="./img/export.svg" />
                   {popupExport && (
                     <ConfirmSaving
                       title={"Вы уверены, что хотите отправить таблицу?"}
                       confirmClick={exportClick}
+                      setShow={setPopupExport}
                     />
                   )}
                 </div>

@@ -208,7 +208,7 @@ function App() {
   //! Функция обновления существующих кафедр таблицы
   function funGetDepartment() {
     GetDepartment().then((response) => {
-      settableDepartment(response.data);
+      settableDepartment([...response.data, {id: 13, name: "Все"}]);
       setnameKaf(response.data[0].name);
     });
   }
@@ -242,8 +242,14 @@ function App() {
     // ?isOid=false - вся кафедральная нагрузка,
     // ?department={номер кафедры} - нагрузка одной кафедры
     let url = "";
-    param != "0" ? (url = `?department=${param}`) : (url = "?isOid=true");
-    console.log(url);
+    if(param == "0"){
+      url = "?isOid=true"
+    } if(param == "13"){
+      url = ``
+    }else if(param != 13 && param != 0){
+      url = `?department=${param}`
+    }
+    console.log('url', url);
     if (metodRole[myProfile?.role]?.some((el) => el === 14)) {
       Workload(`${url}`).then((data) => {
         console.log("нагрузки", data);

@@ -65,6 +65,7 @@ const ContextMenu = (props) => {
 
   //! Выбор преподавателя
   const selectedEducator = (id) => {
+    tabPar.setContextMenuShow(!tabPar.contextMenuShow);
     setMenuShow("");
     const data = {
       workloadId: tabPar.selectedTr[0],

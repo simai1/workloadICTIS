@@ -45,6 +45,18 @@ export function PopUpFile(props) {
       }
     })
   };
+  const refSave = useRef(null);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (refSave.current && !refSave.current.contains(event.target)) {
+        closeMenuPopFile();
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
  
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -65,7 +77,7 @@ export function PopUpFile(props) {
     console.log("file", appData.fileData?.name)
   },[])
   return (
-    <div className={styles.mainPop}>
+    <div className={styles.mainPop} ref={refSave}>
       <div className={styles.mainPop__inner}>
         <div className={styles.import_blockFirst}>
           <div>

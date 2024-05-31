@@ -5,6 +5,7 @@ import TableTd from "./TableTd";
 
 function Table(props) {
   const { appData } = React.useContext(DataContext);
+
   return (
     <div>
       <table className={styles.taleDestiplinesMainTable}>
@@ -185,13 +186,12 @@ function Table(props) {
                       className={styles.custom__checkbox}
                       name="dataRow"
                       id={`dataRow-${index}`}
-                      checked={
-                        appData.individualCheckboxes.includes(
-                          props.filteredData[index].id
-                        )
-                          ? true
-                          : false
+                      checked={()=>{
+                        appData.individualCheckboxes.includes(props.filteredData[index].id)? true: false
                       }
+
+                      }
+
                       onChange={(el) =>
                         props.handleIndividualCheckboxChange(el, index)
                       }
