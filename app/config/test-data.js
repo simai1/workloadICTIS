@@ -249,4 +249,12 @@ export const educators = [
         typeOfEmployment: 1,
         rate: 0.5,
     },
+    {
+        name: 'Веселов Геннадий Евгеньевич',
+        department: 11,
+        email: 'gev@sfedu.ru',
+        position: 4,
+        typeOfEmployment: 3,
+        rate: 1,
+    }
 ];

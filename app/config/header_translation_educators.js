@@ -1,6 +1,6 @@
 const HeaderTranslationEducators = {
     'ФИО':'name',
-    'Сруктурное подразделение':'',
+    'Сруктурное подразделение':'department',
     'Должность':'position',
     'Ставка':'rate',
     'Почта':'email',
