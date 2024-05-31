@@ -79,6 +79,7 @@ const ContextMenu = (props) => {
           dataReq.name
         );
         basicTabData.setWorkloadDataFix(newData);
+        basicTabData.setFiltredData(newData);
         appData.setBufferAction([
           { request: "addEducatorWorkload", data, prevState },
           ...appData.bufferAction,

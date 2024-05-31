@@ -18,6 +18,19 @@ $heightCell: 150px;
   padding-left: 64px;
   margin-right: 52px;
 
+  .NotData {
+    display: flex;
+    width: 100%;
+    margin-right: 12px;
+    justify-content: center;
+    height: 300px;
+    background-color: #fff;
+    box-sizing: border-box;
+    align-items: center;
+    font-size: 22px;
+    border-radius: 8px;
+  }
+
   .table {
     width: 100vw;
     border-collapse: collapse;

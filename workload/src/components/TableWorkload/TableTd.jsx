@@ -30,8 +30,12 @@ function TableTd(props) {
   };
 
   const onChangeTextareaTd = (e) => {
-    // console.log(e.target.value);
-    setTextareaTd(e.target.value);
+    const query = e.target.value;
+    if (query === "") {
+      setTextareaTd(query);
+    } else if (Number(query)) {
+      setTextareaTd(query);
+    }
   };
 
   //! при двойном клике на td открываем textarea
@@ -48,6 +52,8 @@ function TableTd(props) {
   const onClickButton = () => {
     let parsedValue = parseFloat(textareaTd);
     let numberValue = isNaN(parsedValue) ? textareaTd : parsedValue;
+    console.log("textareaTd", textareaTd, numberValue, parsedValue);
+
     //! параметры запроса на изменение данных
     const data = {
       id: props.item.id,
@@ -62,7 +68,10 @@ function TableTd(props) {
         }
         return item;
       });
+      console.log("updatedArray", updatedArray);
+
       basicTabData.setWorkloadDataFix(updatedArray);
+      basicTabData.setFiltredData(updatedArray);
       //! буфер
       appData.setBufferAction([
         {
@@ -75,10 +84,10 @@ function TableTd(props) {
       let cd = { ...tabPar.changedData };
       cd[props.itemKey.key] = [...cd[props.itemKey.key], props.item.id];
       tabPar.setChangedData(cd);
+      setOnTextArea(false);
     }
 
-    setTextareaTd(null);
-    setOnTextArea(false);
+    // setTextareaTd(null);
   };
 
   const [showFullText, setShowFullText] = useState(false); // при наведении на td показывает весь текст ячейки
@@ -152,16 +161,20 @@ function TableTd(props) {
         {getTextAreaOn() ? (
           <div>
             <textarea
-              defaultValue={props.item[props.itemKey.key]}
+              // defaultValue={props.item[props.itemKey.key]}
+              value={textareaTd}
               onChange={onChangeTextareaTd}
               className={styles.textarea}
               type="text"
             ></textarea>
             <div className={styles.svg_textarea}>
-              <SvgChackmark
-                onClick={onClickButton}
-                className={styles.SvgChackmark_green}
-              />
+              {textareaTd !== "" && (
+                <SvgChackmark
+                  onClick={onClickButton}
+                  className={styles.SvgChackmark_green}
+                />
+              )}
+
               <SvgCross onClick={crossClick} />
             </div>
           </div>

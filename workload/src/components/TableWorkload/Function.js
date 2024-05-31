@@ -42,9 +42,8 @@ export function funSortedFastened(data, fastenedData) {
 //! функция разделения на кафедральный и общеинститутские и сортировки
 export function funSplitData(data, isOid) {
   const origData = [...data];
-  const sortedUsers = origData
-    .slice()
-    // .sort((a, b) => a.discipline.localeCompare(b.discipline));
+  const sortedUsers = origData.slice();
+  // .sort((a, b) => a.discipline.localeCompare(b.discipline));
   // закрепленные переносим в начало таблицы
   const filteredData = sortedUsers.filter((item) => item.isOid === isOid);
   return filteredData;
@@ -64,31 +63,35 @@ export function funFilterSelected(
     fd = origData.filter((item) =>
       colored.some((el) => el.workloadId === item.id)
     );
-    if (fd.length > 0) {
-      return fd;
-    }
-    return data;
+    return fd;
   } else if (selectedFilter === "Измененные") {
     let fd = [];
     const massId = Object.values(changedData).flat();
     fd = origData.filter((item) => massId.some((el) => el === item.id));
-    if (fd.length > 0) {
-      return fd;
-    } else {
-      return data;
-    }
+    return fd;
   } else if (selectedFilter === "Закрепленные") {
     let fd = [];
     fd = origData.filter((item) =>
       fastenedData.some((el) => el.workloadId === item.id)
     );
-    if (fd.length > 0) {
-      return fd;
-    } else {
-      return data;
-    }
+    return fd;
   } else {
     return data;
+  }
+}
+
+export function getTextForNotData(selectedFilter) {
+  if (selectedFilter === "Измененные") {
+    return "Нет измененных данных";
+  }
+  if (selectedFilter === "Закрепленные") {
+    return "Нет закрепленных данных";
+  }
+  if (selectedFilter === "Выделенные") {
+    return "Нет выделенных данных";
+  }
+  if (selectedFilter === "Все дисциплины") {
+    return "В таблице нет данных";
   }
 }
 

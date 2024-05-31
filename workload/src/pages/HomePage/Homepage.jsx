@@ -21,8 +21,12 @@ import { PopUpError } from "../../ui/PopUp/PopUpError";
 import List from "../../ui/List/List";
 import ListKaf from "../../ui/ListKaf/ListKaf";
 import { PopUpCreateEmploy } from "../../ui/PopUpCreateEmploy/PopUpCreateEmploy";
-import { GetDepartment } from "../../api/services/ApiRequest";
+import {
+  GetDepartment,
+  getAllWarningMessage,
+} from "../../api/services/ApiRequest";
 import ConfirmSaving from "../../ui/ConfirmSaving/ConfirmSaving";
+import socketConnect from "../../api/services/socket";
 
 function HomePage() {
   const { appData, tabPar, visibleDataPar, basicTabData } =
@@ -43,15 +47,26 @@ function HomePage() {
   const [popupSaveAll, setPopupSaveAll] = useState(false); // открыть/закрыть попап подтверждения сохранения
   const [popupExport, setPopupExport] = useState(false); // открыть/закрыть попап подтверждения блокировки таблицы
   const [departments, setdepartments] = useState([]);
+
   const handleButtonClick = () => {
     setEducatorIdforLk("");
   };
-  useEffect(()=>{
+
+  useEffect(() => {
     // setdepartments(basicTabData.tableDepartment)
-    GetDepartment().then((response)=>{
-      setdepartments(response.data)
-    })
-  },[basicTabData.tableDepartment])
+    GetDepartment().then((response) => {
+      setdepartments(response.data);
+    });
+  }, [basicTabData.tableDepartment]);
+
+  //! связть с сокетом
+  useEffect(() => {
+    socketConnect();
+    getAllWarningMessage().then((res) => {
+      console.log("Все предупреждения", res);
+      appData.setAllWarningMessage(res);
+    });
+  }, []);
 
   const handleComponentChange = (component) => {
     setSelectedComponent(component);
@@ -122,7 +137,6 @@ function HomePage() {
     }
   };
 
-  const fileInputRef = useRef(null);
   // //! функции для импорта файла
   const OpenPoPUpFile = () => {
     setfilePopUp(!filePopUp);
@@ -134,9 +148,6 @@ function HomePage() {
     const table = document.querySelector("table");
     table.scrollIntoView(true);
   };
-
-  //! отслеживаем обновление и закрытие страницы
-  const [showDialog, setShowDialog] = useState(false);
 
   return (
     <Layout>

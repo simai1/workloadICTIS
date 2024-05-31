@@ -224,6 +224,7 @@ function App() {
   useEffect(() => {
     console.log(nameKaf);
   }, [nameKaf]);
+
   //! функция обновления таблицы
   function funUpdateTable(param = tableDepartment[0]?.id) {
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
@@ -288,7 +289,7 @@ function App() {
     if (myProfile) {
       updateAlldata();
     }
-  }, [myProfile]);
+  }, [myProfile, tableDepartment[0]]);
 
   //! при переходе с кафедральных на общеинституские и обратно фильтруем основные
   //! фильтруем по FiltredRows
@@ -310,6 +311,10 @@ function App() {
   //! обновляем вертуальный скролл при переходе на другуюс таблицу
   useEffect(() => {
     setStartData(0);
+    const table = document.querySelector("table");
+    if (table) {
+      table.scrollIntoView(true);
+    }
   }, [dataIsOid, selectedFilter, selectedTable]);
 
   // useEffect(() => {
@@ -319,7 +324,7 @@ function App() {
   //! при изменении закрпеленных перемещаем их наверх и сортируем массив
   useEffect(() => {
     setFiltredData(funSortedFastened(filtredData, fastenedData));
-  }, [fastenedData, filtredData]);
+  }, [fastenedData, filtredData, workloadDataFix]);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
