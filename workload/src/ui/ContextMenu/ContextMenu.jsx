@@ -20,7 +20,7 @@ import {
 } from "./Function";
 import CommentsMenu from "./CommentsMenu";
 import PopupOffer from "./PopupOffer";
-
+ 
 const ContextMenu = (props) => {
   const { appData, tabPar, basicTabData } = React.useContext(DataContext);
   const [menuShow, setMenuShow] = useState("");
