@@ -70,7 +70,7 @@ function TableTd(props) {
         return item;
       });
       console.log("updatedArray", updatedArray);
-
+ 
       basicTabData.setWorkloadDataFix(updatedArray);
       basicTabData.setFiltredData(updatedArray);
       const workloadId = data.id

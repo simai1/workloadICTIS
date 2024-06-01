@@ -87,7 +87,7 @@ export function addСhangedData(changedData, dataKey, ids) {
 
   cd[dataKey] = [...cd[dataKey], ...ids];
   return cd;
-}
+} 
 //! удаление данных с changedData
 export function delChangeData(changedData, dataKey, ids) {
   const cd = { ...changedData };

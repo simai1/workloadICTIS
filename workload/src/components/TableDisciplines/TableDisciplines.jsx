@@ -5,7 +5,7 @@ import ContextMenu from "../../ui/ContextMenu/ContextMenu";
 import { SamplePoints } from "../../ui/SamplePoints/SamplePoints";
 import DataContext from "../../context";
 import { ReactComponent as SvgChackmark } from "./../../img/checkmark.svg";
-
+ 
 import {
   funcGetAllColors,
   getAllOffers,

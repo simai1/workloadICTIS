@@ -331,7 +331,7 @@ function App() {
       return data;
     }
   }
-  
+   
   //! функция обновления всех данных
   function updateAlldata() {
     selectISOid ?  funUpdateTable(0): funUpdateTable((tableDepartment.find((el)=> el.name === nameKaf))?.id);
