@@ -1,8 +1,8 @@
 //! функция замены преподавательского массива на его имя
 export function funFixEducator(data) {
-  return data.map((item, index) => ({
+  return data.map((item) => ({
     ...item,
-    educator: item.educator ? item.educator.name : "0",
+    educator: item.educator ? item.educator.name : "___",
   }));
 }
 
@@ -171,7 +171,7 @@ export const funGetConfirmation = (itemId, changedData, bufferAction) => {
     } else {
       return { blocked: false, height: "150px", top: "0", type: 0 };
     }
-  } else if (changedData.join.includes(itemId)) {
+  } else if (changedData.join?.includes(itemId)) {
     const buff = [...bufferAction].filter(
       (el) =>
         el.request === "joinWorkloads" && el.data.ids.some((e) => e === itemId)
