@@ -256,6 +256,7 @@ function HomePage() {
                     onClick={() => {
                       setTableMode("genInstitute");
                       EditTableData("genInstitute");
+                      basicTabData.setselectISOid(true);
                       basicTabData.funUpdateTable("0");
                     }}
                   />

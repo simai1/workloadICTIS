@@ -84,18 +84,18 @@ function Table(props) {
   //определение каласса tr
   const getClassNameTr = (itemId) => {
     let classText = null;
-    classText = tabPar.selectedTr.includes(itemId)
+    classText = tabPar.selectedTr?.includes(itemId)
       ? `${styles.selectedTr}`
       : null;
-    const item = tabPar.coloredData.find((el) => el.workloadId === itemId);
+    const item = tabPar.coloredData?.find((el) => el.workloadId === itemId);
     const colored = item ? `colored${item.color}` : null;
     classText = item ? `${classText} ${styles[colored]}` : classText;
-    classText = tabPar.changedData.deleted.find((el) => el === itemId)
+    classText = tabPar.changedData.deleted?.find((el) => el === itemId)
       ? `${classText} ${styles.trDeleted}`
       : classText;
     classText =
-      tabPar.changedData.split.find((el) => el === itemId) ||
-      tabPar.changedData.join.find((el) => el === itemId)
+      tabPar.changedData.split?.find((el) => el === itemId) ||
+      tabPar.changedData.join?.find((el) => el === itemId)
         ? `${classText} ${styles.trBlocked}`
         : classText;
     return classText;

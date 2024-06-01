@@ -27,6 +27,7 @@ export function splitWorkloadCount(data, selectedTr, count) {
         updatedData.splice(workloadIndex + i, 0, newWorkload);
         newIds.push(newWorkload.id);
         blocked.push(newWorkload.id);
+        console.log('blocked', blocked)
       }
     }
   }

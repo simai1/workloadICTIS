@@ -73,12 +73,14 @@ function TableTd(props) {
 
       basicTabData.setWorkloadDataFix(updatedArray);
       basicTabData.setFiltredData(updatedArray);
+      const workloadId = data.id
       //! буфер
       appData.setBufferAction([
         {
           request: "workloadUpdata",
           data: data,
           prevState: props.item[props.itemKey.key],
+          workloadId
         },
         ...appData.bufferAction,
       ]);
