@@ -67,6 +67,7 @@ const ContextMenu = (props) => {
   const selectedEducator = (id) => {
     tabPar.setContextMenuShow(!tabPar.contextMenuShow);
     setMenuShow("");
+
     const data = {
       workloadId: tabPar.selectedTr[0],
       educatorId: id,
@@ -79,10 +80,18 @@ const ContextMenu = (props) => {
           tabPar.selectedTr[0],
           dataReq.name
         );
+        const edicatorName = { edicatorName: dataReq.name };
         basicTabData.setWorkloadDataFix(newData);
         basicTabData.setFiltredData(newData);
+        const workloadId = data.workloadId;
         appData.setBufferAction([
-          { request: "addEducatorWorkload", data, prevState },
+          {
+            request: "addEducatorWorkload",
+            data,
+            prevState,
+            edicatorName,
+            workloadId,
+          },
           ...appData.bufferAction,
         ]);
         //! занесем id измененнных данных в состояние
@@ -152,22 +161,23 @@ const ContextMenu = (props) => {
     const funData = splitWorkloadCount(updatedData, tabPar.selectedTr, count);
     basicTabData.setWorkloadDataFix(funData.updatedData);
     tabPar.setChangedData(
-      addСhangedData(tabPar.changedData, "split", funData.blocked)
+      addСhangedData(tabPar.changedData, "splitjoin", funData.blocked)
     );
+
     //! буфер
     appData.setBufferAction([
       {
         id: appData.bufferAction.length,
         request: "splitWorkload",
         data: dataSel,
-        prevState: [...prev],
-        newIds: [...funData.newIds],
+        prevState: prev,
+        newIds: funData.newIds,
       },
       ...appData.bufferAction,
     ]);
     //! занесем id измененнных данных в состояние
     tabPar.setChangedData(
-      addСhangedData(tabPar.changedData, "split", funData.newIds)
+      addСhangedData(tabPar.changedData, "splitjoin", funData.newIds)
     );
     tabPar.setSelectedTr([]);
     tabPar.setContextMenuShow(false);
@@ -202,7 +212,7 @@ const ContextMenu = (props) => {
         ...appData.bufferAction,
       ]);
       tabPar.setChangedData(
-        addСhangedData(tabPar.changedData, "join", data.ids)
+        addСhangedData(tabPar.changedData, "splitjoin", data.ids)
       );
     }
     tabPar.setContextMenuShow(false);
@@ -227,24 +237,37 @@ const ContextMenu = (props) => {
   //! удалить преподавателя у нагрузки
   const removeEducator = () => {
     setMenuShow("");
+    console.log("tabPar.selectedTr", tabPar.selectedTr);
     // const { selectedTr, workloadDataFix, setWorkloadDataFix } = tabPar;
     const workloadId = tabPar.selectedTr[0];
+    console.log("workloadId", workloadId);
     const prevState = basicTabData.workloadDataFix.find(
       (obj) => obj.id === workloadId
     )?.educator;
+    console.log("prevState", prevState);
     const newUpdatedData = basicTabData.workloadDataFix.map((obj) =>
       obj.id === workloadId ? { ...obj, educator: null } : obj
     );
     basicTabData.setWorkloadDataFix(newUpdatedData);
     //! заносим данные в буффер
-    appData.setBufferAction([
-      { request: "removeEducatorinWorkload", data: { workloadId }, prevState },
-      ...appData.bufferAction,
-    ]);
-    tabPar.setChangedData(
-      addСhangedData(tabPar.changedData, "educator", [workloadId])
-    );
-    tabPar.setContextMenuShow(false);
+    if (prevState == 0 || prevState == undefined || prevState == "-") {
+      tabPar.setContextMenuShow(false);
+      appData.seterrorPopUp(true);
+    } else {
+      appData.setBufferAction([
+        {
+          request: "removeEducatorinWorkload",
+          data: { workloadId },
+          prevState,
+        },
+        ...appData.bufferAction,
+      ]);
+      tabPar.setChangedData(
+        addСhangedData(tabPar.changedData, "educator", [workloadId])
+      );
+
+      tabPar.setContextMenuShow(false);
+    }
   };
 
   //! функция закрепления

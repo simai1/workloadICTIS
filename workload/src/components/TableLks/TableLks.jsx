@@ -4,20 +4,32 @@ import EditInput from "../EditInput/EditInput";
 import ArrowBack from "./../../img/arrow-back.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { getDataEducatorLK } from "../../api/services/AssignApiData";
-
+import { actions } from "../../store/filter/filter.slice";
 function TableLks(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]);
   const [updatedData, setUpdatedData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [EducatorLkData, setEducatorLkData] = useState([]);
-
   const [tableData, setTableData] = useState([]);
+  const [tableHeaders, setTableHeaders] = useState([
+    { key: "department", label: "Кафедра" },
+    { key: "hoursFirstPeriod", label: "Часы период 1" },
+    { key: "hoursSecondPeriod", label: "Часы период 2" },
+    { key: "hoursWithoutPeriod", label: "Часы период 3" },
+])
 
+  //!!!!!!!!!!!!!! сброс состояния редукса //!!!!!!!!!!!
+  const updateTable = ()=>{
+    dispatch(actions.initializeFilters(tableHeaders));
+  }
+  useEffect(() => {
+    updateTable();
+  }, []);
+  
   //! получаем данные личного кабинета преподавателя
   useEffect(() => {
     getDataEducatorLK(props.educatorIdforLk, setEducatorLkData, setTableData);
   }, [props.educatorIdforLk]);
-
   console.log("EducatorLkData", EducatorLkData);
   console.log("tableData", tableData);
 
@@ -25,25 +37,7 @@ function TableLks(props) {
   useEffect(() => {
     setSearchTerm(props.searchTerm);
   }, [props.searchTerm]);
-
-  const tableHeaders = useMemo(() => {
-    return [
-      { key: "workload", label: "Нагрузка" },
-      { key: "department", label: "Кафедра" },
-      { key: "type", label: "Тип" },
-      { key: "curriculumUnit", label: "Подразделение учебного плана" },
-      {
-        key: "specialty",
-        label: "Направление подготовки (специальность)",
-      },
-      { key: "hours", label: "Часы" },
-      { key: "audienceHours", label: "Аудиторные часы" },
-      { key: "hoursFirstPeriod", label: "Часы период 1" },
-      { key: "hoursSecondPeriod", label: "Часы период 2" },
-      { key: "hoursWithoutPeriod", label: "Часы период 3" },
-    ];
-  }, []);
-
+  
   //! клик на стрелку назад
   const handleNameClick = () => {
     props.setEducatorIdforLk("");
@@ -52,17 +46,16 @@ function TableLks(props) {
 
   const dispatch = useDispatch();
   const filters = useSelector((state) => state.filters);
-
+  console.log('filters', filters)
   useEffect(() => {
     addHeadersTable(filters, tableHeaders, tableData);
     console.log(filters);
   }, [filters, dispatch, tableHeaders, tableData]);
+
   function addHeadersTable(filters, tableHeaders, tableData) {
     const updatedHeader = tableHeaders.filter((header) =>
       filters.includes(header.key)
     );
-    console.log(tableHeaders, updatedHeader);
-
     const updatedData = tableData.map((data) => {
       const updatedRow = {};
       Object.keys(data).forEach((key) => {
@@ -124,15 +117,16 @@ function TableLks(props) {
           <p>{EducatorLkData?.position}</p>
           <p>Ставка: {EducatorLkData?.rate}</p>
         </div>
-        {tableData[0] && (
+        {/* {tableData[0] && (
           <div className={styles.EditInput}>
             <EditInput
-              originalHeader={tableHeaders.slice(3)}
+              originalHeader={tableHeaders}
+              updateTable={updateTable}
               top={60.3}
               h={64}
             />
           </div>
-        )}
+        )} */}
       </div>
 
       {tableData[0] && (
