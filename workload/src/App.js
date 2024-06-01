@@ -327,7 +327,7 @@ function App() {
       return data;
     }
   }
-   
+    
   //! функция обновления всех данных
   function updateAlldata() {
     // получаем данные таблицы
