@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./HomePage.module.scss";
 import TableTeachers from "../../components/TableTeachers/TableTeachers";
 import Button from "../../ui/Button/Button";
@@ -118,20 +118,28 @@ function HomePage() {
   //! при нажатии на подтвердить сохранение изменений
   const confirmClick = (action) => {
     if (action) {
-      //! отправляем все запросы на обработку
+      // //! отправляем все запросы на обработку
+      // console.log("Сохранено", appData.bufferAction);
+      // bufferRequestToApi(appData.bufferAction).then(() => {
+      //   appData.setBufferAction([0]);
+      //   basicTabData.updateAlldata();
+      // });
+      // tabPar.setSelectedTr([]);
+      // tabPar.setChangedData({
+      //   splitjoin: [],
+      //   educator: [],
+      //   hours: [],
+      //   numberOfStudents: [],
+      //   deleted: [],
+      // });
+      // console.log("выполнено и очищено", appData.bufferAction);
       console.log("Сохранено", appData.bufferAction);
       bufferRequestToApi(appData.bufferAction).then(() => {
         appData.setBufferAction([0]);
         basicTabData.updateAlldata();
       });
       tabPar.setSelectedTr([]);
-      tabPar.setChangedData({
-        splitjoin: [],
-        educator: [],
-        hours: [],
-        numberOfStudents: [],
-        deleted: [],
-      });
+      tabPar.setChangedData(tabPar.changedDataObj);
       console.log("выполнено и очищено", appData.bufferAction);
     } else {
       setPopupSaveAll(false);
