@@ -79,6 +79,7 @@ export function combineData(data, selectedTr) {
 //! добавление данных
 export function addСhangedData(changedData, dataKey, ids) {
   const cd = { ...changedData };
+  console.log('cd', cd)
   // const existingIds = new Set(cd[dataKey]);
   // const uniqueIds = ids.filter((id) => !cd[dataKey]);
   // const uniqueIds = ids.filter((id) => !cd[dataKey].has(id));
