@@ -27,8 +27,56 @@ function OverlapWindow(props) {
       changed.deleted = changed.deleted.filter((item) => item !== props.itid);
       tabPar.setChangedData(changed);
     } else if (props.getConfirmation.type === 2) {
-      const dat = props.getConfirmation.data;
+      const dat = { ...props.getConfirmation.data };
       console.log("dat", dat);
+
+      let buff = [...appData.bufferAction];
+      let itemBuff = buff.find((el) => el.id === dat.id);
+      let index = buff.findIndex((el) => el.id === dat.id);
+      let bd = { ...itemBuff.data };
+      const bdids = bd.ids.filter((el) => !dat.data.ids.some((e) => e === el));
+      const newbd = {
+        ids: bdids,
+        n: bd.n,
+      };
+      let bnids = [...itemBuff.newIds];
+      const bnidsNew = bnids.filter((el) => !dat.newIds.some((e) => e === el));
+      let ps = itemBuff.prevState.filter((el) => el.id !== dat.prevState.id);
+      let buffDat = {
+        id: dat.id,
+        data: newbd,
+        newIds: bnidsNew,
+        prevState: ps,
+        request: "splitWorkload",
+      };
+      buff[index] = buffDat;
+      appData.setBufferAction([...buff]);
+      let wdf = [...basicTabData.workloadDataFix];
+      console.log(wdf);
+
+      let datMap = { ...dat };
+      let f = true;
+      const wdfNew = wdf
+        .map((item) => {
+          if (datMap.newIds.some((el) => el === item.id)) {
+            if (f) {
+              f = false;
+              return datMap.prevState[0];
+            }
+          } else return item;
+        })
+        .filter((el) => el !== undefined);
+
+      basicTabData.setWorkloadDataFix(wdfNew);
+
+      let changed = { ...tabPar.changedData };
+      console.log("changed", changed.split);
+      changed.split = changed.split.filter(
+        (item) => !dat.newIds.some((el) => el === item)
+      );
+      console.log("changed", changed.split);
+      tabPar.setChangedData(changed);
+
       // const funData = deleteItemBuffer(
       //   [...appData.bufferAction],
       //   props.itid.slice(0, -1),

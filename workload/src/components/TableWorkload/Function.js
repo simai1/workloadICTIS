@@ -45,7 +45,7 @@ export function funSplitData(data, isOid) {
   const sortedUsers = origData.slice();
   // .sort((a, b) => a.discipline.localeCompare(b.discipline));
   // закрепленные переносим в начало таблицы
-  const filteredData = sortedUsers.filter((item) => item.isOid === isOid);
+  const filteredData = sortedUsers.filter((item) => item?.isOid === isOid);
   return filteredData;
 }
 
@@ -141,13 +141,13 @@ export const funGetConfirmation = (itemId, changedData, bufferAction) => {
   // при разделении строки
   else if (changedData.split.includes(itemId)) {
     // получим нужную строку из буффера
-    const buff = bufferAction.filter(
+    const buff = [...bufferAction].filter(
       (el) =>
         el.request === "splitWorkload" && el.newIds.some((e) => e === itemId)
     )[0];
     let data = { ...buff };
     if (data.data) {
-      data.data.ids = [itemId.slice(0, -1)];
+      data.data = { ...data.data, ids: [itemId.slice(0, -1)] };
       data.newIds = data.newIds.filter(
         (el) => el.slice(0, -1) === itemId.slice(0, -1)
       );
@@ -171,30 +171,6 @@ export const funGetConfirmation = (itemId, changedData, bufferAction) => {
     } else {
       return { blocked: false, height: "150px", top: "0", type: 0 };
     }
-
-    // bufferAction.map((item) => {
-    //   if (item.request === "splitWorkload") {
-    //     // при разделении в конец id добавляется index у первого 0 у втрого 1 и тд
-    //     // Number(itemId[itemId.length - 1]) определяет этот индекс
-    //     index = 0;
-    //     if (Number(itemId[itemId.length - 1]) > index) {
-    //       index = Number(itemId[itemId.length - 1]);
-    //     }
-    //     if (item.data.ids.some((e) => e === itemId.slice(0, -1))) {
-    //       length = item.data.n;
-    //     }
-    //   }
-    // });
-    // if (index !== -1) {
-    //   return {
-    //     blocked: true,
-    //     height: `${150 * length}px`,
-    //     top: `${-150 * index}px`,
-    //     type: 2,
-    //   };
-    // } else {
-    //   return { blocked: false, height: "150px", top: "0", type: 0 };
-    // }
   } else if (changedData.join.includes(itemId)) {
     return { blocked: true, height: "150px", top: "0", type: 3 };
   } else return { blocked: false, height: "150px", top: "0", type: 0 };

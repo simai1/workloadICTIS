@@ -135,17 +135,18 @@ const ContextMenu = (props) => {
   //! Деление нагрузки на count
   const handleSplitWorkload = (cou) => {
     const count = Number(cou);
-    setMenuShow("");
     console.log("tabPar.selectedTr", tabPar.selectedTr);
+
     const dataSel = {
-      ids: [...tabPar.selectedTr],
+      ids: tabPar.selectedTr,
       n: count,
     };
-    console.log("dataContextMenu", dataSel);
 
+    console.log("dataContextMenu", dataSel);
     const prev = basicTabData.workloadDataFix.filter((item) =>
       tabPar.selectedTr.some((el) => el === item.id)
     );
+
     // Создаем новый массив для измененных данных
     let updatedData = [...basicTabData.workloadDataFix];
     const funData = splitWorkloadCount(updatedData, tabPar.selectedTr, count);
@@ -156,6 +157,7 @@ const ContextMenu = (props) => {
     //! буфер
     appData.setBufferAction([
       {
+        id: appData.bufferAction.length,
         request: "splitWorkload",
         data: dataSel,
         prevState: [...prev],
@@ -169,6 +171,7 @@ const ContextMenu = (props) => {
     );
     tabPar.setSelectedTr([]);
     tabPar.setContextMenuShow(false);
+    setMenuShow("");
   };
 
   //! соединение нагрузок

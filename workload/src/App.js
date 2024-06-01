@@ -403,14 +403,27 @@ function App() {
             (el) => !bufferAction[0].prevState.some((item) => item.id !== el)
           )
         );
+        setBufferAction((prevItems) => prevItems.slice(1));
       } else if (bufferAction[0].request === "splitWorkload") {
-        // отмена разделения нагрузки
-        setWorkloadDataFix(
-          workloadDataFix.filter(
-            (item) => !bufferAction[0].newIds.includes(item.id)
-          )
+        let datMap = { ...bufferAction[0] };
+        const wdfNew = [...workloadDataFix]
+          .map((item) => {
+            if (datMap.newIds.some((el) => el === item.id)) {
+              if (item.id[item.id.length - 1] === "0") {
+                return datMap.prevState.find(
+                  (e) => e.id === item.id.slice(0, -1)
+                );
+              }
+            } else return item;
+          })
+          .filter((el) => el !== undefined);
+        setWorkloadDataFix(wdfNew);
+        let changed = { ...changedData };
+        changed.split = changed.split.filter(
+          (item) => !datMap.newIds.some((el) => el === item)
         );
-        setWorkloadDataFix((prev) => [bufferAction[0].prevState[0], ...prev]);
+        setBufferAction((prevItems) => prevItems.slice(1));
+        setChangedData(changed);
       } else if (bufferAction[0].request === "workloadUpdata") {
         //отмена изменения даннных textarea
         const newData = [...workloadDataFix];
