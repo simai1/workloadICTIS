@@ -267,7 +267,7 @@ function App() {
         const dataBd = [...data];
         setWorkloadData(dataBd);
         const fixData =  UpdateWorkloadForBoofer(funFixEducator(dataBd, bufferAction))
-        console.log("fixData Да это оно", fixData)
+        console.log("fixData", fixData)
         setWorkloadDataFix(fixData);
         setFiltredData(fixData);
       });
