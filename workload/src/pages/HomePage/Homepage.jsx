@@ -21,8 +21,12 @@ import { PopUpError } from "../../ui/PopUp/PopUpError";
 import List from "../../ui/List/List";
 import ListKaf from "../../ui/ListKaf/ListKaf";
 import { PopUpCreateEmploy } from "../../ui/PopUpCreateEmploy/PopUpCreateEmploy";
-import { GetDepartment } from "../../api/services/ApiRequest";
+import {
+  GetDepartment,
+  getAllWarningMessage,
+} from "../../api/services/ApiRequest";
 import ConfirmSaving from "../../ui/ConfirmSaving/ConfirmSaving";
+import socketConnect from "../../api/services/socket";
 
 function HomePage() {
   const { appData, tabPar, visibleDataPar, basicTabData } =
@@ -42,10 +46,26 @@ function HomePage() {
   const [educatorIdforLk, setEducatorIdforLk] = useState(""); // id для вывода LK, если пустое то LK не отображается
   const [popupSaveAll, setPopupSaveAll] = useState(false); // открыть/закрыть попап подтверждения сохранения
   const [popupExport, setPopupExport] = useState(false); // открыть/закрыть попап подтверждения блокировки таблицы
+  const [departments, setdepartments] = useState([]);
 
   const handleButtonClick = () => {
     setEducatorIdforLk("");
   };
+
+  //! связь с сокетом
+  useEffect(() => {
+    socketConnect();
+    getAllWarningMessage().then((res) => {
+      console.log("Все предупреждения", res);
+      appData.setAllWarningMessage(res);
+    });
+  }, []);
+
+  useEffect(() => {
+    GetDepartment().then((response) => {
+      setdepartments([...response.data, { id: 13, name: "Все" }]);
+    });
+  }, [basicTabData.tableDepartment]);
 
   const handleComponentChange = (component) => {
     setSelectedComponent(component);
@@ -78,10 +98,12 @@ function HomePage() {
   //! открыть попап
   const onSaveClick = () => {
     setPopupSaveAll(!popupSaveAll);
+    popupExport == true && setPopupExport(false);
   };
   //! открыть попап
   const onExportClick = () => {
     setPopupExport(!popupExport);
+    popupSaveAll == true && setPopupSaveAll(false);
   };
 
   //! при клике на подтверждение блокировки таблицы
@@ -116,17 +138,8 @@ function HomePage() {
     }
   };
 
-  const fileInputRef = useRef(null);
-  //! функции для импорта файла
-  const handleFileUpload = () => {
-    fileInputRef.current.click();
-  };
-  const handleFileClear = () => {
-    fileInputRef.current.value = null;
-  };
-  const handleFileChange = () => {
-    const file = fileInputRef.current.files[0];
-    appData.setFileData(file);
+  // //! функции для импорта файла
+  const OpenPoPUpFile = () => {
     setfilePopUp(!filePopUp);
   };
 
@@ -144,11 +157,8 @@ function HomePage() {
           <div className={styles.header_top}>
             <div className={styles.header_top_save_search}>
               <div className={styles.saveBuffre}>
-                <div className={styles.btnMenuBox}>
-                  <img
-                    src="./img/backBuffer.svg"
-                    onClick={appData.backBuffer}
-                  />
+                <div className={styles.btnMenuBox} onClick={appData.backBuffer}>
+                  <img src="./img/backBuffer.svg" />
                 </div>
                 <div className={styles.btnMenuBox} onClick={onSaveClick}>
                   <img className={styles.btnLeft} src="./img/saveButton.svg" />
@@ -156,6 +166,7 @@ function HomePage() {
                     <ConfirmSaving
                       title={"Вы уверены, что хотите сохранить изменения?"}
                       confirmClick={confirmClick}
+                      setShow={setPopupSaveAll}
                     />
                   )}
                 </div>
@@ -165,6 +176,7 @@ function HomePage() {
                     <ConfirmSaving
                       title={"Вы уверены, что хотите отправить таблицу?"}
                       confirmClick={exportClick}
+                      setShow={setPopupExport}
                     />
                   )}
                 </div>
@@ -230,20 +242,9 @@ function HomePage() {
             <div className={styles.header_bottom_button}>
               {selectedComponent === "Disciplines" && (
                 <>
-                  {/* <Button
-                    Bg={tableMode === "cathedrals" ? "#3B28CC" : "#efedf3"}
-                    textColot={
-                      tableMode === "cathedrals" ? "#efedf3" : "#000000"
-                    }
-                    text="Кафедральные"
-                    onClick={() => {
-                      setTableMode("cathedrals");
-                      EditTableData("cathedrals");
-                    }}
-                  /> */}
                   <ListKaf
-                    dataList={basicTabData?.tableDepartment}
-                    defaultValue="БИТ"
+                    dataList={departments}
+                    defaultValue={basicTabData.tableDepartment[0]?.name}
                     setTableMode={setTableMode}
                   />
                   <Button
@@ -278,14 +279,14 @@ function HomePage() {
               </div>
               {selectedComponent === "Disciplines" && (
                 <div className={styles.import}>
-                  <input
+                  {/* <input
                     type="file"
                     ref={fileInputRef}
                     style={{ display: "none" }}
-                    onChange={handleFileChange}
-                  />
+                    // onChange={handleFileChange}
+                  /> */}
 
-                  <button onClick={handleFileUpload}>
+                  <button onClick={OpenPoPUpFile}>
                     <p>Импорт файла</p>
                     <img src="./img/import.svg" alt=">"></img>
                   </button>
@@ -307,7 +308,7 @@ function HomePage() {
             //   SelectedText={SelectedText}
             // />
             <TableWorkload
-              handleFileClear={handleFileClear}
+              // handleFileClear={handleFileClear}
               tableMode={tableMode}
               tableHeaders={tableHeaders}
               searchTerm={searchTerm}
@@ -348,7 +349,7 @@ function HomePage() {
       {filePopUp && (
         <PopUpFile
           setfilePopUp={setfilePopUp}
-          handleFileClear={handleFileClear}
+          // handleFileClear={handleFileClear}
         />
       )}
       {appData.createEdicatorPopUp && <PopUpCreateEmploy />}

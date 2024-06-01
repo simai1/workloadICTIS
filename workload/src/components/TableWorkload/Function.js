@@ -42,11 +42,10 @@ export function funSortedFastened(data, fastenedData) {
 //! функция разделения на кафедральный и общеинститутские и сортировки
 export function funSplitData(data, isOid) {
   const origData = [...data];
-  const sortedUsers = origData
-    .slice()
-    // .sort((a, b) => a.discipline.localeCompare(b.discipline));
+  const sortedUsers = origData.slice();
+  // .sort((a, b) => a.discipline.localeCompare(b.discipline));
   // закрепленные переносим в начало таблицы
-  const filteredData = sortedUsers.filter((item) => item.isOid === isOid);
+  const filteredData = sortedUsers.filter((item) => item?.isOid === isOid);
   return filteredData;
 }
 
@@ -64,31 +63,35 @@ export function funFilterSelected(
     fd = origData.filter((item) =>
       colored.some((el) => el.workloadId === item.id)
     );
-    if (fd.length > 0) {
-      return fd;
-    }
-    return data;
+    return fd;
   } else if (selectedFilter === "Измененные") {
     let fd = [];
     const massId = Object.values(changedData).flat();
     fd = origData.filter((item) => massId.some((el) => el === item.id));
-    if (fd.length > 0) {
-      return fd;
-    } else {
-      return data;
-    }
+    return fd;
   } else if (selectedFilter === "Закрепленные") {
     let fd = [];
     fd = origData.filter((item) =>
       fastenedData.some((el) => el.workloadId === item.id)
     );
-    if (fd.length > 0) {
-      return fd;
-    } else {
-      return data;
-    }
+    return fd;
   } else {
     return data;
+  }
+}
+
+export function getTextForNotData(selectedFilter) {
+  if (selectedFilter === "Измененные") {
+    return "Нет измененных данных";
+  }
+  if (selectedFilter === "Закрепленные") {
+    return "Нет закрепленных данных";
+  }
+  if (selectedFilter === "Выделенные") {
+    return "Нет выделенных данных";
+  }
+  if (selectedFilter === "Все дисциплины") {
+    return "В таблице нет данных";
   }
 }
 
@@ -133,34 +136,53 @@ export function deleteItemBuffer(buff, itemId, type) {
 export const funGetConfirmation = (itemId, changedData, bufferAction) => {
   // при удалении строки
   if (changedData.deleted.find((el) => el === itemId)) {
-    return { blocked: true, height: "150px", top: "0", type: 1 };
+    return { blocked: true, height: "150px", top: "0", type: 1, data: itemId };
   }
   // при разделении строки
-  else if (changedData.splitjoin.includes(itemId)) {
-    let index = 0;
-    let length = 0;
-    bufferAction.map((item) => {
-      if (item.request === "splitWorkload") {
-        //при разделении в конец id добавляется index у первого 0 у втрого 1 и тд
-        // Number(itemId[itemId.length - 1]) определяет этот индекс
-        index = 0;
-        if (Number(itemId[itemId.length - 1]) > index) {
-          index = Number(itemId[itemId.length - 1]);
-        }
-        if (item.data.ids.some((e) => e === itemId.slice(0, -1))) {
-          length = item.data.n;
-        }
+  else if (changedData.split.includes(itemId)) {
+    // получим нужную строку из буффера
+    const buff = [...bufferAction].filter(
+      (el) =>
+        el.request === "splitWorkload" && el.newIds.some((e) => e === itemId)
+    )[0];
+    let data = { ...buff };
+    if (data.data) {
+      data.data = { ...data.data, ids: [itemId.slice(0, -1)] };
+      data.newIds = data.newIds.filter(
+        (el) => el.slice(0, -1) === itemId.slice(0, -1)
+      );
+      data.prevState = [
+        data.prevState.find((e) => e.id === itemId.slice(0, -1)),
+      ];
+
+      const length = data.data.n;
+      const index = data.newIds.findIndex((e) => e === itemId);
+      if (data.data.n) {
+        return {
+          blocked: true,
+          height: `${150 * length}px`,
+          top: `${-150 * index}px`,
+          type: 2,
+          data: data,
+        };
+      } else {
+        return { blocked: false, height: "150px", top: "0", type: 0 };
       }
-    });
-    if (index !== -1) {
-      return {
-        blocked: true,
-        height: `${150 * length}px`,
-        top: `${-150 * index}px`,
-        type: 2,
-      };
     } else {
       return { blocked: false, height: "150px", top: "0", type: 0 };
     }
+  } else if (changedData.join.includes(itemId)) {
+    const buff = [...bufferAction].filter(
+      (el) =>
+        el.request === "joinWorkloads" && el.data.ids.some((e) => e === itemId)
+    )[0];
+    return {
+      blocked: true,
+      height: "150px",
+      top: "0",
+      type: 3,
+      data: buff,
+      workloadId: itemId,
+    };
   } else return { blocked: false, height: "150px", top: "0", type: 0 };
 };

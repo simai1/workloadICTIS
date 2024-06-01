@@ -328,6 +328,7 @@ function TableDisciplines(props) {
         ic = [...ic, filteredData[index].id];
       }
       appData.setIndividualCheckboxes(ic);
+      console.log("click")
       if (ic.length === filteredData.length) {
         setIsCheckedGlobal(true);
       } else {
