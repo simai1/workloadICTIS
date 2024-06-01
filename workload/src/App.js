@@ -83,6 +83,7 @@ function App() {
   const [actionUpdTabTeach, setActionUpdTabTeach] = useState(false); // при изменении обновляется таблицы преподавателей
   const [tableDepartment, settableDepartment] = useState([]);
   const [nameKaf, setnameKaf] = useState("");
+  const [selectISOid, setselectISOid ] = useState(false);
 
   const basicTabData = {
     updateAlldata,
@@ -110,6 +111,7 @@ function App() {
     tableDepartment,
     nameKaf,
     setnameKaf,
+    setselectISOid
   };
 
   const [coloredData, setColoredData] = useState([]); // выделенные цветом
