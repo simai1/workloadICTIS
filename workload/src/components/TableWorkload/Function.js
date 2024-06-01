@@ -172,6 +172,17 @@ export const funGetConfirmation = (itemId, changedData, bufferAction) => {
       return { blocked: false, height: "150px", top: "0", type: 0 };
     }
   } else if (changedData.join.includes(itemId)) {
-    return { blocked: true, height: "150px", top: "0", type: 3 };
+    const buff = [...bufferAction].filter(
+      (el) =>
+        el.request === "joinWorkloads" && el.data.ids.some((e) => e === itemId)
+    )[0];
+    return {
+      blocked: true,
+      height: "150px",
+      top: "0",
+      type: 3,
+      data: buff,
+      workloadId: itemId,
+    };
   } else return { blocked: false, height: "150px", top: "0", type: 0 };
 };

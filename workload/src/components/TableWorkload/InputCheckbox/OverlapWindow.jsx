@@ -76,58 +76,30 @@ function OverlapWindow(props) {
       );
       console.log("changed", changed.split);
       tabPar.setChangedData(changed);
-
-      // const funData = deleteItemBuffer(
-      //   [...appData.bufferAction],
-      //   props.itid.slice(0, -1),
-      //   "splitWorkload"
-      // );
-      // appData.setBufferAction(funData.buffer);
-      // const ind = basicTabData.workloadDataFix.findIndex(
-      //   (el) => el.id === props.itid
-      // );
-
-      // console.log("ind", ind, "prev", funData.item.prevState[0]);
-      // let data = basicTabData.workloadDataFix.filter(
-      //   (item) => item.id.slice(0, -1) !== props.itid.slice(0, -1)
-      // );
-      // data = [
-      //   ...data.slice(0, ind),
-      //   funData.item.prevState[0],
-      //   ...data.slice(ind),
-      // ];
-      // data[ind] = funData.item.prevState[0];
-
-      // basicTabData.setWorkloadDataFix(data);
-      // let changed = { ...tabPar.changedData };
-      // console.log("changed", changed.split);
-      // changed.split = changed.split.filter(
-      //   (item) => item.slice(0, -1) !== props.itid.slice(0, -1)
-      // );
-      // tabPar.setChangedData(changed);
     } else if (props.getConfirmation.type === 3) {
-      const funData = deleteItemBuffer(
-        [...appData.bufferAction],
-        props.itid.slice(0, -1),
-        "joinWorkload"
+      console.log(props.getConfirmation.data);
+      const bd = props.getConfirmation.data;
+      // удаляем нагрузку которую обьеденили
+      const dataTable = [...basicTabData.workloadDataFix].filter(
+        (item) => !bd.prevState.some((el) => el.id === item.id)
       );
-      appData.setBufferAction(funData.buffer);
-      const ind = basicTabData.workloadDataFix.findIndex(
-        (el) => el.id === props.itid
+      // сохраняем индекс удаленного элемента
+      const deletedIndex = basicTabData.workloadDataFix.findIndex((item) =>
+        bd.prevState.some((el) => el.id === item.id)
       );
-      console.log("ind", ind, "prev", funData.item.prevState[0]);
-      let data = basicTabData.workloadDataFix.filter(
-        (item) => item.id.slice(0, -1) !== props.itid.slice(0, -1)
+      const newArray = [...dataTable];
+      newArray.splice(deletedIndex, 0, ...bd.prevState);
+      basicTabData.setWorkloadDataFix(newArray);
+      // убираем заблокированные элементы
+      console.log(tabPar.changedData);
+      let cd = { ...tabPar.changedData };
+      let cdJoin = [...cd.join];
+      cdJoin = cdJoin.filter(
+        (el) => !bd.prevState.some((item) => item.id !== el)
       );
-      data[ind] = funData.item.prevState[0];
-      basicTabData.setWorkloadDataFix(data);
-      let changed = { ...tabPar.changedData };
-      console.log("changed", changed.join);
-      changed.join = changed.join.filter(
-        (item) => item.slice(0, -1) !== props.itid.slice(0, -1)
-      );
-      tabPar.setChangedData(changed);
-      console.log("changed", changed.join, "id", props.itid.slice(0, -1));
+      cd.join = cdJoin;
+      tabPar.setChangedData(cd);
+      appData.setBufferAction((prevItems) => prevItems.slice(1));
     }
   };
 
@@ -171,16 +143,8 @@ function OverlapWindow(props) {
         basicTabData.updateAlldata();
       });
     } else if (props.getConfirmation.type === 3) {
-      let data = null;
-      appData.bufferAction.map((item) => {
-        if (
-          item.request === "joinWorkload" &&
-          item.data.ids.find((el) => el === props.itid)
-        ) {
-          data = item.data;
-        }
-      });
-      joinWorkloads(data).then(() => {
+      joinWorkloads(props.getConfirmation.data.data).then((res) => {
+        console.log(res);
         appData.setBufferAction(
           deleteItemBuffer(
             [...appData.bufferAction],
@@ -191,7 +155,6 @@ function OverlapWindow(props) {
         let changed = { ...tabPar.changedData };
         changed.join = changed.join.filter((item) => item !== props.itid);
         console.log(changed);
-
         tabPar.setChangedData(changed);
         basicTabData.updateAlldata();
       });

@@ -387,7 +387,7 @@ function App() {
         setBufferAction((prevItems) => prevItems.slice(1));
       } else if (bufferAction[0].request === "joinWorkloads") {
         // удаляем нагрузку которую обьеденили
-        const dataTable = workloadDataFix.filter(
+        const dataTable = [...workloadDataFix].filter(
           (item) => !bufferAction[0].prevState.some((el) => el.id === item.id)
         );
         // сохраняем индекс удаленного элемента
@@ -398,11 +398,14 @@ function App() {
         newArray.splice(deletedIndex, 0, ...bufferAction[0].prevState);
         setWorkloadDataFix(newArray);
         // убираем заблокированные элементы
-        setChangedData((prev) =>
-          prev.filter(
-            (el) => !bufferAction[0].prevState.some((item) => item.id !== el)
-          )
+        console.log(tabPar.changedData);
+        let cd = { ...tabPar.changedData };
+        let cdJoin = [...cd.join];
+        cdJoin = cdJoin.filter(
+          (el) => !bufferAction[0].prevState.some((item) => item.id !== el)
         );
+        cd.join = cdJoin;
+        setChangedData(cd);
         setBufferAction((prevItems) => prevItems.slice(1));
       } else if (bufferAction[0].request === "splitWorkload") {
         let datMap = { ...bufferAction[0] };

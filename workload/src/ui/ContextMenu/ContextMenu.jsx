@@ -193,7 +193,12 @@ const ContextMenu = (props) => {
       basicTabData.setWorkloadDataFix(funData.newUpdatedData);
       //! буфер
       appData.setBufferAction([
-        { request: "joinWorkloads", data: data, prevState: funData.prevState },
+        {
+          id: appData.bufferAction.length,
+          request: "joinWorkloads",
+          data: data,
+          prevState: funData.prevState,
+        },
         ...appData.bufferAction,
       ]);
       tabPar.setChangedData(
