@@ -344,7 +344,7 @@ function App() {
       // получение предложений
       funUpdateOffers();
     }
-    // получение закрепленных строк
+    // получение закрепленных строк 
     funUpdateFastenedData();
     // получение выделенных строк
     funUpdateAllColors();
