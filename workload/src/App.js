@@ -331,7 +331,7 @@ function App() {
   //! функция обновления всех данных
   function updateAlldata() {
     // получаем данные таблицы
-    funUpdateTable();
+    selectISOid ?  funUpdateTable(0): funUpdateTable((tableDepartment.find((el)=> el.name === nameKaf))?.id);
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 20)) {
       // получаем все комментарии
       funUpdateAllComments();
