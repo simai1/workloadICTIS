@@ -1,41 +1,10 @@
 //! функция замены преподавательского массива на его имя
 export function funFixEducator(data) {
-  return data.map((item) => ({
+  return data.map((item, index) => ({
     ...item,
-    educator: item.educator ? item.educator.name : "___",
+    educator: item.educator ? item.educator.name : "0",
   }));
 }
-// if(data && bufferAction.length >0){
-//   console.log('bufferAction', bufferAction)
-//   const newData = [...data]
-//   let obj = []
-//   bufferAction.map((item)=>{
-//     if(item.request === "addEducatorWorkload"){
-//     let o = {...newData[newData.findIndex((el)=>(el.id === item.data.workloadId))]};
-//     o.educator = item.edicatorName.edicatorName;
-//     obj.push(o)
-//     }
-//   })
-
-//   return data.map((item) => {
-//     // let i = findex.some((el)=> el === index)
-//     if(obj.find((e)=> e.id === item.id)){
-//       return obj.find((e)=> e.id === item.id)
-//     }else if(item.educator === null || item.educator === undefined){
-//       return {
-//         ...item,
-//         educator: item.educator ? item.educator.name : "___",
-//       }
-//     }
-//     else if(item.educator.name){
-//       return {
-//         ...item,
-//         educator: item.educator.name
-//       }
-//     }else{
-//       return item;
-//     }
-//   });
 
 //! фильтрация массива нагрузок
 export function filteredWorkload(data, text) {
@@ -170,7 +139,7 @@ export const funGetConfirmation = (itemId, changedData, bufferAction) => {
     return { blocked: true, height: "150px", top: "0", type: 1, data: itemId };
   }
   // при разделении строки
-  else if (changedData.split?.includes(itemId)) {
+  else if (changedData.split.includes(itemId)) {
     // получим нужную строку из буффера
     const buff = [...bufferAction].filter(
       (el) =>

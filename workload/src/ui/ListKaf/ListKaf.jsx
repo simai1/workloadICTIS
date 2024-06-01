@@ -8,11 +8,15 @@ function ListKaf({ dataList, Textlabel, defaultValue, name, setTableMode }) {
   const { tabPar, basicTabData } = React.useContext(DataContext);
   const [activeList, setactiveList] = useState(false);
 
+  // useEffect(()=>{
+  //   const defWalue = basicTabData.funGetDepartment()
+  //   console.log('defWalue', defWalue)
+  // },[basicTabData.nameKaf])
+
   const addClient = (el) => {
     console.log(el);
     basicTabData.setnameKaf(el.name);
     setactiveList(!activeList);
-    basicTabData.setselectISOid(false);
     tabPar.setDataIsOid(false);
     setTableMode("cathedrals");
     basicTabData.funUpdateTable(el.id);

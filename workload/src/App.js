@@ -82,10 +82,7 @@ function App() {
   const [selectkafedra, setselectkafedra] = useState(""); //state выбранной кафедры
   const [actionUpdTabTeach, setActionUpdTabTeach] = useState(false); // при изменении обновляется таблицы преподавателей
   const [tableDepartment, settableDepartment] = useState([]);
-  const [selectISOid, setselectISOid ] = useState(false);
-  // const [nameKaf, setnameKaf] = useState("");
-  const [nameKaf, setnameKaf] = useState("Все");
-
+  const [nameKaf, setnameKaf] = useState("");
 
   const basicTabData = {
     updateAlldata,
@@ -113,7 +110,6 @@ function App() {
     tableDepartment,
     nameKaf,
     setnameKaf,
-    setselectISOid
   };
 
   const [coloredData, setColoredData] = useState([]); // выделенные цветом
@@ -217,8 +213,8 @@ function App() {
   //! Функция обновления существующих кафедр таблицы
   function funGetDepartment() {
     GetDepartment().then((response) => {
-      settableDepartment([...response.data, {id: 13, name: "Все"}]);
-      // setnameKaf(response.data[0].name);
+      settableDepartment([...response.data, { id: 13, name: "Все" }]);
+      setnameKaf(response.data[0].name);
     });
   }
 
@@ -235,7 +231,7 @@ function App() {
   }, [nameKaf]);
 
   //! функция обновления таблицы
-  function funUpdateTable(param = 13) { //param = tableDepartment[0]?.id
+  function funUpdateTable(param = tableDepartment[0]?.id) {
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
       apiGetWorkloadDepartment().then((data) => {
         console.log("нагрузки по кафедре", data);
@@ -263,79 +259,21 @@ function App() {
     console.log("url", url);
     if (metodRole[myProfile?.role]?.some((el) => el === 14)) {
       Workload(`${url}`).then((data) => {
-        // console.log("нагрузки", data);
+        console.log("нагрузки", data);
         const dataBd = [...data];
         setWorkloadData(dataBd);
-        const fixData =  UpdateWorkloadForBoofer(funFixEducator(dataBd, bufferAction))
-        console.log("fixData Да это оно", fixData)
+        // зменяем массив преподавателя на его имя
+        const fixData = funFixEducator(dataBd);
         setWorkloadDataFix(fixData);
         setFiltredData(fixData);
       });
     }
   }
 
-  //!функция прокида буфера
-  function UpdateWorkloadForBoofer(data) {
-    if (bufferAction.length !== 0) {
-      const newData = [...data];
-      let obj = [];
-      bufferAction.map((item) => {
-          let existingObj = obj.find((el) => el.id === item.workloadId);
-          if (existingObj) {
-              if (item.request === "addEducatorWorkload") {
-                  existingObj.educator = item.edicatorName.edicatorName;
-              }
-              if (item.request === "workloadUpdata") {
-                  if (item.data.key === "numberOfStudents") {
-                      existingObj.numberOfStudents = item.data.value;
-                  }
-                  if (item.data.key === "hours") {
-                      existingObj.hours = item.data.value;
-                  }
-              }
-          } else {
-              let o = { ...newData[newData.findIndex((el) => el.id === item.workloadId)] };
-              if (item.request === "addEducatorWorkload") {
-                  o.educator = item.edicatorName.edicatorName;
-              }
-              if (item.request === "workloadUpdata") {
-                  if (item.data.key === "numberOfStudents") {
-                      o.numberOfStudents = item.data.value;
-                  }
-                  if (item.data.key === "hours") {
-                      o.hours = item.data.value;
-                  }
-              }
-              obj.push(o);
-          }
-      });
-      console.log('ObjEditNoSave', obj)
-      return data.map((item) => {
-        if (obj.find((e) => e.id === item.id)) {
-          return obj.find((e) => e.id === item.id);
-        } else if (item.educator === null || item.educator === undefined) {
-          return {
-            ...item,
-            educator: item.educator ? item.educator.name : "___",
-          };
-        } else if (item.educator.name) {
-          return {
-            ...item,
-            educator: item.educator.name,
-          };
-        } else {
-          return item;
-        }
-      });
-    } else {
-      return data;
-    }
-  }
-  
   //! функция обновления всех данных
   function updateAlldata() {
-    selectISOid ?  funUpdateTable(0): funUpdateTable((tableDepartment.find((el)=> el.name === nameKaf))?.id);
     // получаем данные таблицы
+    funUpdateTable();
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 20)) {
       // получаем все комментарии
       funUpdateAllComments();
