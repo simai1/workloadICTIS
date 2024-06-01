@@ -81,14 +81,10 @@ function App() {
   const [allOffersData, setAllOffersData] = useState([]); // предложения
   const [selectkafedra, setselectkafedra] = useState(""); //state выбранной кафедры
   const [actionUpdTabTeach, setActionUpdTabTeach] = useState(false); // при изменении обновляется таблицы преподавателей
-<<<<<<< HEAD
   const [tableDepartment, settableDepartment] = useState([]);
   const [nameKaf, setnameKaf] = useState("");
   const [selectISOid, setselectISOid ] = useState(false);
 
-=======
-  const  [tableDepartment, settableDepartment] = useState([])
->>>>>>> parent of 23ce8de39 (Merge branch 'ArturNew')
   const basicTabData = {
     updateAlldata,
     tableHeaders,
@@ -112,14 +108,10 @@ function App() {
     selectkafedra,
     actionUpdTabTeach,
     setActionUpdTabTeach,
-<<<<<<< HEAD
     tableDepartment,
     nameKaf,
     setnameKaf,
     setselectISOid
-=======
-    tableDepartment
->>>>>>> parent of 23ce8de39 (Merge branch 'ArturNew')
   };
 
   const [coloredData, setColoredData] = useState([]); // выделенные цветом

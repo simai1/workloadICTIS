@@ -162,7 +162,6 @@ export const funGetConfirmation = (itemId, changedData, bufferAction) => {
     } else {
       return { blocked: false, height: "150px", top: "0", type: 0 };
     }
-<<<<<<< HEAD
   } else if (changedData.join?.includes(itemId)) {
     const buff = [...bufferAction].filter(
       (el) =>
@@ -176,7 +175,5 @@ export const funGetConfirmation = (itemId, changedData, bufferAction) => {
       data: buff,
       workloadId: itemId,
     };
-=======
->>>>>>> parent of 23ce8de39 (Merge branch 'ArturNew')
   } else return { blocked: false, height: "150px", top: "0", type: 0 };
 };

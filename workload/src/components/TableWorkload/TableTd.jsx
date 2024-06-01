@@ -62,11 +62,8 @@ function TableTd(props) {
         }
         return item;
       });
-<<<<<<< HEAD
       console.log("updatedArray", updatedArray);
  
-=======
->>>>>>> parent of 23ce8de39 (Merge branch 'ArturNew')
       basicTabData.setWorkloadDataFix(updatedArray);
       //! буфер
       appData.setBufferAction([
