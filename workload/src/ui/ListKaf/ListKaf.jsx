@@ -6,26 +6,21 @@ import arrowBlack from "./../../img/arrow_down.svg";
 
 function ListKaf({ dataList, Textlabel, defaultValue, name, setTableMode }) {
   const { tabPar, basicTabData } = React.useContext(DataContext);
+
   const [activeList, setactiveList] = useState(false);
-
-  // useEffect(()=>{
-  //   const defWalue = basicTabData.funGetDepartment()
-  //   console.log('defWalue', defWalue)
-  // },[basicTabData.nameKaf])
-
+  const [nameKaf, setnameKaf] = useState(defaultValue);
   const addClient = (el) => {
     console.log(el);
-    basicTabData.setnameKaf(el.name);
+    setnameKaf(el.name);
     setactiveList(!activeList);
     tabPar.setDataIsOid(false);
     setTableMode("cathedrals");
-    basicTabData.funUpdateTable(el.id);
+    basicTabData.funUpdateTable(el.id)
   };
 
   const refDiv = useRef(null);
   //! закрытие модального окна при нажати вне него
   useEffect(() => {
-    console.log("defaultValue", defaultValue);
     const handler = (event) => {
       if (refDiv.current && !refDiv.current.contains(event.target)) {
         setactiveList(false);
@@ -50,11 +45,12 @@ function ListKaf({ dataList, Textlabel, defaultValue, name, setTableMode }) {
           <input
             readOnly
             style={{
-              backgroundColor: !tabPar.dataIsOid ? "#3b28cc" : "#fff",
-              color: !tabPar.dataIsOid ? "#fff" : "#000",
+              backgroundColor:
+                nameKaf && !tabPar.dataIsOid ? "#3b28cc" : "#fff",
+              color: nameKaf && !tabPar.dataIsOid ? "#fff" : "#000",
             }}
             onClick={() => setactiveList(!activeList)}
-            value={basicTabData.nameKaf}
+            value={nameKaf}
             placeholder={defaultValue}
             className={styles.inputList}
           />

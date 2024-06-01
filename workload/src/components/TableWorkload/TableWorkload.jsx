@@ -1,16 +1,13 @@
 import React, { useContext, useEffect, useRef } from "react";
 import Table from "./Table";
 import styles from "./TableWorkload.module.scss";
-import {
-  filteredWorkload,
-  funfastenedDataSort,
-  getTextForNotData,
-} from "./Function";
+import { filteredWorkload, funfastenedDataSort } from "./Function";
 import DataContext from "../../context";
 import ContextMenu from "../../ui/ContextMenu/ContextMenu";
 
 function TableWorkload(props) {
-  const { tabPar, visibleDataPar, basicTabData } = useContext(DataContext);
+  const { appData, tabPar, visibleDataPar, basicTabData } =
+    useContext(DataContext);
   //! при событии скролл таблицы изменим индекс первого показываемого tr
   const scrollTable = (e) => {
     visibleDataPar.visibleData !== basicTabData.filtredData.length - 1 &&
@@ -49,16 +46,8 @@ function TableWorkload(props) {
       className={styles.tabledisciplinesMain}
       onScroll={scrollTable}
     >
-      {basicTabData.filtredData.length === 0 ? (
-        <div className={styles.NotData}>
-          {getTextForNotData(tabPar.selectedFilter)}
-        </div>
-      ) : (
-        <>
-          {tabPar.contextMenuShow && <ContextMenu />}
-          <Table />
-        </>
-      )}
+      {tabPar.contextMenuShow && <ContextMenu />}
+      <Table />
     </div>
   );
 }

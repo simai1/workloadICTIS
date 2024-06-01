@@ -30,12 +30,8 @@ function TableTd(props) {
   };
 
   const onChangeTextareaTd = (e) => {
-    const query = e.target.value;
-    if (query === "") {
-      setTextareaTd(query);
-    } else if (Number(query)) {
-      setTextareaTd(query);
-    }
+    // console.log(e.target.value);
+    setTextareaTd(e.target.value);
   };
 
   //! при двойном клике на td открываем textarea
@@ -45,7 +41,6 @@ function TableTd(props) {
 
   //! при клтике отмена техтаре
   const crossClick = (e) => {
-    setTextareaTd(props.item[props.itemKey.key]);
     setOnTextArea(false);
   };
 
@@ -53,8 +48,6 @@ function TableTd(props) {
   const onClickButton = () => {
     let parsedValue = parseFloat(textareaTd);
     let numberValue = isNaN(parsedValue) ? textareaTd : parsedValue;
-    console.log("textareaTd", textareaTd, numberValue, parsedValue);
-
     //! параметры запроса на изменение данных
     const data = {
       id: props.item.id,
@@ -69,10 +62,12 @@ function TableTd(props) {
         }
         return item;
       });
+<<<<<<< HEAD
       console.log("updatedArray", updatedArray);
  
+=======
+>>>>>>> parent of 23ce8de39 (Merge branch 'ArturNew')
       basicTabData.setWorkloadDataFix(updatedArray);
-      basicTabData.setFiltredData(updatedArray);
       //! буфер
       appData.setBufferAction([
         {
@@ -85,9 +80,10 @@ function TableTd(props) {
       let cd = { ...tabPar.changedData };
       cd[props.itemKey.key] = [...cd[props.itemKey.key], props.item.id];
       tabPar.setChangedData(cd);
-      setOnTextArea(false);
     }
-    // setTextareaTd(props.item[props.itemKey.key]);
+
+    setTextareaTd(null);
+    setOnTextArea(false);
   };
 
   const [showFullText, setShowFullText] = useState(false); // при наведении на td показывает весь текст ячейки
@@ -135,11 +131,8 @@ function TableTd(props) {
       key={props.item.id + "_" + props.itemKey.key}
       className={getClassNameTr()}
       style={
-        showFullText && props.item[props.itemKey.key]?.length > lenSlice
-          ? props.itemKey.key === "discipline" ||
-            props.itemKey.key === "workload"
-            ? { position: "sticky" }
-            : { position: "relative" }
+        showFullText && props.item[props.itemKey.key].length > lenSlice
+          ? { position: "relative" }
           : null
       }
     >
@@ -148,15 +141,15 @@ function TableTd(props) {
         className={styles.tdInner}
         onDoubleClick={funDubleClick}
         style={
-          showFullText && props.item[props.itemKey.key]?.length > lenSlice
+          showFullText && props.item[props.itemKey.key].length > lenSlice
             ? {
                 position: "absolute",
                 backgroundColor: "inherit",
-                width: "90%",
+                width: "100%",
                 top: "10px",
                 padding: "4px",
                 boxShadow: "0px 3px 18px rgba(0, 0, 0, 0.15)",
-                zIndex: "200",
+                zIndex: "1",
               }
             : null
         }
@@ -164,23 +157,16 @@ function TableTd(props) {
         {getTextAreaOn() ? (
           <div>
             <textarea
-              // defaultValue={props.item[props.itemKey.key]}
-              value={textareaTd}
+              defaultValue={props.item[props.itemKey.key]}
               onChange={onChangeTextareaTd}
               className={styles.textarea}
               type="text"
-              style={
-                Number(textareaTd) > 2000 ? { border: "3px solid red" } : null
-              }
             ></textarea>
             <div className={styles.svg_textarea}>
-              {textareaTd !== "" && Number(textareaTd) <= 2000 && (
-                <SvgChackmark
-                  onClick={onClickButton}
-                  className={styles.SvgChackmark_green}
-                />
-              )}
-
+              <SvgChackmark
+                onClick={onClickButton}
+                className={styles.SvgChackmark_green}
+              />
               <SvgCross onClick={crossClick} />
             </div>
           </div>

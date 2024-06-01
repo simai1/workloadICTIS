@@ -5,7 +5,6 @@ import styles from "./../TableWorkload.module.scss";
 import React from "react";
 import {
   deleteWorkload,
-  joinWorkloads,
   splitWorkload,
 } from "../../../api/services/ApiRequest";
 import { deleteItemBuffer } from "../Function";
@@ -27,85 +26,32 @@ function OverlapWindow(props) {
       changed.deleted = changed.deleted.filter((item) => item !== props.itid);
       tabPar.setChangedData(changed);
     } else if (props.getConfirmation.type === 2) {
-      const dat = { ...props.getConfirmation.data };
-      console.log("dat", dat);
-
-      let buff = [...appData.bufferAction];
-      let itemBuff = buff.find((el) => el.id === dat.id);
-      let index = buff.findIndex((el) => el.id === dat.id);
-      let bd = { ...itemBuff.data };
-      const bdids = bd.ids.filter((el) => !dat.data.ids.some((e) => e === el));
-      const newbd = {
-        ids: bdids,
-        n: bd.n,
-      };
-      let bnids = [...itemBuff.newIds];
-      const bnidsNew = bnids.filter((el) => !dat.newIds.some((e) => e === el));
-      let ps = itemBuff.prevState.filter((el) => el.id !== dat.prevState.id);
-      let buffDat = {
-        id: dat.id,
-        data: newbd,
-        newIds: bnidsNew,
-        prevState: ps,
-        request: "splitWorkload",
-      };
-      buff[index] = buffDat;
-      appData.setBufferAction([...buff]);
-      let wdf = [...basicTabData.workloadDataFix];
-      console.log(wdf);
-
-      let datMap = { ...dat };
-      let f = true;
-      const wdfNew = wdf
-        .map((item) => {
-          if (datMap.newIds.some((el) => el === item.id)) {
-            if (f) {
-              f = false;
-              return datMap.prevState[0];
-            }
-          } else return item;
-        })
-        .filter((el) => el !== undefined);
-
-      basicTabData.setWorkloadDataFix(wdfNew);
-
+      const funData = deleteItemBuffer(
+        [...appData.bufferAction],
+        props.itid.slice(0, -1),
+        "splitWorkload"
+      );
+      appData.setBufferAction(funData.buffer);
+      const ind = basicTabData.workloadDataFix.findIndex(
+        (el) => el.id === props.itid
+      );
+      console.log("ind", ind, "prev", funData.item.prevState[0]);
+      let data = basicTabData.workloadDataFix.filter(
+        (item) => item.id.slice(0, -1) !== props.itid.slice(0, -1)
+      );
+      data[ind] = funData.item.prevState[0];
+      basicTabData.setWorkloadDataFix(data);
       let changed = { ...tabPar.changedData };
-      console.log("changed", changed.split);
-      changed.split = changed.split.filter(
-        (item) => !dat.newIds.some((el) => el === item)
+      console.log("changed", changed.splitjoin);
+      changed.splitjoin = changed.splitjoin.filter(
+        (item) => item.slice(0, -1) !== props.itid.slice(0, -1)
       );
-      console.log("changed", changed.split);
       tabPar.setChangedData(changed);
-    } else if (props.getConfirmation.type === 3) {
-      console.log(props.getConfirmation.data);
-      const bd = props.getConfirmation.data;
-      // удаляем нагрузку которую обьеденили
-      const dataTable = [...basicTabData.workloadDataFix].filter(
-        (item) => !bd.prevState.some((el) => el.id === item.id)
-      );
-      // сохраняем индекс удаленного элемента
-      const deletedIndex = basicTabData.workloadDataFix.findIndex((item) =>
-        bd.prevState.some((el) => el.id === item.id)
-      );
-      const newArray = [...dataTable];
-      newArray.splice(deletedIndex, 0, ...bd.prevState);
-      basicTabData.setWorkloadDataFix(newArray);
-      // убираем заблокированные элементы
-      console.log(tabPar.changedData);
-      let cd = { ...tabPar.changedData };
-      let cdJoin = [...cd.join];
-      cdJoin = cdJoin.filter(
-        (el) => !bd.prevState.some((item) => item.id !== el)
-      );
-      cd.join = cdJoin;
-      tabPar.setChangedData(cd);
-      appData.setBufferAction((prevItems) => prevItems.slice(1));
+      console.log("changed", changed.splitjoin, "id", props.itid.slice(0, -1));
     }
   };
-
   const confirmChanges = () => {
     console.log("подтвердить", props.getConfirmation.type);
-    // удаляем нагрузку
     if (props.getConfirmation.type === 1) {
       deleteWorkload({ ids: [props.itid] }).then(() => {
         appData.setBufferAction(
@@ -122,10 +68,17 @@ function OverlapWindow(props) {
         changed.deleted = changed.deleted.filter((item) => item !== props.itid);
         tabPar.setChangedData(changed);
       });
-    }
-    // разделяем нагрузку
-    else if (props.getConfirmation.type === 2) {
-      splitWorkload(props.getConfirmation.data.data).then(() => {
+    } else if (props.getConfirmation.type === 2) {
+      let data = null;
+      appData.bufferAction.map((item) => {
+        if (
+          item.request === "splitWorkload" &&
+          item.data.ids.find((el) => el === props.itid.slice(0, -1))
+        ) {
+          data = { ids: [props.itid.slice(0, -1)], n: item.data.n };
+        }
+      });
+      splitWorkload(data).then(() => {
         appData.setBufferAction(
           deleteItemBuffer(
             [...appData.bufferAction],
@@ -134,27 +87,11 @@ function OverlapWindow(props) {
           ).buffer
         );
         let changed = { ...tabPar.changedData };
-        changed.split = changed.split.filter(
+        changed.splitjoin = changed.splitjoin.filter(
           (item) => item.slice(0, -1) !== props.itid.slice(0, -1)
         );
         console.log(changed);
 
-        tabPar.setChangedData(changed);
-        basicTabData.updateAlldata();
-      });
-    } else if (props.getConfirmation.type === 3) {
-      joinWorkloads(props.getConfirmation.data.data).then((res) => {
-        console.log(res);
-        appData.setBufferAction(
-          deleteItemBuffer(
-            [...appData.bufferAction],
-            props.itid,
-            "joinWorkload"
-          ).buffer
-        );
-        let changed = { ...tabPar.changedData };
-        changed.join = changed.join.filter((item) => item !== props.itid);
-        console.log(changed);
         tabPar.setChangedData(changed);
         basicTabData.updateAlldata();
       });

@@ -90,7 +90,7 @@ export const Workload = async (param) => {
     return response.data;
   } catch (error) {
     console.error("Error:", error, `${server}/workload`);
-    return [];
+    throw error;
   }
 };
 
