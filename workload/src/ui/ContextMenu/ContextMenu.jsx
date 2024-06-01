@@ -62,10 +62,12 @@ const ContextMenu = (props) => {
     console.log("оставить комментарий");
     setMenuShow(menuShow === "commentsMenu" ? "" : "commentsMenu");
   };
+
   //! Выбор преподавателя
   const selectedEducator = (id) => {
     tabPar.setContextMenuShow(!tabPar.contextMenuShow);
     setMenuShow("");
+
     const data = {
       workloadId: tabPar.selectedTr[0],
       educatorId: id,
@@ -78,10 +80,18 @@ const ContextMenu = (props) => {
           tabPar.selectedTr[0],
           dataReq.name
         );
+        const edicatorName = { edicatorName: dataReq.name };
         basicTabData.setWorkloadDataFix(newData);
         basicTabData.setFiltredData(newData);
+        const workloadId = data.workloadId;
         appData.setBufferAction([
-          { request: "addEducatorWorkload", data, prevState },
+          {
+            request: "addEducatorWorkload",
+            data,
+            prevState,
+            edicatorName,
+            workloadId,
+          },
           ...appData.bufferAction,
         ]);
         //! занесем id измененнных данных в состояние
