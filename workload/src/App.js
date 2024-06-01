@@ -277,6 +277,7 @@ function App() {
     if (bufferAction.length !== 0) {
       const newData = [...data];
       let obj = [];
+      console.log('bufferAction', bufferAction)
       bufferAction.map((item) => {
           let existingObj = obj.find((el) => el.id === item.workloadId);
           if (existingObj) {
