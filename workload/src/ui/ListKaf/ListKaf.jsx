@@ -6,21 +6,22 @@ import arrowBlack from "./../../img/arrow_down.svg";
 
 function ListKaf({ dataList, Textlabel, defaultValue, name, setTableMode }) {
   const { tabPar, basicTabData } = React.useContext(DataContext);
-
   const [activeList, setactiveList] = useState(false);
-  const [nameKaf, setnameKaf] = useState(defaultValue);
+
   const addClient = (el) => {
     console.log(el);
-    setnameKaf(el.name);
+    basicTabData.setnameKaf(el.name);
     setactiveList(!activeList);
+    basicTabData.setselectISOid(false);
     tabPar.setDataIsOid(false);
     setTableMode("cathedrals");
-    basicTabData.funUpdateTable(el.id)
+    basicTabData.funUpdateTable(el.id);
   };
 
   const refDiv = useRef(null);
   //! закрытие модального окна при нажати вне него
   useEffect(() => {
+    console.log("defaultValue", defaultValue);
     const handler = (event) => {
       if (refDiv.current && !refDiv.current.contains(event.target)) {
         setactiveList(false);
@@ -45,12 +46,11 @@ function ListKaf({ dataList, Textlabel, defaultValue, name, setTableMode }) {
           <input
             readOnly
             style={{
-              backgroundColor:
-                nameKaf && !tabPar.dataIsOid ? "#3b28cc" : "#fff",
-              color: nameKaf && !tabPar.dataIsOid ? "#fff" : "#000",
+              backgroundColor: !tabPar.dataIsOid ? "#3b28cc" : "#fff",
+              color: !tabPar.dataIsOid ? "#fff" : "#000",
             }}
             onClick={() => setactiveList(!activeList)}
-            value={nameKaf}
+            value={basicTabData.nameKaf}
             placeholder={defaultValue}
             className={styles.inputList}
           />

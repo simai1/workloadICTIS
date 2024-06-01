@@ -1,9 +1,22 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import styles from "./ConfirmSaving.module.scss";
 
 function ConfirmSaving(props) {
+
+  const refSave = useRef(null);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (refSave.current && !refSave.current.contains(event.target)) {
+        props.setShow(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
   return (
-    <div className={styles.ConfirmSaving}>
+    <div className={styles.ConfirmSaving} ref={refSave}>
       <div className={styles.trangle}></div>
       <div>
         <div className={styles.title}>{props.title}</div>

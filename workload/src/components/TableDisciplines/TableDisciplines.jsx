@@ -5,7 +5,7 @@ import ContextMenu from "../../ui/ContextMenu/ContextMenu";
 import { SamplePoints } from "../../ui/SamplePoints/SamplePoints";
 import DataContext from "../../context";
 import { ReactComponent as SvgChackmark } from "./../../img/checkmark.svg";
- 
+
 import {
   funcGetAllColors,
   getAllOffers,
@@ -328,6 +328,7 @@ function TableDisciplines(props) {
         ic = [...ic, filteredData[index].id];
       }
       appData.setIndividualCheckboxes(ic);
+      console.log("click")
       if (ic.length === filteredData.length) {
         setIsCheckedGlobal(true);
       } else {

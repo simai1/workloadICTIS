@@ -30,8 +30,12 @@ function TableTd(props) {
   };
 
   const onChangeTextareaTd = (e) => {
-    // console.log(e.target.value);
-    setTextareaTd(e.target.value);
+    const query = e.target.value;
+    if (query === "") {
+      setTextareaTd(query);
+    } else if (Number(query)) {
+      setTextareaTd(query);
+    }
   };
 
   //! при двойном клике на td открываем textarea
@@ -41,6 +45,7 @@ function TableTd(props) {
 
   //! при клтике отмена техтаре
   const crossClick = (e) => {
+    setTextareaTd(props.item[props.itemKey.key]);
     setOnTextArea(false);
   };
 
@@ -48,6 +53,8 @@ function TableTd(props) {
   const onClickButton = () => {
     let parsedValue = parseFloat(textareaTd);
     let numberValue = isNaN(parsedValue) ? textareaTd : parsedValue;
+    console.log("textareaTd", textareaTd, numberValue, parsedValue);
+
     //! параметры запроса на изменение данных
     const data = {
       id: props.item.id,
@@ -63,24 +70,26 @@ function TableTd(props) {
         return item;
       });
       console.log("updatedArray", updatedArray);
- 
+
       basicTabData.setWorkloadDataFix(updatedArray);
+      basicTabData.setFiltredData(updatedArray);
+      const workloadId = data.id
       //! буфер
       appData.setBufferAction([
         {
           request: "workloadUpdata",
           data: data,
           prevState: props.item[props.itemKey.key],
+          workloadId
         },
         ...appData.bufferAction,
       ]);
       let cd = { ...tabPar.changedData };
       cd[props.itemKey.key] = [...cd[props.itemKey.key], props.item.id];
       tabPar.setChangedData(cd);
+      setOnTextArea(false);
     }
-
-    setTextareaTd(null);
-    setOnTextArea(false);
+    // setTextareaTd(props.item[props.itemKey.key]);
   };
 
   const [showFullText, setShowFullText] = useState(false); // при наведении на td показывает весь текст ячейки
@@ -128,8 +137,11 @@ function TableTd(props) {
       key={props.item.id + "_" + props.itemKey.key}
       className={getClassNameTr()}
       style={
-        showFullText && props.item[props.itemKey.key].length > lenSlice
-          ? { position: "relative" }
+        showFullText && props.item[props.itemKey.key]?.length > lenSlice
+          ? props.itemKey.key === "discipline" ||
+            props.itemKey.key === "workload"
+            ? { position: "sticky" }
+            : { position: "relative" }
           : null
       }
     >
@@ -138,15 +150,15 @@ function TableTd(props) {
         className={styles.tdInner}
         onDoubleClick={funDubleClick}
         style={
-          showFullText && props.item[props.itemKey.key].length > lenSlice
+          showFullText && props.item[props.itemKey.key]?.length > lenSlice
             ? {
                 position: "absolute",
                 backgroundColor: "inherit",
-                width: "100%",
+                width: "90%",
                 top: "10px",
                 padding: "4px",
                 boxShadow: "0px 3px 18px rgba(0, 0, 0, 0.15)",
-                zIndex: "1",
+                zIndex: "200",
               }
             : null
         }
@@ -154,16 +166,23 @@ function TableTd(props) {
         {getTextAreaOn() ? (
           <div>
             <textarea
-              defaultValue={props.item[props.itemKey.key]}
+              // defaultValue={props.item[props.itemKey.key]}
+              value={textareaTd}
               onChange={onChangeTextareaTd}
               className={styles.textarea}
               type="text"
+              style={
+                Number(textareaTd) > 2000 ? { border: "3px solid red" } : null
+              }
             ></textarea>
             <div className={styles.svg_textarea}>
-              <SvgChackmark
-                onClick={onClickButton}
-                className={styles.SvgChackmark_green}
-              />
+              {textareaTd !== "" && Number(textareaTd) <= 2000 && (
+                <SvgChackmark
+                  onClick={onClickButton}
+                  className={styles.SvgChackmark_green}
+                />
+              )}
+
               <SvgCross onClick={crossClick} />
             </div>
           </div>
