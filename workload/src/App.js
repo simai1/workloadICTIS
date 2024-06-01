@@ -262,8 +262,8 @@ function App() {
         console.log("нагрузки", data);
         const dataBd = [...data];
         setWorkloadData(dataBd);
-        // зменяем массив преподавателя на его имя
-        const fixData = UpdateWorkloadForBoofer(funFixEducator(dataBd));
+        const fixData =  UpdateWorkloadForBoofer(funFixEducator(dataBd, bufferAction))
+        console.log("fixData", fixData)
         setWorkloadDataFix(fixData);
         setFiltredData(fixData);
       });
@@ -340,7 +340,7 @@ function App() {
       // получение предложений
       funUpdateOffers();
     }
-    // получение закрепленных строк
+    // получение закрепленных строк 
     funUpdateFastenedData();
     // получение выделенных строк
     funUpdateAllColors();
