@@ -86,8 +86,9 @@ const ContextMenu = (props) => {
           ...appData.bufferAction,
         ]);
         //! занесем id измененнных данных в состояние
+        const edicatorName= {edicatorName:dataReq.name}
         tabPar.setChangedData(
-          addСhangedData(tabPar.changedData, "educator", [tabPar.selectedTr[0]])
+          addСhangedData(tabPar.changedData, "educator", [tabPar.selectedTr[0]], edicatorName )
         );
       });
     } else if (menuShow === "propose") {
