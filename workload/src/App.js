@@ -263,7 +263,7 @@ function App() {
         const dataBd = [...data];
         setWorkloadData(dataBd);
         // зменяем массив преподавателя на его имя
-        const fixData = funFixEducator(dataBd);
+        const fixData = UpdateWorkloadForBoofer(funFixEducator(dataBd));
         setWorkloadDataFix(fixData);
         setFiltredData(fixData);
       });
