@@ -52,22 +52,26 @@ export function filteredWorkload(data, text) {
 
 //! функция поднятия закрпепленных наверх таблицы
 export function funSortedFastened(data, fastenedData) {
-  const fd = [];
-  fastenedData.map((item) => {
-    fd.push(item.workloadId);
-  });
-  const sortedArray = data.sort((a, b) => {
-    const isAInSecondArray = fd.includes(a.id);
-    const isBInSecondArray = fd.includes(b.id);
-    if (isAInSecondArray && !isBInSecondArray) {
-      return -1; // Переместить a вперед
-    }
-    if (!isAInSecondArray && isBInSecondArray) {
-      return 1; // Переместить b вперед
-    }
-    return 0; // Не изменять порядок, если оба элемента в secondArray или оба не в secondArray
-  });
-  return sortedArray;
+  if(fastenedData){
+    const fd = [];
+    fastenedData?.map((item) => {
+      fd.push(item.workloadId);
+    });
+    const sortedArray = data.sort((a, b) => {
+      const isAInSecondArray = fd.includes(a.id);
+      const isBInSecondArray = fd.includes(b.id);
+      if (isAInSecondArray && !isBInSecondArray) {
+        return -1; // Переместить a вперед
+      }
+      if (!isAInSecondArray && isBInSecondArray) {
+        return 1; // Переместить b вперед
+      }
+      return 0; // Не изменять порядок, если оба элемента в secondArray или оба не в secondArray
+    });
+    return sortedArray;
+  }else{
+    return data
+  }
 }
 
 //! функция разделения на кафедральный и общеинститутские и сортировки
