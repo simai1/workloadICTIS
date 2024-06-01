@@ -293,7 +293,7 @@ function App() {
                       existingObj.hours = item.data.value;
                   }
               }
-          } else {
+          } else { 
               let o = { ...newData[newData.findIndex((el) => el.id === item.workloadId)] };
               if (item.request === "addEducatorWorkload") {
                   o.educator = item.edicatorName.edicatorName;
