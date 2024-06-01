@@ -270,6 +270,64 @@ function App() {
     }
   }
 
+  //!функция прокида буфера
+  function UpdateWorkloadForBoofer(data) {
+    if (bufferAction.length !== 0) {
+      const newData = [...data];
+      let obj = [];
+      bufferAction.map((item) => {
+          let existingObj = obj.find((el) => el.id === item.workloadId);
+          if (existingObj) {
+              if (item.request === "addEducatorWorkload") {
+                  existingObj.educator = item.edicatorName.edicatorName;
+              }
+              if (item.request === "workloadUpdata") {
+                  if (item.data.key === "numberOfStudents") {
+                      existingObj.numberOfStudents = item.data.value;
+                  }
+                  if (item.data.key === "hours") {
+                      existingObj.hours = item.data.value;
+                  }
+              }
+          } else { 
+              let o = { ...newData[newData.findIndex((el) => el.id === item.workloadId)] };
+              if (item.request === "addEducatorWorkload") {
+                  o.educator = item.edicatorName.edicatorName;
+              }
+              if (item.request === "workloadUpdata") {
+                  if (item.data.key === "numberOfStudents") {
+                      o.numberOfStudents = item.data.value;
+                  }
+                  if (item.data.key === "hours") {
+                      o.hours = item.data.value;
+                  }
+              }
+              obj.push(o);
+          }
+      });
+      console.log('ObjEditNoSave', obj)
+      return data.map((item) => {
+        if (obj.find((e) => e.id === item.id)) {
+          return obj.find((e) => e.id === item.id);
+        } else if (item.educator === null || item.educator === undefined) {
+          return {
+            ...item,
+            educator: item.educator ? item.educator.name : "___",
+          };
+        } else if (item.educator.name) {
+          return {
+            ...item,
+            educator: item.educator.name,
+          };
+        } else {
+          return item;
+        }
+      });
+    } else {
+      return data;
+    }
+  }
+  
   //! функция обновления всех данных
   function updateAlldata() {
     // получаем данные таблицы
