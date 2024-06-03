@@ -12,7 +12,7 @@ export function PopUpFile(props) {
   const [fileData, setfileData] = useState(null)
   const cafData = [
     { name: "БИТ", id: 1 },
-    { name: "ВМ", id: 2 },
+    { name: "ФМОИО", id: 2 },
     { name: "ВТ", id: 3 },
     { name: "ИАСБ", id: 4 },
     { name: "ИБТКС", id: 5 },
@@ -22,7 +22,8 @@ export function PopUpFile(props) {
     { name: "САИТ", id: 9 },
     { name: "САПР", id: 10 },
     { name: "СиПУ", id: 11 },
-    { name: "ОИД", id: 12 }
+    { name: "ОИД", id: 12 },
+    {name: "ИИТИС", id: 13}
   ];
   const fileInputRef = useRef(null);
 
@@ -42,6 +43,7 @@ export function PopUpFile(props) {
       if(resp){
         basicTabData.funGetDepartment();
         basicTabData.funUpdateTable();
+        appData.setgodPopUp(true)
       }
     })
   };
@@ -105,11 +107,11 @@ export function PopUpFile(props) {
         </div>
         <div className={styles.import_blockThree}>
           <div>
-            <p>Выберите кафедру:</p>
+            <p>Выберите подразделение:</p>
           </div>
           <div className={styles.SelectCafInput} onClick={() => setopenListFlag(!openListFlag)}>
             <div className={styles.SelectCafInput__inner}>
-              <input placeholder="Выберите кафедру" value={valueCafedra} readOnly onClick={() => setopenListFlag(true)} />
+              <input placeholder="Выберите подра..." value={valueCafedra} readOnly onClick={() => setopenListFlag(true)} />
               <img style={{ transform: !openListFlag ? "rotate(-90deg)" : "rotate(0deg)" }} src={arrow} />
             </div>
           </div>
@@ -117,7 +119,7 @@ export function PopUpFile(props) {
             <div className={styles.list}>
               <div className={styles.listInner}>
                 <p onClick={setCaf}>БИТ</p>
-                <p onClick={setCaf}>ВМ</p>
+                <p onClick={setCaf}>ФМОИО</p>
                 <p onClick={setCaf}>ВТ</p>
                 <p onClick={setCaf}>ИАСБ</p>
                 <p onClick={setCaf}>ИБТКС</p>
@@ -128,6 +130,7 @@ export function PopUpFile(props) {
                 <p onClick={setCaf}>САПР</p>
                 <p onClick={setCaf}>СиПУ</p>
                 <p onClick={setCaf}>ОИД</p>
+                <p onClick={setCaf}>ИИТИС</p>
               </div>
             </div>
           )}

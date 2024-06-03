@@ -130,7 +130,7 @@ export function getTextForNotData(selectedFilter) {
 export function funfastenedDataSort(data, fastenedData) {
   let newData = [...data];
   let items = [];
-  fastenedData.forEach((itemId) => {
+  fastenedData?.forEach((itemId) => {
     const index = newData.findIndex((el) => el.id === itemId);
     if (index !== -1) {
       items.push(newData.splice(index, 1)[0]);

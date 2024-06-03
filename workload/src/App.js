@@ -46,6 +46,8 @@ function App() {
   //! буфер последних действий. Выполняется после кнопки сохранить
   const [bufferAction, setBufferAction] = useState([]);
   const [errorPopUp, seterrorPopUp] = useState(false); //popUp error visible
+  const [godPopUp, setgodPopUp] = useState(false); //popUp good visible
+
   const [createEdicatorPopUp, setcreateEdicatorPopUp] = useState(false); //popUp error visible
 
   const appData = {
@@ -70,6 +72,8 @@ function App() {
     setcreateEdicatorPopUp,
     createEdicatorPopUp,
     backBuffer,
+    setgodPopUp,
+    godPopUp
   };
 
   // ! параметры таблицы
@@ -82,7 +86,7 @@ function App() {
   const [selectkafedra, setselectkafedra] = useState(""); //state выбранной кафедры
   const [actionUpdTabTeach, setActionUpdTabTeach] = useState(false); // при изменении обновляется таблицы преподавателей
   const [tableDepartment, settableDepartment] = useState([]);
-  const [selectISOid, setselectISOid] = useState(false);
+  const [selectISOid, setselectISOid] = useState(true);
   // const [nameKaf, setnameKaf] = useState("");
   const [nameKaf, setnameKaf] = useState("Все");
 
@@ -113,6 +117,7 @@ function App() {
     nameKaf,
     setnameKaf,
     setselectISOid,
+    selectISOid
   };
 
   const [coloredData, setColoredData] = useState([]); // выделенные цветом
@@ -216,8 +221,8 @@ function App() {
   //! Функция обновления существующих кафедр таблицы
   function funGetDepartment() {
     GetDepartment().then((response) => {
-      settableDepartment([...response.data, { id: 13, name: "Все" }]);
-      // setnameKaf(response.data[0].name);
+      settableDepartment([...response.data, { id: 14, name: "Все" }]);
+      setnameKaf("Все");
     });
   }
 
@@ -234,7 +239,8 @@ function App() {
   }, [nameKaf]);
 
   //! функция обновления таблицы
-  function funUpdateTable(param = 13) {
+  function funUpdateTable(param = 0) {
+    console.log('param', param)
     //param = tableDepartment[0]?.id
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
       apiGetWorkloadDepartment().then((data) => {
@@ -255,9 +261,9 @@ function App() {
     if (param == "0") {
       url = "?isOid=true";
     }
-    if (param == "13") {
+    if (param == "14") {
       url = ``;
-    } else if (param != 13 && param != 0) {
+    } else if (param != 14 && param != 0) {
       url = `?department=${param}`;
     }
     console.log("url", url);
@@ -524,6 +530,7 @@ function App() {
       }
     }
   }
+  
   //! обновление таблицы, отмена действия при ctrl+z
   useEffect(() => {
     if (bufferAction[0] === 0) {

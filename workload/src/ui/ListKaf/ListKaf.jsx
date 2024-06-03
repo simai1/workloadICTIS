@@ -8,7 +8,7 @@ function ListKaf({ dataList, Textlabel, defaultValue, name, setTableMode }) {
   const { tabPar, basicTabData } = React.useContext(DataContext);
   const [activeList, setactiveList] = useState(false);
 
-  const addClient = (el) => {
+  const addKafedra = (el) => {
     console.log(el);
     basicTabData.setnameKaf(el.name);
     setactiveList(!activeList);
@@ -16,8 +16,9 @@ function ListKaf({ dataList, Textlabel, defaultValue, name, setTableMode }) {
     tabPar.setDataIsOid(false);
     setTableMode("cathedrals");
     basicTabData.funUpdateTable(el.id);
+    tabPar.setSelectedFilter("Все Дисциплины")
   };
-
+  
   const refDiv = useRef(null);
   //! закрытие модального окна при нажати вне него
   useEffect(() => {
@@ -46,8 +47,8 @@ function ListKaf({ dataList, Textlabel, defaultValue, name, setTableMode }) {
           <input
             readOnly
             style={{
-              backgroundColor: !tabPar.dataIsOid ? "#3b28cc" : "#fff",
-              color: !tabPar.dataIsOid ? "#fff" : "#000",
+              backgroundColor: !basicTabData.selectISOid ? "#3b28cc" : "#fff",
+              color: !basicTabData.selectISOid ? "#fff" : "#000",
             }}
             onClick={() => setactiveList(!activeList)}
             value={basicTabData.nameKaf}
@@ -58,24 +59,15 @@ function ListKaf({ dataList, Textlabel, defaultValue, name, setTableMode }) {
             onClick={() => setactiveList(!activeList)}
             className={styles.arrowBot}
           >
-            {!activeList && !tabPar.dataIsOid && <img src={arrowWhite} />}
-            {activeList && !tabPar.dataIsOid && (
+            {!basicTabData.selectISOid &&
               <img
-                src={arrowBlack}
-                style={{
-                  transform: "rotate(0deg)",
-                }}
-              />
-            )}
-            {!activeList && tabPar.dataIsOid && (
-              <img
-                src={arrowBlack}
+                src={arrowWhite}
                 style={{
                   transform: "rotate(-90deg)",
                 }}
               />
-            )}
-            {activeList && tabPar.dataIsOid && (
+              }
+            {activeList && (
               <img
                 src={arrowBlack}
                 style={{
@@ -83,6 +75,7 @@ function ListKaf({ dataList, Textlabel, defaultValue, name, setTableMode }) {
                 }}
               />
             )}
+            
           </span>
         </div>
         {activeList && (
@@ -90,7 +83,7 @@ function ListKaf({ dataList, Textlabel, defaultValue, name, setTableMode }) {
             {dataList.map((item) => (
               <p
                 className={styles.NameForList}
-                onClick={() => addClient(item)}
+                onClick={() => addKafedra(item)}
                 key={item.id}
               >
                 {item.name}

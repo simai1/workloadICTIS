@@ -55,7 +55,7 @@ function TableDisciplines(props) {
   const [allChangeData, setAllChangeData] = useState([]); // все измененные данные
   const tableHeaders = headers;
   //! данные вытянутые из контекста
-  const { appData } = React.useContext(DataContext);
+  const { appData, basicTabData } = React.useContext(DataContext);
   // при изменении количесвтва студентов или часов id этих нагрузок будут записываться в состояние а затем выделяться цветом
   useEffect(() => {
     setChangeNumberOfStudents(
@@ -111,7 +111,10 @@ function TableDisciplines(props) {
     getAllWarnin(appData.setAllWarningMessage); // предупреждения
     getAllOffers(setAllOffersData); // предложения
   }, []);
+  useEffect(()=>{
+    getDataTableAll();
 
+  },[basicTabData.selectISOid,  basicTabData.nameKaf])
   //! фильтрация при выборе всех дисциплин измененных выделенных и тд
   useEffect(() => {
     if (props.SelectedText === "Выделенные") {
@@ -127,7 +130,7 @@ function TableDisciplines(props) {
         updatedData.filter((item) => allChangeData.some((el) => el === item.id))
       );
     }
-  }, [props.SelectedText, updatedData]);
+  }, [props.SelectedText, updatedData, basicTabData.workloadDataFix, tabPar.selectedFilter]);
 
   //! при изменении SortData обновим таблицу
   useEffect(() => {

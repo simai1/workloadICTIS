@@ -10,12 +10,14 @@ export function PopUpError() {
     <div className={styles.mainPop}>
       <div className={styles.mainPop__inner}>
         <p>Извините, данную операцию невозможно выполнить</p>
-        <Button
-          onClick={() => appData.seterrorPopUp(false)}
-          text="Закрыть"
-          Bg="#3b28cc"
-          textColot="#fff"
-        />
+            <div className={styles.buttonBlock}>
+              <Button
+                  onClick={() => appData.seterrorPopUp(false)}
+                  text="Закрыть"
+                  Bg="#3b28cc"
+                  textColot="#fff"
+              />
+            </div>
       </div>
     </div>
   );
