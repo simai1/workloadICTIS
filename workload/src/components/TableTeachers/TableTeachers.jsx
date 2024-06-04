@@ -96,6 +96,22 @@ function TableTeachers(props) {
     setFilteredData(fd);
   }, [updatedData, props.searchTerm]);
 
+  // Функция для определения цвета фона
+  function WhyColor(totalHours, stavka) {
+    let bg;
+    let OgranHours = 900;
+    let AllHours = OgranHours * stavka;
+  
+    if (totalHours <= OgranHours - 300) {
+      bg = "#19C20A"; // Зеленый цвет
+    } else if (OgranHours - 300 < totalHours && totalHours <= OgranHours - 100) {
+      bg = "#FFD600"; // Желтый цвет
+    } if(totalHours >= OgranHours) {
+      bg = "#E81414"; // Красный цвет
+    }
+    return bg;
+  }
+
   return (
     <div className={styles.TableTeachers}>
       {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 4) ? (
@@ -161,6 +177,20 @@ function TableTeachers(props) {
                         className={styles.tdName}
                       >
                         {row[key]}
+                      </td>
+                    );
+                  } if (key === "totalHours") {
+                    return (
+                      
+                      <td
+                        key={key}
+                      >
+                        <div
+                           style={{backgroundColor: WhyColor(row.totalHours, row.rate)}}
+                        className={styles.tdHours}
+                        >
+                          {row[key]}
+                        </div>
                       </td>
                     );
                   } else {
