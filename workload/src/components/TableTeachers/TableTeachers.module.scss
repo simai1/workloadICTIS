@@ -6,8 +6,8 @@
   margin-right: 64px;
   position: relative;
   top: -60px;
-  z-index: 220!important;
-  button{
+  z-index: 220 !important;
+  button {
     margin-bottom: 15px;
   }
   .tabledisciplinesMain_search {
@@ -71,11 +71,22 @@
     border-collapse: collapse;
     font-size: 14px;
 
+    .th_inner {
+      display: flex;
+      justify-content: center;
+      cursor: pointer;
+      img {
+        padding: 0 6px;
+      }
+    }
+
     thead {
       height: 58px;
       th {
         position: sticky;
         top: 0;
+        z-index: 10;
+        cursor: pointer;
       }
     }
     th,
