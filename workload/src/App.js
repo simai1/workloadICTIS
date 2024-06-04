@@ -397,7 +397,12 @@ function App() {
       fastenedData
     );
     // setFiltredData(filterSelected);
+    console.log("filterSelected", filterSelected);
     setFiltredData(funSortedFastened(filterSelected, fastenedData));
+    console.log(
+      "funSortedFastened(filterSelected, fastenedData)",
+      funSortedFastened(filterSelected, fastenedData)
+    );
     setSelectedTr([]);
     setOnCheckBoxAll(false);
   }, [dataIsOid, selectedFilter, workloadDataFix, selectedTable]);
@@ -417,7 +422,9 @@ function App() {
 
   //! при изменении закрпеленных перемещаем их наверх и сортируем массив
   useEffect(() => {
-    setFiltredData(funSortedFastened(filtredData, fastenedData));
+    const fd = funSortedFastened(filtredData, fastenedData);
+    setFiltredData(fd);
+    console.log("funSortedFastened(filtredData, fastenedData)", fd);
   }, [fastenedData, filtredData]);
 
   //! следим за нажатием ctrl + s для сохранения изменений
