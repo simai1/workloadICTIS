@@ -123,7 +123,7 @@ function App() {
   const [coloredData, setColoredData] = useState([]); // выделенные цветом
   const [fastenedData, setFastenedData] = useState([]); // закрепленные строки (храним их id)
   const [selectedTable, setSelectedTable] = useState("Disciplines");
-  const [dataIsOid, setDataIsOid] = useState(false); // состояние при котором открываются общеинститутские или кафедральные
+  const [dataIsOid, setDataIsOid] = useState(true); // состояние при котором открываются общеинститутские или кафедральные
   const [selectedFilter, setSelectedFilter] = useState("Все дисциплины"); // текст в FiltredRows
   const [selectedTr, setSelectedTr] = useState([]); //выбранные tr
   const [onCheckBoxAll, setOnCheckBoxAll] = useState(false); //выбранные tr
