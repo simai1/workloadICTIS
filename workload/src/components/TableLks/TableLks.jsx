@@ -5,12 +5,14 @@ import ArrowBack from "./../../img/arrow-back.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { getDataEducatorLK } from "../../api/services/AssignApiData";
 import { actions } from "../../store/filter/filter.slice";
+import DataContext from "../../context";
 function TableLks(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]);
   const [updatedData, setUpdatedData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [EducatorLkData, setEducatorLkData] = useState([]);
   const [tableData, setTableData] = useState([]);
+  const { appData, basicTabData, checkPar } = React.useContext(DataContext);
   const [tableHeaders, setTableHeaders] = useState([
     { key: "department", label: "Кафедра" },
     { key: "specialty", label: "Дисциплина" },
@@ -29,6 +31,7 @@ function TableLks(props) {
   
   //! получаем данные личного кабинета преподавателя
   useEffect(() => {
+    console.log(props.educatorIdforLk)
     getDataEducatorLK(props.educatorIdforLk, setEducatorLkData, setTableData);
   }, [props.educatorIdforLk]);
   console.log("EducatorLkData", EducatorLkData);
@@ -129,11 +132,14 @@ function TableLks(props) {
   
   return (
     <div className={styles.TableLks}>
-      <button className={styles.buttonBack} onClick={handleNameClick}>
-        <img src={ArrowBack} alt="arrow"></img>
-        <p>Назад</p>
-      </button>
-
+       {appData.metodRole[appData.myProfile?.role]?.some(
+                (el) => el === 17
+              )&&
+        <button className={styles.buttonBack} onClick={handleNameClick}>
+          <img src={ArrowBack} alt="arrow"></img>
+          <p>Назад</p>
+        </button>
+        }
       <div className={styles.DataLks}>
         <div className={styles.DataLksInner}>
           <div className={styles.DataLksHead}>
@@ -164,7 +170,7 @@ function TableLks(props) {
         )} */}
       </div>
 
-      {tableData[0] && (
+      {tableData[0] ? (
         <div className={styles.TableLks__inner}>
           <table className={styles.TableLks}>
             <thead>
@@ -202,6 +208,10 @@ function TableLks(props) {
             ))}
             </tbody>
           </table>
+        </div>
+      ):(
+        <div className={styles.notData}>
+          <h2>У вас отсутствуют нагрузки</h2>
         </div>
       )}
     </div>

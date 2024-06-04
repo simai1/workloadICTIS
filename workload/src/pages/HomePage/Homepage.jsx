@@ -28,6 +28,7 @@ import {
 import ConfirmSaving from "../../ui/ConfirmSaving/ConfirmSaving";
 import socketConnect from "../../api/services/socket";
 import PopUpGoodMessage from "../../ui/PopUpGoodMessage/PopUpGoodMessage";
+import { Link } from "react-router-dom";
 
 function HomePage() {
   const { appData, tabPar, visibleDataPar, basicTabData } =
@@ -60,11 +61,13 @@ function HomePage() {
 
   //! связь с сокетом
   useEffect(() => {
-    socketConnect();
-    getAllWarningMessage().then((res) => {
-      console.log("Все предупреждения", res);
-      appData.setAllWarningMessage(res);
-    });
+     if( appData.metodRole[appData.myProfile?.role]?.some((el) => el === 23)){
+      socketConnect();
+      getAllWarningMessage().then((res) => {
+        console.log("Все предупреждения", res);
+        appData.setAllWarningMessage(res);
+      })
+     }
   }, []);
 
   useEffect(() => {
@@ -235,6 +238,24 @@ function HomePage() {
                   text="Преподователи"
                 />
               )}
+              {appData.metodRole[appData.myProfile?.role]?.some(
+                (el) => el === 24
+              )&& (
+                    <Button
+                    text="Моя нагрузка"
+                    onClick={(()=>{
+                      setEducatorIdforLk(appData.myProfile.educator.id);
+                      setSelectedComponent("Teachers")
+                      console.log('myProfilea', appData.myProfile.id)
+                    })}
+                    Bg={educatorIdforLk.length != 0 ? "#3B28CC" : "#efedf3"}
+                     textColot={
+                      educatorIdforLk.length === 0 ? "#000000" : "#efedf3"
+                     }
+                  />  
+                )
+              }
+              
             </div>
             <div className={styles.header_left_component}>
               <Warnings
