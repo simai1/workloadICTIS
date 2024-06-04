@@ -3,6 +3,8 @@
 .TableLks {
   width: 100%;
   box-sizing: border-box;
+  // position: relative;
+  // top: -75px;
   .ButtonCaf_gen {
     margin-bottom: 16px;
   }
@@ -13,15 +15,13 @@
   }
 
   .TableLks__inner {
-    overflow-x: scroll;
+    // overflow-y: scroll;
     border-radius: 8px;
     border-left: 1px solid var(--gray-color);
     border-right: 1px solid var(--gray-color);
     border-top: 1px solid var(--gray-color);
-    margin-top: 16px;
-    margin-left: 64px;
-    margin-right: 64px;
-
+    margin: 16px 64px 0px 64px;
+    // height: 60vh;
     .TableLks {
       width: 100%;
       overflow-y: scroll;
@@ -206,5 +206,13 @@
   .tableRow:hover {
     box-shadow: inset 0 2px 0 0 #9fa1f4, inset 0 -2px 0 0 #9fa1f4;
   }
-  
+  .notData{
+    display: flex;
+    background-color: #ffffff;
+    margin: 16px 64px;
+    box-sizing: border-box;
+    padding: 50px;
+    justify-content: center;
+    border-radius: 12px;
+  }
 }
