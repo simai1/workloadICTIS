@@ -13,6 +13,7 @@ function TableLks(props) {
   const [tableData, setTableData] = useState([]);
   const [tableHeaders, setTableHeaders] = useState([
     { key: "department", label: "Кафедра" },
+    { key: "specialty", label: "Дисциплина" },
     { key: "hoursFirstPeriod", label: "Часы период 1" },
     { key: "hoursSecondPeriod", label: "Часы период 2" },
     { key: "hoursWithoutPeriod", label: "Часы период 3" },
@@ -92,6 +93,40 @@ function TableLks(props) {
     return bg;
   }
 
+  // const gettdInnerText = () => {
+  //   if (showFullText) {
+  //     if (
+  //       props.item[props.itemKey.key] === null ||
+  //       props.item[props.itemKey.key] === undefined ||
+  //       props.item[props.itemKey.key] === ""
+  //     ) {
+  //       return "___";
+  //     }
+  //     if (props.itemKey.key === "id") {
+  //       return props.index + 1;
+  //     } else {
+  //       return props.item[props.itemKey.key];
+  //     }
+  //   } else {
+  //     if (props.itemKey.key === "id") {
+  //       return props.index + 1;
+  //     } else if (
+  //       props.item[props.itemKey.key] === null ||
+  //       props.item[props.itemKey.key] === undefined ||
+  //       props.item[props.itemKey.key] === ""
+  //     ) {
+  //       return "___";
+  //     } else if (
+  //       typeof props.item[props.itemKey.key] === "string" &&
+  //       props.item[props.itemKey.key].length > lenSlice
+  //     ) {
+  //       return props.item[props.itemKey.key].slice(0, lenSlice) + "...";
+  //     } else {
+  //       return props.item[props.itemKey.key];
+  //     }
+  //   }
+  // };
+  
   return (
     <div className={styles.TableLks}>
       <button className={styles.buttonBack} onClick={handleNameClick}>
@@ -113,8 +148,8 @@ function TableLks(props) {
             </div>
           </div>
 
-          <p>{EducatorLkData?.department}</p>
-          <p>{EducatorLkData?.position}</p>
+          <p>Кафедра: {EducatorLkData?.department}</p>
+          <p>Должность: {EducatorLkData?.position}</p>
           <p>Ставка: {EducatorLkData?.rate}</p>
         </div>
         {/* {tableData[0] && (
@@ -140,13 +175,31 @@ function TableLks(props) {
               </tr>
             </thead>
             <tbody>
-              {filteredData.map((row, index) => (
-                <tr key={index}>
-                  {Object.keys(row).map((key) => (
-                    <td key={key}>{key === "id" ? index + 1 : row[key]}</td>
-                  ))}
-                </tr>
-              ))}
+            {filteredData.map((row, index) => (
+              <tr key={index} className={styles.tableRow}>
+                {Object.keys(row).map((key) => {
+                  if (key === "specialty") {
+                    return (
+                      <td
+                        key={key}
+                        className={styles.tdspecialtyTd}
+                      >
+                        <div className={styles.tdspecialty}>
+                          <span>
+                            {row[key].length > 100 ? row[key].slice(0, 100) + "..." :
+                            row[key] === "" ? "___" : row[key]}
+                          </span>
+                        </div>
+                      </td>
+                    );
+                  } else {
+                    return (
+                      <td key={key}>{key === "id" ? index + 1 : row[key]}</td>
+                    );
+                  }
+                })}
+              </tr>
+            ))}
             </tbody>
           </table>
         </div>
