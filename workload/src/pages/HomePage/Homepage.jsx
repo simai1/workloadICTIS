@@ -51,6 +51,11 @@ function HomePage() {
   const [kafedralIsOpen, setKafedralIsOpen] = useState(false);
   const handleButtonClick = () => {
     setEducatorIdforLk("");
+    basicTabData.funUpdateTable("0");
+    tabPar.setDataIsOid(true);
+    basicTabData.setselectISOid(true);
+    basicTabData.setnameKaf("Все")
+    tabPar.setSelectedFilter("Все Дисциплины")
   };
 
   //! связь с сокетом
