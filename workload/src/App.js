@@ -215,7 +215,9 @@ function App() {
   function funUpdateFastenedData() {
     getAllAttaches().then((data) => {
       console.log("закрепленные", data);
-      setFastenedData(data);
+      if(data.length > 0){
+        setFastenedData(data);
+      }
     });
   }
   //! Функция обновления существующих кафедр таблицы
@@ -230,7 +232,9 @@ function App() {
   function funUpdateAllColors() {
     getAllColors().then((data) => {
       console.log("выделенные", data);
-      setColoredData(data);
+      if(data.length > 0){
+        setColoredData(data);
+      }
     });
   }
 
