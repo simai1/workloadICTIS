@@ -3,7 +3,43 @@
 
 // высота всех tr td
 $heightCell: 150px;
+.NotData {
+  position: relative;
 
+  tr {
+    height: 150px;
+
+    .tdfix {
+      position: sticky;
+      left: 64px;
+      background-color: #b3b0b0;
+      height: 150px;
+      &:after {
+        position: absolute;
+        display: flex;
+        content: "";
+        background-color: var(--bgraund);
+        height: 150px;
+        left: -64px;
+        top: 0;
+        width: 64px;
+      }
+    }
+    .tdfix {
+      position: sticky;
+      left: 60px;
+    }
+    width: 100%;
+    .notdatadiv {
+      position: fixed;
+      width: 100%;
+      left: 0px;
+      font-size: 22px;
+      font-weight: 500;
+      transform: translateY(-15px);
+    }
+  }
+}
 .DataGrid {
   display: flex;
   width: 100%;
@@ -17,19 +53,6 @@ $heightCell: 150px;
   overflow: auto;
   padding-left: 64px;
   margin-right: 52px;
-
-  .NotData {
-    display: flex;
-    width: 100%;
-    margin-right: 12px;
-    justify-content: center;
-    height: 300px;
-    background-color: #fff;
-    box-sizing: border-box;
-    align-items: center;
-    font-size: 22px;
-    border-radius: 8px;
-  }
 
   .table {
     width: 100vw;

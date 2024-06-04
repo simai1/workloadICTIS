@@ -4,7 +4,7 @@ import TableTd from "./TableTd";
 import styles from "./TableWorkload.module.scss";
 import DataContext from "../../context";
 import InputCheckbox from "./InputCheckbox/InputCheckbox";
-import { funGetConfirmation } from "./Function";
+import { funGetConfirmation, getTextForNotData } from "./Function";
 
 function Table(props) {
   const { tabPar, visibleDataPar, basicTabData, appData } =
@@ -129,12 +129,28 @@ function Table(props) {
             ))}
           </tr>
         </thead>
+        {basicTabData.filtredData.length === 0 && (
+          <tbody className={styles.NotData}>
+            <tr>
+              <td className={styles.tdfix}></td>
+              <td className={styles.tdfix2}>
+                {basicTabData.filtredData.length === 0 && (
+                  <div className={styles.notdatadiv}>
+                    {getTextForNotData(tabPar.selectedFilter)}
+                  </div>
+                )}
+              </td>
+            </tr>
+          </tbody>
+        )}
+
         <tbody>
           <tr
             key={"tr2"}
             className={styles.trPlug}
             style={{ height: getTopHeight() }}
           ></tr>
+
           {basicTabData.filtredData
             .slice(
               visibleDataPar.startData,

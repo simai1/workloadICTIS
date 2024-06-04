@@ -73,7 +73,7 @@ function App() {
     createEdicatorPopUp,
     backBuffer,
     setgodPopUp,
-    godPopUp
+    godPopUp,
   };
 
   // ! параметры таблицы
@@ -117,7 +117,7 @@ function App() {
     nameKaf,
     setnameKaf,
     setselectISOid,
-    selectISOid
+    selectISOid,
   };
 
   const [coloredData, setColoredData] = useState([]); // выделенные цветом
@@ -215,7 +215,7 @@ function App() {
   function funUpdateFastenedData() {
     getAllAttaches().then((data) => {
       console.log("закрепленные", data);
-      if(data.length > 0){
+      if (data.length > 0) {
         setFastenedData(data);
       }
     });
@@ -232,7 +232,7 @@ function App() {
   function funUpdateAllColors() {
     getAllColors().then((data) => {
       console.log("выделенные", data);
-      if(data.length > 0){
+      if (data.length > 0) {
         setColoredData(data);
       }
     });
@@ -244,7 +244,7 @@ function App() {
 
   //! функция обновления таблицы
   function funUpdateTable(param = 0) {
-    console.log('param', param)
+    console.log("param", param);
     //param = tableDepartment[0]?.id
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
       apiGetWorkloadDepartment().then((data) => {
@@ -255,6 +255,7 @@ function App() {
         const fixData = funFixEducator(dataBd);
         setWorkloadDataFix(fixData);
         setFiltredData(fixData);
+        console.log("FiltredData", fixData);
       });
     }
     // без параметров - вся абсолютно нагрузка,
@@ -285,6 +286,9 @@ function App() {
       });
     }
   }
+  useEffect(() => {
+    console.log("FiltredData", filtredData);
+  }, [filtredData]);
 
   //!функция прокида буфера
   function UpdateWorkloadForBoofer(data) {
@@ -379,7 +383,7 @@ function App() {
     if (myProfile) {
       updateAlldata();
     }
-  }, [myProfile, tableDepartment[0]]);
+  }, [myProfile, tableDepartment]);
 
   //! при переходе с кафедральных на общеинституские и обратно фильтруем основные
   //! фильтруем по FiltredRows
@@ -534,7 +538,7 @@ function App() {
       }
     }
   }
-  
+
   //! обновление таблицы, отмена действия при ctrl+z
   useEffect(() => {
     if (bufferAction[0] === 0) {

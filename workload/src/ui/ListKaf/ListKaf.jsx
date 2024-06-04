@@ -16,9 +16,9 @@ function ListKaf({ dataList, Textlabel, defaultValue, name, setTableMode }) {
     tabPar.setDataIsOid(false);
     setTableMode("cathedrals");
     basicTabData.funUpdateTable(el.id);
-    tabPar.setSelectedFilter("Все Дисциплины")
+    tabPar.setSelectedFilter("Все Дисциплины");
   };
-  
+
   const refDiv = useRef(null);
   //! закрытие модального окна при нажати вне него
   useEffect(() => {
@@ -59,14 +59,14 @@ function ListKaf({ dataList, Textlabel, defaultValue, name, setTableMode }) {
             onClick={() => setactiveList(!activeList)}
             className={styles.arrowBot}
           >
-            {!basicTabData.selectISOid &&
+            {!basicTabData.selectISOid && (
               <img
                 src={arrowWhite}
                 style={{
                   transform: "rotate(-90deg)",
                 }}
               />
-              }
+            )}
             {activeList && (
               <img
                 src={arrowBlack}
@@ -75,7 +75,6 @@ function ListKaf({ dataList, Textlabel, defaultValue, name, setTableMode }) {
                 }}
               />
             )}
-            
           </span>
         </div>
         {activeList && (

@@ -251,47 +251,41 @@ function HomePage() {
             <div className={styles.header_bottom_button}>
               {selectedComponent === "Disciplines" && (
                 <>
-                
                   <Button
-                     Bg={!kafedralIsOpen ? "#3B28CC" : "#efedf3"}
-                     textColot={
-                       kafedralIsOpen ? "#000000" : "#efedf3"
-                     }
+                    Bg={!kafedralIsOpen ? "#3B28CC" : "#efedf3"}
+                    textColot={kafedralIsOpen ? "#000000" : "#efedf3"}
                     text="Общеинститутские"
                     onClick={() => {
                       setTableMode("genInstitute");
                       EditTableData("genInstitute");
                       basicTabData.setselectISOid(true);
                       basicTabData.funUpdateTable("0");
-                      setKafedralIsOpen(false)
+                      setKafedralIsOpen(false);
                       tabPar.setDataIsOid(true);
-                      tabPar.setSelectedFilter("Все Дисциплины")
-
+                      tabPar.setSelectedFilter("Все Дисциплины");
                     }}
                   />
-                   <Button
+                  <Button
                     Bg={kafedralIsOpen ? "#3B28CC" : "#efedf3"}
-                    textColot={
-                      !kafedralIsOpen ? "#000000" : "#efedf3"
-                    }
+                    textColot={!kafedralIsOpen ? "#000000" : "#efedf3"}
                     text="Кафедральные"
                     onClick={() => {
                       basicTabData.funUpdateTable("14");
                       tabPar.setDataIsOid(false);
-                      setKafedralIsOpen(true)
+                      setKafedralIsOpen(true);
                       basicTabData.setselectISOid(false);
-                      console.log(basicTabData.selectISOid)
-                      basicTabData.setnameKaf("Все")
-                      tabPar.setSelectedFilter("Все Дисциплины")
+                      console.log(basicTabData.selectISOid);
+                      basicTabData.setnameKaf("Все");
+                      tabPar.setSelectedFilter("Все Дисциплины");
                     }}
                   />
-                  {!basicTabData.selectISOid &&
+                  {!basicTabData.selectISOid && (
                     <ListKaf
-                    dataList={departments}
-                    defaultValue={"Все"}
-                    setTableMode={setTableMode}
-                  />
-                  }
+                      dataList={departments}
+                      defaultValue={"Все"}
+                      setTableMode={setTableMode}
+                    />
+                  )}
                 </>
               )}
               {selectedComponent === "Disciplines" && <FiltredRows />}
@@ -323,18 +317,7 @@ function HomePage() {
         </div>
         <div className={styles.Block__tables}>
           {selectedComponent === "Disciplines" ? (
-            // <TableDisciplines
-            //   handleFileClear={handleFileClear}
-            //   tableMode={tableMode}
-            //   tableHeaders={tableHeaders}
-            //   searchTerm={searchTerm}
-            //   setSearchTerm={setSearchTerm}
-            //   refProfile={refProfile}
-            //   setOpenModalWind={setOpenModalWind}
-            //   SelectedText={SelectedText}
-            // />
             <TableWorkload
-              // handleFileClear={handleFileClear}
               tableMode={tableMode}
               tableHeaders={tableHeaders}
               searchTerm={searchTerm}
@@ -381,7 +364,7 @@ function HomePage() {
       )}
       {appData.createEdicatorPopUp && <PopUpCreateEmploy />}
       {appData.errorPopUp && <PopUpError />}
-      {appData.godPopUp && <PopUpGoodMessage/>}
+      {appData.godPopUp && <PopUpGoodMessage />}
     </Layout>
   );
 }
