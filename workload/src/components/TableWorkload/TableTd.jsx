@@ -73,14 +73,14 @@ function TableTd(props) {
 
       basicTabData.setWorkloadDataFix(updatedArray);
       basicTabData.setFiltredData(updatedArray);
-      const workloadId = data.id
+      const workloadId = data.id;
       //! буфер
       appData.setBufferAction([
         {
           request: "workloadUpdata",
           data: data,
           prevState: props.item[props.itemKey.key],
-          workloadId
+          workloadId,
         },
         ...appData.bufferAction,
       ]);
@@ -129,6 +129,15 @@ function TableTd(props) {
     }
   };
 
+  //! функция определения класса td для открытия длинного текста в попап со скролом
+  const getClassNameTdInner = () => {
+    let text = styles.tdInner;
+    if (showFullText && props.item[props.itemKey.key]?.length > lenSlice) {
+      text = `${text} ${styles.gettdInner}`;
+    }
+    return text;
+  };
+
   return (
     <td
       onMouseEnter={() => setShowFullText(true)}
@@ -147,7 +156,7 @@ function TableTd(props) {
     >
       <div
         key={props.item.id + "div" + props.itemKey.key}
-        className={styles.tdInner}
+        className={getClassNameTdInner()}
         onDoubleClick={funDubleClick}
         style={
           showFullText && props.item[props.itemKey.key]?.length > lenSlice
