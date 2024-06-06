@@ -12,7 +12,7 @@ import SummaryWorkload from '../models/summary-workload.js';
 import checkHours from '../utils/notification.js';
 import History from "../models/history.js";
 import sendMail from '../services/email.js';
-import { sequelize } from "../models/index.js";
+import { Op, Sequelize } from "sequelize";
 
 const getIds = (modelsArr) => {
     const arr = [];
@@ -32,7 +32,7 @@ export default {
             if (!(typeof isOid === "undefined")){
                 if (_user.role === 5 || _user.role === 2){
                     workloads = await Workload.findAll({
-                        where: { isOid, educatorId: _user.educator.id},
+                        where: { isOid, educatorId: _user.educator.id, isBlocked: false},
                         include: { model: Educator },
                         order: [
                             ['discipline', 'ASC'],
@@ -41,7 +41,7 @@ export default {
                     });
                 } else {
                     workloads = await Workload.findAll({
-                        where: { isOid },
+                        where: { isOid, isBlocked: false },
                         include: { model: Educator },
                         order: [
                             ['discipline', 'ASC'],
@@ -57,7 +57,7 @@ export default {
                         where: {
                             isOid: false,
                             department,
-                            educatorId: _user.educator.id
+                            educatorId: _user.educator.id,
                         },
                         include: { model: Educator },
                         order: [
@@ -84,7 +84,8 @@ export default {
                 if (_user.role === 5 || _user.role === 2){
                     workloads = await Workload.findAll({
                         where: {
-                            educatorId: _user.educator.id
+                            educatorId: _user.Educator.id,
+                            isBlocked: false
                         },
                         include: { model: Educator },
                         order: [
@@ -94,6 +95,9 @@ export default {
                     });
                 } else {
                     workloads = await Workload.findAll({
+                        where: {
+                            isBlocked: false
+                        },
                         include: { model: Educator },
                         order: [
                             ['discipline', 'ASC'],
@@ -411,25 +415,59 @@ export default {
     },
     async getUsableDepartments(req, res){
         const userId = req.user;
-        const userExist = await User.findByPk(userId);
-        if (!userExist) throw new AppErrorNotExist('User');
-        const role = userExist.role;
+        const checkUser = await User.findByPk(userId);
+        if (!checkUser) throw new AppErrorNotExist('User');
+        const role = checkUser.role;
         const usableDepartments = [];
-        const queryResult = await sequelize.query('SELECT DISTINCT department FROM workloads WHERE department <> 13 ORDER BY department ASC;');
+
+        // const queryResult = await sequelize.query('SELECT DISTINCT department FROM workloads WHERE department <> 13 ORDER BY department ASC;');
         if(role === 2 || role === 3 ||  role === 5){
             const educator = await Educator.findOne({ where: { userId } });
             const department = educator.department;
-            usableDepartments.push({
-                id: department,
-                name: mapDepartments[department],
-            })
-        } else {
-            for (const usableDepartment of queryResult[0]) {
-                const department = mapDepartments[usableDepartment.department];
+            const workload = await Workload.findOne({ where: { department } });
+            if (workload.isBlocked === true){
                 usableDepartments.push({
-                    id: usableDepartment.department,
-                    name: department,
+                    id: department,
+                    name: mapDepartments[department],
+                    blocked: true,
                 })
+            } else {
+                usableDepartments.push({
+                    id: department,
+                    name: mapDepartments[department],
+                    blocked: false,
+                })
+            }
+        } else {
+            const departments = await Workload.findAll({
+                where: {
+                    department: {
+                        [Op.ne]: 13,
+                    }
+                },
+                attributes: [
+                    [Sequelize.fn('DISTINCT', Sequelize.col('department')) ,'department'],
+                ],
+                order: [
+                    ['department', 'ASC'],
+                ]
+            })
+            for (const usableDepartment of departments) {
+                const department = mapDepartments[usableDepartment.department];
+                const workload = await Workload.findOne({ where: { department: usableDepartment.department } });
+                if (workload.isBlocked === true){
+                    usableDepartments.push({
+                        id: usableDepartment.department,
+                        name: department,
+                        blocked: true,
+                    })
+                } else {
+                    usableDepartments.push({
+                        id: usableDepartment.department,
+                        name: department,
+                        blocked: false,
+                    })
+                }
             }
         }
         res.json(usableDepartments);
