@@ -250,7 +250,7 @@ function App() {
     console.log("param", param);
     //param = tableDepartment[0]?.id
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
-      Workload().then((data) => {
+      Workload("").then((data) => {
         console.log("нагрузки по кафедре", data);
         const dataBd = [...data];
         setWorkloadData(dataBd);
