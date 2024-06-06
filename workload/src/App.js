@@ -241,9 +241,6 @@ function App() {
     });
   }
 
-  useEffect(() => {
-    console.log(nameKaf);
-  }, [nameKaf]);
 
   //! функция обновления таблицы
   function funUpdateTable(param = 0) {

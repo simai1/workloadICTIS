@@ -8,7 +8,7 @@ const PopUpGoodMessage = (props) => {
     return (
       <div className={styles.mainPopGood}>
         <div className={styles.mainPop__inner}>
-          <p>Данные кафедры успешно изменены!</p>
+          <p>Данные успешно изменены!</p>
           <div className={styles.buttonBlock}>
             <Button
                 onClick={() => appData.setgodPopUp(false)}
