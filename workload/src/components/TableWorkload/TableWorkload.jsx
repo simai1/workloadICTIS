@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect } from "react";
 import Table from "./Table";
 import styles from "./TableWorkload.module.scss";
 import { filteredWorkload, funfastenedDataSort } from "./Function";

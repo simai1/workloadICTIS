@@ -66,6 +66,24 @@ $heightCell: 150px;
     font-weight: 400;
     // table-layout: fixed; /* Фиксированная ширина ячеек */
     position: relative; /* Относительное позиционирование для таблицы */
+
+    .gettdInner {
+      max-height: 300px;
+      overflow-wrap: break-word;
+      word-break: break-all;
+      hyphens: auto;
+      overflow-x: hidden;
+      overflow-y: auto;
+      position: absolute;
+      background-color: inherit;
+      width: 100%;
+      top: 10px;
+      padding: 4px;
+      box-shadow: 0px 3px 18px rgba(0, 0, 0, 0.15);
+      z-index: 200;
+      @include scrollStyle(4px, 4px);
+    }
+
     th {
       position: sticky;
       top: 0;
