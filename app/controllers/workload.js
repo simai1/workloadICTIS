@@ -4,6 +4,7 @@ import departments from '../config/departments.js';
 import Workload from '../models/workload.js';
 import Educator from '../models/educator.js';
 import Notification from '../models/notifications.js';
+import User from '../models/user.js';
 // eslint-disable-next-line import/no-duplicates
 import {map as mapDepartments} from "../config/departments.js";
 import WorkloadDto from '../dtos/workload-dto.js';
@@ -367,14 +368,26 @@ export default {
         res.json(workloadsDto);
     },
     async getUsableDepartments(req, res){
-        const queryResult = await sequelize.query('SELECT DISTINCT department FROM workloads WHERE department < 12 ORDER BY department ASC;');
+        const userId = req.user;
+        const userExist = await User.findByPk(userId);
+        const role = userExist.role;
         const usableDepartments = [];
-        for (const usableDepartment of queryResult[0]) {
-            const department = mapDepartments[usableDepartment.department];
+        const queryResult = await sequelize.query('SELECT DISTINCT department FROM workloads WHERE department <> 13 ORDER BY department ASC;');
+        if(role == 2 || role == 3 ||  role == 5){
+            const educator = await Educator.findOne({where: {userId}});
+            const department = educator.department;
             usableDepartments.push({
-                id: usableDepartment.department,
-                name: department,
+                id: department,
+                name: mapDepartments[department],
             })
+        } else {
+            for (const usableDepartment of queryResult[0]) {
+                const department = mapDepartments[usableDepartment.department];
+                usableDepartments.push({
+                    id: usableDepartment.department,
+                    name: department,
+                })
+            }
         }
         res.json(usableDepartments);
     },
