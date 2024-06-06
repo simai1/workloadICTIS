@@ -129,7 +129,8 @@ function HomePage() {
           console.log(resp)
         })
       }else{
-        const index = basicTabData.tableDepartment.some((el)=>el.name === basicTabData.nameKaf).id
+        console.log('tableDepartment', basicTabData.tableDepartment)
+        const index = basicTabData.tableDepartment.find((el)=>el.name === basicTabData.nameKaf).id
         WorkloadBlocked(index).then((resp)=>{
           console.log(resp)
         })

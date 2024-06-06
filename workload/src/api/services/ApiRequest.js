@@ -414,7 +414,7 @@ export const SubmitFileXLSX = async (constIdCafedra, file) => {
 
 export const GetRole = async () => {
   try {
-    const response = await axios.get(`${server}/user`);
+    const response = await http.get(`${server}/user`);
     console.log("GetRole", response);
     return response;
   } catch (error) {
@@ -426,7 +426,7 @@ export const GetRole = async () => {
 //!Получение кафелр
 export const GetDepartment = async () => {
   try {
-    const response = await axios.get(
+    const response = await http.get(
       `${server}/workload/get/usableDepartments`
     );
     console.log("GetDepartment", response);
