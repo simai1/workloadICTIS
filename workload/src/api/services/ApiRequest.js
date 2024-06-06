@@ -46,7 +46,7 @@ export const apiGetUser = async () => {
 export const EducatorLK = async (data) => {
   try {
     const response = await http.get(`${server}/educator/${data}`);
-    console.log('response_EducatorLK', response)
+    console.log("response_EducatorLK", response);
     return response.data;
   } catch (error) {
     console.error("Error:", error);

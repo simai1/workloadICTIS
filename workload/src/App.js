@@ -22,6 +22,7 @@ import {
   funSplitData,
 } from "./components/TableWorkload/Function";
 import { delChangeData } from "./ui/ContextMenu/Function";
+import { FilteredSample } from "./ui/SamplePoints/Function";
 
 function App() {
   const [educator, setEducator] = useState([]); // преподаватели
@@ -88,7 +89,7 @@ function App() {
   const [allOffersData, setAllOffersData] = useState([]); // предложения
   const [selectkafedra, setselectkafedra] = useState(""); //state выбранной кафедры
   const [actionUpdTabTeach, setActionUpdTabTeach] = useState(false); // при изменении обновляется таблицы преподавателей
-  const [tableDepartment, settableDepartment] = useState();
+  const [tableDepartment, settableDepartment] = useState([]);
   const [selectISOid, setselectISOid] = useState(true);
   // const [nameKaf, setnameKaf] = useState("");
   const [nameKaf, setnameKaf] = useState("Все");
@@ -244,6 +245,12 @@ function App() {
 
   //! функция обновления таблицы
   function funUpdateTable(param = 0) {
+    const index = basicTabData.tableDepartment.find(
+      (el) => el.name === basicTabData.nameKaf
+    )?.id;
+    if (index && basicTabData.tableDepartment.length > 0) {
+      param = index;
+    }
     console.log("param", param);
     //param = tableDepartment[0]?.id
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
@@ -253,8 +260,10 @@ function App() {
         setWorkloadData(dataBd);
         // зменяем массив преподавателя на его имя
         const fixData = funFixEducator(dataBd);
-        setWorkloadDataFix(fixData);
-        setFiltredData(fixData);
+        const fdfix = FilteredSample(fixData, isChecked);
+        setWorkloadData(fixData);
+        setWorkloadDataFix(fdfix);
+        setFiltredData(fdfix);
         console.log("FiltredData", fixData);
       });
     }
@@ -281,8 +290,11 @@ function App() {
           funFixEducator(dataBd, bufferAction)
         );
         console.log("fixData Да это оно", fixData);
-        setWorkloadDataFix(fixData);
-        setFiltredData(fixData);
+
+        const fdfix = FilteredSample(fixData, isChecked);
+        setWorkloadData(fixData);
+        setWorkloadDataFix(fdfix);
+        setFiltredData(fdfix);
       });
     }
   }

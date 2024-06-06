@@ -137,19 +137,19 @@ function OverlapWindow(props) {
         changed.split = changed.split.filter(
           (item) => item.slice(0, -1) !== props.itid.slice(0, -1)
         );
-        console.log(changed);
+        console.log("changed", changed);
         tabPar.setChangedData(changed);
         console.log(
-          "depart",
-          basicTabData.tableDepartment.find(
-            (el) => el.name === basicTabData.nameKaf
-          )
+          "basicTabData.tableDepartment",
+          basicTabData.tableDepartment
         );
-        basicTabData.funUpdateTable(
-          basicTabData.tableDepartment.find(
-            (el) => el.name === basicTabData.nameKaf
-          ).id
-        );
+        if (basicTabData.tableDepartment.length > 0) {
+          basicTabData.funUpdateTable(
+            basicTabData.tableDepartment.find(
+              (el) => el.name === basicTabData.nameKaf
+            ).id
+          );
+        }
       });
     } else if (props.getConfirmation.type === 3) {
       joinWorkloads(props.getConfirmation.data.data).then((res) => {
@@ -165,7 +165,13 @@ function OverlapWindow(props) {
         changed.join = changed.join.filter((item) => item !== props.itid);
         console.log(changed);
         tabPar.setChangedData(changed);
-        basicTabData.updateAlldata();
+        if (basicTabData.tableDepartment.length > 0) {
+          basicTabData.funUpdateTable(
+            basicTabData.tableDepartment.find(
+              (el) => el.name === basicTabData.nameKaf
+            )?.id
+          );
+        }
       });
     }
   };
