@@ -423,12 +423,24 @@ export const GetRole = async () => {
   }
 };
 
+//!Получение кафелр
 export const GetDepartment = async () => {
   try {
     const response = await http.get(
       `${server}/workload/get/usableDepartments`
     );
     console.log("GetDepartment", response);
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
+//! блокировак таблицы нагрузок
+export const WorkloadBlocked = async (idTable) => {
+  try {
+    const response = await http.patch(`${server}/workload/block/${idTable}`);
     return response;
   } catch (error) {
     console.error("Error:", error);

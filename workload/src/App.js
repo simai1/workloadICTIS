@@ -88,7 +88,7 @@ function App() {
   const [allOffersData, setAllOffersData] = useState([]); // предложения
   const [selectkafedra, setselectkafedra] = useState(""); //state выбранной кафедры
   const [actionUpdTabTeach, setActionUpdTabTeach] = useState(false); // при изменении обновляется таблицы преподавателей
-  const [tableDepartment, settableDepartment] = useState([]);
+  const [tableDepartment, settableDepartment] = useState();
   const [selectISOid, setselectISOid] = useState(true);
   // const [nameKaf, setnameKaf] = useState("");
   const [nameKaf, setnameKaf] = useState("Все");
@@ -250,7 +250,7 @@ function App() {
     console.log("param", param);
     //param = tableDepartment[0]?.id
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
-      apiGetWorkloadDepartment().then((data) => {
+      Workload("").then((data) => {
         console.log("нагрузки по кафедре", data);
         const dataBd = [...data];
         setWorkloadData(dataBd);

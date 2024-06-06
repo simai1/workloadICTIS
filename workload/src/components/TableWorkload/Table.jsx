@@ -25,7 +25,7 @@ function Table(props) {
     );
   };
 
-  //! клик левой кнопкой мыши на tr
+  //! клик правой кнопкой мыши на tr
   const clickTrContetx = (itemId) => {
     tabPar.setSelectedTr((prev) => {
       const index = prev.indexOf(itemId);
