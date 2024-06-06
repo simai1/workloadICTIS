@@ -84,7 +84,7 @@ export default {
                 if (_user.role === 5 || _user.role === 2){
                     workloads = await Workload.findAll({
                         where: {
-                            educatorId: _user.educator.id,
+                            educatorId: _user.Educator.id,
                             isBlocked: false
                         },
                         include: { model: Educator },
