@@ -34,13 +34,13 @@ function App() {
 
   //! в файле RoleMetods можно посмотреть назание метода и их id
   const metodRole = {
-    METHODIST: [1, 3, 4, 8, 9, 10, 13, 14, 17, 20, 21, 25, 26, 27],
+    METHODIST: [1, 3, 4, 8, 9, 10, 13, 14, 17, 20, 21, 25, 26, 27, 28],
     LECTURER: [2, 8, 15, 18, 22, 24],
     DEPARTMENT_HEAD: [
-      2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 22, 25, 26, 27,
+      2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 22, 25, 26, 27, 28,
     ],
     DIRECTORATE: [
-      1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27,
+      1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28,
     ],
     EDUCATOR: [15, 24],
   };
@@ -355,9 +355,13 @@ function App() {
 
   //! функция обновления всех данных
   function updateAlldata() {
-    selectISOid
-      ? funUpdateTable(0)
-      : funUpdateTable(tableDepartment.find((el) => el.name === nameKaf)?.id);
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 28)) {
+      selectISOid
+        ? funUpdateTable(0)
+        : funUpdateTable(tableDepartment.find((el) => el.name === nameKaf)?.id);
+    } else {
+      funUpdateTable("14");
+    }
     // получаем данные таблицы
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 20)) {
       // получаем все комментарии
