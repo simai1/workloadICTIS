@@ -88,7 +88,7 @@ function App() {
   const [allOffersData, setAllOffersData] = useState([]); // предложения
   const [selectkafedra, setselectkafedra] = useState(""); //state выбранной кафедры
   const [actionUpdTabTeach, setActionUpdTabTeach] = useState(false); // при изменении обновляется таблицы преподавателей
-  const [tableDepartment, settableDepartment] = useState([]);
+  const [tableDepartment, settableDepartment] = useState();
   const [selectISOid, setselectISOid] = useState(true);
   // const [nameKaf, setnameKaf] = useState("");
   const [nameKaf, setnameKaf] = useState("Все");
