@@ -242,7 +242,6 @@ function App() {
     });
   }
 
-
   //! функция обновления таблицы
   function funUpdateTable(param = 0) {
     // const index = basicTabData.tableDepartment.find(
@@ -258,8 +257,10 @@ function App() {
         console.log("нагрузки по кафедре", data);
         const dataBd = [...data];
         setWorkloadData(dataBd);
+        const fixData = UpdateWorkloadForBoofer(
+          funFixEducator(dataBd, bufferAction)
+        );
         // зменяем массив преподавателя на его имя
-        const fixData = funFixEducator(dataBd);
         const fdfix = FilteredSample(fixData, isChecked);
         setWorkloadData(fixData);
         setWorkloadDataFix(fdfix);
