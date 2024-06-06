@@ -22,7 +22,6 @@ import {
   funSplitData,
 } from "./components/TableWorkload/Function";
 import { delChangeData } from "./ui/ContextMenu/Function";
-import { getDataEducator } from "./api/services/AssignApiData";
 
 function App() {
   const [educator, setEducator] = useState([]); // преподаватели
@@ -35,10 +34,14 @@ function App() {
 
   //! в файле RoleMetods можно посмотреть назание метода и их id
   const metodRole = {
-    METHODIST: [1, 3, 4, 8, 9, 10, 13, 14, 17, 20, 21],
+    METHODIST: [1, 3, 4, 8, 9, 10, 13, 14, 17, 20, 21, 25, 26, 27],
     LECTURER: [2, 8, 15, 18, 22, 24],
-    DEPARTMENT_HEAD: [2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 22],
-    DIRECTORATE: [1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23],
+    DEPARTMENT_HEAD: [
+      2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 22, 25, 26, 27,
+    ],
+    DIRECTORATE: [
+      1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27,
+    ],
     EDUCATOR: [15, 24],
   };
   // appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)

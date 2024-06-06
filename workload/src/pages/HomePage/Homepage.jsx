@@ -55,19 +55,19 @@ function HomePage() {
     basicTabData.funUpdateTable("0");
     tabPar.setDataIsOid(true);
     basicTabData.setselectISOid(true);
-    basicTabData.setnameKaf("Все")
-    tabPar.setSelectedFilter("Все Дисциплины")
+    basicTabData.setnameKaf("Все");
+    tabPar.setSelectedFilter("Все Дисциплины");
   };
 
   //! связь с сокетом
   useEffect(() => {
-     if( appData.metodRole[appData.myProfile?.role]?.some((el) => el === 23)){
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 23)) {
       socketConnect();
       getAllWarningMessage().then((res) => {
         console.log("Все предупреждения", res);
         appData.setAllWarningMessage(res);
-      })
-     }
+      });
+    }
   }, []);
 
   useEffect(() => {
@@ -174,29 +174,52 @@ function HomePage() {
           <div className={styles.header_top}>
             <div className={styles.header_top_save_search}>
               <div className={styles.saveBuffre}>
-                <div className={styles.btnMenuBox} onClick={appData.backBuffer}>
-                  <img src="./img/backBuffer.svg" />
-                </div>
-                <div className={styles.btnMenuBox} onClick={onSaveClick}>
-                  <img className={styles.btnLeft} src="./img/saveButton.svg" />
-                  {popupSaveAll && (
-                    <ConfirmSaving
-                      title={"Вы уверены, что хотите сохранить изменения?"}
-                      confirmClick={confirmClick}
-                      setShow={setPopupSaveAll}
+                {appData.metodRole[appData.myProfile?.role]?.some(
+                  (el) => el === 25
+                ) && (
+                  <div
+                    className={styles.btnMenuBox}
+                    onClick={appData.backBuffer}
+                  >
+                    <img src="./img/backBuffer.svg" />
+                  </div>
+                )}
+                {appData.metodRole[appData.myProfile?.role]?.some(
+                  (el) => el === 26
+                ) && (
+                  <div className={styles.btnMenuBox} onClick={onSaveClick}>
+                    <img
+                      className={styles.btnLeft}
+                      src="./img/saveButton.svg"
                     />
-                  )}
-                </div>
-                <div className={styles.btnMenuBox} onClick={onExportClick}>
-                  <img className={styles.btnLeft} src="./img/export.svg" />
-                  {popupExport && (
-                    <ConfirmSaving
-                      title={"Вы уверены, что хотите отправить таблицу?"}
-                      confirmClick={exportClick}
-                      setShow={setPopupExport}
-                    />
-                  )}
-                </div>
+                    {popupSaveAll && (
+                      <ConfirmSaving
+                        title={"Вы уверены, что хотите сохранить изменения?"}
+                        confirmClick={confirmClick}
+                        setShow={setPopupSaveAll}
+                      />
+                    )}
+                  </div>
+                )}
+
+                {appData.metodRole[appData.myProfile?.role]?.some(
+                  (el) => el === 27
+                ) && (
+                  <div
+                    style={{ marginRight: "20px" }}
+                    className={styles.btnMenuBox}
+                    onClick={onExportClick}
+                  >
+                    <img className={styles.btnLeft} src="./img/export.svg" />
+                    {popupExport && (
+                      <ConfirmSaving
+                        title={"Вы уверены, что хотите отправить таблицу?"}
+                        confirmClick={exportClick}
+                        setShow={setPopupExport}
+                      />
+                    )}
+                  </div>
+                )}
               </div>
               <div className={styles.header_search}>
                 <input
@@ -240,22 +263,20 @@ function HomePage() {
               )}
               {appData.metodRole[appData.myProfile?.role]?.some(
                 (el) => el === 24
-              )&& (
-                    <Button
-                    text="Моя нагрузка"
-                    onClick={(()=>{
-                      setEducatorIdforLk(appData.myProfile.educator.id);
-                      setSelectedComponent("Teachers")
-                      console.log('myProfilea', appData.myProfile.id)
-                    })}
-                    Bg={educatorIdforLk.length != 0 ? "#3B28CC" : "#efedf3"}
-                     textColot={
-                      educatorIdforLk.length === 0 ? "#000000" : "#efedf3"
-                     }
-                  />  
-                )
-              }
-              
+              ) && (
+                <Button
+                  text="Моя нагрузка"
+                  onClick={() => {
+                    setEducatorIdforLk(appData.myProfile.educator.id);
+                    setSelectedComponent("Teachers");
+                    console.log("myProfilea", appData.myProfile.id);
+                  }}
+                  Bg={educatorIdforLk.length != 0 ? "#3B28CC" : "#efedf3"}
+                  textColot={
+                    educatorIdforLk.length === 0 ? "#000000" : "#efedf3"
+                  }
+                />
+              )}
             </div>
             <div className={styles.header_left_component}>
               <Warnings
