@@ -7,7 +7,7 @@ import checkRole from '../middlewares/checkRoles.js';
  // import checkHours from '../utils/notification.js';
 
 const router = Router();
-//router.use(verify.general);
+router.use(verify.general);
 
 router
   .route('/split')
@@ -89,4 +89,16 @@ router
         asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST, role.LECTURER, role.EDUCATOR])),
         asyncRoute(workloadController.getUsableDepartments)
     );
+router
+  .route('/block/:department')
+  .patch(
+    asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE])),
+    asyncRoute(workloadController.blockWorkload)
+  );
+router
+  .route('/unblock/:department')
+  .patch(
+    asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE])),
+    asyncRoute(workloadController.unblockWorkload)
+  );
 export default router;

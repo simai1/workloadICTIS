@@ -23,6 +23,7 @@ export default class WorkloadDto {
     comment;
     isOid;
     isSplit;
+    isBlocked;
     educator;
 
     constructor(model) {
@@ -47,6 +48,7 @@ export default class WorkloadDto {
         this.comment = model.comment;
         this.isOid = model.isOid;
         this.isSplit = model.isSplit;
+        this.isBlocked = model.isBlocked;
         this.educator = model.Educator ? new EducatorDto(model.Educator) : null;
     }
 }
