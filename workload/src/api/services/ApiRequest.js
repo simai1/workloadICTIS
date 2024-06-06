@@ -425,7 +425,7 @@ export const GetRole = async () => {
 
 export const GetDepartment = async () => {
   try {
-    const response = await axios.get(
+    const response = await http.get(
       `${server}/workload/get/usableDepartments`
     );
     console.log("GetDepartment", response);

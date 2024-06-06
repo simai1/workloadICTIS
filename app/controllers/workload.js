@@ -412,11 +412,12 @@ export default {
     async getUsableDepartments(req, res){
         const userId = req.user;
         const userExist = await User.findByPk(userId);
+        if (!userExist) throw new AppErrorNotExist('User');
         const role = userExist.role;
         const usableDepartments = [];
         const queryResult = await sequelize.query('SELECT DISTINCT department FROM workloads WHERE department <> 13 ORDER BY department ASC;');
-        if(role == 2 || role == 3 ||  role == 5){
-            const educator = await Educator.findOne({where: {userId}});
+        if(role === 2 || role === 3 ||  role === 5){
+            const educator = await Educator.findOne({ where: { userId } });
             const department = educator.department;
             usableDepartments.push({
                 id: department,
