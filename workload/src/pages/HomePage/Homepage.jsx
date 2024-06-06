@@ -50,7 +50,6 @@ function HomePage() {
   const [popupExport, setPopupExport] = useState(false); // открыть/закрыть попап подтверждения блокировки таблицы
   const [departments, setdepartments] = useState([]);
   const [kafedralIsOpen, setKafedralIsOpen] = useState(false);
-  const [IsBlocked, setisBlocked] = useState(true);
   const handleButtonClick = () => {
     setEducatorIdforLk("");
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 28)) {
@@ -108,12 +107,6 @@ function HomePage() {
   useEffect(() => {
     basicTabData.funGetDepartment();
   }, []);
-  useEffect(() => {
-    const ErrorTextFlag = basicTabData.tableDepartment.find(
-      (el) => el.name === basicTabData.nameKaf
-    )?.blocked;
-    console.log("ErrorTextFlag", ErrorTextFlag);
-  });
 
   //! открыть попап
   const onSaveClick = () => {
@@ -134,6 +127,7 @@ function HomePage() {
           if (resp.status == 200) {
             basicTabData.funUpdateTable("0");
             appData.setgodPopUp(true);
+            basicTabData.funGetDepartment();
           }
         });
       } else {
@@ -145,6 +139,7 @@ function HomePage() {
           if (resp.status == 200) {
             basicTabData.funUpdateTable(index);
             appData.setgodPopUp(true);
+            basicTabData.funGetDepartment();
           }
         });
       }
@@ -323,17 +318,17 @@ function HomePage() {
               />
             </div>
           </div>
-          {IsBlocked && (
+          {basicTabData.tableDepartment?.find(
+            (el) => el.name === basicTabData.nameKaf
+          )?.blocked && (
             <div className={styles.blockedTextTable}>
               <div>
-                {" "}
                 <img src="./img/errorTreangle.svg" />
               </div>
               <div>
-                {" "}
                 <p>
-                  В таблицу вносятся изменения, редактирование временно
-                  отключено!
+                  Таблицу находится в состоянии "Блокированные", редактирование
+                  временно отключено!
                 </p>
               </div>
             </div>
