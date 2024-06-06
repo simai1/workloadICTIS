@@ -15,7 +15,8 @@ export default {
         const educators = await Educator.findAll({
             include: [{
                 model: SummaryWorkload,
-            }]
+            }],
+            order: [['department', 'ASC']]
         });
         const educatorDtos = [];
         for (const educator of educators) {
@@ -28,6 +29,7 @@ export default {
         }
         res.json(educatorDtos);
     },
+
     async getOne({ params: { educatorId } }, res) {
         if (!educatorId) throw new AppErrorMissing('educatorId');
         const educator = await Educator.findOne({
