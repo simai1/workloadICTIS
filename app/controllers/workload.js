@@ -11,6 +11,7 @@ import WorkloadDto from '../dtos/workload-dto.js';
 import SummaryWorkload from '../models/summary-workload.js';
 import checkHours from '../utils/notification.js';
 import History from "../models/history.js";
+import sendMail from '../services/email.js';
 import { sequelize } from "../models/index.js";
 
 const getIds = (modelsArr) => {
@@ -392,4 +393,42 @@ export default {
         res.json(usableDepartments);
     },
     async changeColorWorkload(req, res) {},
+
+    async blockWorkload({ params: { department } }, res){
+        if (!department) throw new AppErrorMissing('department');
+        department = parseInt(department);
+        if (department === 0) {
+            const checkWorkload = await Workload.findOne({ where: { isOid: true } });
+            if (checkWorkload.isBlocked === true) throw new Error('Already blocked');
+            await Workload.update({ isBlocked: true }, { where: { isOid: true } });
+            try {
+                sendMail(process.env.EMAIL_RECIEVER, 'blocking', 'Общеинститутская нагрузка');
+            } catch (e){
+                console.log('Email bad creditionals')
+            }
+        } else {
+            if (!Object.values(departments).includes(department)) throw new AppErrorInvalid('department');
+            await Workload.update({ isBlocked: true }, { where: { department } });
+            try {
+                sendMail(process.env.EMAIL_RECIEVER, 'blocking', `Нагрузка кафедры ${mapDepartments[department]}`);
+            } catch (e){
+                console.log('Email bad creditionals')
+            }
+        }
+        res.json({ status: 'OK' });
+    },
+
+    async unblockWorkload({ params: { department } }, res){
+        if (!department) throw new AppErrorMissing('department');
+        department = parseInt(department);
+        if (department === 0) {
+            const checkWorkload = await Workload.findOne({ where: { isOid: true } });
+            if (checkWorkload.isBlocked === false) throw new Error('Already unblocked');
+            await Workload.update({ isBlocked: false }, { where: { isOid: true } });
+        } else {
+            if (!Object.values(departments).includes(department)) throw new AppErrorInvalid('department');
+            await Workload.update({ isBlocked: false }, { where: { department } });
+        }
+        res.json({ status: 'OK' });
+    },
 };
