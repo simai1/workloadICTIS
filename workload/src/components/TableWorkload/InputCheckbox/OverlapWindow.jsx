@@ -137,7 +137,7 @@ function OverlapWindow(props) {
         changed.split = changed.split.filter(
           (item) => item.slice(0, -1) !== props.itid.slice(0, -1)
         );
-        console.log(changed);
+        console.log("changed", changed);
         tabPar.setChangedData(changed);
         console.log(
           "basicTabData.tableDepartment",
