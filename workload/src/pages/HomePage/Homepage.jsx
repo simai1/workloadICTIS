@@ -29,7 +29,6 @@ import {
 import ConfirmSaving from "../../ui/ConfirmSaving/ConfirmSaving";
 import socketConnect from "../../api/services/socket";
 import PopUpGoodMessage from "../../ui/PopUpGoodMessage/PopUpGoodMessage";
-import { Link } from "react-router-dom";
 
 function HomePage() {
   const { appData, tabPar, visibleDataPar, basicTabData } =
@@ -51,7 +50,7 @@ function HomePage() {
   const [popupExport, setPopupExport] = useState(false); // открыть/закрыть попап подтверждения блокировки таблицы
   const [departments, setdepartments] = useState([]);
   const [kafedralIsOpen, setKafedralIsOpen] = useState(false);
-  const [IsBlocked, setisBlocked] =  useState(true);
+  const [IsBlocked, setisBlocked] = useState(true);
   const handleButtonClick = () => {
     setEducatorIdforLk("");
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 28)) {
@@ -109,10 +108,12 @@ function HomePage() {
   useEffect(() => {
     basicTabData.funGetDepartment();
   }, []);
-  useEffect(()=>{
-    const ErrorTextFlag = basicTabData.tableDepartment.find((el)=>el.name === basicTabData.nameKaf).blocked
-    console.log('ErrorTextFlag', ErrorTextFlag)
-  })
+  useEffect(() => {
+    const ErrorTextFlag = basicTabData.tableDepartment.find(
+      (el) => el.name === basicTabData.nameKaf
+    )?.blocked;
+    console.log("ErrorTextFlag", ErrorTextFlag);
+  });
 
   //! открыть попап
   const onSaveClick = () => {
@@ -128,25 +129,25 @@ function HomePage() {
   //! при клике на подтверждение блокировки таблицы
   const exportClick = (action) => {
     if (action) {
-     
-      if(basicTabData.selectISOid){
-        WorkloadBlocked(0).then((resp)=>{
-          if(resp.status == 200){
+      if (basicTabData.selectISOid) {
+        WorkloadBlocked(0).then((resp) => {
+          if (resp.status == 200) {
             basicTabData.funUpdateTable("0");
-            appData.setgodPopUp(true)
+            appData.setgodPopUp(true);
           }
-        })
-      }else{
-        console.log('tableDepartment', basicTabData.tableDepartment)
-        const index = basicTabData.tableDepartment.find((el)=>el.name === basicTabData.nameKaf).id
-        WorkloadBlocked(index).then((resp)=>{
-          if(resp.status == 200){
+        });
+      } else {
+        console.log("tableDepartment", basicTabData.tableDepartment);
+        const index = basicTabData.tableDepartment.find(
+          (el) => el.name === basicTabData.nameKaf
+        ).id;
+        WorkloadBlocked(index).then((resp) => {
+          if (resp.status == 200) {
             basicTabData.funUpdateTable(index);
-            appData.setgodPopUp(true)
+            appData.setgodPopUp(true);
           }
-        })
+        });
       }
-
     } else {
       setPopupExport(false);
     }
@@ -322,13 +323,22 @@ function HomePage() {
               />
             </div>
           </div>
-          { IsBlocked &&
+          {IsBlocked && (
             <div className={styles.blockedTextTable}>
-              <div> <img src="./img/errorTreangle.svg" /></div>
-              <div> <p>В таблицу вносятся изменения, редактирование временно отключено!</p></div>
+              <div>
+                {" "}
+                <img src="./img/errorTreangle.svg" />
+              </div>
+              <div>
+                {" "}
+                <p>
+                  В таблицу вносятся изменения, редактирование временно
+                  отключено!
+                </p>
+              </div>
             </div>
-          }
-         
+          )}
+
           <div className={styles.header_bottom}>
             <div className={styles.header_bottom_button}>
               {appData.metodRole[appData.myProfile?.role]?.some(
