@@ -31,7 +31,6 @@ const ContextMenu = (props) => {
 
   useEffect(() => {
     console.log("bufferAction", appData.bufferAction);
-    
   }, []);
 
   const handleContextMenu = (e) => {

@@ -10,7 +10,7 @@ function TableTh(props) {
     if (tabPar.spShow === props.index) {
       tabPar.setSpShow(null);
     } else {
-      const modalData = basicTabData.workloadDataFix.map(
+      const modalData = basicTabData.workloadData.map(
         (item) => item[props.item.key]
       );
       tabPar.setSamplePointsData([...modalData]);
