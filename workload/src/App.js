@@ -245,12 +245,12 @@ function App() {
 
   //! функция обновления таблицы
   function funUpdateTable(param = 0) {
-    const index = basicTabData.tableDepartment.find(
-      (el) => el.name === basicTabData.nameKaf
-    )?.id;
-    if (index && basicTabData.tableDepartment.length > 0) {
-      param = index;
-    }
+    // const index = basicTabData.tableDepartment.find(
+    //   (el) => el.name === basicTabData.nameKaf
+    // )?.id;
+    // if (index && basicTabData.tableDepartment.length > 0) {
+    //   param = index;
+    // }
     console.log("param", param);
     //param = tableDepartment[0]?.id
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {

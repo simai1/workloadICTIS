@@ -130,6 +130,7 @@ function HomePage() {
           if(resp.status == 200){
             basicTabData.funUpdateTable("0");
             appData.setgodPopUp(true)
+            basicTabData.funGetDepartment()
           }
         })
       }else{
@@ -139,6 +140,7 @@ function HomePage() {
           if(resp.status == 200){
             basicTabData.funUpdateTable(index);
             appData.setgodPopUp(true)
+            basicTabData.funGetDepartment()
           }
         })
       }
@@ -318,7 +320,7 @@ function HomePage() {
               />
             </div>
           </div>
-          { basicTabData.tableDepartment?.find((el)=>el.name === basicTabData.nameKaf).blocked &&
+          { basicTabData.tableDepartment?.find((el)=>el.name === basicTabData.nameKaf)?.blocked &&
             <div className={styles.blockedTextTable}>
               <div> <img src="./img/errorTreangle.svg" /></div>
               <div> <p>Таблицу находится в состоянии "Блокированные", редактирование временно отключено!</p></div>
