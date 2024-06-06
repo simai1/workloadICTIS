@@ -109,6 +109,10 @@ function HomePage() {
   useEffect(() => {
     basicTabData.funGetDepartment();
   }, []);
+  useEffect(()=>{
+    const ErrorTextFlag = basicTabData.tableDepartment.find((el)=>el.name === basicTabData.nameKaf).blocked
+    console.log('ErrorTextFlag', ErrorTextFlag)
+  })
 
   //! открыть попап
   const onSaveClick = () => {
