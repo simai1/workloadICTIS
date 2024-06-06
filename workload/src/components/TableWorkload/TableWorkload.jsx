@@ -45,7 +45,7 @@ function TableWorkload(props) {
       className={styles.tabledisciplinesMain}
       onScroll={scrollTable}
     >
-      {tabPar.contextMenuShow && <ContextMenu />}
+      {(tabPar.contextMenuShow && tabPar.selectedTr.length != 0) && <ContextMenu />}
       <Table />
     </div>
   );
