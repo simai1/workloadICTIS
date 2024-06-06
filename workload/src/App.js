@@ -242,9 +242,6 @@ function App() {
     });
   }
 
-  useEffect(() => {
-    console.log(nameKaf);
-  }, [nameKaf]);
 
   //! функция обновления таблицы
   function funUpdateTable(param = 0) {
@@ -257,7 +254,7 @@ function App() {
     console.log("param", param);
     //param = tableDepartment[0]?.id
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
-      apiGetWorkloadDepartment().then((data) => {
+      Workload("").then((data) => {
         console.log("нагрузки по кафедре", data);
         const dataBd = [...data];
         setWorkloadData(dataBd);

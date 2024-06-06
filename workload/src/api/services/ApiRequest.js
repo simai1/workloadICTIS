@@ -414,7 +414,7 @@ export const SubmitFileXLSX = async (constIdCafedra, file) => {
 
 export const GetRole = async () => {
   try {
-    const response = await axios.get(`${server}/user`);
+    const response = await http.get(`${server}/user`);
     console.log("GetRole", response);
     return response;
   } catch (error) {

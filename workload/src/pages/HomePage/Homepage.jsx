@@ -51,6 +51,7 @@ function HomePage() {
   const [popupExport, setPopupExport] = useState(false); // открыть/закрыть попап подтверждения блокировки таблицы
   const [departments, setdepartments] = useState([]);
   const [kafedralIsOpen, setKafedralIsOpen] = useState(false);
+  const [IsBlocked, setisBlocked] =  useState(true);
   const handleButtonClick = () => {
     setEducatorIdforLk("");
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 28)) {
@@ -108,6 +109,10 @@ function HomePage() {
   useEffect(() => {
     basicTabData.funGetDepartment();
   }, []);
+  useEffect(()=>{
+    const ErrorTextFlag = basicTabData.tableDepartment.find((el)=>el.name === basicTabData.nameKaf).blocked
+    console.log('ErrorTextFlag', ErrorTextFlag)
+  })
 
   //! открыть попап
   const onSaveClick = () => {
@@ -126,17 +131,22 @@ function HomePage() {
      
       if(basicTabData.selectISOid){
         WorkloadBlocked(0).then((resp)=>{
-          console.log(resp)
+          if(resp.status == 200){
+            basicTabData.funUpdateTable("0");
+            appData.setgodPopUp(true)
+          }
         })
       }else{
-        const index = basicTabData.tableDepartment.some((el)=>el.name === basicTabData.nameKaf).id
+        console.log('tableDepartment', basicTabData.tableDepartment)
+        const index = basicTabData.tableDepartment.find((el)=>el.name === basicTabData.nameKaf).id
         WorkloadBlocked(index).then((resp)=>{
-          console.log(resp)
+          if(resp.status == 200){
+            basicTabData.funUpdateTable(index);
+            appData.setgodPopUp(true)
+          }
         })
       }
-      console.log("nameKaf", basicTabData.nameKaf)
-      console.log("IsOid", basicTabData.selectISOid)
-      console.log("tableDepartment", basicTabData.tableDepartment)
+
     } else {
       setPopupExport(false);
     }
@@ -312,6 +322,13 @@ function HomePage() {
               />
             </div>
           </div>
+          { IsBlocked &&
+            <div className={styles.blockedTextTable}>
+              <div> <img src="./img/errorTreangle.svg" /></div>
+              <div> <p>В таблицу вносятся изменения, редактирование временно отключено!</p></div>
+            </div>
+          }
+         
           <div className={styles.header_bottom}>
             <div className={styles.header_bottom_button}>
               {appData.metodRole[appData.myProfile?.role]?.some(
