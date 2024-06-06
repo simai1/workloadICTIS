@@ -122,7 +122,10 @@ function HomePage() {
   //! при клике на подтверждение блокировки таблицы
   const exportClick = (action) => {
     if (action) {
-      alert("Жду БЭК");
+      // WorkloadBlocked
+      console.log("nameKaf", basicTabData.nameKaf)
+      console.log("IsOid", basicTabData.selectISOid)
+      console.log("tableDepartment", basicTabData.tableDepartment)
     } else {
       setPopupExport(false);
     }
