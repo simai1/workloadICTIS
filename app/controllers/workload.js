@@ -25,41 +25,82 @@ const getIds = (modelsArr) => {
 
 export default {
     // Получение нагрузки
-    async getAllWorkload({query: {isOid, department}}, res) {
+    async getAllWorkload({query: {isOid, department}, user}, res) {
+        const _user = await User.findByPk(user, { include: Educator });
         try {
+            let workloads;
             if (!(typeof isOid === "undefined")){
-                const workloads = await Workload.findAll({
-                    where: { isOid },
-                    include: { model: Educator },
-                    order: [
-                        ['discipline', 'ASC'],
-                        ['workload', 'ASC']
-                    ],
-                })
+                if (_user.role === 5 || _user.role === 2){
+                    workloads = await Workload.findAll({
+                        where: { isOid, educatorId: _user.educator.id},
+                        include: { model: Educator },
+                        order: [
+                            ['discipline', 'ASC'],
+                            ['workload', 'ASC']
+                        ],
+                    });
+                } else {
+                    workloads = await Workload.findAll({
+                        where: { isOid },
+                        include: { model: Educator },
+                        order: [
+                            ['discipline', 'ASC'],
+                            ['workload', 'ASC']
+                        ],
+                    });
+                }
                 const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
                 res.json(workloadsDto);
             } else if (department){
-                const workloads = await Workload.findAll({
-                    where: {
-                        isOid: false,
-                        department,
-                    },
-                    include: { model: Educator },
-                    order: [
-                        ['discipline', 'ASC'],
-                        ['workload', 'ASC']
-                    ],
-                })
+                if (_user.role === 5 || _user.role === 2){
+                    workloads = await Workload.findAll({
+                        where: {
+                            isOid: false,
+                            department,
+                            educatorId: _user.educator.id
+                        },
+                        include: { model: Educator },
+                        order: [
+                            ['discipline', 'ASC'],
+                            ['workload', 'ASC']
+                        ],
+                    });
+                } else {
+                    workloads = await Workload.findAll({
+                        where: {
+                            isOid: false,
+                            department,
+                        },
+                        include: { model: Educator },
+                        order: [
+                            ['discipline', 'ASC'],
+                            ['workload', 'ASC']
+                        ],
+                    });
+                }
                 const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
                 res.json(workloadsDto);
             } else {
-                const workloads = await Workload.findAll({
-                    include: { model: Educator },
-                    order: [
-                        ['discipline', 'ASC'],
-                        ['workload', 'ASC']
-                    ],
-                });
+                if (_user.role === 5 || _user.role === 2){
+                    workloads = await Workload.findAll({
+                        where: {
+                            educatorId: _user.educator.id
+                        },
+                        include: { model: Educator },
+                        order: [
+                            ['discipline', 'ASC'],
+                            ['workload', 'ASC']
+                        ],
+                    });
+                } else {
+                    workloads = await Workload.findAll({
+                        include: { model: Educator },
+                        order: [
+                            ['discipline', 'ASC'],
+                            ['workload', 'ASC']
+                        ],
+                    });
+                }
                 const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
                 res.json(workloadsDto);
             }
