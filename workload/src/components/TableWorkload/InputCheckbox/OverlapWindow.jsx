@@ -138,9 +138,18 @@ function OverlapWindow(props) {
           (item) => item.slice(0, -1) !== props.itid.slice(0, -1)
         );
         console.log(changed);
-
         tabPar.setChangedData(changed);
-        basicTabData.updateAlldata();
+        console.log(
+          "depart",
+          basicTabData.tableDepartment.find(
+            (el) => el.name === basicTabData.nameKaf
+          )
+        );
+        basicTabData.funUpdateTable(
+          basicTabData.tableDepartment.find(
+            (el) => el.name === basicTabData.nameKaf
+          ).id
+        );
       });
     } else if (props.getConfirmation.type === 3) {
       joinWorkloads(props.getConfirmation.data.data).then((res) => {

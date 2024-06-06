@@ -6,19 +6,26 @@ import { getDataEducator } from "../../api/services/AssignApiData";
 import { headersEducator } from "../TableWorkload/Data";
 import { apiEducatorDepartment } from "../../api/services/ApiRequest";
 import Button from "../../ui/Button/Button";
-import { PopUpCreateEmploy } from "../../ui/PopUpCreateEmploy/PopUpCreateEmploy";
+import { SamplePoints } from "./SamplePoints/SamplePoints";
 
 function TableTeachers(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]);
   const [updatedData, setUpdatedData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const { appData, basicTabData } = React.useContext(DataContext);
-  const [createEdicatorPopUp, setcreateEdicatorPopUp] = useState(false); //popUp error visible
-
+  const { appData, basicTabData, checkPar } = React.useContext(DataContext);
+  const [sampleShow, setSampleShow] = useState(false);
+  const [sampleData, setSampleData] = useState([]);
   const tableHeaders = headersEducator;
   useEffect(() => {
     props.changeInput();
   }, []);
+
+  //! открытие модального окна фильтрации столбца
+  const clickTh = (index, key) => {
+    setSampleShow(index);
+    const modalData = updatedData.map((item) => item[key]);
+    setSampleData([...modalData]);
+  };
 
   //! заносим данные о преподавателях в состояние
   React.useEffect(() => {
@@ -89,6 +96,22 @@ function TableTeachers(props) {
     setFilteredData(fd);
   }, [updatedData, props.searchTerm]);
 
+  // Функция для определения цвета фона
+  function WhyColor(totalHours, stavka) {
+    let bg;
+    let OgranHours = 900;
+    let AllHours = OgranHours * stavka;
+  
+    if (totalHours <= OgranHours - 300) {
+      bg = "#19C20A"; // Зеленый цвет
+    } else if (OgranHours - 300 < totalHours && totalHours <= OgranHours - 100) {
+      bg = "#FFD600"; // Желтый цвет
+    } if(totalHours >= OgranHours) {
+      bg = "#E81414"; // Красный цвет
+    }
+    return bg;
+  }
+
   return (
     <div className={styles.TableTeachers}>
       {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 4) ? (
@@ -107,8 +130,38 @@ function TableTeachers(props) {
         <table className={styles.table}>
           <thead>
             <tr>
-              {updatedHeader.map((header) => (
-                <th key={header.key}>{header.label}</th>
+              {updatedHeader.map((header, index) => (
+                <th
+                  name={header.key}
+                  onClick={() => clickTh(index, header.key)}
+                  key={header.key}
+                >
+                  {sampleShow === index && (
+                    <SamplePoints
+                      setSampleShow={setSampleShow}
+                      index={index}
+                      itemKey={header.key}
+                      filteredData={filteredData}
+                      setFiltredData={setFilteredData}
+                      setUpdatedData={setUpdatedData}
+                      updatedData={updatedData}
+                      isSamplePointsData={sampleData}
+                    />
+                  )}
+
+                  <div className={styles.th_inner} onClick={clickTh}>
+                    {header.label}
+                    <img
+                      src={
+                        checkPar.isChecked.find(
+                          (item) => item.itemKey === header.key
+                        )
+                          ? "./img/filterColumn.svg"
+                          : "./img/th_fight.svg"
+                      }
+                    ></img>
+                  </div>
+                </th>
               ))}
             </tr>
           </thead>
@@ -124,6 +177,20 @@ function TableTeachers(props) {
                         className={styles.tdName}
                       >
                         {row[key]}
+                      </td>
+                    );
+                  } if (key === "totalHours") {
+                    return (
+                      
+                      <td
+                        key={key}
+                      >
+                        <div
+                           style={{backgroundColor: WhyColor(row.totalHours, row.rate)}}
+                        className={styles.tdHours}
+                        >
+                          {row[key]}
+                        </div>
                       </td>
                     );
                   } else {

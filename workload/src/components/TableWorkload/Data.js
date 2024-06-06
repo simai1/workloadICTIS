@@ -27,8 +27,8 @@ export const headers = [
 export const headersEducator = [
   { key: "id", label: "№" },
   { key: "name", label: "Преподователь" },
-  { key: "department", label: "Должность" },
-  { key: "position", label: "Кафедра" },
+  { key: "position", label: "Должность" },
+  { key: "department", label: "Кафедра" },
   { key: "rate", label: "Ставка" },
   { key: "totalHours", label: "Часы" },
   { key: "hoursFirstPeriod", label: "Часы период 1" },

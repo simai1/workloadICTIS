@@ -5,8 +5,9 @@
   display: flex;
   justify-content: center;
   z-index: 120;
-  margin-right: 10px;
+  margin-left: 10px;
   margin-top: -4px;
+
  input {
     @include input-text(150px, 8px);
     margin-bottom: 18px;

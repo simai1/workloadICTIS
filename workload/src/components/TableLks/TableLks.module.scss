@@ -3,6 +3,8 @@
 .TableLks {
   width: 100%;
   box-sizing: border-box;
+  // position: relative;
+  // top: -75px;
   .ButtonCaf_gen {
     margin-bottom: 16px;
   }
@@ -13,17 +15,18 @@
   }
 
   .TableLks__inner {
-    overflow-x: scroll;
+    // overflow-y: scroll;
     border-radius: 8px;
     border-left: 1px solid var(--gray-color);
     border-right: 1px solid var(--gray-color);
     border-top: 1px solid var(--gray-color);
-    margin-top: 16px;
-    margin-left: 64px;
-    margin-right: 64px;
-
+    margin: 16px 64px 0px 64px;
+    // height: 60vh;
     .TableLks {
       width: 100%;
+      overflow-y: scroll;
+      height: 80vh;
+      overflow: hidden;
     }
   }
   .TableLks__inner::-webkit-scrollbar {
@@ -50,7 +53,6 @@
     width: 100%;
     border-collapse: collapse;
     font-size: 14px;
-
     th,
     td {
       text-align: center;
@@ -68,9 +70,30 @@
     }
     tr {
       background-color: var(--white-color);
+      // border-bottom: 1px solid #000;
+      // border-top: 1px solid #000;
+
       th {
         margin: 0 40px;
       }
+      .tdspecialtyTd{
+        width: 200px;
+        .tdspecialty{
+          width: 200px;
+          align-items: center;
+          height: 150px;
+          // overflow: hidden;
+          align-items: center;
+          text-align: center;
+          display: flex;
+          position: relative;
+          span{
+            margin: 0 auto;
+          }
+        
+        }
+      }
+     
     }
   }
 
@@ -113,7 +136,6 @@
       border-radius: 16px;
       width: 660px;
       margin-top: 12px;
-
       .DataLksHead {
         display: flex;
         justify-content: space-between;
@@ -160,10 +182,8 @@
     display: flex;
     box-sizing: border-box;
     margin-left: 0;
-
     img {
       display: flex;
-
       padding: 10px;
     }
     input {
@@ -178,5 +198,21 @@
       margin: 0 !important;
       background-color: #efedf3;
     }
+  }
+  .tableRow{
+    width: 200px;
+    height: 150px;
+  }
+  .tableRow:hover {
+    box-shadow: inset 0 2px 0 0 #9fa1f4, inset 0 -2px 0 0 #9fa1f4;
+  }
+  .notData{
+    display: flex;
+    background-color: #ffffff;
+    margin: 16px 64px;
+    box-sizing: border-box;
+    padding: 50px;
+    justify-content: center;
+    border-radius: 12px;
   }
 }

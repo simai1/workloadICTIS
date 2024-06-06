@@ -17,7 +17,7 @@ import {
   tableHeadersLks,
 } from "../../components/TableWorkload/Data";
 import { PopUpFile } from "../../ui/PopUpFile/PopUpFile";
-import { PopUpError } from "../../ui/PopUp/PopUpError";
+import { PopUpError } from "../../ui/PopUpError/PopUpError";
 import List from "../../ui/List/List";
 import ListKaf from "../../ui/ListKaf/ListKaf";
 import { PopUpCreateEmploy } from "../../ui/PopUpCreateEmploy/PopUpCreateEmploy";
@@ -27,6 +27,8 @@ import {
 } from "../../api/services/ApiRequest";
 import ConfirmSaving from "../../ui/ConfirmSaving/ConfirmSaving";
 import socketConnect from "../../api/services/socket";
+import PopUpGoodMessage from "../../ui/PopUpGoodMessage/PopUpGoodMessage";
+import { Link } from "react-router-dom";
 
 function HomePage() {
   const { appData, tabPar, visibleDataPar, basicTabData } =
@@ -47,23 +49,34 @@ function HomePage() {
   const [popupSaveAll, setPopupSaveAll] = useState(false); // открыть/закрыть попап подтверждения сохранения
   const [popupExport, setPopupExport] = useState(false); // открыть/закрыть попап подтверждения блокировки таблицы
   const [departments, setdepartments] = useState([]);
-
+  const [kafedralIsOpen, setKafedralIsOpen] = useState(false);
   const handleButtonClick = () => {
     setEducatorIdforLk("");
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 28)) {
+      basicTabData.funUpdateTable("0");
+    } else {
+      basicTabData.funUpdateTable("14");
+    }
+    tabPar.setDataIsOid(true);
+    basicTabData.setselectISOid(true);
+    basicTabData.setnameKaf("Все");
+    tabPar.setSelectedFilter("Все Дисциплины");
   };
 
   //! связь с сокетом
   useEffect(() => {
-    socketConnect();
-    getAllWarningMessage().then((res) => {
-      console.log("Все предупреждения", res);
-      appData.setAllWarningMessage(res);
-    });
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 23)) {
+      socketConnect();
+      getAllWarningMessage().then((res) => {
+        console.log("Все предупреждения", res);
+        appData.setAllWarningMessage(res);
+      });
+    }
   }, []);
 
   useEffect(() => {
     GetDepartment().then((response) => {
-      setdepartments([...response.data, { id: 13, name: "Все" }]);
+      setdepartments([...response.data, { id: 14, name: "Все" }]);
     });
   }, [basicTabData.tableDepartment]);
 
@@ -165,29 +178,52 @@ function HomePage() {
           <div className={styles.header_top}>
             <div className={styles.header_top_save_search}>
               <div className={styles.saveBuffre}>
-                <div className={styles.btnMenuBox} onClick={appData.backBuffer}>
-                  <img src="./img/backBuffer.svg" />
-                </div>
-                <div className={styles.btnMenuBox} onClick={onSaveClick}>
-                  <img className={styles.btnLeft} src="./img/saveButton.svg" />
-                  {popupSaveAll && (
-                    <ConfirmSaving
-                      title={"Вы уверены, что хотите сохранить изменения?"}
-                      confirmClick={confirmClick}
-                      setShow={setPopupSaveAll}
+                {appData.metodRole[appData.myProfile?.role]?.some(
+                  (el) => el === 25
+                ) && (
+                  <div
+                    className={styles.btnMenuBox}
+                    onClick={appData.backBuffer}
+                  >
+                    <img src="./img/backBuffer.svg" />
+                  </div>
+                )}
+                {appData.metodRole[appData.myProfile?.role]?.some(
+                  (el) => el === 26
+                ) && (
+                  <div className={styles.btnMenuBox} onClick={onSaveClick}>
+                    <img
+                      className={styles.btnLeft}
+                      src="./img/saveButton.svg"
                     />
-                  )}
-                </div>
-                <div className={styles.btnMenuBox} onClick={onExportClick}>
-                  <img className={styles.btnLeft} src="./img/export.svg" />
-                  {popupExport && (
-                    <ConfirmSaving
-                      title={"Вы уверены, что хотите отправить таблицу?"}
-                      confirmClick={exportClick}
-                      setShow={setPopupExport}
-                    />
-                  )}
-                </div>
+                    {popupSaveAll && (
+                      <ConfirmSaving
+                        title={"Вы уверены, что хотите сохранить изменения?"}
+                        confirmClick={confirmClick}
+                        setShow={setPopupSaveAll}
+                      />
+                    )}
+                  </div>
+                )}
+
+                {appData.metodRole[appData.myProfile?.role]?.some(
+                  (el) => el === 27
+                ) && (
+                  <div
+                    style={{ marginRight: "20px" }}
+                    className={styles.btnMenuBox}
+                    onClick={onExportClick}
+                  >
+                    <img className={styles.btnLeft} src="./img/export.svg" />
+                    {popupExport && (
+                      <ConfirmSaving
+                        title={"Вы уверены, что хотите отправить таблицу?"}
+                        confirmClick={exportClick}
+                        setShow={setPopupExport}
+                      />
+                    )}
+                  </div>
+                )}
               </div>
               <div className={styles.header_search}>
                 <input
@@ -229,6 +265,22 @@ function HomePage() {
                   text="Преподователи"
                 />
               )}
+              {appData.metodRole[appData.myProfile?.role]?.some(
+                (el) => el === 24
+              ) && (
+                <Button
+                  text="Моя нагрузка"
+                  onClick={() => {
+                    setEducatorIdforLk(appData.myProfile.educator.id);
+                    setSelectedComponent("Teachers");
+                    console.log("myProfilea", appData.myProfile.id);
+                  }}
+                  Bg={educatorIdforLk.length != 0 ? "#3B28CC" : "#efedf3"}
+                  textColot={
+                    educatorIdforLk.length === 0 ? "#000000" : "#efedf3"
+                  }
+                />
+              )}
             </div>
             <div className={styles.header_left_component}>
               <Warnings
@@ -248,28 +300,49 @@ function HomePage() {
           </div>
           <div className={styles.header_bottom}>
             <div className={styles.header_bottom_button}>
-              {selectedComponent === "Disciplines" && (
-                <>
-                  <ListKaf
-                    dataList={departments}
-                    defaultValue={basicTabData.tableDepartment[0]?.name}
-                    setTableMode={setTableMode}
-                  />
-                  <Button
-                    Bg={tableMode === "genInstitute" ? "#3B28CC" : "#efedf3"}
-                    textColot={
-                      tableMode === "cathedrals" ? "#000000" : "#efedf3"
-                    }
-                    text="Общеинститутские"
-                    onClick={() => {
-                      setTableMode("genInstitute");
-                      EditTableData("genInstitute");
-                      basicTabData.setselectISOid(true);
-                      basicTabData.funUpdateTable("0");
-                    }}
-                  />
-                </>
-              )}
+              {appData.metodRole[appData.myProfile?.role]?.some(
+                (el) => el === 28
+              ) &&
+                selectedComponent === "Disciplines" && (
+                  <>
+                    <Button
+                      Bg={!kafedralIsOpen ? "#3B28CC" : "#efedf3"}
+                      textColot={kafedralIsOpen ? "#000000" : "#efedf3"}
+                      text="Общеинститутские"
+                      onClick={() => {
+                        setTableMode("genInstitute");
+                        EditTableData("genInstitute");
+                        basicTabData.setselectISOid(true);
+                        basicTabData.funUpdateTable("0");
+                        setKafedralIsOpen(false);
+                        tabPar.setDataIsOid(true);
+                        tabPar.setSelectedFilter("Все Дисциплины");
+                      }}
+                    />
+                    <Button
+                      Bg={kafedralIsOpen ? "#3B28CC" : "#efedf3"}
+                      textColot={!kafedralIsOpen ? "#000000" : "#efedf3"}
+                      text="Кафедральные"
+                      onClick={() => {
+                        basicTabData.funUpdateTable("14");
+                        tabPar.setDataIsOid(false);
+                        setKafedralIsOpen(true);
+                        basicTabData.setselectISOid(false);
+                        console.log(basicTabData.selectISOid);
+                        basicTabData.setnameKaf("Все");
+                        tabPar.setSelectedFilter("Все Дисциплины");
+                      }}
+                    />
+                    {!basicTabData.selectISOid && (
+                      <ListKaf
+                        dataList={departments}
+                        defaultValue={"Все"}
+                        setTableMode={setTableMode}
+                      />
+                    )}
+                  </>
+                )}
+
               {selectedComponent === "Disciplines" && <FiltredRows />}
             </div>
 
@@ -288,13 +361,6 @@ function HomePage() {
               </div>
               {selectedComponent === "Disciplines" && (
                 <div className={styles.import}>
-                  {/* <input
-                    type="file"
-                    ref={fileInputRef}
-                    style={{ display: "none" }}
-                    // onChange={handleFileChange}
-                  /> */}
-
                   <button onClick={OpenPoPUpFile}>
                     <p>Импорт файла</p>
                     <img src="./img/import.svg" alt=">"></img>
@@ -306,18 +372,7 @@ function HomePage() {
         </div>
         <div className={styles.Block__tables}>
           {selectedComponent === "Disciplines" ? (
-            // <TableDisciplines
-            //   handleFileClear={handleFileClear}
-            //   tableMode={tableMode}
-            //   tableHeaders={tableHeaders}
-            //   searchTerm={searchTerm}
-            //   setSearchTerm={setSearchTerm}
-            //   refProfile={refProfile}
-            //   setOpenModalWind={setOpenModalWind}
-            //   SelectedText={SelectedText}
-            // />
             <TableWorkload
-              // handleFileClear={handleFileClear}
               tableMode={tableMode}
               tableHeaders={tableHeaders}
               searchTerm={searchTerm}
@@ -364,6 +419,7 @@ function HomePage() {
       )}
       {appData.createEdicatorPopUp && <PopUpCreateEmploy />}
       {appData.errorPopUp && <PopUpError />}
+      {appData.godPopUp && <PopUpGoodMessage />}
     </Layout>
   );
 }

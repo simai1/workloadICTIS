@@ -5,14 +5,17 @@ import ArrowBack from "./../../img/arrow-back.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { getDataEducatorLK } from "../../api/services/AssignApiData";
 import { actions } from "../../store/filter/filter.slice";
+import DataContext from "../../context";
 function TableLks(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]);
   const [updatedData, setUpdatedData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [EducatorLkData, setEducatorLkData] = useState([]);
   const [tableData, setTableData] = useState([]);
+  const { appData, basicTabData, checkPar } = React.useContext(DataContext);
   const [tableHeaders, setTableHeaders] = useState([
     { key: "department", label: "Кафедра" },
+    { key: "specialty", label: "Дисциплина" },
     { key: "hoursFirstPeriod", label: "Часы период 1" },
     { key: "hoursSecondPeriod", label: "Часы период 2" },
     { key: "hoursWithoutPeriod", label: "Часы период 3" },
@@ -28,6 +31,7 @@ function TableLks(props) {
   
   //! получаем данные личного кабинета преподавателя
   useEffect(() => {
+    console.log(props.educatorIdforLk)
     getDataEducatorLK(props.educatorIdforLk, setEducatorLkData, setTableData);
   }, [props.educatorIdforLk]);
   console.log("EducatorLkData", EducatorLkData);
@@ -92,13 +96,50 @@ function TableLks(props) {
     return bg;
   }
 
+  // const gettdInnerText = () => {
+  //   if (showFullText) {
+  //     if (
+  //       props.item[props.itemKey.key] === null ||
+  //       props.item[props.itemKey.key] === undefined ||
+  //       props.item[props.itemKey.key] === ""
+  //     ) {
+  //       return "___";
+  //     }
+  //     if (props.itemKey.key === "id") {
+  //       return props.index + 1;
+  //     } else {
+  //       return props.item[props.itemKey.key];
+  //     }
+  //   } else {
+  //     if (props.itemKey.key === "id") {
+  //       return props.index + 1;
+  //     } else if (
+  //       props.item[props.itemKey.key] === null ||
+  //       props.item[props.itemKey.key] === undefined ||
+  //       props.item[props.itemKey.key] === ""
+  //     ) {
+  //       return "___";
+  //     } else if (
+  //       typeof props.item[props.itemKey.key] === "string" &&
+  //       props.item[props.itemKey.key].length > lenSlice
+  //     ) {
+  //       return props.item[props.itemKey.key].slice(0, lenSlice) + "...";
+  //     } else {
+  //       return props.item[props.itemKey.key];
+  //     }
+  //   }
+  // };
+  
   return (
     <div className={styles.TableLks}>
-      <button className={styles.buttonBack} onClick={handleNameClick}>
-        <img src={ArrowBack} alt="arrow"></img>
-        <p>Назад</p>
-      </button>
-
+       {appData.metodRole[appData.myProfile?.role]?.some(
+                (el) => el === 17
+              )&&
+        <button className={styles.buttonBack} onClick={handleNameClick}>
+          <img src={ArrowBack} alt="arrow"></img>
+          <p>Назад</p>
+        </button>
+        }
       <div className={styles.DataLks}>
         <div className={styles.DataLksInner}>
           <div className={styles.DataLksHead}>
@@ -113,8 +154,8 @@ function TableLks(props) {
             </div>
           </div>
 
-          <p>{EducatorLkData?.department}</p>
-          <p>{EducatorLkData?.position}</p>
+          <p>Кафедра: {EducatorLkData?.department}</p>
+          <p>Должность: {EducatorLkData?.position}</p>
           <p>Ставка: {EducatorLkData?.rate}</p>
         </div>
         {/* {tableData[0] && (
@@ -129,7 +170,7 @@ function TableLks(props) {
         )} */}
       </div>
 
-      {tableData[0] && (
+      {tableData[0] ? (
         <div className={styles.TableLks__inner}>
           <table className={styles.TableLks}>
             <thead>
@@ -140,15 +181,37 @@ function TableLks(props) {
               </tr>
             </thead>
             <tbody>
-              {filteredData.map((row, index) => (
-                <tr key={index}>
-                  {Object.keys(row).map((key) => (
-                    <td key={key}>{key === "id" ? index + 1 : row[key]}</td>
-                  ))}
-                </tr>
-              ))}
+            {filteredData.map((row, index) => (
+              <tr key={index} className={styles.tableRow}>
+                {Object.keys(row).map((key) => {
+                  if (key === "specialty") {
+                    return (
+                      <td
+                        key={key}
+                        className={styles.tdspecialtyTd}
+                      >
+                        <div className={styles.tdspecialty}>
+                          <span>
+                            {row[key].length > 100 ? row[key].slice(0, 100) + "..." :
+                            row[key] === "" ? "___" : row[key]}
+                          </span>
+                        </div>
+                      </td>
+                    );
+                  } else {
+                    return (
+                      <td key={key}>{key === "id" ? index + 1 : row[key]}</td>
+                    );
+                  }
+                })}
+              </tr>
+            ))}
             </tbody>
           </table>
+        </div>
+      ):(
+        <div className={styles.notData}>
+          <h2>У вас отсутствуют нагрузки</h2>
         </div>
       )}
     </div>
