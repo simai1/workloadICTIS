@@ -146,7 +146,6 @@ function App() {
   };
   // храним id и ключь измененных td для подсвечивания
   const [changedData, setChangedData] = useState(changedDataObj);
-
   const [isChecked, setIsChecked] = useState([]); // состояние инпутов в SamplePoints
   const [isAllChecked, setAllChecked] = useState(true); // инпут все в SamplePoints
   const checkPar = {
@@ -414,15 +413,12 @@ function App() {
       fastenedData
     );
     // setFiltredData(filterSelected);
+    
     console.log("filterSelected", filterSelected);
     setFiltredData(funSortedFastened(filterSelected, fastenedData));
-    console.log(
-      "funSortedFastened(filterSelected, fastenedData)",
-      funSortedFastened(filterSelected, fastenedData)
-    );
     setSelectedTr([]);
     setOnCheckBoxAll(false);
-  }, [dataIsOid, selectedFilter, workloadDataFix, selectedTable]);
+  }, [dataIsOid, selectedFilter, workloadDataFix, selectedTable, fastenedData]);
 
   //! обновляем вертуальный скролл при переходе на другуюс таблицу
   useEffect(() => {
