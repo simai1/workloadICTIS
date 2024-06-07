@@ -9,10 +9,17 @@ function TableWorkload(props) {
   const { tabPar, visibleDataPar, basicTabData } = useContext(DataContext);
   //! при событии скролл таблицы изменим индекс первого показываемого tr
   const scrollTable = (e) => {
-    visibleDataPar.visibleData !== basicTabData.filtredData.length - 1 &&
-      visibleDataPar.setStartData(
-        Math.floor(e.target.scrollTop / visibleDataPar.heightTd)
-      );
+    const maxStartData =
+      basicTabData.filtredData.length - visibleDataPar.visibleData;
+    visibleDataPar.setStartData(
+      Math.max(
+        0,
+        Math.min(
+          Math.floor(e.target.scrollTop / visibleDataPar.heightTd),
+          maxStartData
+        )
+      )
+    );
   };
 
   //! закрепленные данные ставим в начало таблицы
@@ -45,7 +52,9 @@ function TableWorkload(props) {
       className={styles.tabledisciplinesMain}
       onScroll={scrollTable}
     >
-      {(tabPar.contextMenuShow && tabPar.selectedTr.length != 0) && <ContextMenu />}
+      {tabPar.contextMenuShow && tabPar.selectedTr.length != 0 && (
+        <ContextMenu />
+      )}
       <Table />
     </div>
   );
