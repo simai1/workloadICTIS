@@ -57,9 +57,8 @@ function HomePage() {
     } else {
       basicTabData.funUpdateTable("14");
     } 
-    tabPar.setDataIsOid(true);
-    basicTabData.setselectISOid(true);
     basicTabData.setnameKaf("Все");
+    setKafedralIsOpen(false)
     tabPar.setSelectedFilter("Все Дисциплины");
   };
  
@@ -76,7 +75,7 @@ function HomePage() {
 
   useEffect(() => {
     GetDepartment().then((response) => {
-      setdepartments([...response.data, { id: 14, name: "Все" }]);
+      setdepartments([{ id: 14, name: "Все" }, ...response.data,]);
     });
   }, [basicTabData.tableDepartment]);
 
@@ -266,6 +265,8 @@ function HomePage() {
                 onClick={() => {
                   handleComponentChange("Disciplines");
                   handleButtonClick();
+                  tabPar.setDataIsOid(true);
+                  basicTabData.setselectISOid(true);
                 }}
                 text="Дисциплины"
               />
@@ -281,6 +282,8 @@ function HomePage() {
                   onClick={() => {
                     handleComponentChange("Teachers");
                     handleButtonClick();
+                    tabPar.setDataIsOid(false);
+                    basicTabData.setselectISOid(false);
                   }}
                   text="Преподователи"
                 />
