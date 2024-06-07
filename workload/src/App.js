@@ -3,7 +3,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage/Homepage";
 import DataContext from "./context";
 import Authorization from "./pages/Authorization/Authorization";
-import { bufferRequestToApi, returnPrevState } from "./bufferFunction";
+import {
+  bufferRequestToApi,
+  fixDataBuff,
+  returnPrevState,
+} from "./bufferFunction";
 import { headers } from "./components/TableWorkload/Data";
 import {
   Comment,
@@ -241,30 +245,31 @@ function App() {
     });
   }
 
+  //! функция которая принимает нагрузки из апи и записывает в состояния
+  const funUpdTab = (data) => {
+    console.log("нагрузки по кафедре", data);
+    const dataBd = [...data];
+    setWorkloadData(dataBd);
+    //! функция прокида буффера для преподавателей, часов, и колличества студентов
+    const fixData = UpdateWorkloadForBoofer(
+      funFixEducator(dataBd, bufferAction)
+    );
+    //! функция прокида буффера для разделения соединения и удаления нагрузок
+    const fdb = fixDataBuff(fixData, bufferAction);
+    // зменяем массив преподавателя на его имя
+    const fdfix = FilteredSample(fdb, isChecked);
+    setWorkloadData(fdb);
+    setWorkloadDataFix(fdfix);
+    setFiltredData(fdfix);
+  };
+
   //! функция обновления таблицы
   function funUpdateTable(param = 0) {
-    // const index = basicTabData.tableDepartment.find(
-    //   (el) => el.name === basicTabData.nameKaf
-    // )?.id;
-    // if (index && basicTabData.tableDepartment.length > 0) {
-    //   param = index;
-    // }
     console.log("param", param);
     //param = tableDepartment[0]?.id
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
       Workload("").then((data) => {
-        console.log("нагрузки по кафедре", data);
-        const dataBd = [...data];
-        setWorkloadData(dataBd);
-        const fixData = UpdateWorkloadForBoofer(
-          funFixEducator(dataBd, bufferAction)
-        );
-        // зменяем массив преподавателя на его имя
-        const fdfix = FilteredSample(fixData, isChecked);
-        setWorkloadData(fixData);
-        setWorkloadDataFix(fdfix);
-        setFiltredData(fdfix);
-        console.log("FiltredData", fixData);
+        funUpdTab(data);
       });
     }
     // без параметров - вся абсолютно нагрузка,
@@ -283,24 +288,10 @@ function App() {
     console.log("url", url);
     if (metodRole[myProfile?.role]?.some((el) => el === 14)) {
       Workload(`${url}`).then((data) => {
-        // console.log("нагрузки", data);
-        const dataBd = [...data];
-        setWorkloadData(dataBd);
-        const fixData = UpdateWorkloadForBoofer(
-          funFixEducator(dataBd, bufferAction)
-        );
-        console.log("fixData Да это оно", fixData);
-
-        const fdfix = FilteredSample(fixData, isChecked);
-        setWorkloadData(fixData);
-        setWorkloadDataFix(fdfix);
-        setFiltredData(fdfix);
+        funUpdTab(data);
       });
     }
   }
-  useEffect(() => {
-    console.log("FiltredData", filtredData);
-  }, [filtredData]);
 
   //!функция прокида буфера
   function UpdateWorkloadForBoofer(data) {
@@ -339,7 +330,6 @@ function App() {
           obj.push(o);
         }
       });
-      console.log("ObjEditNoSave", obj);
       return data.map((item) => {
         if (obj.find((e) => e.id === item.id)) {
           return obj.find((e) => e.id === item.id);
@@ -413,8 +403,7 @@ function App() {
       fastenedData
     );
     // setFiltredData(filterSelected);
-    
-    console.log("filterSelected", filterSelected);
+
     setFiltredData(funSortedFastened(filterSelected, fastenedData));
     setSelectedTr([]);
     setOnCheckBoxAll(false);
@@ -437,7 +426,6 @@ function App() {
   useEffect(() => {
     const fd = funSortedFastened(filtredData, fastenedData);
     setFiltredData(fd);
-    console.log("funSortedFastened(filtredData, fastenedData)", fd);
   }, [fastenedData, filtredData]);
 
   //! следим за нажатием ctrl + s для сохранения изменений
@@ -500,7 +488,6 @@ function App() {
         newArray.splice(deletedIndex, 0, ...bufferAction[0].prevState);
         setWorkloadDataFix(newArray);
         // убираем заблокированные элементы
-        console.log(tabPar.changedData);
         let cd = { ...tabPar.changedData };
         let cdJoin = [...cd.join];
         cdJoin = cdJoin.filter(

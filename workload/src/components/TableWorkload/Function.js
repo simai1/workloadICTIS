@@ -52,7 +52,7 @@ export function filteredWorkload(data, text) {
 
 //! функция поднятия закрпепленных наверх таблицы
 export function funSortedFastened(data, fastenedData) {
-  if(fastenedData){
+  if (fastenedData) {
     const fd = [];
     fastenedData?.map((item) => {
       fd.push(item.workloadId);
@@ -69,8 +69,8 @@ export function funSortedFastened(data, fastenedData) {
       return 0; // Не изменять порядок, если оба элемента в secondArray или оба не в secondArray
     });
     return sortedArray;
-  }else{
-    return data
+  } else {
+    return data;
   }
 }
 
@@ -152,7 +152,6 @@ export function deleteItemBuffer(buff, itemId, type) {
       if (item.request === type) {
         let p = { ...item };
         itemData = p;
-        console.log(p.data.ids);
         p.data.ids = p.data.ids.filter((id) => id !== itemId);
         if (p.data.ids.length > 0) {
           return p;
@@ -164,6 +163,7 @@ export function deleteItemBuffer(buff, itemId, type) {
       }
     })
     .filter(Boolean);
+  console.log("newBuffer", newBuffer);
   return { buffer: newBuffer, item: itemData };
 }
 

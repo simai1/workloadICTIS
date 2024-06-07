@@ -29,7 +29,6 @@ function OverlapWindow(props) {
     } else if (props.getConfirmation.type === 2) {
       const dat = { ...props.getConfirmation.data };
       console.log("dat", dat);
-
       let buff = [...appData.bufferAction];
       let itemBuff = buff.find((el) => el.id === dat.id);
       let index = buff.findIndex((el) => el.id === dat.id);
@@ -41,11 +40,15 @@ function OverlapWindow(props) {
       };
       let bnids = [...itemBuff.newIds];
       const bnidsNew = bnids.filter((el) => !dat.newIds.some((e) => e === el));
+      const newState = itemBuff.newState.filter(
+        (el) => el.id !== dat.newState.id
+      );
       let ps = itemBuff.prevState.filter((el) => el.id !== dat.prevState.id);
       let buffDat = {
         id: dat.id,
         data: newbd,
         newIds: bnidsNew,
+        newState: newState,
         prevState: ps,
         request: "splitWorkload",
       };
@@ -117,6 +120,9 @@ function OverlapWindow(props) {
         );
         basicTabData.setWorkloadDataFix(
           basicTabData.workloadDataFix.filter((item) => item.id !== props.itid)
+        );
+        basicTabData.setWorkloadData(
+          basicTabData.workloadData.filter((item) => item.id !== props.itid)
         );
         let changed = { ...tabPar.changedData };
         changed.deleted = changed.deleted.filter((item) => item !== props.itid);
