@@ -190,3 +190,12 @@ export const funGetConfirmation = (itemId, changedData, bufferAction) => {
     };
   } else return { blocked: false, height: "150px", top: "0", type: 0 };
 };
+
+//! ИСТОРИЯ
+//! разделяем историю по типам
+export function funHistoryFix(history) {
+  console.log(history);
+  // const newHistory = history.map((item)=>{
+
+  // })
+}

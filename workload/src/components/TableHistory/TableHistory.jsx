@@ -1,7 +1,11 @@
 import React, { useContext, useEffect } from "react";
 import Table from "./Table";
 import styles from "./TableWorkload.module.scss";
-import { filteredWorkload, funfastenedDataSort } from "./Function";
+import {
+  filteredWorkload,
+  funHistoryFix,
+  funfastenedDataSort,
+} from "./Function";
 import DataContext from "../../context";
 import ContextMenu from "../../ui/ContextMenu/ContextMenu";
 
@@ -45,6 +49,13 @@ function TableHistory(props) {
     tabPar.setContextPosition({ x: e.pageX + plusX, y: e.pageY + plusY });
     tabPar.setContextMenuShow(!tabPar.contextMenuShow);
   };
+
+  useEffect(() => {
+    console.log("история изменений", basicTabData.historyChanges);
+    //! разделяем историю по типам
+    const fixHistory = funHistoryFix(basicTabData.historyChanges);
+    console.log("fixHistory", fixHistory);
+  }, [basicTabData.historyChanges]);
 
   return (
     <div

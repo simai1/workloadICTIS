@@ -55,11 +55,11 @@ function ListKaf({
   //! функция при клике на история
   const clickHistory = (item) => {
     apiGetHistory().then((req) => {
-      console.log(req);
+      basicTabData.setHistoryChanges(req);
       setactiveList(false);
       setopenLists("");
-      appData.setSelectedComponent("History");
     });
+    appData.setSelectedComponent("History");
   };
 
   return (

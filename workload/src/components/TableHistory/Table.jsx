@@ -83,7 +83,7 @@ function Table(props) {
 
   //определение каласса tr
   const getClassNameTr = (items) => {
-    const itemId = items.id
+    const itemId = items.id;
     let classText = null;
     classText = tabPar.selectedTr?.includes(itemId)
       ? `${styles.selectedTr}`
@@ -96,10 +96,11 @@ function Table(props) {
       : classText;
     classText =
       tabPar.changedData.split?.find((el) => el === itemId) ||
-      tabPar.changedData.join?.find((el) => el === itemId) || (items.isBlocked)
-        ? `${classText} ${styles.trBlocked}` 
+      tabPar.changedData.join?.find((el) => el === itemId) ||
+      items.isBlocked
+        ? `${classText} ${styles.trBlocked}`
         : classText;
-    
+
     return classText;
   };
 
@@ -172,7 +173,6 @@ function Table(props) {
                     ? null
                     : () => clickTrContetx(item.id)
                 }
-                
                 key={item.id}
               >
                 <InputCheckbox
