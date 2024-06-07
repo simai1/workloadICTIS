@@ -54,6 +54,18 @@ export const EducatorLK = async (data) => {
   }
 };
 
+//! получаем историю блокированных таблиц
+export const apiGetHistory = async (data) => {
+  try {
+    const response = await http.get(`${server}/history/getAll`);
+    console.log("история", response);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
 export const CreateEducator = async (data) => {
   try {
     const response = await http.post(`${server}/educator/`, data);
