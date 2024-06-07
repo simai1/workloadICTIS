@@ -65,7 +65,9 @@ const ContextMenu = (props) => {
 
   //! Выбор преподавателя
   const selectedEducator = (id) => {
+    tabPar.setContextMenuShow(!tabPar.contextMenuShow);
     setMenuShow("");
+
     const data = {
       workloadId: tabPar.selectedTr[0],
       educatorId: id,
@@ -78,9 +80,18 @@ const ContextMenu = (props) => {
           tabPar.selectedTr[0],
           dataReq.name
         );
+        const edicatorName = { edicatorName: dataReq.name };
         basicTabData.setWorkloadDataFix(newData);
+        basicTabData.setFiltredData(newData);
+        const workloadId = data.workloadId;
         appData.setBufferAction([
-          { request: "addEducatorWorkload", data, prevState },
+          {
+            request: "addEducatorWorkload",
+            data,
+            prevState,
+            edicatorName,
+            workloadId,
+          },
           ...appData.bufferAction,
         ]);
         //! занесем id измененнных данных в состояние
@@ -131,40 +142,45 @@ const ContextMenu = (props) => {
   };
 
   //! Деление нагрузки на count
-  const handleSplitWorkload = (count) => {
-    setMenuShow("");
-    const data = {
+  const handleSplitWorkload = (cou) => {
+    const count = Number(cou);
+    console.log("tabPar.selectedTr", tabPar.selectedTr);
+
+    const dataSel = {
       ids: tabPar.selectedTr,
       n: count,
     };
-    console.log(data);
+
+    console.log("dataContextMenu", dataSel);
     const prev = basicTabData.workloadDataFix.filter((item) =>
       tabPar.selectedTr.some((el) => el === item.id)
     );
+
     // Создаем новый массив для измененных данных
     let updatedData = [...basicTabData.workloadDataFix];
     const funData = splitWorkloadCount(updatedData, tabPar.selectedTr, count);
     basicTabData.setWorkloadDataFix(funData.updatedData);
     tabPar.setChangedData(
-      addСhangedData(tabPar.changedData, "splitjoin", funData.blocked)
+      addСhangedData(tabPar.changedData, "split", funData.blocked)
     );
-
     //! буфер
     appData.setBufferAction([
       {
+        id: appData.bufferAction.length,
         request: "splitWorkload",
-        data: data,
-        prevState: prev,
-        newIds: funData.newIds,
+        data: dataSel,
+        prevState: [...prev],
+        newIds: [...funData.newIds],
       },
       ...appData.bufferAction,
     ]);
     //! занесем id измененнных данных в состояние
     tabPar.setChangedData(
-      addСhangedData(tabPar.changedData, "splitjoin", funData.newIds)
+      addСhangedData(tabPar.changedData, "split", funData.newIds)
     );
     tabPar.setSelectedTr([]);
     tabPar.setContextMenuShow(false);
+    setMenuShow("");
   };
 
   //! соединение нагрузок
@@ -186,11 +202,16 @@ const ContextMenu = (props) => {
       basicTabData.setWorkloadDataFix(funData.newUpdatedData);
       //! буфер
       appData.setBufferAction([
-        { request: "joinWorkloads", data: data, prevState: funData.prevState },
+        {
+          id: appData.bufferAction.length,
+          request: "joinWorkloads",
+          data: data,
+          prevState: funData.prevState,
+        },
         ...appData.bufferAction,
       ]);
       tabPar.setChangedData(
-        addСhangedData(tabPar.changedData, "splitjoin", data.ids)
+        addСhangedData(tabPar.changedData, "join", data.ids)
       );
     }
     tabPar.setContextMenuShow(false);

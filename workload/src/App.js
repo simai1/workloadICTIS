@@ -81,7 +81,11 @@ function App() {
   const [allOffersData, setAllOffersData] = useState([]); // предложения
   const [selectkafedra, setselectkafedra] = useState(""); //state выбранной кафедры
   const [actionUpdTabTeach, setActionUpdTabTeach] = useState(false); // при изменении обновляется таблицы преподавателей
-  const  [tableDepartment, settableDepartment] = useState([])
+  const [tableDepartment, settableDepartment] = useState([]);
+  const [selectISOid, setselectISOid] = useState(false);
+  // const [nameKaf, setnameKaf] = useState("");
+  const [nameKaf, setnameKaf] = useState("Все");
+
   const basicTabData = {
     updateAlldata,
     tableHeaders,
@@ -105,7 +109,10 @@ function App() {
     selectkafedra,
     actionUpdTabTeach,
     setActionUpdTabTeach,
-    tableDepartment
+    tableDepartment,
+    nameKaf,
+    setnameKaf,
+    setselectISOid,
   };
 
   const [coloredData, setColoredData] = useState([]); // выделенные цветом
@@ -119,14 +126,18 @@ function App() {
   const [spShow, setSpShow] = useState(null); // отображение модального окна th
   const [contextMenuShow, setContextMenuShow] = useState(false); // показать скрыть контекст меню
   const [contextPosition, setContextPosition] = useState({ x: 300, y: 300 }); // позиция контекст меню в таблице
-  const [changedData, setChangedData] = useState({
-    // храним id и ключь измененных td для подсвечивания
-    splitjoin: [],
+
+  const changedDataObj = {
+    split: [],
+    join: [],
     educator: [],
     hours: [],
     numberOfStudents: [],
     deleted: [],
-  });
+  };
+  // храним id и ключь измененных td для подсвечивания
+  const [changedData, setChangedData] = useState(changedDataObj);
+
   const [isChecked, setIsChecked] = useState([]); // состояние инпутов в SamplePoints
   const [isAllChecked, setAllChecked] = useState(true); // инпут все в SamplePoints
   const checkPar = {
@@ -172,6 +183,7 @@ function App() {
     setFastenedData,
     coloredData,
     setColoredData,
+    changedDataObj,
     changedData,
     setChangedData,
     selectedFilter,
@@ -198,27 +210,36 @@ function App() {
   function funUpdateFastenedData() {
     getAllAttaches().then((data) => {
       console.log("закрепленные", data);
-      setFastenedData(data);
+      if(data.length > 0){
+        setFastenedData(data);
+      }
     });
   }
-//! Функция обновления существующих кафедр таблицы 
-function funGetDepartment(){
-  GetDepartment().then((response)=>{
-    settableDepartment(response.data)
-  })
-}
-
+  //! Функция обновления существующих кафедр таблицы
+  function funGetDepartment() {
+    GetDepartment().then((response) => {
+      settableDepartment([...response.data, { id: 13, name: "Все" }]);
+      // setnameKaf(response.data[0].name);
+    });
+  }
 
   //! функция получения выделенных цветом строк
   function funUpdateAllColors() {
     getAllColors().then((data) => {
       console.log("выделенные", data);
-      setColoredData(data);
+      if(data.length > 0){
+        setColoredData(data);
+      }
     });
   }
 
+  useEffect(() => {
+    console.log(nameKaf);
+  }, [nameKaf]);
+
   //! функция обновления таблицы
-  function funUpdateTable(param = "") {
+  function funUpdateTable(param = 13) {
+    //param = tableDepartment[0]?.id
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
       apiGetWorkloadDepartment().then((data) => {
         console.log("нагрузки по кафедре", data);
@@ -235,26 +256,96 @@ function funGetDepartment(){
     // ?isOid=false - вся кафедральная нагрузка,
     // ?department={номер кафедры} - нагрузка одной кафедры
     let url = "";
-    param != "0" ? (url = `?department=${param}`) : (url = "?isOid=true");
-
-    console.log(url);
+    if (param == "0") {
+      url = "?isOid=true";
+    }
+    if (param == "13") {
+      url = ``;
+    } else if (param != 13 && param != 0) {
+      url = `?department=${param}`;
+    }
+    console.log("url", url);
     if (metodRole[myProfile?.role]?.some((el) => el === 14)) {
       Workload(`${url}`).then((data) => {
-        console.log("нагрузки", data);
+        // console.log("нагрузки", data);
         const dataBd = [...data];
         setWorkloadData(dataBd);
-        // зменяем массив преподавателя на его имя
-        const fixData = funFixEducator(dataBd);
+        const fixData = UpdateWorkloadForBoofer(
+          funFixEducator(dataBd, bufferAction)
+        );
+        console.log("fixData Да это оно", fixData);
         setWorkloadDataFix(fixData);
         setFiltredData(fixData);
       });
     }
   }
 
+  //!функция прокида буфера
+  function UpdateWorkloadForBoofer(data) {
+    if (bufferAction.length !== 0) {
+      const newData = [...data];
+      let obj = [];
+      bufferAction.map((item) => {
+        let existingObj = obj.find((el) => el.id === item.workloadId);
+        if (existingObj) {
+          if (item.request === "addEducatorWorkload") {
+            existingObj.educator = item.edicatorName.edicatorName;
+          }
+          if (item.request === "workloadUpdata") {
+            if (item.data.key === "numberOfStudents") {
+              existingObj.numberOfStudents = item.data.value;
+            }
+            if (item.data.key === "hours") {
+              existingObj.hours = item.data.value;
+            }
+          }
+        } else {
+          let o = {
+            ...newData[newData.findIndex((el) => el.id === item.workloadId)],
+          };
+          if (item.request === "addEducatorWorkload") {
+            o.educator = item.edicatorName.edicatorName;
+          }
+          if (item.request === "workloadUpdata") {
+            if (item.data.key === "numberOfStudents") {
+              o.numberOfStudents = item.data.value;
+            }
+            if (item.data.key === "hours") {
+              o.hours = item.data.value;
+            }
+          }
+          obj.push(o);
+        }
+      });
+      console.log("ObjEditNoSave", obj);
+      return data.map((item) => {
+        if (obj.find((e) => e.id === item.id)) {
+          return obj.find((e) => e.id === item.id);
+        } else if (item.educator === null || item.educator === undefined) {
+          return {
+            ...item,
+            educator: item.educator ? item.educator.name : "___",
+          };
+        } else if (item.educator.name) {
+          return {
+            ...item,
+            educator: item.educator.name,
+          };
+        } else {
+          return item;
+        }
+      });
+    } else {
+      return data;
+    }
+  }
+
   //! функция обновления всех данных
   function updateAlldata() {
+    selectISOid
+      ? funUpdateTable(0)
+      : funUpdateTable(tableDepartment.find((el) => el.name === nameKaf)?.id);
     // получаем данные таблицы
-    funUpdateTable();
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 20)) {
       // получаем все комментарии
       funUpdateAllComments();
@@ -282,7 +373,7 @@ function funGetDepartment(){
     if (myProfile) {
       updateAlldata();
     }
-  }, [myProfile]);
+  }, [myProfile, tableDepartment[0]]);
 
   //! при переходе с кафедральных на общеинституские и обратно фильтруем основные
   //! фильтруем по FiltredRows
@@ -304,6 +395,10 @@ function funGetDepartment(){
   //! обновляем вертуальный скролл при переходе на другуюс таблицу
   useEffect(() => {
     setStartData(0);
+    const table = document.querySelector("table");
+    if (table) {
+      table.scrollIntoView(true);
+    }
   }, [dataIsOid, selectedFilter, selectedTable]);
 
   // useEffect(() => {
@@ -315,9 +410,9 @@ function funGetDepartment(){
     setFiltredData(funSortedFastened(filtredData, fastenedData));
   }, [fastenedData, filtredData]);
 
+  //! следим за нажатием ctrl + s для сохранения изменений
   useEffect(() => {
     const handleKeyDown = (event) => {
-      //! следим за нажатием ctrl + s для сохранения изменений
       if (event.ctrlKey && (event.key === "s" || event.key === "ы")) {
         event.preventDefault();
         console.log("Сохранено", bufferAction);
@@ -326,13 +421,7 @@ function funGetDepartment(){
           updateAlldata();
         });
         setSelectedTr([]);
-        setChangedData({
-          splitjoin: [],
-          educator: [],
-          hours: [],
-          numberOfStudents: [],
-          deleted: [],
-        });
+        setChangedData(changedDataObj);
         console.log("выполнено и очищено", bufferAction);
       }
     };
@@ -370,7 +459,7 @@ function funGetDepartment(){
         setBufferAction((prevItems) => prevItems.slice(1));
       } else if (bufferAction[0].request === "joinWorkloads") {
         // удаляем нагрузку которую обьеденили
-        const dataTable = workloadDataFix.filter(
+        const dataTable = [...workloadDataFix].filter(
           (item) => !bufferAction[0].prevState.some((el) => el.id === item.id)
         );
         // сохраняем индекс удаленного элемента
@@ -381,19 +470,35 @@ function funGetDepartment(){
         newArray.splice(deletedIndex, 0, ...bufferAction[0].prevState);
         setWorkloadDataFix(newArray);
         // убираем заблокированные элементы
-        setChangedData((prev) =>
-          prev.filter(
-            (el) => !bufferAction[0].prevState.some((item) => item.id !== el)
-          )
+        console.log(tabPar.changedData);
+        let cd = { ...tabPar.changedData };
+        let cdJoin = [...cd.join];
+        cdJoin = cdJoin.filter(
+          (el) => !bufferAction[0].prevState.some((item) => item.id !== el)
         );
+        cd.join = cdJoin;
+        setChangedData(cd);
+        setBufferAction((prevItems) => prevItems.slice(1));
       } else if (bufferAction[0].request === "splitWorkload") {
-        // отмена разделения нагрузки
-        setWorkloadDataFix(
-          workloadDataFix.filter(
-            (item) => !bufferAction[0].newIds.includes(item.id)
-          )
+        let datMap = { ...bufferAction[0] };
+        const wdfNew = [...workloadDataFix]
+          .map((item) => {
+            if (datMap.newIds.some((el) => el === item.id)) {
+              if (item.id[item.id.length - 1] === "0") {
+                return datMap.prevState.find(
+                  (e) => e.id === item.id.slice(0, -1)
+                );
+              }
+            } else return item;
+          })
+          .filter((el) => el !== undefined);
+        setWorkloadDataFix(wdfNew);
+        let changed = { ...changedData };
+        changed.split = changed.split.filter(
+          (item) => !datMap.newIds.some((el) => el === item)
         );
-        setWorkloadDataFix((prev) => [bufferAction[0].prevState[0], ...prev]);
+        setBufferAction((prevItems) => prevItems.slice(1));
+        setChangedData(changed);
       } else if (bufferAction[0].request === "workloadUpdata") {
         //отмена изменения даннных textarea
         const newData = [...workloadDataFix];
