@@ -29,6 +29,7 @@ import {
 import ConfirmSaving from "../../ui/ConfirmSaving/ConfirmSaving";
 import socketConnect from "../../api/services/socket";
 import PopUpGoodMessage from "../../ui/PopUpGoodMessage/PopUpGoodMessage";
+import TableHistory from "../../components/TableHistory/TableHistory";
 
 function HomePage() {
   const { appData, tabPar, visibleDataPar, basicTabData } =
@@ -39,7 +40,7 @@ function HomePage() {
   const educatorLkHeaders = tableHeadersLks; // заголовок страницы личного кабинета
   const [tableHeaders, setTableHeaders] = useState(workloadTableHeaders);
   const [filePopUp, setfilePopUp] = useState(false);
-  const [selectedComponent, setSelectedComponent] = useState("Disciplines");
+  // const [appData.selectedComponent, appData.setSelectedComponent] = useState("Disciplines");
   const [tableMode, setTableMode] = useState("cathedrals"); //выбранный компонент
   const [educatorData, setEducatorData] = useState([]); // данные о преподавателе получаем в TableTeachers
   const [searchTerm, setSearchTerm] = useState(""); //поиск по таблице
@@ -56,13 +57,13 @@ function HomePage() {
       basicTabData.funUpdateTable("0");
     } else {
       basicTabData.funUpdateTable("14");
-    } 
+    }
     tabPar.setDataIsOid(true);
     basicTabData.setselectISOid(true);
     basicTabData.setnameKaf("Все");
     tabPar.setSelectedFilter("Все Дисциплины");
   };
- 
+
   //! связь с сокетом
   useEffect(() => {
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 23)) {
@@ -81,7 +82,7 @@ function HomePage() {
   }, [basicTabData.tableDepartment]);
 
   const handleComponentChange = (component) => {
-    setSelectedComponent(component);
+    appData.setSelectedComponent(component);
     tabPar.setSelectedTable(component);
     if (component === "Disciplines") {
       basicTabData.setTableHeaders(workloadTableHeaders);
@@ -259,9 +260,15 @@ function HomePage() {
             </div>
             <div className={styles.header_button}>
               <Button
-                Bg={selectedComponent === "Disciplines" ? "#3B28CC" : "#efedf3"}
+                Bg={
+                  appData.selectedComponent === "Disciplines"
+                    ? "#3B28CC"
+                    : "#efedf3"
+                }
                 textColot={
-                  selectedComponent === "Disciplines" ? "#efedf3" : "#000000"
+                  appData.selectedComponent === "Disciplines"
+                    ? "#efedf3"
+                    : "#000000"
                 }
                 onClick={() => {
                   handleComponentChange("Disciplines");
@@ -274,9 +281,16 @@ function HomePage() {
                 (el) => el === 3
               ) && (
                 <Button
-                  Bg={selectedComponent === "Teachers" ? "#3B28CC" : "#efedf3"}
+                  Bg={
+                    appData.selectedComponent === "Teachers"
+                      ? "#3B28CC"
+                      : "#efedf3"
+                  }
                   textColot={
-                    selectedComponent === "Disciplines" ? "#000000" : "#efedf3"
+                    appData.selectedComponent === "Disciplines" ||
+                    appData.selectedComponent === "History"
+                      ? "#000000"
+                      : "#efedf3"
                   }
                   onClick={() => {
                     handleComponentChange("Teachers");
@@ -292,7 +306,7 @@ function HomePage() {
                   text="Моя нагрузка"
                   onClick={() => {
                     setEducatorIdforLk(appData.myProfile.educator.id);
-                    setSelectedComponent("Teachers");
+                    appData.setSelectedComponent("Teachers");
                     console.log("myProfilea", appData.myProfile.id);
                   }}
                   Bg={educatorIdforLk.length != 0 ? "#3B28CC" : "#efedf3"}
@@ -307,7 +321,7 @@ function HomePage() {
                 setEducatorIdforLk={setEducatorIdforLk}
                 educatorIdforLk={educatorIdforLk}
                 className={styles.Warnings}
-                setSelectedComponent={setSelectedComponent}
+                setSelectedComponent={appData.setSelectedComponent}
                 setEducatorData={setEducatorData}
               />
               <Profile
@@ -339,7 +353,8 @@ function HomePage() {
               {appData.metodRole[appData.myProfile?.role]?.some(
                 (el) => el === 28
               ) &&
-                selectedComponent === "Disciplines" && (
+                (appData.selectedComponent === "Disciplines" ||
+                  appData.selectedComponent === "History") && (
                   <>
                     <Button
                       Bg={!kafedralIsOpen ? "#3B28CC" : "#efedf3"}
@@ -379,23 +394,25 @@ function HomePage() {
                   </>
                 )}
 
-              {selectedComponent === "Disciplines" && <FiltredRows />}
+              {(appData.selectedComponent === "Disciplines" ||
+                appData.selectedComponent === "History") && <FiltredRows />}
             </div>
 
             <div className={styles.right_button}>
               <div className={styles.EditInput}>
                 {educatorIdforLk === "" && (
                   <EditInput
-                    selectedComponent={selectedComponent}
+                    selectedComponent={appData.selectedComponent}
                     originalHeader={
-                      selectedComponent === "Disciplines"
+                      appData.selectedComponent === "Disciplines"
                         ? workloadTableHeaders
                         : educatorTableHeaders
                     } //! исправить не обновляется
                   />
                 )}
               </div>
-              {selectedComponent === "Disciplines" && (
+              {(appData.selectedComponent === "Disciplines" ||
+                appData.selectedComponent === "History") && (
                 <div className={styles.import}>
                   <button onClick={OpenPoPUpFile}>
                     <p>Импорт файла</p>
@@ -407,7 +424,7 @@ function HomePage() {
           </div>
         </div>
         <div className={styles.Block__tables}>
-          {selectedComponent === "Disciplines" ? (
+          {appData.selectedComponent === "Disciplines" ? (
             <TableWorkload
               tableMode={tableMode}
               tableHeaders={tableHeaders}
@@ -416,7 +433,8 @@ function HomePage() {
               refProfile={refProfile}
               setOpenModalWind={setOpenModalWind}
             />
-          ) : selectedComponent === "Teachers" && educatorIdforLk === "" ? (
+          ) : appData.selectedComponent === "Teachers" &&
+            educatorIdforLk === "" ? (
             <TableTeachers
               setEducatorIdforLk={setEducatorIdforLk}
               changeInput={changeInput}
@@ -426,7 +444,8 @@ function HomePage() {
               setSearchTerm={setSearchTerm}
               setEducatorData={setEducatorData}
             />
-          ) : selectedComponent === "Teachers" && educatorIdforLk !== "" ? (
+          ) : appData.selectedComponent === "Teachers" &&
+            educatorIdforLk !== "" ? (
             <TableLks
               setEducatorIdforLk={setEducatorIdforLk}
               educatorIdforLk={educatorIdforLk}
@@ -434,6 +453,15 @@ function HomePage() {
               setTableHeaders={setTableHeaders}
               searchTerm={searchTerm}
               educatorData={educatorData}
+            />
+          ) : appData.selectedComponent === "History" ? (
+            <TableHistory
+              tableMode={tableMode}
+              tableHeaders={tableHeaders}
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              refProfile={refProfile}
+              setOpenModalWind={setOpenModalWind}
             />
           ) : null}
         </div>

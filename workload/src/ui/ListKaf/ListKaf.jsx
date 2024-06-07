@@ -13,7 +13,7 @@ function ListKaf({
   setTableMode,
   setisBlocked,
 }) {
-  const { tabPar, basicTabData } = React.useContext(DataContext);
+  const { tabPar, appData, basicTabData } = React.useContext(DataContext);
   const [activeList, setactiveList] = useState(false);
   const [openLists, setopenLists] = useState("");
   const setopenList = (index) => {
@@ -58,6 +58,7 @@ function ListKaf({
       console.log(req);
       setactiveList(false);
       setopenLists("");
+      appData.setSelectedComponent("History");
     });
   };
 

@@ -57,7 +57,7 @@ function App() {
   const [godPopUp, setgodPopUp] = useState(false); //popUp good visible
 
   const [createEdicatorPopUp, setcreateEdicatorPopUp] = useState(false); //popUp error visible
-
+  const [selectedComponent, setSelectedComponent] = useState("Disciplines");
   const appData = {
     individualCheckboxes,
     setIndividualCheckboxes,
@@ -82,6 +82,8 @@ function App() {
     backBuffer,
     setgodPopUp,
     godPopUp,
+    selectedComponent,
+    setSelectedComponent,
   };
 
   // ! параметры таблицы
@@ -97,6 +99,7 @@ function App() {
   const [selectISOid, setselectISOid] = useState(true);
   // const [nameKaf, setnameKaf] = useState("");
   const [nameKaf, setnameKaf] = useState("Все");
+  const [historyChanges, setHistoryChanges] = useState([]);
 
   const basicTabData = {
     updateAlldata,
@@ -126,6 +129,8 @@ function App() {
     setnameKaf,
     setselectISOid,
     selectISOid,
+    historyChanges,
+    setHistoryChanges,
   };
 
   const [coloredData, setColoredData] = useState([]); // выделенные цветом
@@ -316,7 +321,7 @@ function App() {
           //   console.log('existingObj', existingObj)
           // }
         } else {
-          let o = {  
+          let o = {
             ...newData[newData.findIndex((el) => el.id === item.workloadId)],
           };
           if (item.request === "addEducatorWorkload") {
