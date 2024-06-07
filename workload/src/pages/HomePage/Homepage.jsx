@@ -56,13 +56,13 @@ function HomePage() {
       basicTabData.funUpdateTable("0");
     } else {
       basicTabData.funUpdateTable("14");
-    }
+    } 
     tabPar.setDataIsOid(true);
     basicTabData.setselectISOid(true);
     basicTabData.setnameKaf("Все");
     tabPar.setSelectedFilter("Все Дисциплины");
   };
-
+ 
   //! связь с сокетом
   useEffect(() => {
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 23)) {

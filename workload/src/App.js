@@ -312,8 +312,11 @@ function App() {
               existingObj.hours = item.data.value;
             }
           }
+          // if( item.request === "splitWorkload"){
+          //   console.log('existingObj', existingObj)
+          // }
         } else {
-          let o = {
+          let o = {  
             ...newData[newData.findIndex((el) => el.id === item.workloadId)],
           };
           if (item.request === "addEducatorWorkload") {

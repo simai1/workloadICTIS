@@ -7,7 +7,14 @@ import arrowBlack from "./../../img/arrow_down.svg";
 function ListKaf({ dataList, Textlabel, defaultValue, name, setTableMode,setisBlocked }) {
   const { tabPar, basicTabData } = React.useContext(DataContext);
   const [activeList, setactiveList] = useState(false);
-
+  const [openLists, setopenLists] = useState("");
+  const setopenList = (index) =>{
+    if(index === openLists){
+      setopenLists("")
+    }else{
+      setopenLists(index)
+    }
+  }
   const addKafedra = (el) => {
     console.log(el);
     basicTabData.setnameKaf(el.name);
@@ -17,21 +24,27 @@ function ListKaf({ dataList, Textlabel, defaultValue, name, setTableMode,setisBl
     setTableMode("cathedrals");
     basicTabData.funUpdateTable(el.id);
     tabPar.setSelectedFilter("Все Дисциплины");
+    setopenLists("");
   };
+
+
 
   const refDiv = useRef(null);
   //! закрытие модального окна при нажати вне него
   useEffect(() => {
     console.log("defaultValue", defaultValue);
+    setopenLists("");
     const handler = (event) => {
       if (refDiv.current && !refDiv.current.contains(event.target)) {
         setactiveList(false);
+        setopenLists("")
       }
     };
     document.addEventListener("click", handler, true);
     return () => {
       document.removeEventListener("click", handler);
     };
+  
   }, []);
 
   return (
@@ -79,15 +92,24 @@ function ListKaf({ dataList, Textlabel, defaultValue, name, setTableMode,setisBl
         </div>
         {activeList && (
           <div className={styles.ListData}>
-            {dataList.map((item) => (
-              <p
-                className={styles.NameForList}
-                onClick={() => addKafedra(item)}
-                key={item.id}
-                style={item.blocked ? { color:"#E81414"} : null}
-              >
-                {item.name}
-              </p>
+            
+
+            {dataList.map((item, index) => (
+              <div>
+               <p
+               className={styles.NameForList}
+               onClick={!item.blocked ? () => addKafedra(item) : () => setopenList(index)}
+               style={item.blocked ? { color: "#E81414" } : null}
+             >
+               {item.name}
+             </p>
+             {item.blocked && openLists === index && (
+               <div   className={styles.ListVRot}>
+                 <p className={styles.NameForList} onClick={() => addKafedra(item)}>Нагрузка</p>
+                 <p className={styles.NameForList}>История</p>
+               </div>
+             )}
+              </div>
             ))}
           </div>
         )}
