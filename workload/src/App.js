@@ -235,7 +235,7 @@ function App() {
   //! Функция обновления существующих кафедр таблицы
   function funGetDepartment() {
     GetDepartment().then((response) => {
-      settableDepartment([...response.data, { id: 14, name: "Все" }]);
+      settableDepartment([ { id: 14, name: "Все" }, ...response.data]);
       setnameKaf("Все");
     });
   }
