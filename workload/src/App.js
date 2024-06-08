@@ -209,10 +209,12 @@ function App() {
 
   //! функция обновления комментаривев
   function funUpdateAllComments() {
-    Comment().then((data) => {
-      console.log("comments", data);
-      setAllCommentsData(data);
-    });
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 20)) {
+      Comment().then((data) => {
+        console.log("comments", data);
+        setAllCommentsData(data);
+      });
+    }
   }
 
   //! функция обновления предложений преподавателей
@@ -252,13 +254,14 @@ function App() {
 
   //! функция которая принимает нагрузки из апи и записывает в состояния
   const funUpdTab = (data) => {
-    console.log("нагрузки по кафедре", data);
     const dataBd = [...data];
+    console.log('data', data)
     setWorkloadData(dataBd);
     //! функция прокида буффера для преподавателей, часов, и колличества студентов
     const fixData = UpdateWorkloadForBoofer(
       funFixEducator(dataBd, bufferAction)
     );
+   
     //! функция прокида буффера для разделения соединения и удаления нагрузок
     const fdb = fixDataBuff(fixData, bufferAction);
     // зменяем массив преподавателя на его имя
@@ -276,26 +279,29 @@ function App() {
       Workload("").then((data) => {
         funUpdTab(data);
       });
+    }  
+    if (metodRole[myProfile?.role]?.some((el) => el === 14)) {
+      let url = "";
+      if (param == 0) {
+        url = "?isOid=true";
+      }
+      if (param == "14") {
+        url = ``;
+      } else if (param != 14 && param != 0) {
+        url = `?department=${param}`;
+      }
+      console.log("url", url);
+        Workload(`${url}`).then((data) => {
+          console.log("dataWorkload", data)
+          funUpdTab(data);
+        });
     }
+    
     // без параметров - вся абсолютно нагрузка,
     // ?isOid=true - вся ОИД нагрузка,
     // ?isOid=false - вся кафедральная нагрузка,
     // ?department={номер кафедры} - нагрузка одной кафедры
-    let url = "";
-    if (param == "0") {
-      url = "?isOid=true";
-    }
-    if (param == "14") {
-      url = ``;
-    } else if (param != 14 && param != 0) {
-      url = `?department=${param}`;
-    }
-    console.log("url", url);
-    if (metodRole[myProfile?.role]?.some((el) => el === 14)) {
-      Workload(`${url}`).then((data) => {
-        funUpdTab(data);
-      });
-    }
+   
   }
 
   //!функция прокида буфера

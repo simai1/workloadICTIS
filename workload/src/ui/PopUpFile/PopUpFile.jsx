@@ -11,8 +11,9 @@ export function PopUpFile(props) {
   const [openListFlag, setopenListFlag] = useState(false);
   const [fileData, setfileData] = useState(null)
   const cafData = [
+    { name: "ОИД", id: 0 },
     { name: "БИТ", id: 1 },
-    { name: "ФМОИО", id: 2 },
+    { name: "ИИТИС", id: 2 },
     { name: "ВТ", id: 3 },
     { name: "ИАСБ", id: 4 },
     { name: "ИБТКС", id: 5 },
@@ -22,8 +23,7 @@ export function PopUpFile(props) {
     { name: "САИТ", id: 9 },
     { name: "САПР", id: 10 },
     { name: "СиПУ", id: 11 },
-    { name: "ОИД", id: 12 },
-    {name: "ИИТИС", id: 13}
+    {name: "ФМОИО", id: 12}
   ];
   const fileInputRef = useRef(null);
 

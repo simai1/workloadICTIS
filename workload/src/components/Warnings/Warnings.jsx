@@ -26,6 +26,7 @@ function Warnings(props) {
       console.log("socketConnect", data);
       getAllWarnin(appData.setAllWarningMessage);
     });
+    console.log('allWarningMessage',appData.allWarningMessage)
   }, []);
 
   //! закрытие модального окна при нажатии вне него
@@ -62,7 +63,7 @@ function Warnings(props) {
           </div>
           <div className={styles.WarningsList}>
             <ul>
-              {appData.allWarningMessage.length > 0 ? (
+              {appData.allWarningMessage?.length > 0 ? (
                 appData.allWarningMessage?.map((item, index) => {
                   return (
                     <WarningMessage
