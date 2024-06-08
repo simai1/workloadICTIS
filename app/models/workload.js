@@ -101,6 +101,11 @@ export default class Workload extends Model {
                     allowNull: false,
                     defaultValue: false,
                 },
+                isBlocked: {
+                  type: DataTypes.BOOLEAN,
+                  allowNull: false,
+                  defaultValue: false,
+                }
             },
             {
                 sequelize,

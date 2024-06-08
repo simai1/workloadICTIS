@@ -21,7 +21,7 @@ export default {
             defval: '',
             blankrows: true
         });
-        const isOid = (numberDepartment == 13);
+        const isOid = (numberDepartment == 0);
         const headers = sheetData[0];
 
         for (const row of sheetData.slice(1)) {

@@ -12,7 +12,7 @@ import 'dotenv/config';
 // import corsMiddleware from './middlewares/cors.js';
 
 import dbUtils from './utils/db.js';
-import testUtils from './utils/test-data.js';
+// import testUtils from './utils/test-data.js';
 
 import commentRoute from './routes/comment.js';
 import authRoute from './routes/auth.js';
@@ -48,8 +48,8 @@ const io = new Server(server, {
     try {
         await dbUtils.initializeDbModels();
         if (process.env.NODE_ENV === 'development') {
-            await testUtils.fillWorkload();
-            await testUtils.fillEducators();
+            // await testUtils.fillWorkload();
+            // await testUtils.fillEducators();
         }
     } catch (e) {
         console.log(e);

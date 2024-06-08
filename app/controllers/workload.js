@@ -11,7 +11,8 @@ import WorkloadDto from '../dtos/workload-dto.js';
 import SummaryWorkload from '../models/summary-workload.js';
 import checkHours from '../utils/notification.js';
 import History from "../models/history.js";
-import { sequelize } from "../models/index.js";
+import sendMail from '../services/email.js';
+import { Op, Sequelize } from "sequelize";
 
 const getIds = (modelsArr) => {
     const arr = [];
@@ -24,41 +25,86 @@ const getIds = (modelsArr) => {
 
 export default {
     // Получение нагрузки
-    async getAllWorkload({query: {isOid, department}}, res) {
+    async getAllWorkload({query: {isOid, department}, user}, res) {
+        const _user = await User.findByPk(user, { include: Educator });
         try {
+            let workloads;
             if (!(typeof isOid === "undefined")){
-                const workloads = await Workload.findAll({
-                    where: { isOid },
-                    include: { model: Educator },
-                    order: [
-                        ['discipline', 'ASC'],
-                        ['workload', 'ASC']
-                    ],
-                })
+                if (_user.role === 5 || _user.role === 2){
+                    workloads = await Workload.findAll({
+                        where: { isOid, educatorId: _user.educator.id, isBlocked: false},
+                        include: { model: Educator },
+                        order: [
+                            ['discipline', 'ASC'],
+                            ['workload', 'ASC']
+                        ],
+                    });
+                } else {
+                    workloads = await Workload.findAll({
+                        where: { isOid, isBlocked: false },
+                        include: { model: Educator },
+                        order: [
+                            ['discipline', 'ASC'],
+                            ['workload', 'ASC']
+                        ],
+                    });
+                }
                 const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
                 res.json(workloadsDto);
             } else if (department){
-                const workloads = await Workload.findAll({
-                    where: {
-                        isOid: false,
-                        department,
-                    },
-                    include: { model: Educator },
-                    order: [
-                        ['discipline', 'ASC'],
-                        ['workload', 'ASC']
-                    ],
-                })
+                if (_user.role === 5 || _user.role === 2){
+                    workloads = await Workload.findAll({
+                        where: {
+                            isOid: false,
+                            department,
+                            educatorId: _user.educator.id,
+                        },
+                        include: { model: Educator },
+                        order: [
+                            ['discipline', 'ASC'],
+                            ['workload', 'ASC']
+                        ],
+                    });
+                } else {
+                    workloads = await Workload.findAll({
+                        where: {
+                            isOid: false,
+                            department,
+                        },
+                        include: { model: Educator },
+                        order: [
+                            ['discipline', 'ASC'],
+                            ['workload', 'ASC']
+                        ],
+                    });
+                }
                 const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
                 res.json(workloadsDto);
             } else {
-                const workloads = await Workload.findAll({
-                    include: { model: Educator },
-                    order: [
-                        ['discipline', 'ASC'],
-                        ['workload', 'ASC']
-                    ],
-                });
+                if (_user.role === 5 || _user.role === 2){
+                    workloads = await Workload.findAll({
+                        where: {
+                            educatorId: _user.Educator.id,
+                            isBlocked: false
+                        },
+                        include: { model: Educator },
+                        order: [
+                            ['discipline', 'ASC'],
+                            ['workload', 'ASC']
+                        ],
+                    });
+                } else {
+                    workloads = await Workload.findAll({
+                        where: {
+                            isBlocked: false
+                        },
+                        include: { model: Educator },
+                        order: [
+                            ['discipline', 'ASC'],
+                            ['workload', 'ASC']
+                        ],
+                    });
+                }
                 const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
                 res.json(workloadsDto);
             }
@@ -369,27 +415,100 @@ export default {
     },
     async getUsableDepartments(req, res){
         const userId = req.user;
-        const userExist = await User.findByPk(userId);
-        const role = userExist.role;
+        const checkUser = await User.findByPk(userId);
+        if (!checkUser) throw new AppErrorNotExist('User');
+        const role = checkUser.role;
         const usableDepartments = [];
-        const queryResult = await sequelize.query('SELECT DISTINCT department FROM workloads WHERE department <> 13 ORDER BY department ASC;');
-        if(role == 2 || role == 3 ||  role == 5){
-            const educator = await Educator.findOne({where: {userId}});
+
+        // const queryResult = await sequelize.query('SELECT DISTINCT department FROM workloads WHERE department <> 13 ORDER BY department ASC;');
+        if(role === 2 || role === 3 ||  role === 5){
+            const educator = await Educator.findOne({ where: { userId } });
             const department = educator.department;
-            usableDepartments.push({
-                id: department,
-                name: mapDepartments[department],
-            })
-        } else {
-            for (const usableDepartment of queryResult[0]) {
-                const department = mapDepartments[usableDepartment.department];
+            const workload = await Workload.findOne({ where: { department } });
+            if (workload.isBlocked === true){
                 usableDepartments.push({
-                    id: usableDepartment.department,
-                    name: department,
+                    id: department,
+                    name: mapDepartments[department],
+                    blocked: true,
                 })
+            } else {
+                usableDepartments.push({
+                    id: department,
+                    name: mapDepartments[department],
+                    blocked: false,
+                })
+            }
+        } else {
+            const departments = await Workload.findAll({
+                where: {
+                    department: {
+                        [Op.ne]: 13,
+                    }
+                },
+                attributes: [
+                    [Sequelize.fn('DISTINCT', Sequelize.col('department')) ,'department'],
+                ],
+                order: [
+                    ['department', 'ASC'],
+                ]
+            })
+            for (const usableDepartment of departments) {
+                const department = mapDepartments[usableDepartment.department];
+                const workload = await Workload.findOne({ where: { department: usableDepartment.department } });
+                if (workload.isBlocked === true){
+                    usableDepartments.push({
+                        id: usableDepartment.department,
+                        name: department,
+                        blocked: true,
+                    })
+                } else {
+                    usableDepartments.push({
+                        id: usableDepartment.department,
+                        name: department,
+                        blocked: false,
+                    })
+                }
             }
         }
         res.json(usableDepartments);
     },
     async changeColorWorkload(req, res) {},
+
+    async blockWorkload({ params: { department } }, res){
+        if (!department) throw new AppErrorMissing('department');
+        department = parseInt(department);
+        if (department === 0) {
+            const checkWorkload = await Workload.findOne({ where: { isOid: true } });
+            if (checkWorkload.isBlocked === true) throw new Error('Already blocked');
+            await Workload.update({ isBlocked: true }, { where: { isOid: true } });
+            try {
+                sendMail(process.env.EMAIL_RECIEVER, 'blocking', 'Общеинститутская нагрузка');
+            } catch (e){
+                console.log('Email bad creditionals')
+            }
+        } else {
+            if (!Object.values(departments).includes(department)) throw new AppErrorInvalid('department');
+            await Workload.update({ isBlocked: true }, { where: { department } });
+            try {
+                sendMail(process.env.EMAIL_RECIEVER, 'blocking', `Нагрузка кафедры ${mapDepartments[department]}`);
+            } catch (e){
+                console.log('Email bad creditionals')
+            }
+        }
+        res.json({ status: 'OK' });
+    },
+
+    async unblockWorkload({ params: { department } }, res){
+        if (!department) throw new AppErrorMissing('department');
+        department = parseInt(department);
+        if (department === 0) {
+            const checkWorkload = await Workload.findOne({ where: { isOid: true } });
+            if (checkWorkload.isBlocked === false) throw new Error('Already unblocked');
+            await Workload.update({ isBlocked: false }, { where: { isOid: true } });
+        } else {
+            if (!Object.values(departments).includes(department)) throw new AppErrorInvalid('department');
+            await Workload.update({ isBlocked: false }, { where: { department } });
+        }
+        res.json({ status: 'OK' });
+    },
 };
