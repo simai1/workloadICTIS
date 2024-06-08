@@ -193,9 +193,40 @@ export const funGetConfirmation = (itemId, changedData, bufferAction) => {
 
 //! ИСТОРИЯ
 //! разделяем историю по типам
+const funWorcloadFix = (item, el, action, len) => {
+  return {
+    id: item.id,
+    type: item.type,
+    action: action,
+    number: len,
+    value: {
+      ...el,
+      educator: el.educator ? el.educator.name : null,
+    },
+  };
+};
 export function funHistoryFix(history) {
   console.log(history);
-  // const newHistory = history.map((item)=>{
+  let fixMass = [];
 
-  // })
+  history.map((item) => {
+    if (item.after.length !== 0 && item.before.length !== 0) {
+      console.log(
+        "item.after.length",
+        item.after.length,
+        "item.before.length",
+        item.before.length
+      );
+      item.after.map((el, index) => {
+        fixMass.push(funWorcloadFix(item, el, "after", index));
+      });
+      item.before.map((el, index) => {
+        fixMass.push(
+          funWorcloadFix(item, el, "before", item.after.length + index)
+        );
+      });
+    }
+  });
+  console.log("fixMass", fixMass);
+  return fixMass;
 }

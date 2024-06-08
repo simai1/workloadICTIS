@@ -6,90 +6,26 @@ import { ReactComponent as SvgCross } from "./../../img/cross.svg";
 
 function TableTd(props) {
   const { tabPar, basicTabData, appData } = React.useContext(DataContext);
-  const [onTextArea, setOnTextArea] = useState(false);
-  const [textareaTd, setTextareaTd] = useState(props.item[props.itemKey.key]);
 
   //определение каласса td
   const getClassNameTr = () => {
+    let classtext = null;
     const changedData = tabPar.changedData[props.itemKey.key];
-    if (!changedData) return null;
-    return changedData.find((el) => el === props.item.id)
-      ? styles.tdChanged
-      : null;
-  };
-
-  const getTextAreaOn = () => {
-    if (
-      //! проеряем роль
-      appData.metodRole[appData.myProfile?.role]?.some((el) => el === 8) &&
-      (props.itemKey.key === "numberOfStudents" ||
-        props.itemKey.key === "hours")
-    ) {
-      return onTextArea;
+    if (!changedData) {
+      classtext = null;
+    } else {
+      if (changedData.find((el) => el === props.item.id)) {
+        classtext = `${classtext} ${styles.tdChanged}`;
+      }
     }
-  };
-
-  const onChangeTextareaTd = (e) => {
-    const query = e.target.value;
-    if (query === "") {
-      setTextareaTd(query);
-    } else if (Number(query)) {
-      setTextareaTd(query);
+    if (props.obj.action === "after") {
+      classtext = `${classtext} ${styles.after}`;
     }
-  };
-
-  //! при двойном клике на td открываем textarea
-  const funDubleClick = () => {
-    setOnTextArea(!onTextArea);
-  };
-
-  //! при клтике отмена техтаре
-  const crossClick = (e) => {
-    setTextareaTd(props.item[props.itemKey.key]);
-    setOnTextArea(false);
-  };
-
-  //! при клике применить изменения textArea
-  const onClickButton = () => {
-    let parsedValue = parseFloat(textareaTd);
-    let numberValue = isNaN(parsedValue) ? textareaTd : parsedValue;
-    console.log("textareaTd", textareaTd, numberValue, parsedValue);
-
-    //! параметры запроса на изменение данных
-    const data = {
-      id: props.item.id,
-      key: props.itemKey.key,
-      value: numberValue,
-    };
-
-    if (numberValue) {
-      const updatedArray = basicTabData.workloadDataFix.map((item) => {
-        if (item.id === props.item.id) {
-          return { ...item, [props.itemKey.key]: numberValue };
-        }
-        return item;
-      });
-      console.log("updatedArray", updatedArray);
-
-      basicTabData.setWorkloadDataFix(updatedArray);
-      basicTabData.setFiltredData(updatedArray);
-      const workloadId = data.id;
-      //! буфер
-      appData.setBufferAction([
-        {
-          request: "workloadUpdata",
-          data: data,
-          prevState: props.item[props.itemKey.key],
-          workloadId,
-        },
-        ...appData.bufferAction,
-      ]);
-      let cd = { ...tabPar.changedData };
-      cd[props.itemKey.key] = [...cd[props.itemKey.key], props.item.id];
-      tabPar.setChangedData(cd);
-      setOnTextArea(false);
+    if (props.obj.action === "before") {
+      classtext = `${classtext} ${styles.before}`;
     }
-    // setTextareaTd(props.item[props.itemKey.key]);
+
+    return classtext;
   };
 
   const [showFullText, setShowFullText] = useState(false); // при наведении на td показывает весь текст ячейки
@@ -143,7 +79,7 @@ function TableTd(props) {
       onMouseEnter={() => setShowFullText(true)}
       onMouseLeave={() => setShowFullText(false)}
       name={props.itemKey.key}
-      key={props.item.id + "_" + props.itemKey.key}
+      key={props.item.id + "_" + props.itemKey.key + props.index}
       className={getClassNameTr()}
       style={
         showFullText && props.item[props.itemKey.key]?.length > lenSlice
@@ -157,7 +93,6 @@ function TableTd(props) {
       <div
         key={props.item.id + "div" + props.itemKey.key}
         className={getClassNameTdInner()}
-        onDoubleClick={funDubleClick}
         style={
           showFullText && props.item[props.itemKey.key]?.length > lenSlice
             ? {
@@ -172,32 +107,7 @@ function TableTd(props) {
             : null
         }
       >
-        {getTextAreaOn() ? (
-          <div>
-            <textarea
-              // defaultValue={props.item[props.itemKey.key]}
-              value={textareaTd}
-              onChange={onChangeTextareaTd}
-              className={styles.textarea}
-              type="text"
-              style={
-                Number(textareaTd) > 2000 ? { border: "3px solid red" } : null
-              }
-            ></textarea>
-            <div className={styles.svg_textarea}>
-              {textareaTd !== "" && Number(textareaTd) <= 2000 && (
-                <SvgChackmark
-                  onClick={onClickButton}
-                  className={styles.SvgChackmark_green}
-                />
-              )}
-
-              <SvgCross onClick={crossClick} />
-            </div>
-          </div>
-        ) : (
-          gettdInnerText()
-        )}
+        {gettdInnerText()}
       </div>
     </td>
   );

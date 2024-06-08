@@ -67,6 +67,34 @@ $heightCell: 150px;
     // table-layout: fixed; /* Фиксированная ширина ячеек */
     position: relative; /* Относительное позиционирование для таблицы */
 
+    //history
+    .after {
+      background-color: #ff8a8a;
+    }
+    .before {
+      background-color: rgb(218, 255, 161);
+    }
+    .opasiti {
+      opacity: 0.5;
+    }
+    .border0 {
+      border-top: 4px solid #0000ff;
+    }
+    // .border1 {
+    //   border-top: 1px solid #000000;
+    //   border-left: 1px solid #000000;
+    //   border-right: 1px solid #000000;
+    // }
+    // .border2 {
+    //   border-left: 1px solid #000000;
+    //   border-right: 1px solid #000000;
+    // }
+    // .border3 {
+    //   border-bottom: 1px solid #000000;
+    //   border-left: 1px solid #000000;
+    //   border-right: 1px solid #000000;
+    // }
+
     .gettdInner {
       max-height: 300px;
       overflow-wrap: break-word;

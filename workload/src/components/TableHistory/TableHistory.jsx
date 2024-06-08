@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Table from "./Table";
 import styles from "./TableWorkload.module.scss";
 import {
@@ -50,11 +50,13 @@ function TableHistory(props) {
     tabPar.setContextMenuShow(!tabPar.contextMenuShow);
   };
 
+  const [historyData, sethistoryData] = useState([]);
   useEffect(() => {
     console.log("история изменений", basicTabData.historyChanges);
     //! разделяем историю по типам
     const fixHistory = funHistoryFix(basicTabData.historyChanges);
     console.log("fixHistory", fixHistory);
+    sethistoryData(fixHistory);
   }, [basicTabData.historyChanges]);
 
   return (
@@ -66,7 +68,7 @@ function TableHistory(props) {
       {tabPar.contextMenuShow && tabPar.selectedTr.length != 0 && (
         <ContextMenu />
       )}
-      <Table />
+      <Table historyData={historyData} />
     </div>
   );
 }
