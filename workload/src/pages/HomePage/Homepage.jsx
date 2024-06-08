@@ -72,7 +72,7 @@ function HomePage() {
         appData.setAllWarningMessage(res);
       });
     }
-  }, []);
+  }, [basicTabData.tableDepartment]);
 
   useEffect(() => {
     GetDepartment().then((response) => {
@@ -367,12 +367,13 @@ function HomePage() {
                         setTableMode("genInstitute");
                         EditTableData("genInstitute");
                         basicTabData.setselectISOid(true);
+                        tabPar.setDataIsOid(true);
                         basicTabData.funUpdateTable("0");
                         setKafedralIsOpen(false);
-                        tabPar.setDataIsOid(true);
+                        basicTabData.setnameKaf("Все");
                         tabPar.setSelectedFilter("Все Дисциплины");
                       }}
-                    />
+                    /> 
                     <Button
                       Bg={kafedralIsOpen ? "#3B28CC" : "#efedf3"}
                       textColot={!kafedralIsOpen ? "#000000" : "#efedf3"}
@@ -380,9 +381,8 @@ function HomePage() {
                       onClick={() => {
                         basicTabData.funUpdateTable("14");
                         tabPar.setDataIsOid(false);
-                        setKafedralIsOpen(true);
                         basicTabData.setselectISOid(false);
-                        console.log(basicTabData.selectISOid);
+                        setKafedralIsOpen(true);
                         basicTabData.setnameKaf("Все");
                         tabPar.setSelectedFilter("Все Дисциплины");
                       }}
