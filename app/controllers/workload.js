@@ -442,7 +442,7 @@ export default {
             const departments = await Workload.findAll({
                 where: {
                     department: {
-                        [Op.ne]: 13,
+                        [Op.ne]: 0,
                     }
                 },
                 attributes: [
