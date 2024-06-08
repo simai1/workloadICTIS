@@ -14,7 +14,9 @@ const convertToDto = (workloads) => {
 }
 export default {
   async getAll(req, res){
-      const histories = await History.findAll();
+      const histories = await History.findAll({ order: [
+        ['createdAt', 'ASC']
+    ]});
       const resArr = [];
       for (const history of histories){
         if (history.type === 1){
@@ -24,7 +26,8 @@ export default {
             id: history.id,
             type: mapHistory[1],
             before,
-            after
+            after,
+            createdAt: Date.now()
           })
         } else if (history.type === 2){
           const before = convertToDto(await Workload.findAll({ where: {id: history.before  }, include: {model: Educator}, paranoid: false }));
@@ -33,14 +36,16 @@ export default {
             id: history.id,
             type: mapHistory[2],
             before,
-            after
+            after,
+            createdAt: Date.now()
           })
         } else {
           const record = {
             id: history.id,
             type: mapHistory[3],
             before: [],
-            after: []
+            after: [],
+            createdAt: Date.now()
           }
           if (history.before.length !== 0) {
             record.before = convertToDto(await Workload.findAll({
