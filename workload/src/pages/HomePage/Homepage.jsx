@@ -321,6 +321,8 @@ function HomePage() {
               )}
             </div>
             <div className={styles.header_left_component}>
+              {
+                  appData.metodRole[appData.myProfile?.role]?.some((el) => el === 30) &&
               <Warnings
                 setEducatorIdforLk={setEducatorIdforLk}
                 educatorIdforLk={educatorIdforLk}
@@ -328,6 +330,7 @@ function HomePage() {
                 setSelectedComponent={appData.setSelectedComponent}
                 setEducatorData={setEducatorData}
               />
+            }
               <Profile
                 className={styles.Profile}
                 setOpenModalWind={setOpenModalWind}

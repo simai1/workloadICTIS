@@ -116,9 +116,17 @@ function ListKaf({
                 <p
                   className={styles.NameForList}
                   onClick={
-                    !item.blocked
-                      ? () => addKafedra(item)
-                      : () => setopenList(index)
+                    ()=>{
+                      if(item.blocked){
+                        if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 28)){
+                          setopenList(index)
+                        }
+                      }
+                      else{
+                        addKafedra(item)
+                      }
+                    }
+                  
                   }
                   style={item.blocked ? { color: "#E81414" } : null}
                 >

@@ -290,6 +290,8 @@ const ContextMenu = (props) => {
         tabPar.setFastenedData(mass);
         tabPar.setContextMenuShow(false);
         tabPar.setSelectedTr([]);
+        basicTabData.funUpdateTable()
+
       });
     }
   };
@@ -354,8 +356,14 @@ const ContextMenu = (props) => {
               img={false}
             />
           )}
-        <MenuPop btnText={"Закрепить"} func={pinaCell} img={false} />
-        <MenuPop btnText={"Открепить"} func={unPinaCell} img={false} />
+          {/* {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 31)&& */}
+          
+            <MenuPop btnText={"Закрепить"} func={pinaCell} img={false} />
+          {/* } */}
+          {/* {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 31)&& */}
+            <MenuPop btnText={"Открепить"} func={unPinaCell} img={false} />
+          {/* } */}
+       
         {appData.metodRole[appData.myProfile?.role]?.some(
           (el) => el === 11
         ) && (
