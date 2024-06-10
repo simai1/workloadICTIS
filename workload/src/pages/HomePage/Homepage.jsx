@@ -260,12 +260,13 @@ function HomePage() {
             <div className={styles.header_button}>
               <Button
                 Bg={
-                  appData.selectedComponent === "Disciplines"
+                  appData.selectedComponent === "Disciplines" ||     appData.selectedComponent === "History"
                     ? "#3B28CC"
                     : "#efedf3"
                 }
                 textColot={
                   appData.selectedComponent === "Disciplines"
+                  ||     appData.selectedComponent === "History"
                     ? "#efedf3"
                     : "#000000"
                 }
@@ -387,7 +388,6 @@ function HomePage() {
                         basicTabData.setnameKaf("Все");
                         tabPar.setSelectedFilter("Все Дисциплины");
                         appData.setSelectedComponent("Disciplines");
-
                       }}
                     />
                     {!basicTabData.selectISOid && (
