@@ -24,44 +24,44 @@ export default {
         const isOid = (numberDepartment == 0);
         const headers = sheetData[0];
 
-        sheetData.slice(1).map(async row => {
+        for (const row of sheetData.slice(1)) {
             try {
-                if(Number(row[0])){
+                if (Number(row[0])) {
                     const obj = {};
                     headers.forEach((header, index) => {
                         const englishHeader = HeaderTranslation[header];
                         obj[englishHeader] = row[index];
                     });
-
+        
                     obj.department = FullNameDepartments[obj.department];
-                    obj.numberOfStudents = obj.numberOfStudents ? Number(obj.numberOfStudents.replace(',00','')) : 0;
-                    obj.hours = obj.hours ? parseFloat(obj.hours.replace(',','.')) : 0.00;
-                    obj.audienceHours = obj.audienceHours ? parseFloat(obj.audienceHours.replace(',','.')) : 0.00;
+                    obj.numberOfStudents = obj.numberOfStudents? Number(obj.numberOfStudents.replace(',00', '')) : 0;
+                    obj.hours = obj.hours? parseFloat(obj.hours.replace(',', '.')) : 0.00;
+                    obj.audienceHours = obj.audienceHours? parseFloat(obj.audienceHours.replace(',', '.')) : 0.00;
                     const ratingControlHours = obj.hours - obj.audienceHours;
                     obj.ratingControlHours = parseFloat(ratingControlHours.toFixed(2));
                     obj.period = Number(obj.period);
-                    
+        
                     const existEducator = await Educator.findOne({
                         where: {
                             name: obj.educator,
                         }
                     });
-                    const educatorId = existEducator ? existEducator.id : null;
+                    const educatorId = existEducator? existEducator.id : null;
                     const isSplit = false;
-    
+        
                     delete obj.educator;
                     delete obj.undefined;
                     await Workload.create({
-                        ...obj,
+                       ...obj,
                         educatorId,
                         isSplit,
                         isOid,
-                    })
+                    }, { individualHooks: true }); // Убедитесь, что включили индивидуальные хуки
                 }
             } catch (e) {
-                console.log(e)
+                console.log(e);
             }
-        });
+        }
 
         return res.json({status: "ok"});
     },
