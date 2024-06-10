@@ -78,7 +78,7 @@ $heightCell: 150px;
       opacity: 0.5;
     }
     .border0 {
-      border-top: 4px solid #0000ff;
+      border-top: 2px solid #0000ff;
     }
     // .border1 {
     //   border-top: 1px solid #000000;
@@ -696,4 +696,7 @@ $heightCell: 150px;
   background-color: #a6a6a6;
   border-radius: 5px;
   border: 3px solid #a6a6a6;
+}
+.BgInput{
+  background-color: red;
 }

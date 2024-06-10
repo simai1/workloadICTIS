@@ -337,7 +337,7 @@ function HomePage() {
           </div>
           {basicTabData.tableDepartment?.find(
             (el) => el.name === basicTabData.nameKaf
-          )?.blocked && (
+          )?.blocked && appData.selectedComponent !="History" &&(
             <div className={styles.blockedTextTable}>
               <div>
                 <img src="./img/errorTreangle.svg" />
@@ -372,6 +372,7 @@ function HomePage() {
                         setKafedralIsOpen(false);
                         basicTabData.setnameKaf("Все");
                         tabPar.setSelectedFilter("Все Дисциплины");
+                        appData.setSelectedComponent("Disciplines");
                       }}
                     /> 
                     <Button
@@ -385,6 +386,8 @@ function HomePage() {
                         setKafedralIsOpen(true);
                         basicTabData.setnameKaf("Все");
                         tabPar.setSelectedFilter("Все Дисциплины");
+                        appData.setSelectedComponent("Disciplines");
+
                       }}
                     />
                     {!basicTabData.selectISOid && (
@@ -397,20 +400,20 @@ function HomePage() {
                   </>
                 )}
 
-              {(appData.selectedComponent === "Disciplines" ||
-                appData.selectedComponent === "History") && <FiltredRows />}
+              {(appData.selectedComponent === "Disciplines" &&
+                appData.selectedComponent != "History") && <FiltredRows />}
             </div>
 
             <div className={styles.right_button}>
               <div className={styles.EditInput}>
-                {educatorIdforLk === "" && (
+                {educatorIdforLk === ""&&(
                   <EditInput
                     selectedComponent={appData.selectedComponent}
                     originalHeader={
                       appData.selectedComponent === "Disciplines"
                         ? workloadTableHeaders
                         : educatorTableHeaders
-                    } //! исправить не обновляется
+                    }
                   />
                 )}
               </div>

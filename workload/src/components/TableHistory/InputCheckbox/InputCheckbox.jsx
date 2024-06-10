@@ -66,6 +66,7 @@ function InputCheckbox(props) {
             onChange={(e) => props.clickTr(e, props.itemId)}
             type="checkbox"
             checked={props.checked}
+
           ></input>
         </td>
       )}

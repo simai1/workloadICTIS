@@ -33,6 +33,7 @@ function ListKaf({
     basicTabData.funUpdateTable(el.id);
     tabPar.setSelectedFilter("Все Дисциплины");
     setopenLists("");
+    appData.setSelectedComponent("Disciplines");
   };
 
   const refDiv = useRef(null);
@@ -58,7 +59,10 @@ function ListKaf({
       basicTabData.setHistoryChanges(req);
       setactiveList(false);
       setopenLists("");
+      
     });
+    tabPar.setSelectedFilter("Все Дисциплины");
+    basicTabData.setnameKaf(item.name);
     appData.setSelectedComponent("History");
   };
 
