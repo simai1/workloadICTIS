@@ -18,18 +18,12 @@ function TableTd(props) {
         classtext = `${classtext} ${styles.tdChanged}`;
       }
     }
-    if (props.obj.action === "after") {
-      classtext = `${classtext} ${styles.after}`;
-    }
-    if (props.obj.action === "before") {
-      classtext = `${classtext} ${styles.before}`;
-    }
 
     return classtext;
   };
 
   const [showFullText, setShowFullText] = useState(false); // при наведении на td показывает весь текст ячейки
-  const lenSlice = props.itemKey.key === "groups" ? 50 : 100;
+  const lenSlice = props.itemKey.key === "groups" ? 50 : 70;
   //! фуункция котороя определяет какой формат текста выводить
   const gettdInnerText = () => {
     if (showFullText) {
@@ -107,7 +101,23 @@ function TableTd(props) {
             : null
         }
       >
-        {gettdInnerText()}
+        <div
+          style={
+            props.obj.keys.some((el) => el === props.itemKey.key)
+              ? props.obj.action === "after"
+                ? {
+                    backgroundColor: "rgba(232, 20, 20, 0.25)",
+                    borderRadius: "8px",
+                  }
+                : {
+                    backgroundColor: "rgba(25, 194, 10, 0.25)",
+                    borderRadius: "8px",
+                  }
+              : null
+          }
+        >
+          {gettdInnerText()}
+        </div>
       </div>
     </td>
   );

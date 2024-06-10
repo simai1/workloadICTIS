@@ -68,8 +68,8 @@ function Table(props) {
 
   const clickTrAll = () => {
     let ids = [];
-    if (basicTabData.filtredData.length !== tabPar.selectedTr.length) {
-      basicTabData.filtredData.map((item) => {
+    if (basicTabData.props.historyData.length !== tabPar.selectedTr.length) {
+      basicTabData.props.historyData.map((item) => {
         ids.push(item.id);
       });
       tabPar.setOnCheckBoxAll(true);
@@ -87,19 +87,19 @@ function Table(props) {
     classText = tabPar.selectedTr?.includes(itemId)
       ? `${styles.selectedTr}`
       : null;
-    const item = tabPar.coloredData?.find((el) => el.workloadId === itemId);
-    const colored = item ? `colored${item.color}` : null;
-    classText = item ? `${classText} ${styles[colored]}` : classText;
-    classText = tabPar.changedData.deleted?.find((el) => el === itemId)
-      ? `${classText} ${styles.trDeleted}`
-      : classText;
-    classText =
-      tabPar.changedData.split?.find((el) => el === itemId) ||
-      tabPar.changedData.join?.find((el) => el === itemId) ||
-      itemss.value.isBlocked
-        ? `${classText} ${styles.trBlocked}`
-        : classText;
-    if (itemss.number === 0) {
+    // const item = tabPar.coloredData?.find((el) => el.workloadId === itemId);
+    // const colored = item ? `colored${item.color}` : null;
+    // classText = item ? `${classText} ${styles[colored]}` : classText;
+    // classText = tabPar.changedData.deleted?.find((el) => el === itemId)
+    //   ? `${classText} ${styles.trDeleted}`
+    //   : classText;
+    // classText =
+    //   tabPar.changedData.split?.find((el) => el === itemId) ||
+    //   tabPar.changedData.join?.find((el) => el === itemId) ||
+    //   itemss.value.isBlocked
+    //     ? `${classText} ${styles.trBlocked}`
+    //     : classText;
+    if (borderState === itemss.id) {
       classText = `${classText} ${styles.border0}`;
     }
     return classText;
@@ -108,6 +108,11 @@ function Table(props) {
   //! функция опредления заблокирован ли tr, чтобы вывести кнопки отмены подтверждения
   const getConfirmation = (itemId) => {
     return funGetConfirmation(itemId, tabPar.changedData, appData.bufferAction);
+  };
+
+  const [borderState, setBorderState] = useState("");
+  const getBorder = (item) => {
+    setBorderState(item.id);
   };
 
   return (
@@ -162,9 +167,8 @@ function Table(props) {
             )
             .map((item, number) => (
               <tr
-                // onMouseEnter={() => getBorder(true)}
-                // onMouseLeave={() => getBorder(false)}
-                colSpan={item.number + ""}
+                onMouseEnter={() => getBorder(item)}
+                onMouseLeave={() => getBorder("")}
                 // выделяем цветом если выбранно для контекстного меню
                 className={getClassNameTr(item)}
                 onClick={(e) => clickTr(e, item.value.id)}
@@ -174,12 +178,20 @@ function Table(props) {
                     : () => clickTrContetx(item.value.id)
                 }
                 key={item.value.id + number + "tr"}
+                style={
+                  item.length - 1 === item.number
+                    ? {
+                        borderBottom: "4px solid #3b28cc",
+                      }
+                    : null
+                }
               >
                 <InputCheckbox
                   clickTr={() => {}}
                   itemId={item.id + "checkBox"}
                   itid={item.value.id}
                   number={number}
+                  obj={item}
                   getConfirmation={getConfirmation(item.value.id)}
                   checked={tabPar.selectedTr.includes(item.value.id)}
                 />
