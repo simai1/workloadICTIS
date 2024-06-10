@@ -65,9 +65,9 @@ function TableHistory(props) {
       className={styles.tabledisciplinesMain}
       onScroll={scrollTable}
     >
-      {tabPar.contextMenuShow && tabPar.selectedTr.length != 0 && (
+      {/* {tabPar.contextMenuShow && tabPar.selectedTr.length != 0 && (
         <ContextMenu />
-      )}
+      )} */}
       <Table historyData={historyData} />
     </div>
   );

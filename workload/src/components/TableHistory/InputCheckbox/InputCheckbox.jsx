@@ -1,24 +1,10 @@
 import React from "react";
 import styles from "./../TableWorkload.module.scss";
 import DataContext from "../../../context";
-import OverlapWindow from "./OverlapWindow";
 import Comments from "./Comments";
-import Offers from "./Offers";
 function InputCheckbox(props) {
   const { appData, tabPar, basicTabData } = React.useContext(DataContext);
 
-  //! функция определения есть ли комментарии к строке
-  const getComment = () => {
-    return basicTabData.allCommentsData.filter(
-      (item) => item.workloadId === props.itid
-    );
-  };
-  //! функция получения предложений к строке
-  const getOffers = () => {
-    return basicTabData.allOffersData.filter(
-      (item) => item.offer?.workloadId === props.itid
-    );
-  };
   const stylesTh = { backgroundColor: props.bgColor, zIndex: "31" };
   const stylesTd = {
     zIndex: `${10 - props.number}`,
@@ -38,36 +24,31 @@ function InputCheckbox(props) {
         </th>
       ) : (
         <td style={stylesTd} className={styles.InputCheckbox}>
-          {tabPar.fastenedData.some((el) => el.workloadId === props.itid) && ( //отмечаем закрепленные // сделать проверку на преподавателя который закрепляет
-            <img
-              className={styles.fastenedImg}
-              src="./img/fastened.svg"
-              alt="fastened"
-            ></img>
-          )}
-          {/* //! перекрытие */}
-          {props.getConfirmation.blocked && (
-            <OverlapWindow
-              getConfirmation={props.getConfirmation}
-              itid={props.itid}
-            />
-          )}
-          <div className={styles.bacground}>
-            {getComment().length > 0 &&
-              appData.metodRole[appData.myProfile?.role]?.some(
-                (el) => el === 20
-              ) && <Comments commentData={getComment().reverse()} />}
-            {getOffers().length > 0 && (
-              <Offers offerData={getOffers().reverse()} />
-            )}
-          </div>
+          <div
+            className={styles.bacground}
+            // style={
+            //   props.obj.number === 0
+            //     ? {
+            //         borderRight: "3px solid green",
+            //         height: `${150 * props.obj.length - 50}px`,
+            //       }
+            //     : null
+            // }
+          ></div>
 
           <input
             onChange={(e) => props.clickTr(e, props.itemId)}
             type="checkbox"
             checked={props.checked}
-
           ></input>
+          {props.obj.action === "after" && (
+            <>
+              <div className={styles.arrow}>
+                <img src="img/Arrow.svg" alt=">" />
+                <div className={styles.type}>{props.obj.type}</div>
+              </div>
+            </>
+          )}
         </td>
       )}
     </>

@@ -193,36 +193,67 @@ export const funGetConfirmation = (itemId, changedData, bufferAction) => {
 
 //! ИСТОРИЯ
 //! разделяем историю по типам
-const funWorcloadFix = (item, el, action, len) => {
+
+function getChangedKeys(before, after) {
+  const changedKeys = [];
+
+  for (let i = 0; i < before.length; i++) {
+    const beforeObj = before[i];
+
+    for (let j = 0; j < after.length; j++) {
+      const afterObj = after[j];
+      const keys = new Set([
+        ...Object.keys(beforeObj),
+        ...Object.keys(afterObj),
+      ]);
+      for (const key of keys) {
+        if (beforeObj[key] !== afterObj[key] && key !== "id") {
+          changedKeys.push(key);
+        }
+      }
+    }
+  }
+
+  return changedKeys;
+}
+
+const funWorcloadFix = (item, el, action, len, length, keys) => {
   return {
     id: item.id,
     type: item.type,
     action: action,
     number: len,
+    length: length,
+    keys: keys,
     value: {
       ...el,
       educator: el.educator ? el.educator.name : null,
     },
   };
 };
+
 export function funHistoryFix(history) {
   console.log(history);
   let fixMass = [];
-
+  let length = 0;
+  let keys = [];
   history.map((item) => {
+    length = item.after.length + item.before.length;
+    keys = getChangedKeys(item.before, item.after);
     if (item.after.length !== 0 && item.before.length !== 0) {
-      console.log(
-        "item.after.length",
-        item.after.length,
-        "item.before.length",
-        item.before.length
-      );
-      item.after.map((el, index) => {
-        fixMass.push(funWorcloadFix(item, el, "after", index));
-      });
       item.before.map((el, index) => {
+        fixMass.push(funWorcloadFix(item, el, "after", index, length, keys));
+      });
+      item.after.map((el, index) => {
         fixMass.push(
-          funWorcloadFix(item, el, "before", item.after.length + index)
+          funWorcloadFix(
+            item,
+            el,
+            "before",
+            item.before.length + index,
+            length,
+            keys
+          )
         );
       });
     }
