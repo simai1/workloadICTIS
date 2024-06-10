@@ -42,7 +42,7 @@ function App() {
     METHODIST: [1, 3, 4, 8, 9, 10, 13, 14, 17, 20, 21, 25, 26, 27, 28, 30, 31],
     LECTURER: [2, 8, 15, 18, 22, 24],
     DEPARTMENT_HEAD: [
-      2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 22, 25, 26, 27, 30, 31, 32
+      2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 22, 25, 26, 27, 30, 31, 32,33
     ],
     DIRECTORATE: [
       1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31
@@ -255,7 +255,7 @@ function App() {
   //! функция которая принимает нагрузки из апи и записывает в состояния
   const funUpdTab = (data) => {
     const dataBd = [...data];
-    console.log('dataWorkload', data)
+    console.log('dataWorkload', dataBd)
     setWorkloadData(dataBd);
     //! функция прокида буффера для преподавателей, часов, и колличества студентов
     const fixData = UpdateWorkloadForBoofer(
@@ -277,6 +277,7 @@ function App() {
     //param = tableDepartment[0]?.id
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
       Workload("").then((data) => {
+        console.log('dakjsd;kfjhas;kdhfgkajshdfkahsdfgh.kiasdh.fkhasd/fkasdhfkjashdfata', data)
         funUpdTab(data);
       });
     }  
@@ -398,16 +399,16 @@ function App() {
   useEffect(() => {
     apiGetUser().then((data) => {
       setMyProfile(data);
-      updateAlldata();
     });
   }, []);
 
   //! получаем данные нагрузок с бд
   useEffect(() => {
     if (myProfile) {
+      console.log('myProfile', myProfile)
         updateAlldata();
     }
-  }, [myProfile, tableDepartment]);
+  }, [myProfile, tableDepartment]);// [myProfile, tableDepartment]
   
 
   //! при переходе с кафедральных на общеинституские и обратно фильтруем основные
