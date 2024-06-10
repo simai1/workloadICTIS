@@ -40,7 +40,7 @@ export default {
                             ['updatedAt', 'ASC'],
                         ],
                     });
-                } else {
+                }  else {
                     workloads = await Workload.findAll({
                         where: { isOid },
                         include: { model: Educator },
@@ -96,6 +96,15 @@ export default {
                             ['discipline', 'ASC'],
                             ['workload', 'ASC'],
                             ['updatedAt', 'ASC'],
+                        ],
+                    });
+                } else if (_user.role === 3) {
+                    workloads = await Workload.findAll({
+                        where: { department: _user.Educator.department, isBlocked: false},
+                        include: { model: Educator },
+                        order: [
+                            ['discipline', 'ASC'],
+                            ['workload', 'ASC']
                         ],
                     });
                 } else {
