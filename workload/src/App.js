@@ -42,10 +42,10 @@ function App() {
     METHODIST: [1, 3, 4, 8, 9, 10, 13, 14, 17, 20, 21, 25, 26, 27, 28, 30, 31],
     LECTURER: [2, 8, 15, 18, 22, 24],
     DEPARTMENT_HEAD: [
-      2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 22, 25, 26, 27, 30, 31, 32
+      2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 22, 25, 26, 27, 30, 31, 32,
     ],
     DIRECTORATE: [
-      1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31
+      1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
     ],
     EDUCATOR: [15, 24],
   };
@@ -237,7 +237,7 @@ function App() {
   //! Функция обновления существующих кафедр таблицы
   function funGetDepartment() {
     GetDepartment().then((response) => {
-      settableDepartment([ { id: 14, name: "Все" }, ...response.data]);
+      settableDepartment([{ id: 14, name: "Все" }, ...response.data]);
       setnameKaf("Все");
     });
   }
@@ -255,13 +255,13 @@ function App() {
   //! функция которая принимает нагрузки из апи и записывает в состояния
   const funUpdTab = (data) => {
     const dataBd = [...data];
-    console.log('dataWorkload', data)
+    console.log("dataWorkload", data);
     setWorkloadData(dataBd);
     //! функция прокида буффера для преподавателей, часов, и колличества студентов
     const fixData = UpdateWorkloadForBoofer(
       funFixEducator(dataBd, bufferAction)
     );
-   
+
     //! функция прокида буффера для разделения соединения и удаления нагрузок
     const fdb = fixDataBuff(fixData, bufferAction);
     // зменяем массив преподавателя на его имя
@@ -279,7 +279,7 @@ function App() {
       Workload("").then((data) => {
         funUpdTab(data);
       });
-    }  
+    }
     if (metodRole[myProfile?.role]?.some((el) => el === 14)) {
       let url = "";
       if (param == 0) {
@@ -291,16 +291,15 @@ function App() {
         url = `?department=${param}`;
       }
       console.log("url", url);
-        Workload(`${url}`).then((data) => {
-          funUpdTab(data);
-        });
+      Workload(`${url}`).then((data) => {
+        funUpdTab(data);
+      });
     }
-    
+
     // без параметров - вся абсолютно нагрузка,
     // ?isOid=true - вся ОИД нагрузка,
     // ?isOid=false - вся кафедральная нагрузка,
     // ?department={номер кафедры} - нагрузка одной кафедры
-   
   }
 
   //!функция прокида буфера
@@ -372,12 +371,11 @@ function App() {
         ? funUpdateTable(0)
         : funUpdateTable(tableDepartment.find((el) => el.name === nameKaf)?.id);
     } else {
-      if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 32)){
+      if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 32)) {
         funUpdateTable(0);
-      }else{
+      } else {
         funUpdateTable(14);
       }
-     
     }
     // получаем данные таблицы
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 20)) {
@@ -398,17 +396,15 @@ function App() {
   useEffect(() => {
     apiGetUser().then((data) => {
       setMyProfile(data);
-      updateAlldata();
     });
   }, []);
 
   //! получаем данные нагрузок с бд
   useEffect(() => {
     if (myProfile) {
-        updateAlldata();
+      updateAlldata();
     }
   }, [myProfile, tableDepartment]);
-  
 
   //! при переходе с кафедральных на общеинституские и обратно фильтруем основные
   //! фильтруем по FiltredRows
