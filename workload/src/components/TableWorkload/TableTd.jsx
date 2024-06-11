@@ -167,7 +167,7 @@ function TableTd(props) {
                 top: "10px",
                 padding: "4px",
                 boxShadow: "0px 3px 18px rgba(0, 0, 0, 0.15)",
-                zIndex: "200",
+                zIndex: "10",
               }
             : null
         }

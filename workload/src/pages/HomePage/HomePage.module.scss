@@ -70,13 +70,13 @@ body {
         // }
       }
     }
-    .blockedTextTable{
+    .blockedTextTable {
       display: flex;
       position: relative;
-      color: #E81414;
+      color: #e81414;
       top: 50px;
       align-items: center;
-      img{
+      img {
         margin-right: 5px;
         position: relative;
         top: 2px;
@@ -200,9 +200,11 @@ body {
       display: flex;
       background-color: #fff;
       border-radius: 8px;
-      width: 45px;
       height: 45px;
       padding: 12px;
+      .text {
+        padding-right: 10px;
+      }
       cursor: pointer;
     }
     .btnMenuBox:nth-child(1) {
@@ -210,6 +212,23 @@ body {
     }
     .btnMenuBox:nth-child(2) {
       margin-right: 15px;
+    }
+  }
+
+  .nosavedData {
+    position: absolute;
+    z-index: 400;
+    top: 50%;
+    left: 42%;
+    background-color: #fff;
+    padding: 20px;
+    @include boxShadow;
+    display: flex;
+    flex-direction: column;
+    button {
+      @include button(var(--blue-color), #fff, 10px, 10px);
+      margin-top: 10px;
+      border: none;
     }
   }
 }

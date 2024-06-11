@@ -53,7 +53,7 @@ function TableHistory(props) {
   const [historyData, sethistoryData] = useState([]);
   useEffect(() => {
     console.log("история изменений", basicTabData.historyChanges);
-    //! разделяем историю по типам
+    //! преобразуем историю для вывода
     const fixHistory = funHistoryFix(basicTabData.historyChanges);
     console.log("fixHistory", fixHistory);
     sethistoryData(fixHistory);

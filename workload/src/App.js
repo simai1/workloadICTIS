@@ -277,7 +277,7 @@ function App() {
     console.log("param", param);
     //param = tableDepartment[0]?.id
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
-      Workload("").then((data) => {
+      Workload("?isOid=true").then((data) => {
         if (data) {
           console.log("work", data);
           funUpdTab(data);
