@@ -264,7 +264,7 @@ export function funHistoryFix(history) {
   history.map((item) => {
     length = item.after.length + item.before.length;
     keys = getChangedKeys(item.before, item.after);
-    if (item.after.length !== 0 && item.before.length !== 0) {
+    if (item.after.length !== 0 || item.before.length !== 0) {
       item.before.map((el, index) => {
         fixMass.push(funWorcloadFix(item, el, "after", index, length, keys));
       });
