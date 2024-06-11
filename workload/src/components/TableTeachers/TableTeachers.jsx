@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import DataContext from "../../context";
 import { getDataEducator } from "../../api/services/AssignApiData";
 import { headersEducator } from "../TableWorkload/Data";
-import { apiEducatorDepartment } from "../../api/services/ApiRequest";
+import { Educator, apiEducatorDepartment } from "../../api/services/ApiRequest";
 import Button from "../../ui/Button/Button";
 import { SamplePoints } from "./SamplePoints/SamplePoints";
 
@@ -30,19 +30,24 @@ function TableTeachers(props) {
   //! заносим данные о преподавателях в состояние
   React.useEffect(() => {
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 2)) {
-      apiEducatorDepartment().then((data) => {
-        appData.setEducator(data);
-        setFilteredData(data);
-        setUpdatedData(data);
-        setUpdatedHeader(tableHeaders);
+      apiEducatorDepartment().then((res) => {
+        if (res && res.status === 200) {
+          appData.setEducator(res.data);
+          setFilteredData(res.data);
+          setUpdatedData(res.data);
+          setUpdatedHeader(tableHeaders);
+        }
       });
     }
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)) {
-      getDataEducator().then((data) => {
-        appData.setEducator(data);
-        setFilteredData(data);
-        setUpdatedData(data);
-        setUpdatedHeader(tableHeaders);
+      Educator().then((res) => {
+        console.log("teatcher ", res);
+        if (res && res.status === 200) {
+          appData.setEducator(res.data);
+          setFilteredData(res.data);
+          setUpdatedData(res.data);
+          setUpdatedHeader(tableHeaders);
+        }
       });
     }
   }, [basicTabData.actionUpdTabTeach]);
@@ -180,15 +185,15 @@ function TableTeachers(props) {
                         {row[key]}
                       </td>
                     );
-                  } if (key === "totalHours") {
+                  }
+                  if (key === "totalHours") {
                     return (
-                      
-                      <td
-                        key={key}
-                      >
+                      <td key={key}>
                         <div
-                           style={{backgroundColor: WhyColor(row.totalHours, row.rate)}}
-                        className={styles.tdHours}
+                          style={{
+                            backgroundColor: WhyColor(row.totalHours, row.rate),
+                          }}
+                          className={styles.tdHours}
                         >
                           {row[key]}
                         </div>

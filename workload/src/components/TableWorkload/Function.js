@@ -116,16 +116,16 @@ export function funFilterSelected(
 }
 
 export function getTextForNotData(selectedFilter) {
+  console.log("selectedFilter", selectedFilter);
   if (selectedFilter === "Измененные") {
     return "Нет измененных данных";
-  }
-  if (selectedFilter === "Закрепленные") {
+  } else if (selectedFilter === "Закрепленные") {
     return "Нет закрепленных данных";
-  }
-  if (selectedFilter === "Выделенные") {
+  } else if (selectedFilter === "Выделенные") {
     return "Нет выделенных данных";
-  }
-  if (selectedFilter === "Все дисциплины") {
+  } else if (selectedFilter === "Все дисциплины") {
+    return "В таблице нет данных";
+  } else {
     return "В таблице нет данных";
   }
 }
@@ -146,6 +146,7 @@ export function funfastenedDataSort(data, fastenedData) {
 
 //! функция удаления обьекта по id при нажатии на применить удаление
 export function deleteItemBuffer(buff, itemId, type) {
+  console.log("fundata", buff, itemId, type);
   let itemData = null;
   let newBuffer = buff
     .map((item) => {

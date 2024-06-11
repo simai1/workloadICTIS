@@ -12,7 +12,7 @@ export const Educator = async () => {
   try {
     // console.log(`${server}/workload`)
     const response = await http.get(`${server}/educator`);
-    return response.data;
+    return response;
   } catch (error) {
     console.error("Error:", error, `${server}/workload`);
     throw error;
@@ -25,7 +25,7 @@ export const apiEducatorDepartment = async () => {
     const response = await http.get(
       `${server}/educator/get/educatorsByDepartment`
     );
-    return response.data;
+    return response;
   } catch (error) {
     console.error("Error:", error);
     throw error;
@@ -443,7 +443,6 @@ export const GetDepartment = async () => {
     return response;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
   }
 };
 
