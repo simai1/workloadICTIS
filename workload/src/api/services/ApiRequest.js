@@ -252,10 +252,9 @@ export const removeEducatorinWorkload = async (data) => {
       data: data,
     });
     console.log("response ", response);
-    return response.data;
+    return response;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
   }
 };
 
