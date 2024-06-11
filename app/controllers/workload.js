@@ -36,16 +36,18 @@ export default {
                         include: { model: Educator },
                         order: [
                             ['discipline', 'ASC'],
-                            ['workload', 'ASC']
+                            ['workload', 'ASC'],
+                            ['updatedAt', 'ASC'],
                         ],
                     });
                 }  else {
                     workloads = await Workload.findAll({
-                        where: { isOid, isBlocked: false },
+                        where: { isOid },
                         include: { model: Educator },
                         order: [
+                            ['updatedAt', 'ASC'],
                             ['discipline', 'ASC'],
-                            ['workload', 'ASC']
+                            ['workload', 'ASC'],
                         ],
                     });
                 }
@@ -62,7 +64,8 @@ export default {
                         include: { model: Educator },
                         order: [
                             ['discipline', 'ASC'],
-                            ['workload', 'ASC']
+                            ['workload', 'ASC'],
+                            ['updatedAt', 'ASC'],
                         ],
                     });
                 } else {
@@ -74,7 +77,8 @@ export default {
                         include: { model: Educator },
                         order: [
                             ['discipline', 'ASC'],
-                            ['workload', 'ASC']
+                            ['workload', 'ASC'],
+                            ['updatedAt', 'ASC'],
                         ],
                     });
                 }
@@ -90,7 +94,8 @@ export default {
                         include: { model: Educator },
                         order: [
                             ['discipline', 'ASC'],
-                            ['workload', 'ASC']
+                            ['workload', 'ASC'],
+                            ['updatedAt', 'ASC'],
                         ],
                     });
                 } else if (_user.role === 3) {
@@ -110,7 +115,8 @@ export default {
                         include: { model: Educator },
                         order: [
                             ['discipline', 'ASC'],
-                            ['workload', 'ASC']
+                            ['workload', 'ASC'],
+                            ['updatedAt', 'ASC'],
                         ],
                     });
                 }
@@ -412,10 +418,11 @@ export default {
         const department = educator.department;
 
         const workloads = await Workload.findAll({
-            where: { department },
+            where: { department, isOid: false },
             order: [
                 ['discipline', 'ASC'],
-                ['workload', 'ASC']
+                ['workload', 'ASC'],
+                ['updatedAt', 'ASC'],
             ],
             include: { model: Educator },
         });
@@ -434,7 +441,7 @@ export default {
             const educator = await Educator.findOne({ where: { userId } });
             const department = educator.department;
             const workload = await Workload.findOne({ where: { department } });
-            if (workload.isBlocked === true){
+            if (workload?.isBlocked === true){
                 usableDepartments.push({
                     id: department,
                     name: mapDepartments[department],

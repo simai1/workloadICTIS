@@ -122,26 +122,36 @@ function HomePage() {
   //! при клике на подтверждение блокировки таблицы
   const exportClick = (action) => {
     if (action) {
-      if (basicTabData.selectISOid) {
-        WorkloadBlocked(0).then((resp) => {
+      if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 33)){
+        const id = basicTabData.tableDepartment.find((el) => el.name === appData.myProfile.educator.department).id;
+        WorkloadBlocked(id).then((resp) => {
           if (resp.status == 200) {
-            basicTabData.funUpdateTable("0");
+            basicTabData.funUpdateTable(0);
             appData.setgodPopUp(true);
-            basicTabData.funGetDepartment();
           }
         });
-      } else {
-        console.log("tableDepartment", basicTabData.tableDepartment);
-        const index = basicTabData.tableDepartment.find(
-          (el) => el.name === basicTabData.nameKaf
-        ).id;
-        WorkloadBlocked(index).then((resp) => {
-          if (resp.status == 200) {
-            basicTabData.funUpdateTable(index);
-            appData.setgodPopUp(true);
-            basicTabData.funGetDepartment();
-          }
-        });
+       }else{
+        if (basicTabData.selectISOid) {
+          WorkloadBlocked(0).then((resp) => {
+            if (resp.status == 200) {
+              basicTabData.funUpdateTable("0");
+              appData.setgodPopUp(true);
+              basicTabData.funGetDepartment();
+            }
+          });
+        } else {
+          console.log("tableDepartment", basicTabData.tableDepartment);
+          const index = basicTabData.tableDepartment.find(
+            (el) => el.name === basicTabData.nameKaf
+          ).id;
+          WorkloadBlocked(index).then((resp) => {
+            if (resp.status == 200) {
+              basicTabData.funUpdateTable(index);
+              appData.setgodPopUp(true);
+              basicTabData.funGetDepartment();
+            }
+          });
+        }
       }
     } else {
       setPopupExport(false);
