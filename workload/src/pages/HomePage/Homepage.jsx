@@ -119,65 +119,10 @@ function HomePage() {
     popupSaveAll == true && setPopupSaveAll(false);
   };
 
-  //! при клике на подтверждение блокировки таблицы
-  const exportClick = (action) => {
-    if (action) {
-      if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 33)) {
-        const id = basicTabData.tableDepartment.find(
-          (el) => el.name === appData.myProfile.educator.department
-        ).id;
-        WorkloadBlocked(id).then((resp) => {
-          if (resp.status == 200) {
-            basicTabData.funUpdateTable(0);
-            appData.setgodPopUp(true);
-          }
-        });
-      } else {
-        if (basicTabData.selectISOid) {
-          WorkloadBlocked(0).then((resp) => {
-            if (resp.status == 200) {
-              basicTabData.funUpdateTable("0");
-              appData.setgodPopUp(true);
-              basicTabData.funGetDepartment();
-            }
-          });
-        } else {
-          console.log("tableDepartment", basicTabData.tableDepartment);
-          const index = basicTabData.tableDepartment.find(
-            (el) => el.name === basicTabData.nameKaf
-          ).id;
-          WorkloadBlocked(index).then((resp) => {
-            if (resp.status == 200) {
-              basicTabData.funUpdateTable(index);
-              appData.setgodPopUp(true);
-              basicTabData.funGetDepartment();
-            }
-          });
-        }
-      }
-    } else {
-      setPopupExport(false);
-    }
-  };
-
   //! при нажатии на подтвердить сохранение изменений
   const confirmClick = (action) => {
     if (action) {
-      // //! отправляем все запросы на обработку
-      // console.log("Сохранено", appData.bufferAction);
-      // bufferRequestToApi(appData.bufferAction).then(() => {
-      //   appData.setBufferAction([0]);
-      //   basicTabData.updateAlldata();
-      // });
-      // tabPar.setSelectedTr([]);
-      // tabPar.setChangedData({
-      //   splitjoin: [],
-      //   educator: [],
-      //   hours: [],
-      //   numberOfStudents: [],
-      //   deleted: [],
-      // });
-      // console.log("выполнено и очищено", appData.bufferAction);
+      //! отправляем все запросы на обработку
       console.log("Сохранено", appData.bufferAction);
       bufferRequestToApi(appData.bufferAction).then(() => {
         appData.setBufferAction([0]);
@@ -188,6 +133,55 @@ function HomePage() {
       console.log("выполнено и очищено", appData.bufferAction);
     } else {
       setPopupSaveAll(false);
+    }
+  };
+  const [confirmationSave, setConfirmationSave] = useState(false); // флаг открывается если не сохранили данные и блокируем
+
+  //! при клике на подтверждение блокировки таблицы
+  const exportClick = (action) => {
+    if (appData.bufferAction.length === 0) {
+      if (action) {
+        if (
+          appData.metodRole[appData.myProfile?.role]?.some((el) => el === 33)
+        ) {
+          const id = basicTabData.tableDepartment.find(
+            (el) => el.name === appData.myProfile.educator.department
+          ).id;
+          WorkloadBlocked(id).then((resp) => {
+            if (resp.status == 200) {
+              basicTabData.funUpdateTable(0);
+              appData.setgodPopUp(true);
+            }
+          });
+        } else {
+          if (basicTabData.selectISOid) {
+            WorkloadBlocked(0).then((resp) => {
+              if (resp.status == 200) {
+                basicTabData.funUpdateTable("0");
+                appData.setgodPopUp(true);
+                basicTabData.funGetDepartment();
+              }
+            });
+          } else {
+            console.log("tableDepartment", basicTabData.tableDepartment);
+            const index = basicTabData.tableDepartment.find(
+              (el) => el.name === basicTabData.nameKaf
+            ).id;
+            WorkloadBlocked(index).then((resp) => {
+              if (resp.status == 200) {
+                basicTabData.funUpdateTable(index);
+                appData.setgodPopUp(true);
+                basicTabData.funGetDepartment();
+              }
+            });
+          }
+        }
+      } else {
+        setPopupExport(false);
+      }
+    } else {
+      setPopupExport(false);
+      setConfirmationSave(true);
     }
   };
 
@@ -206,6 +200,12 @@ function HomePage() {
   return (
     <Layout>
       <div className={styles.HomePage}>
+        {confirmationSave && (
+          <div className={styles.nosavedData}>
+            <span>У вас есть несохраненные данные</span>
+            <button onClick={() => setConfirmationSave(false)}>Закрыть</button>
+          </div>
+        )}
         <div className={styles.header}>
           <div className={styles.header_top}>
             <div className={styles.header_top_save_search}>
@@ -217,6 +217,8 @@ function HomePage() {
                     className={styles.btnMenuBox}
                     onClick={appData.backBuffer}
                   >
+                    <div className={styles.text}>Отменить</div>
+
                     <img src="./img/backBuffer.svg" />
                   </div>
                 )}
@@ -249,7 +251,9 @@ function HomePage() {
                     <img className={styles.btnLeft} src="./img/export.svg" />
                     {popupExport && (
                       <ConfirmSaving
-                        title={"Вы уверены, что хотите отправить таблицу?"}
+                        title={
+                          "Вы уверены, что хотите отправить таблицу? Изменения будут прменены."
+                        }
                         confirmClick={exportClick}
                         setShow={setPopupExport}
                       />
