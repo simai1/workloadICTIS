@@ -204,6 +204,7 @@ export default {
 
         await History.create({
             type: 1,
+            department: existingWorkloads[0].department,
             before: getIds(existingWorkloads),
             after: getIds(newWorkloads),
         })
@@ -262,6 +263,7 @@ export default {
 
         await History.create({
             type: 3,
+            department: checkWorkload.department,
             before: [],
             after: [workloadId],
         })
@@ -365,6 +367,7 @@ export default {
 
         await History.create({
             type: 2,
+            department: workloads[0].department,
             before: getIds(workloads),
             after: [createdWorkload.id],
         })
