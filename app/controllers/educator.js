@@ -77,7 +77,7 @@ export default {
     },
 
     // Обновляем данные преподователя
-    async update({ params: { educatorId }, body: { name, position, typeOfEmployment, rate } }, res) {
+    async update({ params: { educatorId }, body: { name, position, typeOfEmployment, rate, email, department } }, res) {
         if (!educatorId) throw new AppErrorMissing('educatorId');
         const educator = await Educator.findByPk(educatorId);
         if (!educator) throw new AppErrorNotExist('educator');
@@ -87,12 +87,16 @@ export default {
         if (!position) position = educator.position;
         if (!typeOfEmployment) typeOfEmployment = educator.typeOfEmployment;
         if (!rate) rate = educator.rate;
+        if (!email) email = educator.email;
+        if (!department) department = educator.department;
 
         await educator.update({
             name,
             position,
             typeOfEmployment,
             rate,
+            email, 
+            department,
         });
 
         res.json(educator);
