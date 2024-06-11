@@ -1,5 +1,4 @@
 import { map as positionsMap } from '../config/position.js';
-import { map as typeMap } from '../config/type-of-employment.js';
 import { map as departmentsMap } from '../config/departments.js';
 
 export default class EducatorListDto {
@@ -12,6 +11,7 @@ export default class EducatorListDto {
     hoursFirstPeriod;
     hoursSecondPeriod;
     hoursWithoutPeriod;
+
     constructor(model) {
         this.id = model.id;
         this.name = model.name;
@@ -19,8 +19,26 @@ export default class EducatorListDto {
         this.department = departmentsMap[model.department];
         this.rate = model.rate;
         this.totalHours = model.SummaryWorkload.totalHours;
-        this.hoursFirstPeriod = model.SummaryWorkload.kafedralAutumnWorkload + model.SummaryWorkload.instituteAutumnWorkload;
-        this.hoursSecondPeriod = model.SummaryWorkload.kafedralSpringWorkload + model.SummaryWorkload.instituteSpringWorkload;
-        this.hoursWithoutPeriod = model.SummaryWorkload.kafedralAdditionalWorkload + model.SummaryWorkload.instituteManagementWorkload;
+        this.hoursFirstPeriod =
+            Math.round(
+                (model.SummaryWorkload.kafedralAutumnWorkload +
+                    model.SummaryWorkload.instituteAutumnWorkload +
+                    Number.EPSILON) *
+                    100
+            ) / 100;
+        this.hoursSecondPeriod =
+            Math.round(
+                (model.SummaryWorkload.kafedralSpringWorkload +
+                    model.SummaryWorkload.instituteSpringWorkload +
+                    Number.EPSILON) *
+                    100
+            ) / 100;
+        this.hoursWithoutPeriod =
+            Math.round(
+                (model.SummaryWorkload.kafedralAdditionalWorkload +
+                    model.SummaryWorkload.instituteManagementWorkload +
+                    Number.EPSILON) *
+                    100
+            ) / 100;
     }
 }
