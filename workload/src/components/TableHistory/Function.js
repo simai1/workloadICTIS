@@ -5,37 +5,6 @@ export function funFixEducator(data) {
     educator: item.educator ? item.educator.name : "___",
   }));
 }
-// if(data && bufferAction.length >0){
-//   console.log('bufferAction', bufferAction)
-//   const newData = [...data]
-//   let obj = []
-//   bufferAction.map((item)=>{
-//     if(item.request === "addEducatorWorkload"){
-//     let o = {...newData[newData.findIndex((el)=>(el.id === item.data.workloadId))]};
-//     o.educator = item.edicatorName.edicatorName;
-//     obj.push(o)
-//     }
-//   })
-
-//   return data.map((item) => {
-//     // let i = findex.some((el)=> el === index)
-//     if(obj.find((e)=> e.id === item.id)){
-//       return obj.find((e)=> e.id === item.id)
-//     }else if(item.educator === null || item.educator === undefined){
-//       return {
-//         ...item,
-//         educator: item.educator ? item.educator.name : "___",
-//       }
-//     }
-//     else if(item.educator.name){
-//       return {
-//         ...item,
-//         educator: item.educator.name
-//       }
-//     }else{
-//       return item;
-//     }
-//   });
 
 //! фильтрация массива нагрузок
 export function filteredWorkload(data, text) {
@@ -116,16 +85,16 @@ export function funFilterSelected(
 }
 
 export function getTextForNotData(selectedFilter) {
-  console.log("selectedFilter", selectedFilter);
   if (selectedFilter === "Измененные") {
     return "Нет измененных данных";
-  } else if (selectedFilter === "Закрепленные") {
+  }
+  if (selectedFilter === "Закрепленные") {
     return "Нет закрепленных данных";
-  } else if (selectedFilter === "Выделенные") {
+  }
+  if (selectedFilter === "Выделенные") {
     return "Нет выделенных данных";
-  } else if (selectedFilter === "Все дисциплины") {
-    return "В таблице нет данных";
-  } else {
+  }
+  if (selectedFilter === "Все дисциплины") {
     return "В таблице нет данных";
   }
 }
@@ -147,15 +116,35 @@ export function funfastenedDataSort(data, fastenedData) {
 //! функция удаления обьекта по id при нажатии на применить удаление
 export function deleteItemBuffer(buff, itemId, type) {
   console.log("fundata", buff, itemId, type);
-
   let itemData = null;
   let newBuffer = buff
     .map((item) => {
       if (item.request === type) {
-        console.log("item.request true", type, "id");
         let p = { ...item };
         itemData = p;
-        p.data.ids = p.data.ids.filter((id) => id !== itemId.slice(0, -1));
+        p.data.ids = p.data.ids.filter((id) => id !== itemId);
+        if (p.data.ids.length > 0) {
+          return p;
+        } else {
+          return null;
+        }
+      } else {
+        return item;
+      }
+    })
+    .filter(Boolean);
+  console.log("newBuffer", newBuffer);
+  return { buffer: newBuffer, item: itemData };
+}
+
+//! функция удаления обьекта по id при нажатии на применить удаление
+export function fundeleteItemBuffer(buff, itemId, type) {
+  let itemData = null;
+  let newBuffer = buff
+    .map((item) => {
+      if (item.request === type) {
+        let p = { ...item };
+        itemData = p;
         p.data.ids = p.data.ids.filter((id) => id !== itemId);
         if (p.data.ids.length > 0) {
           return p;
@@ -225,3 +214,74 @@ export const funGetConfirmation = (itemId, changedData, bufferAction) => {
     };
   } else return { blocked: false, height: "150px", top: "0", type: 0 };
 };
+
+//! ИСТОРИЯ
+//! разделяем историю по типам
+
+function getChangedKeys(before, after) {
+  const changedKeys = [];
+
+  for (let i = 0; i < before.length; i++) {
+    const beforeObj = before[i];
+
+    for (let j = 0; j < after.length; j++) {
+      const afterObj = after[j];
+      const keys = new Set([
+        ...Object.keys(beforeObj),
+        ...Object.keys(afterObj),
+      ]);
+      for (const key of keys) {
+        if (beforeObj[key] !== afterObj[key] && key !== "id") {
+          changedKeys.push(key);
+        }
+      }
+    }
+  }
+
+  return changedKeys;
+}
+
+const funWorcloadFix = (item, el, action, len, length, keys) => {
+  return {
+    id: item.id,
+    type: item.type,
+    action: action,
+    number: len,
+    length: length,
+    keys: keys,
+    value: {
+      ...el,
+      educator: el.educator ? el.educator.name : null,
+    },
+  };
+};
+
+export function funHistoryFix(history) {
+  console.log(history);
+  let fixMass = [];
+  let length = 0;
+  let keys = [];
+  history.map((item) => {
+    length = item.after.length + item.before.length;
+    keys = getChangedKeys(item.before, item.after);
+    if (item.after.length !== 0 || item.before.length !== 0) {
+      item.before.map((el, index) => {
+        fixMass.push(funWorcloadFix(item, el, "after", index, length, keys));
+      });
+      item.after.map((el, index) => {
+        fixMass.push(
+          funWorcloadFix(
+            item,
+            el,
+            "before",
+            item.before.length + index,
+            length,
+            keys
+          )
+        );
+      });
+    }
+  });
+  console.log("fixMass", fixMass);
+  return fixMass;
+}

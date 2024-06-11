@@ -10,15 +10,15 @@ export function EducatorMenu(props) {
 
   useEffect(() => {
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 2)) {
-      apiEducatorDepartment().then((data) => {
-        setEductor(data);
-        setFiltredData(data);
+      apiEducatorDepartment().then((req) => {
+        setEductor(req.data);
+        setFiltredData(req.data);
       });
     }
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)) {
-      Educator().then((data) => {
-        setEductor(data);
-        setFiltredData(data);
+      Educator().then((req) => {
+        setEductor(req.data);
+        setFiltredData(req.data);
       });
     }
   }, [appData.myProfile]);

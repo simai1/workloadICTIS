@@ -18,7 +18,7 @@ function TableLks(props) {
     { key: "specialty", label: "Дисциплина" },
     { key: "hoursFirstPeriod", label: "Часы период 1" },
     { key: "hoursSecondPeriod", label: "Часы период 2" },
-    { key: "hoursWithoutPeriod", label: "Часы период 3" },
+    { key: "hoursWithoutPeriod", label: "Дополнительные часы" },
   ]);
 
   //!!!!!!!!!!!!!! сброс состояния редукса //!!!!!!!!!!!

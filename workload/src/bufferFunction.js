@@ -111,3 +111,39 @@ export async function returnPrevState(buffer, data) {
     return newUpdatedData;
   }
 }
+
+//! функция прокида буффера для разделения соединения и удаления нагрузок
+
+export function fixDataBuff(data, bufferAction) {
+  let newData = [...data];
+  console.log("bufferAction", bufferAction);
+  //! проходим по элементам буфера
+  bufferAction.map((bufferItem) => {
+    //! если запрос на разделение
+    if (bufferItem.request === "splitWorkload") {
+      newData = newData.flatMap((item) => {
+        if (bufferItem.data.ids.some((e) => e === item.id)) {
+          const newEl = bufferItem.newState.filter(
+            (el) => el.id.slice(0, -1) === item.id
+          );
+          return newEl;
+        } else {
+          return [item];
+        }
+      });
+    }
+    //! если запрос на обьединение
+    if (bufferItem.request === "joinWorkloads") {
+      newData = newData.flatMap((item) => {
+        if (bufferItem.data.ids.includes(item.id)) {
+          return item.id === bufferItem.newState.id
+            ? [bufferItem.newState]
+            : [];
+        } else {
+          return [item];
+        }
+      });
+    }
+  });
+  return newData;
+}

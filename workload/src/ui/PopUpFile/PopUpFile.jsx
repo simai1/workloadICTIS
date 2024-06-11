@@ -11,8 +11,9 @@ export function PopUpFile(props) {
   const [openListFlag, setopenListFlag] = useState(false);
   const [fileData, setfileData] = useState(null)
   const cafData = [
+    { name: "ОИД", id: 0 },
     { name: "БИТ", id: 1 },
-    { name: "ФМОИО", id: 2 },
+    { name: "ИИТИС", id: 2 },
     { name: "ВТ", id: 3 },
     { name: "ИАСБ", id: 4 },
     { name: "ИБТКС", id: 5 },
@@ -22,8 +23,7 @@ export function PopUpFile(props) {
     { name: "САИТ", id: 9 },
     { name: "САПР", id: 10 },
     { name: "СиПУ", id: 11 },
-    { name: "ОИД", id: 12 },
-    {name: "ИИТИС", id: 13}
+    {name: "ФМОИО", id: 12}
   ];
   const fileInputRef = useRef(null);
 
@@ -33,7 +33,6 @@ export function PopUpFile(props) {
   };
 
   const UpdateTable = () => {
-   
     closeMenuPopFile();
     const constIdCafedra = cafData.find((e)=>(e.name === valueCafedra)).id 
     const fileData = appData?.fileData;
@@ -70,8 +69,8 @@ export function PopUpFile(props) {
     fileInputRef.current.click();  
   }
 
-  const setCaf = (e) => {
-    setvalueCafedra(e.target.textContent);
+  const setCaf = (nameKaf) => {
+    setvalueCafedra(nameKaf);
     setopenListFlag(false);
   };
 
@@ -118,19 +117,9 @@ export function PopUpFile(props) {
           {openListFlag && (
             <div className={styles.list}>
               <div className={styles.listInner}>
-                <p onClick={setCaf}>БИТ</p>
-                <p onClick={setCaf}>ФМОИО</p>
-                <p onClick={setCaf}>ВТ</p>
-                <p onClick={setCaf}>ИАСБ</p>
-                <p onClick={setCaf}>ИБТКС</p>
-                <p onClick={setCaf}>ИМС</p>
-                <p onClick={setCaf}>МОП ЭВМ</p>
-                <p onClick={setCaf}>ПиБЖ</p>
-                <p onClick={setCaf}>САИТ</p>
-                <p onClick={setCaf}>САПР</p>
-                <p onClick={setCaf}>СиПУ</p>
-                <p onClick={setCaf}>ОИД</p>
-                <p onClick={setCaf}>ИИТИС</p>
+              {cafData?.map((item) => (
+                <p key={item.id} onClick={() => setCaf(item.name)}>{item.name}</p>
+              ))}
               </div>
             </div>
           )}

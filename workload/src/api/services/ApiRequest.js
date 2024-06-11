@@ -12,7 +12,7 @@ export const Educator = async () => {
   try {
     // console.log(`${server}/workload`)
     const response = await http.get(`${server}/educator`);
-    return response.data;
+    return response;
   } catch (error) {
     console.error("Error:", error, `${server}/workload`);
     throw error;
@@ -25,7 +25,7 @@ export const apiEducatorDepartment = async () => {
     const response = await http.get(
       `${server}/educator/get/educatorsByDepartment`
     );
-    return response.data;
+    return response;
   } catch (error) {
     console.error("Error:", error);
     throw error;
@@ -46,7 +46,19 @@ export const apiGetUser = async () => {
 export const EducatorLK = async (data) => {
   try {
     const response = await http.get(`${server}/educator/${data}`);
-    console.log('response_EducatorLK', response)
+    console.log("response_EducatorLK", response);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
+//! получаем историю блокированных таблиц
+export const apiGetHistory = async (data) => {
+  try {
+    const response = await http.get(`${server}/history/getAll`);
+    console.log("история", response);
     return response.data;
   } catch (error) {
     console.error("Error:", error);
@@ -240,10 +252,9 @@ export const removeEducatorinWorkload = async (data) => {
       data: data,
     });
     console.log("response ", response);
-    return response.data;
+    return response;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
   }
 };
 
@@ -426,14 +437,11 @@ export const GetRole = async () => {
 //!Получение кафелр
 export const GetDepartment = async () => {
   try {
-    const response = await http.get(
-      `${server}/workload/get/usableDepartments`
-    );
-    console.log("GetDepartment", response);
+    const response = await http.get(`${server}/workload/get/usableDepartments`);
+    console.log("GetDepartment", response?.data);
     return response;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
   }
 };
 
