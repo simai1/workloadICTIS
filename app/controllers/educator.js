@@ -7,16 +7,21 @@ import { map as mapTypeOfEmployments } from '../config/type-of-employment.js';
 import departments from '../config/departments.js';
 import Workload from '../models/workload.js';
 import SummaryWorkload from '../models/summary-workload.js';
-import WorkloadProfileDto from "../dtos/workload-profile-dto.js";
-import EducatorListDto from "../dtos/educator-list-dto.js";
+import WorkloadProfileDto from '../dtos/workload-profile-dto.js';
+import EducatorListDto from '../dtos/educator-list-dto.js';
 
 export default {
     async getAll(params, res) {
         const educators = await Educator.findAll({
-            include: [{
-                model: SummaryWorkload,
-            }],
-            order: [['department', 'ASC']]
+            include: [
+                {
+                    model: SummaryWorkload,
+                },
+            ],
+            order: [
+                ['department', 'ASC'],
+                ['name', 'ASC'],
+            ],
         });
         const educatorDtos = [];
         for (const educator of educators) {
@@ -51,11 +56,14 @@ export default {
         let flag;
         for (const workload of workloads) {
             flag = true;
-            for (const workloadDto of workloadsDto){
-                if (departments[workloadDto.department] === workload.department && workloadDto.specialty === workload.specialty){
-                    workloadDto.hoursFirstPeriod += workload.period === 1? workload.hours : 0;
-                    workloadDto.hoursSecondPeriod += workload.period === 2? workload.hours : 0;
-                    workloadDto.hoursWithoutPeriod += workload.period === null? workload.hours : 0;
+            for (const workloadDto of workloadsDto) {
+                if (
+                    departments[workloadDto.department] === workload.department &&
+                    workloadDto.specialty === workload.specialty
+                ) {
+                    workloadDto.hoursFirstPeriod += workload.period === 1 ? workload.hours : 0;
+                    workloadDto.hoursSecondPeriod += workload.period === 2 ? workload.hours : 0;
+                    workloadDto.hoursWithoutPeriod += workload.period === null ? workload.hours : 0;
                     flag = false;
                     break;
                 }
