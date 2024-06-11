@@ -32,7 +32,7 @@ export default {
             if (!(typeof isOid === "undefined")){
                 if (_user.role === 5 || _user.role === 2){
                     workloads = await Workload.findAll({
-                        where: { isOid, educatorId: _user.educator.id, isBlocked: false},
+                        where: { isOid, educatorId: _user.Educator.id, isBlocked: false},
                         include: { model: Educator },
                         order: [
                             ['discipline', 'ASC'],
@@ -59,7 +59,7 @@ export default {
                         where: {
                             isOid: false,
                             department,
-                            educatorId: _user.educator.id,
+                            educatorId: _user.Educator.id,
                         },
                         include: { model: Educator },
                         order: [
