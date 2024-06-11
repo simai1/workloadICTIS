@@ -147,12 +147,15 @@ export function funfastenedDataSort(data, fastenedData) {
 //! функция удаления обьекта по id при нажатии на применить удаление
 export function deleteItemBuffer(buff, itemId, type) {
   console.log("fundata", buff, itemId, type);
+
   let itemData = null;
   let newBuffer = buff
     .map((item) => {
       if (item.request === type) {
+        console.log("item.request true", type, "id");
         let p = { ...item };
         itemData = p;
+        p.data.ids = p.data.ids.filter((id) => id !== itemId.slice(0, -1));
         p.data.ids = p.data.ids.filter((id) => id !== itemId);
         if (p.data.ids.length > 0) {
           return p;
