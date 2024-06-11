@@ -51,6 +51,8 @@ function HomePage() {
   const [popupExport, setPopupExport] = useState(false); // открыть/закрыть попап подтверждения блокировки таблицы
   const [departments, setdepartments] = useState([]);
   const [kafedralIsOpen, setKafedralIsOpen] = useState(false);
+  const [cafedral, setCafedral] = useState(false);
+
   const handleButtonClick = () => {
     setEducatorIdforLk("");
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 28)) {
@@ -240,7 +242,7 @@ function HomePage() {
 
                 {appData.metodRole[appData.myProfile?.role]?.some(
                   (el) => el === 27
-                ) && (
+                ) && ((basicTabData.nameKaf !="Все" && cafedral) || (basicTabData.nameKaf ==="Все" && !cafedral)) &&  (
                   <div
                     style={{ marginRight: "20px" }}
                     className={styles.btnMenuBox}
@@ -392,6 +394,7 @@ function HomePage() {
                         basicTabData.setnameKaf("Все");
                         tabPar.setSelectedFilter("Все Дисциплины");
                         appData.setSelectedComponent("Disciplines");
+                        setCafedral(false)
                       }}
                     />
                     <Button
@@ -406,6 +409,7 @@ function HomePage() {
                         basicTabData.setnameKaf("Все");
                         tabPar.setSelectedFilter("Все Дисциплины");
                         appData.setSelectedComponent("Disciplines");
+                        setCafedral(true)
                       }}
                     />
                     {!basicTabData.selectISOid && (
@@ -498,6 +502,7 @@ function HomePage() {
             />
           </div>
         </div>
+        <div>Кол-во выделенных нагрузок: </div>
       </div>
       {filePopUp && (
         <PopUpFile
