@@ -10,6 +10,7 @@ export function splitWorkloadCount(data, selectedTr, count) {
   const updatedData = [...data];
   const newIds = [];
   const blocked = [];
+  const newState = [];
   for (const id of selectedTr) {
     const workloadIndex = updatedData.findIndex((item) => item.id === id);
     if (workloadIndex !== -1) {
@@ -24,17 +25,19 @@ export function splitWorkloadCount(data, selectedTr, count) {
           educator: null,
           id: `${workload.id}${i}`,
         };
+        newState.push(newWorkload);
         updatedData.splice(workloadIndex + i, 0, newWorkload);
         newIds.push(newWorkload.id);
         blocked.push(newWorkload.id);
-        console.log('blocked', blocked)
+        console.log("blocked", blocked);
       }
     }
   }
-  return { updatedData, newIds, blocked };
+  return { updatedData, newIds, blocked, newState };
 }
 
 export function combineData(data, selectedTr) {
+  let newState = null;
   const prevState = data.filter((item) =>
     Object.values(selectedTr).includes(item.id)
   );
@@ -65,12 +68,13 @@ export function combineData(data, selectedTr) {
         groups,
         numberOfStudents: sumOfStudents,
       };
+      newState = updatedObject;
       const newUpdatedData = [
         ...upData.slice(0, index),
         updatedObject,
         ...upData.slice(index + 1),
       ];
-      return { newUpdatedData, prevState };
+      return { newUpdatedData, prevState, newState };
     }
   }
   return null;
@@ -80,7 +84,7 @@ export function combineData(data, selectedTr) {
 //! добавление данных
 export function addСhangedData(changedData, dataKey, ids) {
   const cd = { ...changedData };
-  console.log('cd', cd)
+  console.log("cd", cd);
   // const existingIds = new Set(cd[dataKey]);
   // const uniqueIds = ids.filter((id) => !cd[dataKey]);
   // const uniqueIds = ids.filter((id) => !cd[dataKey].has(id));

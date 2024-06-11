@@ -56,11 +56,11 @@ export function SamplePoints(props) {
     checkPar.setAllChecked(!checkPar.isAllChecked);
     // Фильтруем данные
     const fdfix = FilteredSample(
-      basicTabData.workloadDataFix,
+      basicTabData.workloadData,
       checked,
       props.itemKey
     );
-    basicTabData.setFiltredData(fdfix);
+    basicTabData.setWorkloadDataFix(fdfix);
   };
 
   //! при нажатии на Input
@@ -72,9 +72,10 @@ export function SamplePoints(props) {
       checked.push({ value: el, itemKey: props.itemKey });
     }
     checkPar.setIsChecked(checked);
+    console.log("checked", checked);
     // Фильтруем данные
-    const fdfix = FilteredSample(basicTabData.workloadDataFix, checked);
-    basicTabData.setFiltredData(fdfix);
+    const fdfix = FilteredSample(basicTabData.workloadData, checked);
+    basicTabData.setWorkloadDataFix(fdfix);
     const allChecked = checked.length === 0;
     checkPar.setAllChecked(allChecked);
   };

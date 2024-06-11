@@ -1,11 +1,15 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Table from "./Table";
 import styles from "./TableWorkload.module.scss";
-import { filteredWorkload, funfastenedDataSort } from "./Function";
+import {
+  filteredWorkload,
+  funHistoryFix,
+  funfastenedDataSort,
+} from "./Function";
 import DataContext from "../../context";
 import ContextMenu from "../../ui/ContextMenu/ContextMenu";
 
-function TableWorkload(props) {
+function TableHistory(props) {
   const { tabPar, visibleDataPar, basicTabData } = useContext(DataContext);
   //! при событии скролл таблицы изменим индекс первого показываемого tr
   const scrollTable = (e) => {
@@ -46,18 +50,27 @@ function TableWorkload(props) {
     tabPar.setContextMenuShow(!tabPar.contextMenuShow);
   };
 
+  const [historyData, sethistoryData] = useState([]);
+  useEffect(() => {
+    console.log("история изменений", basicTabData.historyChanges);
+    //! разделяем историю по типам
+    const fixHistory = funHistoryFix(basicTabData.historyChanges);
+    console.log("fixHistory", fixHistory);
+    sethistoryData(fixHistory);
+  }, [basicTabData.historyChanges]);
+
   return (
     <div
       onContextMenu={handleContextMenu}
       className={styles.tabledisciplinesMain}
       onScroll={scrollTable}
     >
-      {tabPar.contextMenuShow && tabPar.selectedTr.length != 0 && (
+      {/* {tabPar.contextMenuShow && tabPar.selectedTr.length != 0 && (
         <ContextMenu />
-      )}
-      <Table />
+      )} */}
+      <Table historyData={historyData} />
     </div>
   );
 }
 
-export default TableWorkload;
+export default TableHistory;

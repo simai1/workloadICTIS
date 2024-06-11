@@ -149,11 +149,13 @@ function OverlapWindow(props) {
           "basicTabData.tableDepartment",
           basicTabData.tableDepartment
         );
-        if(basicTabData.selectISOid) {
-          basicTabData.funUpdateTable(0)
-         }else{
-          basicTabData.funUpdateTable(basicTabData.tableDepartment.find((el) => el.name === basicTabData.nameKaf)?.id);
-         }
+        if (basicTabData.tableDepartment.length > 0) {
+          basicTabData.funUpdateTable(
+            basicTabData.tableDepartment.find(
+              (el) => el.name === basicTabData.nameKaf
+            ).id
+          );
+        }
       });
     } else if (props.getConfirmation.type === 3) {
       joinWorkloads(props.getConfirmation.data.data).then((res) => {
@@ -169,18 +171,13 @@ function OverlapWindow(props) {
         changed.join = changed.join.filter((item) => item !== props.itid);
         console.log(changed);
         tabPar.setChangedData(changed);
-        // if (basicTabData.tableDepartment.length > 0) {
-        //   basicTabData.funUpdateTable(
-        //     basicTabData.tableDepartment.find(
-        //       (el) => el.name === basicTabData.nameKaf
-        //     )?.id
-        //   );
-        // }
-       if(basicTabData.selectISOid) {
-        basicTabData.funUpdateTable(0)
-       }else{
-        basicTabData.funUpdateTable(basicTabData.tableDepartment.find((el) => el.name === basicTabData.nameKaf)?.id);
-       }
+        if (basicTabData.tableDepartment.length > 0) {
+          basicTabData.funUpdateTable(
+            basicTabData.tableDepartment.find(
+              (el) => el.name === basicTabData.nameKaf
+            )?.id
+          );
+        }
       });
     }
   };

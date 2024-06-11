@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import TableTh from "./TableTh";
 import TableTd from "./TableTd";
 import styles from "./TableWorkload.module.scss";
@@ -9,7 +9,6 @@ import { funGetConfirmation, getTextForNotData } from "./Function";
 function Table(props) {
   const { tabPar, visibleDataPar, basicTabData, appData } =
     React.useContext(DataContext);
-
   //! определение верхнего отступа таблицы
   const getTopHeight = () => {
     return visibleDataPar.startData * visibleDataPar.heightTd;
@@ -18,7 +17,7 @@ function Table(props) {
   //! определение нижнего отступа таблицы
   const getBottomHeight = () => {
     return (
-      (basicTabData.filtredData.length -
+      (props.historyData.length -
         visibleDataPar.startData -
         visibleDataPar.visibleData) *
       visibleDataPar.heightTd
@@ -59,7 +58,7 @@ function Table(props) {
           return [...prev, itemId];
         }
       });
-      if (basicTabData.filtredData.length === len) {
+      if (props.historyData.length === len) {
         tabPar.setOnCheckBoxAll(true);
       } else {
         tabPar.setOnCheckBoxAll(false);
@@ -69,8 +68,8 @@ function Table(props) {
 
   const clickTrAll = () => {
     let ids = [];
-    if (basicTabData.filtredData.length !== tabPar.selectedTr.length) {
-      basicTabData.filtredData.map((item) => {
+    if (basicTabData.props.historyData.length !== tabPar.selectedTr.length) {
+      basicTabData.props.historyData.map((item) => {
         ids.push(item.id);
       });
       tabPar.setOnCheckBoxAll(true);
@@ -82,31 +81,38 @@ function Table(props) {
   };
 
   //определение каласса tr
-  const getClassNameTr = (items) => {
-    const itemId = items.id;
+  const getClassNameTr = (itemss) => {
+    const itemId = itemss.value.id;
     let classText = null;
     classText = tabPar.selectedTr?.includes(itemId)
       ? `${styles.selectedTr}`
       : null;
-    const item = tabPar.coloredData?.find((el) => el.workloadId === itemId);
-    const colored = item ? `colored${item.color}` : null;
-    classText = item ? `${classText} ${styles[colored]}` : classText;
-    classText = tabPar.changedData.deleted?.find((el) => el === itemId)
-      ? `${classText} ${styles.trDeleted}`
-      : classText;
-    classText =
-      tabPar.changedData.split?.find((el) => el === itemId) ||
-      tabPar.changedData.join?.find((el) => el === itemId) ||
-      items.isBlocked
-        ? `${classText} ${styles.trBlocked}`
-        : classText;
-
+    // const item = tabPar.coloredData?.find((el) => el.workloadId === itemId);
+    // const colored = item ? `colored${item.color}` : null;
+    // classText = item ? `${classText} ${styles[colored]}` : classText;
+    // classText = tabPar.changedData.deleted?.find((el) => el === itemId)
+    //   ? `${classText} ${styles.trDeleted}`
+    //   : classText;
+    // classText =
+    //   tabPar.changedData.split?.find((el) => el === itemId) ||
+    //   tabPar.changedData.join?.find((el) => el === itemId) ||
+    //   itemss.value.isBlocked
+    //     ? `${classText} ${styles.trBlocked}`
+    //     : classText;
+    if (borderState === itemss.id) {
+      classText = `${classText} ${styles.border0}`;
+    }
     return classText;
   };
 
   //! функция опредления заблокирован ли tr, чтобы вывести кнопки отмены подтверждения
   const getConfirmation = (itemId) => {
     return funGetConfirmation(itemId, tabPar.changedData, appData.bufferAction);
+  };
+
+  const [borderState, setBorderState] = useState("");
+  const getBorder = (item) => {
+    setBorderState(item.id);
   };
 
   return (
@@ -132,17 +138,16 @@ function Table(props) {
             ))}
           </tr>
         </thead>
-        {basicTabData.filtredData.length === 0 && (
-          // если нет данных то выводим нет данных
+        {props.historyData.length === 0 && (
           <tbody className={styles.NotData}>
             <tr>
               <td className={styles.tdfix}></td>
               <td className={styles.tdfix2}>
-                {
+                {props.historyData.length === 0 && (
                   <div className={styles.notdatadiv}>
                     {getTextForNotData(tabPar.selectedFilter)}
                   </div>
-                }
+                )}
               </td>
             </tr>
           </tbody>
@@ -155,39 +160,46 @@ function Table(props) {
             style={{ height: getTopHeight() }}
           ></tr>
 
-          {basicTabData.filtredData
+          {props.historyData
             .slice(
               visibleDataPar.startData,
               visibleDataPar.startData + visibleDataPar.visibleData
             )
             .map((item, number) => (
               <tr
+                onMouseEnter={() => getBorder(item)}
+                onMouseLeave={() => getBorder("")}
                 // выделяем цветом если выбранно для контекстного меню
                 className={getClassNameTr(item)}
-                onClick={
-                  getConfirmation(item.id).blocked
-                    ? null
-                    : (e) => clickTr(e, item.id)
-                }
+                onClick={(e) => clickTr(e, item.value.id)}
                 onContextMenu={
-                  getConfirmation(item.id).blocked
+                  getConfirmation(item.value.id).blocked
                     ? null
-                    : () => clickTrContetx(item.id)
+                    : () => clickTrContetx(item.value.id)
                 }
-                key={item.id}
+                key={item.value.id + number + "tr"}
+                style={
+                  item.length - 1 === item.number
+                    ? {
+                        borderBottom: "4px solid #3b28cc",
+                      }
+                    : null
+                }
               >
                 <InputCheckbox
                   clickTr={() => {}}
                   itemId={item.id + "checkBox"}
-                  itid={item.id}
+                  itid={item.value.id}
                   number={number}
-                  getConfirmation={getConfirmation(item.id)}
-                  checked={tabPar.selectedTr.includes(item.id)}
+                  obj={item}
+                  getConfirmation={getConfirmation(item.value.id)}
+                  checked={tabPar.selectedTr.includes(item.value.id)}
                 />
                 {basicTabData.tableHeaders.map((itemKey) => (
                   <TableTd
-                    key={item.id + "td" + itemKey.key}
-                    item={item}
+                    key={item.value.id + "td" + itemKey.key + number}
+                    obj={item}
+                    item={item.value}
                     itemKey={itemKey}
                     index={visibleDataPar.startData + number}
                   />
