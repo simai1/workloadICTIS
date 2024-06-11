@@ -51,7 +51,7 @@ export default {
                 educatorId,
             },
         });
-
+        console.log(workloads.length)
         const workloadsDto = [];
         let flag;
         for (const workload of workloads) {
@@ -65,6 +65,7 @@ export default {
                     workloadDto.hoursSecondPeriod += workload.period === 2 ? workload.hours : 0;
                     workloadDto.hoursWithoutPeriod += workload.period === null ? workload.hours : 0;
                     flag = false;
+                    console.log(workloadDto)
                     break;
                 }
             }

@@ -38,6 +38,7 @@ export default {
                             ['discipline', 'ASC'],
                             ['workload', 'ASC'],
                             ['updatedAt', 'ASC'],
+
                         ],
                     });
                 }  else {
@@ -89,7 +90,7 @@ export default {
                     workloads = await Workload.findAll({
                         where: {
                             educatorId: _user.Educator.id,
-                            isBlocked: false
+                            isBlocked: false, 
                         },
                         include: { model: Educator },
                         order: [
@@ -110,7 +111,8 @@ export default {
                 } else {
                     workloads = await Workload.findAll({
                         where: {
-                            isBlocked: false
+                            isBlocked: false,
+                            isOid: false,
                         },
                         include: { model: Educator },
                         order: [
