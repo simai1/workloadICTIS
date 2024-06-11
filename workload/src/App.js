@@ -237,8 +237,10 @@ function App() {
   //! Функция обновления существующих кафедр таблицы
   function funGetDepartment() {
     GetDepartment().then((response) => {
-      settableDepartment([{ id: 14, name: "Все" }, ...response.data]);
-      setnameKaf("Все");
+      if (response && response.status === 200) {
+        settableDepartment([{ id: 14, name: "Все" }, ...response?.data]);
+        setnameKaf("Все");
+      }
     });
   }
 
@@ -276,11 +278,10 @@ function App() {
     //param = tableDepartment[0]?.id
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
       Workload("").then((data) => {
-        console.log(
-          "dakjsd;kfjhas;kdhfgkajshdfkahsdfgh.kiasdh.fkhasd/fkasdhfkjashdfata",
-          data
-        );
-        funUpdTab(data);
+        if (data) {
+          console.log("work", data);
+          funUpdTab(data);
+        }
       });
     }
     if (metodRole[myProfile?.role]?.some((el) => el === 14)) {

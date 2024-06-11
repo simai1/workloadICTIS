@@ -439,7 +439,7 @@ export const GetRole = async () => {
 export const GetDepartment = async () => {
   try {
     const response = await http.get(`${server}/workload/get/usableDepartments`);
-    console.log("GetDepartment", response.data);
+    console.log("GetDepartment", response?.data);
     return response;
   } catch (error) {
     console.error("Error:", error);
