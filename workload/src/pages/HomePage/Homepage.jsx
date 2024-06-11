@@ -122,15 +122,17 @@ function HomePage() {
   //! при клике на подтверждение блокировки таблицы
   const exportClick = (action) => {
     if (action) {
-      if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 33)){
-        const id = basicTabData.tableDepartment.find((el) => el.name === appData.myProfile.educator.department).id;
+      if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 33)) {
+        const id = basicTabData.tableDepartment.find(
+          (el) => el.name === appData.myProfile.educator.department
+        ).id;
         WorkloadBlocked(id).then((resp) => {
           if (resp.status == 200) {
             basicTabData.funUpdateTable(0);
             appData.setgodPopUp(true);
           }
         });
-       }else{
+      } else {
         if (basicTabData.selectISOid) {
           WorkloadBlocked(0).then((resp) => {
             if (resp.status == 200) {
@@ -270,13 +272,14 @@ function HomePage() {
             <div className={styles.header_button}>
               <Button
                 Bg={
-                  appData.selectedComponent === "Disciplines" ||     appData.selectedComponent === "History"
+                  appData.selectedComponent === "Disciplines" ||
+                  appData.selectedComponent === "History"
                     ? "#3B28CC"
                     : "#efedf3"
                 }
                 textColot={
-                  appData.selectedComponent === "Disciplines"
-                  ||     appData.selectedComponent === "History"
+                  appData.selectedComponent === "Disciplines" ||
+                  appData.selectedComponent === "History"
                     ? "#efedf3"
                     : "#000000"
                 }
@@ -331,16 +334,17 @@ function HomePage() {
               )}
             </div>
             <div className={styles.header_left_component}>
-              {
-                  appData.metodRole[appData.myProfile?.role]?.some((el) => el === 30) &&
-              <Warnings
-                setEducatorIdforLk={setEducatorIdforLk}
-                educatorIdforLk={educatorIdforLk}
-                className={styles.Warnings}
-                setSelectedComponent={appData.setSelectedComponent}
-                setEducatorData={setEducatorData}
-              />
-            }
+              {appData.metodRole[appData.myProfile?.role]?.some(
+                (el) => el === 30
+              ) && (
+                <Warnings
+                  setEducatorIdforLk={setEducatorIdforLk}
+                  educatorIdforLk={educatorIdforLk}
+                  className={styles.Warnings}
+                  setSelectedComponent={appData.setSelectedComponent}
+                  setEducatorData={setEducatorData}
+                />
+              )}
               <Profile
                 className={styles.Profile}
                 setOpenModalWind={setOpenModalWind}
@@ -351,19 +355,20 @@ function HomePage() {
           </div>
           {basicTabData.tableDepartment?.find(
             (el) => el.name === basicTabData.nameKaf
-          )?.blocked && appData.selectedComponent !="History" &&(
-            <div className={styles.blockedTextTable}>
-              <div>
-                <img src="./img/errorTreangle.svg" />
+          )?.blocked &&
+            appData.selectedComponent != "History" && (
+              <div className={styles.blockedTextTable}>
+                <div>
+                  <img src="./img/errorTreangle.svg" />
+                </div>
+                <div>
+                  <p>
+                    Таблица находится в состоянии "Блокировки", редактирование
+                    временно отключено!
+                  </p>
+                </div>
               </div>
-              <div>
-                <p>
-                  Таблицу находится в состоянии "Блокированные", редактирование
-                  временно отключено!
-                </p>
-              </div>
-            </div>
-          )}
+            )}
 
           <div className={styles.header_bottom}>
             <div className={styles.header_bottom_button}>
@@ -388,7 +393,7 @@ function HomePage() {
                         tabPar.setSelectedFilter("Все Дисциплины");
                         appData.setSelectedComponent("Disciplines");
                       }}
-                    /> 
+                    />
                     <Button
                       Bg={kafedralIsOpen ? "#3B28CC" : "#efedf3"}
                       textColot={!kafedralIsOpen ? "#000000" : "#efedf3"}
@@ -413,13 +418,13 @@ function HomePage() {
                   </>
                 )}
 
-              {(appData.selectedComponent === "Disciplines" &&
-                appData.selectedComponent != "History") && <FiltredRows />}
+              {appData.selectedComponent === "Disciplines" &&
+                appData.selectedComponent != "History" && <FiltredRows />}
             </div>
 
             <div className={styles.right_button}>
               <div className={styles.EditInput}>
-                {educatorIdforLk === ""&&(
+                {educatorIdforLk === "" && (
                   <EditInput
                     selectedComponent={appData.selectedComponent}
                     originalHeader={
