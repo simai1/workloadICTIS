@@ -6,6 +6,7 @@ function PopUpContainer({ children, title,mT }) {
     const { appData } = React.useContext(DataContext);
     const closePopUp = () =>{
        appData.setcreateEdicatorPopUp(false)
+       appData.setgodPopUp(false)
     }
     return (
         <div style={{paddingTop:`${mT}px`}} className={styles.PopUpContainer}>

@@ -4,7 +4,7 @@ import TableTd from "./TableTd";
 import styles from "./TableWorkload.module.scss";
 import DataContext from "../../context";
 import InputCheckbox from "./InputCheckbox/InputCheckbox";
-import { funGetConfirmation } from "./Function";
+import { funGetConfirmation, getTextForNotData } from "./Function";
 
 function Table(props) {
   const { tabPar, visibleDataPar, basicTabData, appData } =
@@ -25,7 +25,7 @@ function Table(props) {
     );
   };
 
-  //! клик левой кнопкой мыши на tr
+  //! клик правой кнопкой мыши на tr
   const clickTrContetx = (itemId) => {
     tabPar.setSelectedTr((prev) => {
       const index = prev.indexOf(itemId);
@@ -82,7 +82,8 @@ function Table(props) {
   };
 
   //определение каласса tr
-  const getClassNameTr = (itemId) => {
+  const getClassNameTr = (items) => {
+    const itemId = items.id
     let classText = null;
     classText = tabPar.selectedTr?.includes(itemId)
       ? `${styles.selectedTr}`
@@ -95,9 +96,10 @@ function Table(props) {
       : classText;
     classText =
       tabPar.changedData.split?.find((el) => el === itemId) ||
-      tabPar.changedData.join?.find((el) => el === itemId)
-        ? `${classText} ${styles.trBlocked}`
+      tabPar.changedData.join?.find((el) => el === itemId) || (items.isBlocked)
+        ? `${classText} ${styles.trBlocked}` 
         : classText;
+    
     return classText;
   };
 
@@ -129,12 +131,28 @@ function Table(props) {
             ))}
           </tr>
         </thead>
+        {basicTabData.filtredData.length === 0 && (
+          <tbody className={styles.NotData}>
+            <tr>
+              <td className={styles.tdfix}></td>
+              <td className={styles.tdfix2}>
+                {basicTabData.filtredData.length === 0 && (
+                  <div className={styles.notdatadiv}>
+                    {getTextForNotData(tabPar.selectedFilter)}
+                  </div>
+                )}
+              </td>
+            </tr>
+          </tbody>
+        )}
+
         <tbody>
           <tr
             key={"tr2"}
             className={styles.trPlug}
             style={{ height: getTopHeight() }}
           ></tr>
+
           {basicTabData.filtredData
             .slice(
               visibleDataPar.startData,
@@ -143,7 +161,7 @@ function Table(props) {
             .map((item, number) => (
               <tr
                 // выделяем цветом если выбранно для контекстного меню
-                className={getClassNameTr(item.id)}
+                className={getClassNameTr(item)}
                 onClick={
                   getConfirmation(item.id).blocked
                     ? null
@@ -154,6 +172,7 @@ function Table(props) {
                     ? null
                     : () => clickTrContetx(item.id)
                 }
+                
                 key={item.id}
               >
                 <InputCheckbox

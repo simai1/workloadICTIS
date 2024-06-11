@@ -8,7 +8,7 @@ import thimbtack from "./../../img/thumbtack.svg";
 import DataContext from "../../context";
 const FiltredRows = () => {
   const [OpenCloseMenu, setOpenCloseMenu] = useState(false);
-  const { tabPar } = useContext(DataContext);
+  const { tabPar, basicTabData } = useContext(DataContext);
 
   //! закрытие модального окна при нажатии вне него
   const refFR = React.useRef(null);
@@ -31,6 +31,10 @@ const FiltredRows = () => {
     setOpenCloseMenu(!OpenCloseMenu);
     tabPar.setSelectedFilter(text);
   };
+  const AllDist = ()=>{
+    basicTabData.funUpdateTable();
+    Fuctionmenu("Все дисциплины");
+  }
   return (
     <div ref={refFR} className={styles.FiltredRows}>
       <div className={styles.FiltredRows__inner}>
@@ -39,7 +43,9 @@ const FiltredRows = () => {
         </button>
         {OpenCloseMenu && (
           <ul className={styles.FiltredRows__list}>
-            <li onClick={() => Fuctionmenu("Все дисциплины")}>
+            <li onClick={() =>
+              AllDist()
+            }>
               Все дисциплины
               <img
                 className={styles.FirstImg}

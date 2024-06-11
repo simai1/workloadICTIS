@@ -46,6 +46,19 @@ export const apiGetUser = async () => {
 export const EducatorLK = async (data) => {
   try {
     const response = await http.get(`${server}/educator/${data}`);
+    console.log("response_EducatorLK", response);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
+//! получаем историю блокированных таблиц
+export const apiGetHistory = async (data) => {
+  try {
+    const response = await http.get(`${server}/history/getAll`);
+    console.log("история", response);
     return response.data;
   } catch (error) {
     console.error("Error:", error);
@@ -413,7 +426,7 @@ export const SubmitFileXLSX = async (constIdCafedra, file) => {
 
 export const GetRole = async () => {
   try {
-    const response = await axios.get(`${server}/user`);
+    const response = await http.get(`${server}/user`);
     console.log("GetRole", response);
     return response;
   } catch (error) {
@@ -422,12 +435,22 @@ export const GetRole = async () => {
   }
 };
 
+//!Получение кафелр
 export const GetDepartment = async () => {
   try {
-    const response = await axios.get(
-      `${server}/workload/get/usableDepartments`
-    );
-    console.log("GetDepartment", response);
+    const response = await http.get(`${server}/workload/get/usableDepartments`);
+    console.log("GetDepartment", response.data);
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
+//! блокировак таблицы нагрузок
+export const WorkloadBlocked = async (idTable) => {
+  try {
+    const response = await http.patch(`${server}/workload/block/${idTable}`);
     return response;
   } catch (error) {
     console.error("Error:", error);

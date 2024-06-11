@@ -52,22 +52,26 @@ export function filteredWorkload(data, text) {
 
 //! функция поднятия закрпепленных наверх таблицы
 export function funSortedFastened(data, fastenedData) {
-  const fd = [];
-  fastenedData.map((item) => {
-    fd.push(item.workloadId);
-  });
-  const sortedArray = data.sort((a, b) => {
-    const isAInSecondArray = fd.includes(a.id);
-    const isBInSecondArray = fd.includes(b.id);
-    if (isAInSecondArray && !isBInSecondArray) {
-      return -1; // Переместить a вперед
-    }
-    if (!isAInSecondArray && isBInSecondArray) {
-      return 1; // Переместить b вперед
-    }
-    return 0; // Не изменять порядок, если оба элемента в secondArray или оба не в secondArray
-  });
-  return sortedArray;
+  if (fastenedData) {
+    const fd = [];
+    fastenedData?.map((item) => {
+      fd.push(item.workloadId);
+    });
+    const sortedArray = data.sort((a, b) => {
+      const isAInSecondArray = fd.includes(a.id);
+      const isBInSecondArray = fd.includes(b.id);
+      if (isAInSecondArray && !isBInSecondArray) {
+        return -1; // Переместить a вперед
+      }
+      if (!isAInSecondArray && isBInSecondArray) {
+        return 1; // Переместить b вперед
+      }
+      return 0; // Не изменять порядок, если оба элемента в secondArray или оба не в secondArray
+    });
+    return sortedArray;
+  } else {
+    return data;
+  }
 }
 
 //! функция разделения на кафедральный и общеинститутские и сортировки
@@ -130,7 +134,7 @@ export function getTextForNotData(selectedFilter) {
 export function funfastenedDataSort(data, fastenedData) {
   let newData = [...data];
   let items = [];
-  fastenedData.forEach((itemId) => {
+  fastenedData?.forEach((itemId) => {
     const index = newData.findIndex((el) => el.id === itemId);
     if (index !== -1) {
       items.push(newData.splice(index, 1)[0]);
@@ -148,7 +152,6 @@ export function deleteItemBuffer(buff, itemId, type) {
       if (item.request === type) {
         let p = { ...item };
         itemData = p;
-        console.log(p.data.ids);
         p.data.ids = p.data.ids.filter((id) => id !== itemId);
         if (p.data.ids.length > 0) {
           return p;
@@ -160,6 +163,7 @@ export function deleteItemBuffer(buff, itemId, type) {
       }
     })
     .filter(Boolean);
+  console.log("newBuffer", newBuffer);
   return { buffer: newBuffer, item: itemData };
 }
 

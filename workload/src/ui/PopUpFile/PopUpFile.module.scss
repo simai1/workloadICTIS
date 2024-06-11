@@ -11,7 +11,7 @@
     background-color: #ffffff;
     box-shadow: 4px 4px 20px 0px #00000026;
     border-radius: 12px;
-    width: 422px;
+    width: 467px;
     transition: 0.1s linear all;   
      padding: 19px;
     .import_blockFirst{
@@ -60,17 +60,17 @@
     .import_blockThree{
         display: flex;
         align-items: center;
+        justify-content: space-between;
         position: relative;
         p{
             font-size: 16px;
             margin: 0;
         }
         input{
-            width: 191px;
+            width: 180px;
             padding: 10px 16px;
             border-radius: 6px;     
             border: 1px solid #000;  
-            margin-left: 12px;
             font-size: 16px;
             &:hover{
                 cursor: pointer;
@@ -78,7 +78,7 @@
         }
         img{
             position: relative;
-            left: -25px;
+            left: -15px;
             top: -3px;
             z-index: 10;
         }
@@ -90,7 +90,7 @@
             position: absolute;
             background-color: #fff;
             overflow-y: scroll;
-            right: 31px;
+            right: 2px;
             top: 0px;
             font-size: 14px;
             border: 1px solid #AFAFAF;

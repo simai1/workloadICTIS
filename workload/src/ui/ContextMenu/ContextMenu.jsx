@@ -141,21 +141,18 @@ const ContextMenu = (props) => {
     }
   };
 
-  //! Деление нагрузки на count
+  //! разделение нагрузки на count
   const handleSplitWorkload = (cou) => {
     const count = Number(cou);
     console.log("tabPar.selectedTr", tabPar.selectedTr);
-
     const dataSel = {
       ids: tabPar.selectedTr,
       n: count,
     };
-
     console.log("dataContextMenu", dataSel);
     const prev = basicTabData.workloadDataFix.filter((item) =>
       tabPar.selectedTr.some((el) => el === item.id)
     );
-
     // Создаем новый массив для измененных данных
     let updatedData = [...basicTabData.workloadDataFix];
     const funData = splitWorkloadCount(updatedData, tabPar.selectedTr, count);
@@ -170,6 +167,7 @@ const ContextMenu = (props) => {
         request: "splitWorkload",
         data: dataSel,
         prevState: [...prev],
+        newState: funData.newState,
         newIds: [...funData.newIds],
       },
       ...appData.bufferAction,
@@ -206,6 +204,7 @@ const ContextMenu = (props) => {
           id: appData.bufferAction.length,
           request: "joinWorkloads",
           data: data,
+          newState: funData.newState,
           prevState: funData.prevState,
         },
         ...appData.bufferAction,
@@ -291,6 +290,8 @@ const ContextMenu = (props) => {
         tabPar.setFastenedData(mass);
         tabPar.setContextMenuShow(false);
         tabPar.setSelectedTr([]);
+        basicTabData.funUpdateTable()
+
       });
     }
   };
@@ -355,8 +356,14 @@ const ContextMenu = (props) => {
               img={false}
             />
           )}
-        <MenuPop btnText={"Закрепить"} func={pinaCell} img={false} />
-        <MenuPop btnText={"Открепить"} func={unPinaCell} img={false} />
+          {/* {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 31)&& */}
+          
+            <MenuPop btnText={"Закрепить"} func={pinaCell} img={false} />
+          {/* } */}
+          {/* {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 31)&& */}
+            <MenuPop btnText={"Открепить"} func={unPinaCell} img={false} />
+          {/* } */}
+       
         {appData.metodRole[appData.myProfile?.role]?.some(
           (el) => el === 11
         ) && (

@@ -3,7 +3,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage/Homepage";
 import DataContext from "./context";
 import Authorization from "./pages/Authorization/Authorization";
-import { bufferRequestToApi, returnPrevState } from "./bufferFunction";
+import {
+  bufferRequestToApi,
+  fixDataBuff,
+  returnPrevState,
+} from "./bufferFunction";
 import { headers } from "./components/TableWorkload/Data";
 import {
   Comment,
@@ -22,7 +26,7 @@ import {
   funSplitData,
 } from "./components/TableWorkload/Function";
 import { delChangeData } from "./ui/ContextMenu/Function";
-import { getDataEducator } from "./api/services/AssignApiData";
+import { FilteredSample } from "./ui/SamplePoints/Function";
 
 function App() {
   const [educator, setEducator] = useState([]); // преподаватели
@@ -35,19 +39,25 @@ function App() {
 
   //! в файле RoleMetods можно посмотреть назание метода и их id
   const metodRole = {
-    METHODIST: [1, 3, 4, 8, 9, 10, 13, 14, 17, 20, 21],
-    LECTURER: [2, 8, 15, 18, 22],
-    DEPARTMENT_HEAD: [2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 22],
-    DIRECTORATE: [1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21],
-    EDUCATOR: [15],
+    METHODIST: [1, 3, 4, 8, 9, 10, 13, 14, 17, 20, 21, 25, 26, 27, 28, 30, 31],
+    LECTURER: [2, 8, 15, 18, 22, 24],
+    DEPARTMENT_HEAD: [
+      2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 22, 25, 26, 27, 30, 31, 32,33
+    ],
+    DIRECTORATE: [
+      1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31
+    ],
+    EDUCATOR: [15, 24],
   };
   // appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)
 
   //! буфер последних действий. Выполняется после кнопки сохранить
   const [bufferAction, setBufferAction] = useState([]);
   const [errorPopUp, seterrorPopUp] = useState(false); //popUp error visible
-  const [createEdicatorPopUp, setcreateEdicatorPopUp] = useState(false); //popUp error visible
+  const [godPopUp, setgodPopUp] = useState(false); //popUp good visible
 
+  const [createEdicatorPopUp, setcreateEdicatorPopUp] = useState(false); //popUp error visible
+  const [selectedComponent, setSelectedComponent] = useState("Disciplines");
   const appData = {
     individualCheckboxes,
     setIndividualCheckboxes,
@@ -70,6 +80,10 @@ function App() {
     setcreateEdicatorPopUp,
     createEdicatorPopUp,
     backBuffer,
+    setgodPopUp,
+    godPopUp,
+    selectedComponent,
+    setSelectedComponent,
   };
 
   // ! параметры таблицы
@@ -82,9 +96,10 @@ function App() {
   const [selectkafedra, setselectkafedra] = useState(""); //state выбранной кафедры
   const [actionUpdTabTeach, setActionUpdTabTeach] = useState(false); // при изменении обновляется таблицы преподавателей
   const [tableDepartment, settableDepartment] = useState([]);
-  const [selectISOid, setselectISOid] = useState(false);
+  const [selectISOid, setselectISOid] = useState(true);
   // const [nameKaf, setnameKaf] = useState("");
   const [nameKaf, setnameKaf] = useState("Все");
+  const [historyChanges, setHistoryChanges] = useState([]);
 
   const basicTabData = {
     updateAlldata,
@@ -113,12 +128,15 @@ function App() {
     nameKaf,
     setnameKaf,
     setselectISOid,
+    selectISOid,
+    historyChanges,
+    setHistoryChanges,
   };
 
   const [coloredData, setColoredData] = useState([]); // выделенные цветом
   const [fastenedData, setFastenedData] = useState([]); // закрепленные строки (храним их id)
   const [selectedTable, setSelectedTable] = useState("Disciplines");
-  const [dataIsOid, setDataIsOid] = useState(false); // состояние при котором открываются общеинститутские или кафедральные
+  const [dataIsOid, setDataIsOid] = useState(true); // состояние при котором открываются общеинститутские или кафедральные
   const [selectedFilter, setSelectedFilter] = useState("Все дисциплины"); // текст в FiltredRows
   const [selectedTr, setSelectedTr] = useState([]); //выбранные tr
   const [onCheckBoxAll, setOnCheckBoxAll] = useState(false); //выбранные tr
@@ -137,7 +155,6 @@ function App() {
   };
   // храним id и ключь измененных td для подсвечивания
   const [changedData, setChangedData] = useState(changedDataObj);
-
   const [isChecked, setIsChecked] = useState([]); // состояние инпутов в SamplePoints
   const [isAllChecked, setAllChecked] = useState(true); // инпут все в SamplePoints
   const checkPar = {
@@ -192,10 +209,12 @@ function App() {
 
   //! функция обновления комментаривев
   function funUpdateAllComments() {
-    Comment().then((data) => {
-      console.log("comments", data);
-      setAllCommentsData(data);
-    });
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 20)) {
+      Comment().then((data) => {
+        console.log("comments", data);
+        setAllCommentsData(data);
+      });
+    }
   }
 
   //! функция обновления предложений преподавателей
@@ -218,8 +237,8 @@ function App() {
   //! Функция обновления существующих кафедр таблицы
   function funGetDepartment() {
     GetDepartment().then((response) => {
-      settableDepartment([...response.data, { id: 13, name: "Все" }]);
-      // setnameKaf(response.data[0].name);
+      settableDepartment([ { id: 14, name: "Все" }, ...response.data]);
+      setnameKaf("Все");
     });
   }
 
@@ -227,55 +246,62 @@ function App() {
   function funUpdateAllColors() {
     getAllColors().then((data) => {
       console.log("выделенные", data);
-      setColoredData(data);
+      if (data.length > 0) {
+        setColoredData(data);
+      }
     });
   }
 
-  useEffect(() => {
-    console.log(nameKaf);
-  }, [nameKaf]);
+  //! функция которая принимает нагрузки из апи и записывает в состояния
+  const funUpdTab = (data) => {
+    const dataBd = [...data];
+    console.log('dataWorkload', dataBd)
+    setWorkloadData(dataBd);
+    //! функция прокида буффера для преподавателей, часов, и колличества студентов
+    const fixData = UpdateWorkloadForBoofer(
+      funFixEducator(dataBd, bufferAction)
+    );
+   
+    //! функция прокида буффера для разделения соединения и удаления нагрузок
+    const fdb = fixDataBuff(fixData, bufferAction);
+    // зменяем массив преподавателя на его имя
+    const fdfix = FilteredSample(fdb, isChecked);
+    setWorkloadData(fdb);
+    setWorkloadDataFix(fdfix);
+    setFiltredData(fdfix);
+  };
 
   //! функция обновления таблицы
-  function funUpdateTable(param = 13) {
+  function funUpdateTable(param = 0) {
+    console.log("param", param);
     //param = tableDepartment[0]?.id
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
-      apiGetWorkloadDepartment().then((data) => {
-        console.log("нагрузки по кафедре", data);
-        const dataBd = [...data];
-        setWorkloadData(dataBd);
-        // зменяем массив преподавателя на его имя
-        const fixData = funFixEducator(dataBd);
-        setWorkloadDataFix(fixData);
-        setFiltredData(fixData);
+      Workload("").then((data) => {
+        console.log('dakjsd;kfjhas;kdhfgkajshdfkahsdfgh.kiasdh.fkhasd/fkasdhfkjashdfata', data)
+        funUpdTab(data);
       });
+    }  
+    if (metodRole[myProfile?.role]?.some((el) => el === 14)) {
+      let url = "";
+      if (param == 0) {
+        url = "?isOid=true";
+      }
+      if (param == "14") {
+        url = ``;
+      } else if (param != 14 && param != 0) {
+        url = `?department=${param}`;
+      }
+      console.log("url", url);
+        Workload(`${url}`).then((data) => {
+          funUpdTab(data);
+        });
     }
+    
     // без параметров - вся абсолютно нагрузка,
     // ?isOid=true - вся ОИД нагрузка,
     // ?isOid=false - вся кафедральная нагрузка,
     // ?department={номер кафедры} - нагрузка одной кафедры
-    let url = "";
-    if (param == "0") {
-      url = "?isOid=true";
-    }
-    if (param == "13") {
-      url = ``;
-    } else if (param != 13 && param != 0) {
-      url = `?department=${param}`;
-    }
-    console.log("url", url);
-    if (metodRole[myProfile?.role]?.some((el) => el === 14)) {
-      Workload(`${url}`).then((data) => {
-        // console.log("нагрузки", data);
-        const dataBd = [...data];
-        setWorkloadData(dataBd);
-        const fixData = UpdateWorkloadForBoofer(
-          funFixEducator(dataBd, bufferAction)
-        );
-        console.log("fixData Да это оно", fixData);
-        setWorkloadDataFix(fixData);
-        setFiltredData(fixData);
-      });
-    }
+   
   }
 
   //!функция прокида буфера
@@ -297,6 +323,9 @@ function App() {
               existingObj.hours = item.data.value;
             }
           }
+          // if( item.request === "splitWorkload"){
+          //   console.log('existingObj', existingObj)
+          // }
         } else {
           let o = {
             ...newData[newData.findIndex((el) => el.id === item.workloadId)],
@@ -315,7 +344,6 @@ function App() {
           obj.push(o);
         }
       });
-      console.log("ObjEditNoSave", obj);
       return data.map((item) => {
         if (obj.find((e) => e.id === item.id)) {
           return obj.find((e) => e.id === item.id);
@@ -340,9 +368,18 @@ function App() {
 
   //! функция обновления всех данных
   function updateAlldata() {
-    selectISOid
-      ? funUpdateTable(0)
-      : funUpdateTable(tableDepartment.find((el) => el.name === nameKaf)?.id);
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 28)) {
+      selectISOid
+        ? funUpdateTable(0)
+        : funUpdateTable(tableDepartment.find((el) => el.name === nameKaf)?.id);
+    } else {
+      if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 32)){
+        funUpdateTable(0);
+      }else{
+        funUpdateTable(14);
+      }
+     
+    }
     // получаем данные таблицы
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 20)) {
       // получаем все комментарии
@@ -361,7 +398,6 @@ function App() {
   //! получаем и записываем данные usera
   useEffect(() => {
     apiGetUser().then((data) => {
-      console.log("user", data);
       setMyProfile(data);
     });
   }, []);
@@ -369,9 +405,11 @@ function App() {
   //! получаем данные нагрузок с бд
   useEffect(() => {
     if (myProfile) {
-      updateAlldata();
+      console.log('myProfile', myProfile)
+        updateAlldata();
     }
-  }, [myProfile, tableDepartment[0]]);
+  }, [myProfile, tableDepartment]);// [myProfile, tableDepartment]
+  
 
   //! при переходе с кафедральных на общеинституские и обратно фильтруем основные
   //! фильтруем по FiltredRows
@@ -385,10 +423,11 @@ function App() {
       fastenedData
     );
     // setFiltredData(filterSelected);
+
     setFiltredData(funSortedFastened(filterSelected, fastenedData));
     setSelectedTr([]);
     setOnCheckBoxAll(false);
-  }, [dataIsOid, selectedFilter, workloadDataFix, selectedTable]);
+  }, [dataIsOid, selectedFilter, workloadDataFix, selectedTable, fastenedData]);
 
   //! обновляем вертуальный скролл при переходе на другуюс таблицу
   useEffect(() => {
@@ -405,7 +444,8 @@ function App() {
 
   //! при изменении закрпеленных перемещаем их наверх и сортируем массив
   useEffect(() => {
-    setFiltredData(funSortedFastened(filtredData, fastenedData));
+    const fd = funSortedFastened(filtredData, fastenedData);
+    setFiltredData(fd);
   }, [fastenedData, filtredData]);
 
   //! следим за нажатием ctrl + s для сохранения изменений
@@ -468,7 +508,6 @@ function App() {
         newArray.splice(deletedIndex, 0, ...bufferAction[0].prevState);
         setWorkloadDataFix(newArray);
         // убираем заблокированные элементы
-        console.log(tabPar.changedData);
         let cd = { ...tabPar.changedData };
         let cdJoin = [...cd.join];
         cdJoin = cdJoin.filter(
@@ -526,6 +565,7 @@ function App() {
       }
     }
   }
+
   //! обновление таблицы, отмена действия при ctrl+z
   useEffect(() => {
     if (bufferAction[0] === 0) {

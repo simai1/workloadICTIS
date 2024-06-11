@@ -41,7 +41,6 @@ body {
           border: 1px solid #b0b0b0;
           border-radius: 8px;
           color: #b0b0b0;
-          margin-left: 20px;
 
           .hedaer_search_inner {
             width: 100%;
@@ -69,6 +68,18 @@ body {
         }
         // .Profile {
         // }
+      }
+    }
+    .blockedTextTable{
+      display: flex;
+      position: relative;
+      color: #E81414;
+      top: 50px;
+      align-items: center;
+      img{
+        margin-right: 5px;
+        position: relative;
+        top: 2px;
       }
     }
     .header_bottom {

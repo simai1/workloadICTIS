@@ -11,7 +11,7 @@ router.use(verify.general);
 router
     .route('/:educatorId')
     .get(
-        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST, role.LECTURER])),
+        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST, role.LECTURER, role.EDUCATOR])),
         asyncRoute(eduController.getOne)
     )
     .patch(

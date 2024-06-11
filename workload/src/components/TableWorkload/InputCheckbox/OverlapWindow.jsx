@@ -29,7 +29,6 @@ function OverlapWindow(props) {
     } else if (props.getConfirmation.type === 2) {
       const dat = { ...props.getConfirmation.data };
       console.log("dat", dat);
-
       let buff = [...appData.bufferAction];
       let itemBuff = buff.find((el) => el.id === dat.id);
       let index = buff.findIndex((el) => el.id === dat.id);
@@ -41,11 +40,15 @@ function OverlapWindow(props) {
       };
       let bnids = [...itemBuff.newIds];
       const bnidsNew = bnids.filter((el) => !dat.newIds.some((e) => e === el));
+      const newState = itemBuff.newState.filter(
+        (el) => el.id !== dat.newState.id
+      );
       let ps = itemBuff.prevState.filter((el) => el.id !== dat.prevState.id);
       let buffDat = {
         id: dat.id,
         data: newbd,
         newIds: bnidsNew,
+        newState: newState,
         prevState: ps,
         request: "splitWorkload",
       };
@@ -118,6 +121,9 @@ function OverlapWindow(props) {
         basicTabData.setWorkloadDataFix(
           basicTabData.workloadDataFix.filter((item) => item.id !== props.itid)
         );
+        basicTabData.setWorkloadData(
+          basicTabData.workloadData.filter((item) => item.id !== props.itid)
+        );
         let changed = { ...tabPar.changedData };
         changed.deleted = changed.deleted.filter((item) => item !== props.itid);
         tabPar.setChangedData(changed);
@@ -137,10 +143,17 @@ function OverlapWindow(props) {
         changed.split = changed.split.filter(
           (item) => item.slice(0, -1) !== props.itid.slice(0, -1)
         );
-        console.log(changed);
-
+        console.log("changed", changed);
         tabPar.setChangedData(changed);
-        basicTabData.updateAlldata();
+        console.log(
+          "basicTabData.tableDepartment",
+          basicTabData.tableDepartment
+        );
+        if(basicTabData.selectISOid) {
+          basicTabData.funUpdateTable(0)
+         }else{
+          basicTabData.funUpdateTable(basicTabData.tableDepartment.find((el) => el.name === basicTabData.nameKaf)?.id);
+         }
       });
     } else if (props.getConfirmation.type === 3) {
       joinWorkloads(props.getConfirmation.data.data).then((res) => {
@@ -156,7 +169,18 @@ function OverlapWindow(props) {
         changed.join = changed.join.filter((item) => item !== props.itid);
         console.log(changed);
         tabPar.setChangedData(changed);
-        basicTabData.updateAlldata();
+        // if (basicTabData.tableDepartment.length > 0) {
+        //   basicTabData.funUpdateTable(
+        //     basicTabData.tableDepartment.find(
+        //       (el) => el.name === basicTabData.nameKaf
+        //     )?.id
+        //   );
+        // }
+       if(basicTabData.selectISOid) {
+        basicTabData.funUpdateTable(0)
+       }else{
+        basicTabData.funUpdateTable(basicTabData.tableDepartment.find((el) => el.name === basicTabData.nameKaf)?.id);
+       }
       });
     }
   };

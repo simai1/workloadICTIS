@@ -44,9 +44,15 @@ function Comments(props) {
         text: textAreaValue,
       };
       //создаем комментарий и обновляем комментарии
-      createComment(data).then(() => {
-        basicTabData.funUpdateAllComments();
-      });
+      if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 20)) {
+        createComment(data).then(() => {
+          console.log("1 Вариант")
+          basicTabData.funUpdateAllComments();
+        });
+      }else{
+        console.log("2 Вариант")
+        createComment(data);
+      }
     }
   };
 
