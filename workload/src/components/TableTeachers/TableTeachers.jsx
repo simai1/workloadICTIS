@@ -101,13 +101,14 @@ function TableTeachers(props) {
     let bg;
     let OgranHours = 900;
     let AllHours = OgranHours * stavka;
-  
-    if (totalHours <= OgranHours - 300) {
-      bg = "#19C20A"; // Зеленый цвет
-    } else if (OgranHours - 300 < totalHours && totalHours <= OgranHours - 100) {
+    let gran = 300 * stavka;
+
+    if (OgranHours*stavka-300*stavka < totalHours && totalHours <= AllHours - 100) {
       bg = "#FFD600"; // Желтый цвет
-    } if(totalHours >= OgranHours) {
+    } else if(totalHours >= AllHours) {
       bg = "#E81414"; // Красный цвет
+    }else{
+      bg = "#19C20A"; // Зеленый цвет
     }
     return bg;
   }

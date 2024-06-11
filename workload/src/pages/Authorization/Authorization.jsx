@@ -14,9 +14,7 @@ function Authorization() {
           Войти через сервис Microsoft
         </a>
       </div>
-      <Link className={styles.home} to="./HomePage">
-        HomePage
-      </Link>
+    
     </main>
   );
 }
