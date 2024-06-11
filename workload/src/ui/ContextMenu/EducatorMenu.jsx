@@ -55,7 +55,7 @@ export function EducatorMenu(props) {
         onChange={handleSearch}
       />
       <ul className={styles.educator_ul}>
-        {filtredData.map((el, index) => (
+        {filtredData?.map((el, index) => (
           <li key={index} className={styles.educator_li}>
             <p
               className={styles.educator}
