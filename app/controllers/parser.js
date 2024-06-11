@@ -11,7 +11,6 @@ import recommendHours from "../config/recommend-hours.js";
 export default {
     async parseWorkload(req, res){
         const numberDepartment  = req.params.numberDepartment;
-        console.log()
         await sequelize.query(`DELETE FROM workloads where department=${numberDepartment}`, null);
 
         const workbook = XLSX.readFile(req.file.path);
@@ -21,6 +20,7 @@ export default {
             defval: '',
             blankrows: true
         });
+        console.log(sheetData.length)
         const isOid = (numberDepartment == 0);
         const headers = sheetData[0];
 
@@ -75,7 +75,7 @@ export default {
             blankrows: true
         });
         const headers = sheetData[0];
-        // Только ассистенты, доценты, профессоры, зав кафедрой, директор, и научные сотрудники
+        // Только ассистенты, доценты, профессоры, зав кафедрой, директор, и научные сотрудники + старший преподаватель старший научный сотрудник 
         const validPositions = ["Ассистент", "Доцент", "Профессор", "Заведующий кафедрой", "Директор", "Научный сотрудник", "Директор института"];
         sheetData.slice(1).map(async row => {
             try {

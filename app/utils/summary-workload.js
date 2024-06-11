@@ -98,8 +98,6 @@ async function deleteHours(newWorkload) {
 async function addHoursForEducator(newWorkload) {
     const summaryWorkload = await SummaryWorkload.findOne({ where: { educatorId: newWorkload.educatorId } });
     if (summaryWorkload){
-        console.log('1')
-        console.log(summaryWorkload.dataValues)
         const hours = {
             kafedralAutumnWorkload: summaryWorkload.kafedralAutumnWorkload,
             kafedralSpringWorkload: summaryWorkload.kafedralSpringWorkload,
@@ -133,8 +131,6 @@ async function addHoursForEducator(newWorkload) {
         summaryWorkload.totalOidHours = hours.totalOidHours;
         summaryWorkload.totalHours = hours.totalHours;
         await summaryWorkload.save();
-        console.log('2')
-        console.log(summaryWorkload.dataValues)
         await checkHours(summaryWorkload);
     };
 }
