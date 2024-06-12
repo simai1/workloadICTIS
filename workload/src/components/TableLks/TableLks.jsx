@@ -15,7 +15,7 @@ function TableLks(props) {
   const { appData, basicTabData, checkPar } = React.useContext(DataContext);
   const [tableHeaders, setTableHeaders] = useState([
     { key: "department", label: "Кафедра" },
-    { key: "specialty", label: "Дисциплина" },
+    { key: "discipline", label: "Дисциплина" },
     { key: "hoursFirstPeriod", label: "Часы период 1" },
     { key: "hoursSecondPeriod", label: "Часы период 2" },
     { key: "hoursWithoutPeriod", label: "Дополнительные часы" },
@@ -181,7 +181,7 @@ function TableLks(props) {
               {filteredData.map((row, index) => (
                 <tr key={index} className={styles.tableRow}>
                   {Object.keys(row).map((key) => {
-                    if (key === "specialty") {
+                    if (key === "discipline") {
                       return (
                         <td key={key} className={styles.tdspecialtyTd}>
                           <div
