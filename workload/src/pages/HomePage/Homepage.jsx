@@ -506,7 +506,7 @@ function HomePage() {
             />
           </div>
         </div>
-        <div>Кол-во выделенных нагрузок: </div>
+        <div className={styles.countSet}>Кол-во выделенных нагрузок: {tabPar.selectedTr.length}</div>
       </div>
       {filePopUp && (
         <PopUpFile
