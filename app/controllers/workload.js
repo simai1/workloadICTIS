@@ -46,9 +46,9 @@ export default {
                         where: { isOid },
                         include: { model: Educator },
                         order: [
-                            ['updatedAt', 'ASC'],
                             ['discipline', 'ASC'],
                             ['workload', 'ASC'],
+                            ['updatedAt', 'ASC'],
                         ],
                     });
                 }
@@ -90,7 +90,7 @@ export default {
                     workloads = await Workload.findAll({
                         where: {
                             educatorId: _user.Educator.id,
-                            isBlocked: false, 
+                            isBlocked: false,
                         },
                         include: { model: Educator },
                         order: [
@@ -105,7 +105,8 @@ export default {
                         include: { model: Educator },
                         order: [
                             ['discipline', 'ASC'],
-                            ['workload', 'ASC']
+                            ['workload', 'ASC'],
+                            ['updatedAt', 'ASC']
                         ],
                     });
                 } else {
@@ -228,10 +229,8 @@ export default {
                 include: { model: Educator },
             });
 
-            if (!id) throw new Error('Не указан ID');
-            if (!workload) {
-                throw new Error('Нет такой нагрузки');
-            }
+            if (!id) throw new AppErrorMissing('id');
+            if (!workload) throw new AppErrorNotExist('workload');
 
             if (!numberOfStudents) numberOfStudents = workload.numberOfStudents;
             if (!hours) hours = workload.hours;
@@ -242,6 +241,13 @@ export default {
                 hours,
                 comment,
             });
+
+            await History.create({
+                type: 3,
+                department: workload[0].department,
+                before: [],
+                after: [workload.id],
+            })
 
             res.json(workload);
         } catch (error) {
