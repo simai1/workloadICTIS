@@ -4,11 +4,13 @@ import EducatorProfileDto from '../dtos/educator-profile-dto.js';
 import { AppErrorAlreadyExists, AppErrorMissing, AppErrorNotExist } from '../utils/errors.js';
 import { map as mapPositions } from '../config/position.js';
 import { map as mapTypeOfEmployments } from '../config/type-of-employment.js';
+import associateEducator from "../utils/associate-educator.js";
 import departments from '../config/departments.js';
 import Workload from '../models/workload.js';
 import SummaryWorkload from '../models/summary-workload.js';
 import WorkloadProfileDto from '../dtos/workload-profile-dto.js';
 import EducatorListDto from '../dtos/educator-list-dto.js';
+import User from "../models/user.js";
 
 export default {
     async getAll(params, res) {
@@ -95,14 +97,14 @@ export default {
             position,
             typeOfEmployment,
             rate,
-            email, 
+            email,
             department,
         });
 
         res.json(educator);
     },
     // Создаем преподователя
-    async create({ body: { name, position, typeOfEmployment, rate, email, department } }, res) {
+    async create({ body: { name, position, typeOfEmployment, rate, email, department }, user }, res) {
         if (!name) throw new AppErrorMissing('name');
         if (!position) throw new AppErrorMissing('position');
         if (!typeOfEmployment) throw new AppErrorMissing('typeOfEmployment');
@@ -121,6 +123,8 @@ export default {
             department,
         });
         const educatorDto = new EducatorDto(educator);
+        const _user = await User.findOne({ where: { email } });
+        if (_user) await associateEducator(_user);
         res.json(educatorDto);
     },
     async getPositions(params, res) {
