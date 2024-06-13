@@ -1,4 +1,5 @@
 import { DataTypes, Model } from 'sequelize';
+import colors from '../config/color.js';
 
 export default class Color extends Model {
     static initialize(sequelize) {
@@ -13,7 +14,9 @@ export default class Color extends Model {
                 color: {
                     type: DataTypes.SMALLINT,
                     defaultValue: 1,
-                    allowNull: true,
+                    validate: {
+                      isIn: [Object.values(colors)],
+                    },
                 },
                 educatorId: {
                     type: DataTypes.UUID,
