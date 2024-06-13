@@ -25,21 +25,24 @@ function Table(props) {
   };
 
   //! клик правой кнопкой мыши на tr
-  const clickTrContetx = (itemId) => {
+  const clickTrContetx = (e, itemId) => {
     tabPar.setSelectedTr((prev) => {
       const index = prev.indexOf(itemId);
       if (
         index === -1 &&
         tabPar.selectedTr.length === 0 &&
-        !tabPar.contextMenuShow
+        !props.contextShow
       ) {
         return [...prev, itemId];
-      } else if (tabPar.selectedTr.length === 1 && tabPar.contextMenuShow) {
+      } else if (tabPar.selectedTr.length === 1 && props.contextShow) {
         return [...prev.slice(0, index), ...prev.slice(index + 1)];
       } else {
         return [...prev];
       }
     });
+    props.setContetxShow(!props.contextShow);
+    console.log(e);
+    props.setContextPosition({ x: e.clientX, y: e.clientY - 200 });
   };
 
   //! при клике на tr выделяем его
@@ -160,19 +163,8 @@ function Table(props) {
                 // выделяем цветом если выбранно для контекстного меню
                 className={getClassNameTr(item)}
                 onClick={(e) => clickTr(e, item.value.objid)}
-                onContextMenu={
-                  getConfirmation(item.value.id).blocked
-                    ? null
-                    : () => clickTrContetx(item.value.objid)
-                }
+                onContextMenu={(e) => clickTrContetx(e, item.value.objid)}
                 key={item.value.id + number + "tr"}
-                // style={
-                //   item.length - 1 === item.number
-                //     ? {
-                //         borderBottom: "4px solid #3b28cc",
-                //       }
-                //     : null
-                // }
                 name={item.number === 0 ? "bottomBorder" : null}
               >
                 <InputCheckbox

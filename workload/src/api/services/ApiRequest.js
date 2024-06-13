@@ -455,3 +455,16 @@ export const WorkloadBlocked = async (idTable) => {
     throw error;
   }
 };
+
+//! перекидываем в готовые из истории
+export const apiCheckedUpdate = async (ids) => {
+  try {
+    const response = await http.patch(`${server}/history/check`, {
+      ids,
+    });
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};

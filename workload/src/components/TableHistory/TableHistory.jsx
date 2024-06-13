@@ -11,6 +11,9 @@ import ContextMenu from "../../ui/ContextMenu/ContextMenu";
 
 function TableHistory(props) {
   const { tabPar, visibleDataPar, basicTabData } = useContext(DataContext);
+  const [contextShow, setContetxShow] = useState(false);
+  const [contextPosition, setContextPosition] = useState({ x: 0, y: 0 });
+
   //! при событии скролл таблицы изменим индекс первого показываемого tr
   const scrollTable = (e) => {
     const maxStartData =
@@ -57,7 +60,7 @@ function TableHistory(props) {
     const fixHistory = funHistoryFix(basicTabData.historyChanges);
     console.log("fixHistory", fixHistory);
     sethistoryData(fixHistory);
-  }, [basicTabData.historyChanges]);
+  }, [basicTabData.historyChanges, tabPar.perenesenAction]);
 
   return (
     <div
@@ -68,7 +71,28 @@ function TableHistory(props) {
       {/* {tabPar.contextMenuShow && tabPar.selectedTr.length != 0 && (
         <ContextMenu />
       )} */}
-      <Table historyData={historyData} />
+
+      {contextShow && (
+        <div
+          style={{
+            top: `${contextPosition.y}px`,
+            left: `${contextPosition.x}px`,
+          }}
+          className={styles.contextShow}
+        >
+          {tabPar.perenesenAction
+            ? 'Добавить в "Перенесенные"'
+            : 'Вернуть в "Не перенесенные"'}
+        </div>
+      )}
+
+      <Table
+        historyData={historyData}
+        setContetxShow={setContetxShow}
+        contextShow={contextShow}
+        contextPosition={contextPosition}
+        setContextPosition={setContextPosition}
+      />
     </div>
   );
 }

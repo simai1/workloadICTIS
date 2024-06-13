@@ -54,6 +54,15 @@ $heightCell: 150px;
   padding-left: 64px;
   margin-right: 52px;
 
+  .contextShow {
+    position: absolute;
+    z-index: 100;
+    @include boxShadow;
+    background-color: #fff;
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+
   .table {
     width: 100vw;
     border-collapse: collapse;
