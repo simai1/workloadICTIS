@@ -1,13 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import Table from "./Table";
 import styles from "./TableWorkload.module.scss";
-import {
-  filteredWorkload,
-  funHistoryFix,
-  funfastenedDataSort,
-} from "./Function";
+import { funHistoryFix } from "./Function";
 import DataContext from "../../context";
-import ContextMenu from "../../ui/ContextMenu/ContextMenu";
 import { apiCheckedUpdate, apiGetHistory } from "../../api/services/ApiRequest";
 
 function TableHistory(props) {
@@ -54,7 +49,11 @@ function TableHistory(props) {
   useEffect(() => {
     apiGetHistory().then((req) => {
       console.log("history", req);
-      const hd = req.filter((it) => it.checked === tabPar.perenesenAction);
+      const hd = req.filter(
+        (it) =>
+          it.checked === tabPar.perenesenAction &&
+          it.department === basicTabData.nameKaf
+      );
       console.log("история изменений", hd);
       //! преобразуем историю для вывода
       const fixHistory = funHistoryFix(hd);
