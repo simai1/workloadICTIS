@@ -8,16 +8,22 @@ import {
 } from "./Function";
 import DataContext from "../../context";
 import ContextMenu from "../../ui/ContextMenu/ContextMenu";
+import { apiCheckedUpdate, apiGetHistory } from "../../api/services/ApiRequest";
 
 function TableHistory(props) {
   const { tabPar, visibleDataPar, basicTabData } = useContext(DataContext);
   const [contextShow, setContetxShow] = useState(false);
   const [contextPosition, setContextPosition] = useState({ x: 0, y: 0 });
+  const [historyData, sethistoryData] = useState([]);
+
+  //! получаем данные с апи по истории
+  useEffect(() => {
+    basicTabData.funUpdateHistory();
+  }, []);
 
   //! при событии скролл таблицы изменим индекс первого показываемого tr
   const scrollTable = (e) => {
-    const maxStartData =
-      basicTabData.filtredData.length - visibleDataPar.visibleData;
+    const maxStartData = historyData.length - visibleDataPar.visibleData;
     visibleDataPar.setStartData(
       Math.max(
         0,
@@ -29,20 +35,12 @@ function TableHistory(props) {
     );
   };
 
-  //! закрепленные данные ставим в начало таблицы
-  useEffect(() => {
-    // console.log(tabPar.fastenedData);
-    basicTabData.setWorkloadDataFix(
-      funfastenedDataSort(basicTabData.workloadDataFix, tabPar.fastenedData)
-    );
-  }, [tabPar.fastenedData]);
-
   //! фильтрация по поиску
-  useEffect(() => {
-    basicTabData.setFiltredData(
-      filteredWorkload(basicTabData.workloadDataFix, props.searchTerm)
-    );
-  }, [props.searchTerm]);
+  // useEffect(() => {
+  //   basicTabData.setFiltredData(
+  //     filteredWorkload(basicTabData.historyChanges, props.searchTerm)
+  //   );
+  // }, [props.searchTerm]);
 
   //! при нажатии правой кнопки мыши на таблицу открывает мню
   const handleContextMenu = (e) => {
@@ -53,14 +51,30 @@ function TableHistory(props) {
     tabPar.setContextMenuShow(!tabPar.contextMenuShow);
   };
 
-  const [historyData, sethistoryData] = useState([]);
   useEffect(() => {
-    console.log("история изменений", basicTabData.historyChanges);
-    //! преобразуем историю для вывода
-    const fixHistory = funHistoryFix(basicTabData.historyChanges);
-    console.log("fixHistory", fixHistory);
-    sethistoryData(fixHistory);
+    apiGetHistory().then((req) => {
+      console.log("history", req);
+      const hd = req.filter((it) => it.checked === tabPar.perenesenAction);
+      console.log("история изменений", hd);
+      //! преобразуем историю для вывода
+      const fixHistory = funHistoryFix(hd);
+      console.log("fixHistory", fixHistory);
+      sethistoryData(fixHistory);
+    });
   }, [basicTabData.historyChanges, tabPar.perenesenAction]);
+
+  //! функция контекстного меню для перекидывания перенесенных нагрузок
+  const funPerenos = () => {
+    const data = {
+      ids: tabPar.selectedTr,
+    };
+    apiCheckedUpdate(data).then((res) => {
+      console.log(res, data);
+      tabPar.setSelectedTr([]);
+      setContetxShow(false);
+      basicTabData.funUpdateHistory();
+    });
+  };
 
   return (
     <div
@@ -68,10 +82,6 @@ function TableHistory(props) {
       className={styles.tabledisciplinesMain}
       onScroll={scrollTable}
     >
-      {/* {tabPar.contextMenuShow && tabPar.selectedTr.length != 0 && (
-        <ContextMenu />
-      )} */}
-
       {contextShow && (
         <div
           style={{
@@ -80,9 +90,11 @@ function TableHistory(props) {
           }}
           className={styles.contextShow}
         >
-          {tabPar.perenesenAction
-            ? 'Добавить в "Перенесенные"'
-            : 'Вернуть в "Не перенесенные"'}
+          <div onClick={funPerenos}>
+            {!tabPar.perenesenAction
+              ? 'Добавить в "Перенесенные"'
+              : 'Вернуть в "Не перенесенные"'}
+          </div>
         </div>
       )}
 

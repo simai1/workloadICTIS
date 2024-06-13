@@ -55,7 +55,7 @@ export const EducatorLK = async (data) => {
 };
 
 //! получаем историю блокированных таблиц
-export const apiGetHistory = async (data) => {
+export const apiGetHistory = async () => {
   try {
     const response = await http.get(`${server}/history/getAll`);
     console.log("история", response);
@@ -459,9 +459,7 @@ export const WorkloadBlocked = async (idTable) => {
 //! перекидываем в готовые из истории
 export const apiCheckedUpdate = async (ids) => {
   try {
-    const response = await http.patch(`${server}/history/check`, {
-      ids,
-    });
+    const response = await http.patch(`${server}/history/check`, ids);
     return response;
   } catch (error) {
     console.error("Error:", error);

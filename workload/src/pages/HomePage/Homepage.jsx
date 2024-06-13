@@ -187,7 +187,7 @@ function HomePage() {
     }
   };
 
-  // //! функции для импорта файла
+  //! функции для импорта файла
   const OpenPoPUpFile = () => {
     setfilePopUp(!filePopUp);
   };
