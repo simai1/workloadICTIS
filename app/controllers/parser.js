@@ -20,49 +20,46 @@ export default {
             defval: '',
             blankrows: true
         });
-        console.log(sheetData.length)
         const isOid = (numberDepartment == 0);
         const headers = sheetData[0];
-
-        for (const row of sheetData.slice(1)) {
+        const workloadData = [];
+        console.log("Total rows after slice:", sheetData.slice(1).length);
+        for (const row of sheetData.slice(1, sheetData.length-1)) {
             try {
-                if (Number(row[0])) {
-                    const obj = {};
-                    headers.forEach((header, index) => {
-                        const englishHeader = HeaderTranslation[header];
-                        obj[englishHeader] = row[index];
-                    });
-        
-                    obj.department = FullNameDepartments[obj.department];
-                    obj.numberOfStudents = obj.numberOfStudents? Number(obj.numberOfStudents.replace(',00', '')) : 0;
-                    obj.hours = obj.hours? parseFloat(obj.hours.replace(',', '.')) : 0.00;
-                    obj.audienceHours = obj.audienceHours? parseFloat(obj.audienceHours.replace(',', '.')) : 0.00;
-                    const ratingControlHours = obj.hours - obj.audienceHours;
-                    obj.ratingControlHours = parseFloat(ratingControlHours.toFixed(2));
-                    obj.period = Number(obj.period);
-        
-                    const existEducator = await Educator.findOne({
-                        where: {
-                            name: obj.educator,
-                        }
-                    });
-                    const educatorId = existEducator? existEducator.id : null;
-                    const isSplit = false;
-        
-                    delete obj.educator;
-                    delete obj.undefined;
-                    await Workload.create({
-                       ...obj,
-                        educatorId,
-                        isSplit,
-                        isOid,
-                    }, { individualHooks: true }); // Убедитесь, что включили индивидуальные хуки
-                }
+                const obj = {};
+                headers.forEach((header, index) => {
+                    const englishHeader = HeaderTranslation[header];
+                    obj[englishHeader] = row[index];
+                });
+                obj.department = FullNameDepartments[obj.department];
+                obj.numberOfStudents = obj.numberOfStudents? Number(obj.numberOfStudents.replace(',00', '')) : 0;
+                obj.hours = obj.hours? parseFloat(obj.hours.replace(',', '.')) : 0.00;
+                obj.audienceHours = obj.audienceHours? parseFloat(obj.audienceHours.replace(',', '.')) : 0.00;
+                const ratingControlHours = obj.hours - obj.audienceHours;
+                obj.ratingControlHours = parseFloat(ratingControlHours.toFixed(2));
+                obj.period = Number(obj.period);
+    
+                const existEducator = await Educator.findOne({
+                    where: {
+                        name: obj.educator,
+                    }
+                });
+                const educatorId = existEducator? existEducator.id : null;
+                const isSplit = false;
+    
+                delete obj.educator;
+                delete obj.undefined;
+                await Workload.create({
+                    ...obj,
+                    educatorId,
+                    isSplit,
+                    isOid,
+                }, { individualHooks: true });
             } catch (e) {
                 console.log(e);
             }
         }
-
+        console.log(workloadData.length)
         return res.json({status: "ok"});
     },
 
