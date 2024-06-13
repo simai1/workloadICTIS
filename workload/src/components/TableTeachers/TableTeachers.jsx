@@ -107,15 +107,15 @@ function TableTeachers(props) {
     let OgranHours = 900;
     let AllHours = OgranHours * stavka;
 
-    if (totalHours <= OgranHours - 300) {
+    if (totalHours <= AllHours - 300) {
       bg = "#19C20A"; // Зеленый цвет
     } else if (
-      OgranHours - 300 < totalHours &&
-      totalHours <= OgranHours - 100
+      AllHours - 300 < totalHours &&
+      totalHours <= AllHours - 100
     ) {
       bg = "#FFD600"; // Желтый цвет
     }
-    if (totalHours >= OgranHours) {
+    else{
       bg = "#E81414"; // Красный цвет
     }
     return bg;

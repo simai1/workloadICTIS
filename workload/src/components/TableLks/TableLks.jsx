@@ -79,9 +79,9 @@ function TableLks(props) {
     );
   });
 
-  const AllHours = EducatorLkData?.totalHours;
-  const OgranHours = EducatorLkData?.maxHours;
-  var BackgroundColorHours = WhyColor(AllHours, OgranHours);
+  // const AllHours = EducatorLkData?.totalHours;
+  // const OgranHours = EducatorLkData?.maxHours;
+  // var BackgroundColorHours = WhyColor(EducatorLkData?.totalHours, EducatorLkData?.maxHours);
 
   // Функция для определения цвета фона
   function WhyColor(AllHours, OgranHours) {
@@ -143,10 +143,10 @@ function TableLks(props) {
             <h1>{EducatorLkData?.name}</h1>
             <div
               className={styles.DataLksHeadSchet}
-              style={{ backgroundColor: BackgroundColorHours }}
+              style={{ backgroundColor: WhyColor(EducatorLkData?.totalHours, EducatorLkData?.maxHours) }}
             >
               <p>
-                <span>{AllHours}</span>/<span>{OgranHours}</span>
+                <span>{EducatorLkData?.totalHours}</span>/<span>{EducatorLkData?.maxHours}</span>
               </p>
             </div>
           </div>
