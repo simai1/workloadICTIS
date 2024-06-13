@@ -208,6 +208,12 @@ function HomePage() {
             <button onClick={() => setConfirmationSave(false)}>Закрыть</button>
           </div>
         )}
+        {appData.loaderAction && (
+          <div className={styles.nosavedData}>
+            <span>Загружаем данные...</span>
+            <div>Loading...</div>
+          </div>
+        )}
         <div className={styles.header}>
           <div className={styles.header_top}>
             <div className={styles.header_top_save_search}>
@@ -244,24 +250,26 @@ function HomePage() {
 
                 {appData.metodRole[appData.myProfile?.role]?.some(
                   (el) => el === 27
-                ) && ((basicTabData.nameKaf !="Все" && cafedral) || (basicTabData.nameKaf ==="Все" && !cafedral)) &&  (
-                  <div
-                    style={{ marginRight: "20px" }}
-                    className={styles.btnMenuBox}
-                    onClick={onExportClick}
-                  >
-                    <img className={styles.btnLeft} src="./img/export.svg" />
-                    {popupExport && (
-                      <ConfirmSaving
-                        title={
-                          "Вы уверены, что хотите отправить таблицу? Изменения будут прменены."
-                        }
-                        confirmClick={exportClick}
-                        setShow={setPopupExport}
-                      />
-                    )}
-                  </div>
-                )}
+                ) &&
+                  ((basicTabData.nameKaf != "Все" && cafedral) ||
+                    (basicTabData.nameKaf === "Все" && !cafedral)) && (
+                    <div
+                      style={{ marginRight: "20px" }}
+                      className={styles.btnMenuBox}
+                      onClick={onExportClick}
+                    >
+                      <img className={styles.btnLeft} src="./img/export.svg" />
+                      {popupExport && (
+                        <ConfirmSaving
+                          title={
+                            "Вы уверены, что хотите отправить таблицу? Изменения будут прменены."
+                          }
+                          confirmClick={exportClick}
+                          setShow={setPopupExport}
+                        />
+                      )}
+                    </div>
+                  )}
               </div>
               <div className={styles.header_search}>
                 <input
@@ -398,7 +406,7 @@ function HomePage() {
                         basicTabData.setnameKaf("Все");
                         tabPar.setSelectedFilter("Все Дисциплины");
                         appData.setSelectedComponent("Disciplines");
-                        setCafedral(false)
+                        setCafedral(false);
                       }}
                     />
                     <Button
@@ -413,7 +421,7 @@ function HomePage() {
                         basicTabData.setnameKaf("Все");
                         tabPar.setSelectedFilter("Все Дисциплины");
                         appData.setSelectedComponent("Disciplines");
-                        setCafedral(true)
+                        setCafedral(true);
                       }}
                     />
                     {!basicTabData.selectISOid && (
@@ -506,7 +514,9 @@ function HomePage() {
             />
           </div>
         </div>
-        <div className={styles.countSet}>Кол-во выделенных нагрузок: {tabPar.selectedTr.length}</div>
+        <div className={styles.countSet}>
+          Кол-во выделенных нагрузок: {tabPar.selectedTr.length}
+        </div>
       </div>
       {filePopUp && (
         <PopUpFile

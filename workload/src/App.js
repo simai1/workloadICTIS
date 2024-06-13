@@ -58,6 +58,8 @@ function App() {
 
   const [createEdicatorPopUp, setcreateEdicatorPopUp] = useState(false); //popUp error visible
   const [selectedComponent, setSelectedComponent] = useState("Disciplines");
+  const [loaderAction, setLoaderAction] = useState(false);
+
   const appData = {
     individualCheckboxes,
     setIndividualCheckboxes,
@@ -84,6 +86,8 @@ function App() {
     godPopUp,
     selectedComponent,
     setSelectedComponent,
+    loaderAction,
+    setLoaderAction,
   };
 
   // ! параметры таблицы
@@ -271,7 +275,7 @@ function App() {
     setWorkloadDataFix(fdfix);
     setFiltredData(fdfix);
   };
-  
+
   //! функция обновления таблицы
   function funUpdateTable(param = 0) {
     console.log("param", param);
@@ -423,7 +427,7 @@ function App() {
       fastenedData
     );
     // setFiltredData(filterSelected);
-      //!если что тут раскоментить
+    //!если что тут раскоментить
     setFiltredData(funSortedFastened(filterSelected, fastenedData));
     setSelectedTr([]);
     setOnCheckBoxAll(false);
