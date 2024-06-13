@@ -525,9 +525,13 @@ function HomePage() {
             />
           </div>
         </div>
-        <div className={styles.countSet}>
-          Кол-во выделенных нагрузок: {new Set(tabPar.selectedTr).size}
-        </div>
+        {
+          appData.selectedComponent !== "Teachers" && 
+          <div className={styles.countSet}>
+            Кол-во выделенных нагрузок: {new Set(tabPar.selectedTr).size}
+          </div>
+        }
+       
       </div>
       {filePopUp && (
         <PopUpFile
