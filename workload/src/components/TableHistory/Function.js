@@ -251,6 +251,7 @@ const funWorcloadFix = (item, el, action, len, length, keys) => {
     keys: keys,
     value: {
       ...el,
+      objid: item.id,
       educator: el.educator ? el.educator.name : null,
     },
   };

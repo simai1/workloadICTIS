@@ -261,9 +261,7 @@ function HomePage() {
                       <img className={styles.btnLeft} src="./img/export.svg" />
                       {popupExport && (
                         <ConfirmSaving
-                          title={
-                            "Вы уверены, что хотите отправить таблицу? Изменения будут прменены."
-                          }
+                          title={"Вы уверены, что хотите отправить таблицу?"}
                           confirmClick={exportClick}
                           setShow={setPopupExport}
                         />
@@ -515,7 +513,7 @@ function HomePage() {
           </div>
         </div>
         <div className={styles.countSet}>
-          Кол-во выделенных нагрузок: {tabPar.selectedTr.length}
+          Кол-во выделенных нагрузок: {new Set(tabPar.selectedTr).size}
         </div>
       </div>
       {filePopUp && (
