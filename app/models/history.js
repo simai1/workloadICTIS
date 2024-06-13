@@ -25,6 +25,10 @@ export default class History extends Model {
             isIn: [Object.values(departments)],
           },
         },
+        checked: {
+          type: DataTypes.BOOLEAN,
+          defaultValue: false,
+        },
         before: {
           type: DataTypes.ARRAY(DataTypes.UUID),
           allowNull: false,

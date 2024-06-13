@@ -42,10 +42,10 @@ function App() {
     METHODIST: [1, 3, 4, 8, 9, 10, 13, 14, 17, 20, 21, 25, 26, 27, 28, 31],
     LECTURER: [2, 8, 15, 18, 22, 24],
     DEPARTMENT_HEAD: [
-      2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 22, 25, 26, 27, 30, 31, 32, 33,
+      2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 22, 25, 26, 27, 30, 31, 32, 33,34
     ],
     DIRECTORATE: [
-      1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
+      1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,34
     ],
     EDUCATOR: [15, 24],
   };
@@ -284,7 +284,7 @@ function App() {
     console.log("param", param);
     //param = tableDepartment[0]?.id
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
-      Workload("?isOid=true").then((data) => {
+      Workload("").then((data) => {
         if (data) {
           console.log("work", data);
           funUpdTab(data);
@@ -374,6 +374,7 @@ function App() {
       return data;
     }
   }
+  // LECTURER: [2, 8, 15, 18, 22, 24],
 
   //! функция обновления всех данных
   function updateAlldata() {

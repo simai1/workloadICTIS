@@ -31,7 +31,11 @@ export default {
             if (!(typeof isOid === 'undefined')) {
                 if (_user.role === 5 || _user.role === 2) {
                     workloads = await Workload.findAll({
-                        where: { isOid, educatorId: _user.Educator.id, isBlocked: false },
+                        where: {
+                            isOid,
+                            educatorId: _user.Educator.id,
+                            isBlocked: false,
+                        },
                         include: { model: Educator },
                         order: [
                             ['discipline', 'ASC'],
@@ -44,21 +48,34 @@ export default {
                         where: { isOid },
                         include: { model: Educator },
                         order: [
-                            ['updatedAt', 'ASC'],
                             ['discipline', 'ASC'],
                             ['workload', 'ASC'],
+                            ['updatedAt', 'ASC'],
                         ],
                     });
                 }
                 const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
                 res.json(workloadsDto);
             } else if (department) {
-                if (_user.role === 5 || _user.role === 2) {
+                if (_user.role === 5) {
                     workloads = await Workload.findAll({
                         where: {
                             isOid: false,
                             department,
                             educatorId: _user.Educator.id,
+                        },
+                        include: { model: Educator },
+                        order: [
+                            ['discipline', 'ASC'],
+                            ['workload', 'ASC'],
+                            ['updatedAt', 'ASC'],
+                        ],
+                    });
+                } else if (_user.role === 2) {
+                    workloads = await Workload.findAll({
+                        where: {
+                            isOid: false,
+                            department,
                         },
                         include: { model: Educator },
                         order: [
@@ -84,7 +101,7 @@ export default {
                 const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
                 res.json(workloadsDto);
             } else {
-                if (_user.role === 5 || _user.role === 2) {
+                if (_user.role === 5) {
                     workloads = await Workload.findAll({
                         where: {
                             educatorId: _user.Educator.id,
@@ -97,19 +114,51 @@ export default {
                             ['updatedAt', 'ASC'],
                         ],
                     });
-                } else if (_user.role === 3) {
+                } else if (_user.role === 2) {
+                    // LECTURER HANDLER
+                    const ownWorkloads = await Workload.findAll({
+                        where: {
+                            educatorId: _user.Educator.id,
+                        },
+                    });
+
+                    const disciplines = [];
+                    for (const wrkld of ownWorkloads) {
+                        if (!Object.values(disciplines).includes(wrkld.discipline) && wrkld.workload === 'Лекционные') {
+                            disciplines.push(wrkld.discipline);
+                        }
+                    }
+
                     workloads = await Workload.findAll({
-                        where: { department: _user.Educator.department, isBlocked: false },
+                        where: {
+                            discipline: disciplines,
+                            workload: { [Op.in]: ['Лекционные', 'Лабораторные', 'Практические'] },
+                        },
                         include: { model: Educator },
                         order: [
                             ['discipline', 'ASC'],
                             ['workload', 'ASC'],
+                            ['updatedAt', 'ASC'],
+                        ],
+                    });
+                } else if (_user.role === 3) {
+                    workloads = await Workload.findAll({
+                        where: {
+                            department: _user.Educator.department,
+                            isBlocked: false,
+                        },
+                        include: { model: Educator },
+                        order: [
+                            ['discipline', 'ASC'],
+                            ['workload', 'ASC'],
+                            ['updatedAt', 'ASC'],
                         ],
                     });
                 } else {
                     workloads = await Workload.findAll({
                         where: {
                             isBlocked: false,
+                            isOid: false,
                         },
                         include: { model: Educator },
                         order: [
@@ -225,10 +274,8 @@ export default {
                 include: { model: Educator },
             });
 
-            if (!id) throw new Error('Не указан ID');
-            if (!workload) {
-                throw new Error('Нет такой нагрузки');
-            }
+            if (!id) throw new AppErrorMissing('id');
+            if (!workload) throw new AppErrorNotExist('workload');
 
             if (!numberOfStudents) numberOfStudents = workload.numberOfStudents;
             if (!hours) hours = workload.hours;
@@ -238,6 +285,13 @@ export default {
                 numberOfStudents,
                 hours,
                 comment,
+            });
+
+            await History.create({
+                type: 3,
+                department: workload[0].department,
+                before: [],
+                after: [workload.id],
             });
 
             res.json(workload);
@@ -291,6 +345,7 @@ export default {
 
         await History.create({
             type: 3,
+            department: workload.department,
             before: [workloadId],
             after: [],
         });
@@ -420,7 +475,10 @@ export default {
         const department = educator.department;
 
         const workloads = await Workload.findAll({
-            where: { department, isOid: false },
+            where: {
+                department,
+                isOid: false,
+            },
             order: [
                 ['discipline', 'ASC'],
                 ['workload', 'ASC'],
@@ -432,7 +490,6 @@ export default {
         res.json(workloadsDto);
     },
     async getUsableDepartments(req, res) {
-        console.log(req.user);
         const userId = req.user;
         const checkUser = await User.findByPk(userId);
         if (!checkUser) throw new AppErrorNotExist('User');

@@ -65,7 +65,7 @@ const ContextMenu = (props) => {
 
   //! Выбор преподавателя
   const selectedEducator = (id) => {
-    tabPar.setContextMenuShow(!tabPar.contextMenuShow);
+    appData.metodRole[appData.myProfile?.role]?.some((el) => el === 9) && tabPar.setContextMenuShow(!tabPar.contextMenuShow);
     setMenuShow("");
 
     const data = {
@@ -100,14 +100,15 @@ const ContextMenu = (props) => {
         );
       });
     } else if (menuShow === "propose") {
-      console.log("popup");
       setPopupOffer(id);
+      console.log("popup", id);
     }
   };
 
   //! функция для подтверждения или отмены отправки предложения
   const onClickOfferPopup = (action) => {
     const id = popupOffer;
+    console.log("Я вызвал вот Action", action)
     if (action) {
       //! отправляем запрос на добавление предложения
       EducatorLK(id).then((Educator) => {
@@ -120,7 +121,8 @@ const ContextMenu = (props) => {
         createOffer(offer).then(() => {
           setPopupOffer(null);
           tabPar.setContextMenuShow(false);
-          basicTabData.funUpdateOffers();
+          appData.metodRole[appData.myProfile?.role]?.some((el) => el === 17) &&   basicTabData.funUpdateOffers();
+        
         });
       });
     } else {
