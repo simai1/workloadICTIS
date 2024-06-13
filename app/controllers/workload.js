@@ -13,6 +13,7 @@ import checkHours from '../utils/notification.js';
 import History from '../models/history.js';
 import sendMail from '../services/email.js';
 import { Op, Sequelize } from 'sequelize';
+import Color from "../models/color.js";
 
 const getIds = modelsArr => {
     const arr = [];
@@ -40,7 +41,8 @@ export default {
                         order: [
                             ['discipline', 'ASC'],
                             ['workload', 'ASC'],
-                            ['updatedAt', 'ASC'],
+                            ['specialty', 'ASC'],
+                            ['core', 'ASC'],
                         ],
                     });
                 } else {
@@ -50,7 +52,8 @@ export default {
                         order: [
                             ['discipline', 'ASC'],
                             ['workload', 'ASC'],
-                            ['updatedAt', 'ASC'],
+                            ['specialty', 'ASC'],
+                            ['core', 'ASC'],
                         ],
                     });
                 }
@@ -68,7 +71,8 @@ export default {
                         order: [
                             ['discipline', 'ASC'],
                             ['workload', 'ASC'],
-                            ['updatedAt', 'ASC'],
+                            ['specialty', 'ASC'],
+                            ['core', 'ASC'],
                         ],
                     });
                 } else if (_user.role === 2) {
@@ -81,7 +85,8 @@ export default {
                         order: [
                             ['discipline', 'ASC'],
                             ['workload', 'ASC'],
-                            ['updatedAt', 'ASC'],
+                            ['specialty', 'ASC'],
+                            ['core', 'ASC'],
                         ],
                     });
                 } else {
@@ -94,7 +99,8 @@ export default {
                         order: [
                             ['discipline', 'ASC'],
                             ['workload', 'ASC'],
-                            ['updatedAt', 'ASC'],
+                            ['specialty', 'ASC'],
+                            ['core', 'ASC'],
                         ],
                     });
                 }
@@ -111,7 +117,8 @@ export default {
                         order: [
                             ['discipline', 'ASC'],
                             ['workload', 'ASC'],
-                            ['updatedAt', 'ASC'],
+                            ['specialty', 'ASC'],
+                            ['core', 'ASC'],
                         ],
                     });
                 } else if (_user.role === 2) {
@@ -138,7 +145,8 @@ export default {
                         order: [
                             ['discipline', 'ASC'],
                             ['workload', 'ASC'],
-                            ['updatedAt', 'ASC'],
+                            ['specialty', 'ASC'],
+                            ['core', 'ASC'],
                         ],
                     });
                 } else if (_user.role === 3) {
@@ -151,7 +159,8 @@ export default {
                         order: [
                             ['discipline', 'ASC'],
                             ['workload', 'ASC'],
-                            ['updatedAt', 'ASC'],
+                            ['specialty', 'ASC'],
+                            ['core', 'ASC'],
                         ],
                     });
                 } else {
@@ -164,7 +173,8 @@ export default {
                         order: [
                             ['discipline', 'ASC'],
                             ['workload', 'ASC'],
-                            ['updatedAt', 'ASC'],
+                            ['specialty', 'ASC'],
+                            ['core', 'ASC'],
                         ],
                     });
                 }
@@ -197,7 +207,7 @@ export default {
         res.json(workloadsDto);
     },
 
-    async splitRow({ body: { ids, n } }, res) {
+    async splitRow({ body: { ids, n }, user}, res) {
         if (!ids || !Array.isArray(ids) || ids.length === 0) {
             throw new Error('Укажите идентификаторы нагрузок для разделения');
         }
@@ -207,6 +217,8 @@ export default {
         if (n > 4) {
             throw new Error('Максимальное количество групп для разделения нагрузки - 4');
         }
+
+        const educator = await Educator.findOne({ where: { userId: user } });
 
         // Проверяем существование всех нагрузок
         const existingWorkloads = await Workload.findAll({ where: { id: ids } });
@@ -220,7 +232,7 @@ export default {
 
         // Разделяем нагрузки
         const newWorkloads = [];
-
+        const colorsData = [];
         for (const workload of existingWorkloads) {
             const studentsCount = workload.numberOfStudents;
             const studentsPerGroup = Math.floor(studentsCount / n);
@@ -244,11 +256,18 @@ export default {
 
                 const newWorkload = await Workload.create(copyWorkload);
                 newWorkloads.push(newWorkload);
+                colorsData.push({
+                    color: 5,
+                    educatorId: educator.id,
+                    workloadId: newWorkload.id,
+                });
             }
 
             // Удаляем изначальную нагрузку
             await workload.destroy();
         }
+
+        await Color.bulkCreate(colorsData);
 
         await History.create({
             type: 1,
@@ -353,8 +372,9 @@ export default {
         res.json({ status: 'OK' });
     },
 
-    async mapRow({ body: { ids } }, res) {
+    async mapRow({ body: { ids }, user }, res) {
         const workloads = await Workload.findAll({ where: { id: ids } }, { include: { model: Educator } });
+        const educator = await Educator.findOne({ where: { userId: user } });
 
         if (!ids) {
             throw new AppErrorMissing('id');
@@ -418,6 +438,12 @@ export default {
         const createdWorkload = await Workload.create(mergeWorkload);
         // Удаляем записи которые учавствовали в совмещении
         await Promise.allSettled(workloads.map(workload => workload.destroy()));
+
+        await Color.create({
+            color: 6,
+            educatorId: educator.id,
+            workloadId: createdWorkload.id,
+        });
 
         await History.create({
             type: 2,

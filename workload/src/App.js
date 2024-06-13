@@ -18,7 +18,9 @@ import {
   getAllAttaches,
   getAllColors,
   getOffers,
+  apiGetHistory,
 } from "./api/services/ApiRequest";
+
 import {
   funFilterSelected,
   funFixEducator,
@@ -42,10 +44,12 @@ function App() {
     METHODIST: [1, 3, 4, 8, 9, 10, 13, 14, 17, 20, 21, 25, 26, 27, 28, 31],
     LECTURER: [2, 8, 15, 18, 22, 24],
     DEPARTMENT_HEAD: [
-      2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 22, 25, 26, 27, 30, 31, 32, 33,34
+      2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 22, 25, 26, 27, 30, 31, 32, 33,
+      34,
     ],
     DIRECTORATE: [
-      1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,34
+      1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
+      34,
     ],
     EDUCATOR: [15, 24],
   };
@@ -135,6 +139,7 @@ function App() {
     selectISOid,
     historyChanges,
     setHistoryChanges,
+    funUpdateHistory,
   };
 
   const [coloredData, setColoredData] = useState([]); // выделенные цветом
@@ -148,6 +153,7 @@ function App() {
   const [spShow, setSpShow] = useState(null); // отображение модального окна th
   const [contextMenuShow, setContextMenuShow] = useState(false); // показать скрыть контекст меню
   const [contextPosition, setContextPosition] = useState({ x: 300, y: 300 }); // позиция контекст меню в таблице
+  const [perenesenAction, setPerenesenAction] = useState(false); // флаг который открывает перенесенные в истории
 
   const changedDataObj = {
     split: [],
@@ -209,6 +215,8 @@ function App() {
     setChangedData,
     selectedFilter,
     setSelectedFilter,
+    perenesenAction,
+    setPerenesenAction,
   };
 
   //! функция обновления комментаривев
@@ -226,6 +234,14 @@ function App() {
     getOffers().then((data) => {
       console.log("предложения", data);
       setAllOffersData(data);
+    });
+  }
+
+  //! функция обновления истории
+  function funUpdateHistory() {
+    apiGetHistory().then((req) => {
+      console.log("history", req);
+      setHistoryChanges(req);
     });
   }
 

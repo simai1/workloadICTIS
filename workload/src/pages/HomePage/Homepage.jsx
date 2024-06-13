@@ -187,7 +187,7 @@ function HomePage() {
     }
   };
 
-  // //! функции для импорта файла
+  //! функции для импорта файла
   const OpenPoPUpFile = () => {
     setfilePopUp(!filePopUp);
   };
@@ -429,11 +429,24 @@ function HomePage() {
                         setTableMode={setTableMode}
                       />
                     )}
+                    {appData.selectedComponent === "History" && (
+                      <div className={styles.perenesen}>
+                        <button
+                          onClick={() => {
+                            tabPar.setPerenesenAction(!tabPar.perenesenAction);
+                          }}
+                        >
+                          {!tabPar.perenesenAction
+                            ? "Не перенесенные"
+                            : "Перенесенные"}
+                        </button>
+                      </div>
+                    )}
                   </>
                 )}
 
               {appData.selectedComponent === "Disciplines" &&
-                appData.selectedComponent != "History" && <FiltredRows />}
+                appData.selectedComponent !== "History" && <FiltredRows />}
             </div>
 
             <div className={styles.right_button}>

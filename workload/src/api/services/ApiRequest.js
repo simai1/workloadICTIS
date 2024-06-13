@@ -55,7 +55,7 @@ export const EducatorLK = async (data) => {
 };
 
 //! получаем историю блокированных таблиц
-export const apiGetHistory = async (data) => {
+export const apiGetHistory = async () => {
   try {
     const response = await http.get(`${server}/history/getAll`);
     console.log("история", response);
@@ -466,8 +466,16 @@ export const DeleteTeacher = async (idTeacher) => {
     throw error;
   }
 };
-
-
+//! Изменение шготово не готово из истории
+export const apiCheckedUpdate = async (ids) => {
+  try {
+    const response = await http.patch(`${server}/history/check`, ids);
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
 
 //! Редактирование преподователя
 export const EditTeacher = async (idTeacher, data) => {

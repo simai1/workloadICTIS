@@ -192,6 +192,15 @@ body {
     transition: opacity 0.15s linear;
   }
 
+  .perenesen {
+    button {
+      @include button(var(--blue-color), #fff, 10px, 16px);
+      font-size: 18px;
+      border: none;
+    }
+    margin-left: 10px;
+  }
+
   .saveBuffre {
     display: flex;
     flex-direction: row;
@@ -231,7 +240,7 @@ body {
       border: none;
     }
   }
-  .countSet{
+  .countSet {
     margin-left: 65px;
     margin-top: 5px;
   }

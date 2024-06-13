@@ -136,8 +136,11 @@ function Table(props) {
           // если нет данных то выводим нет данных
           <tbody className={styles.NotData}>
             <tr>
-              <td className={styles.tdfix}></td>
-              <td className={styles.tdfix2}>
+              <td
+                className={styles.tdfix}
+                style={{ pointerEvents: "none" }}
+              ></td>
+              <td className={styles.tdfix2} style={{ pointerEvents: "none" }}>
                 {
                   <div className={styles.notdatadiv}>
                     {getTextForNotData(tabPar.selectedFilter)}

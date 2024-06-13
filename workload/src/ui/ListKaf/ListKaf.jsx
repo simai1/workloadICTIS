@@ -55,11 +55,8 @@ function ListKaf({
 
   //! функция при клике на история
   const clickHistory = (item) => {
-    apiGetHistory().then((req) => {
-      basicTabData.setHistoryChanges(req);
-      setactiveList(false);
-      setopenLists("");
-    });
+    setactiveList(false);
+    setopenLists("");
     tabPar.setSelectedFilter("Все Дисциплины");
     basicTabData.setnameKaf(item.name);
     appData.setSelectedComponent("History");
