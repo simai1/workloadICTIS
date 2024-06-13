@@ -40,7 +40,8 @@ export default {
                         order: [
                             ['discipline', 'ASC'],
                             ['workload', 'ASC'],
-                            ['updatedAt', 'ASC'],
+                            ['specialty', 'ASC'],
+                            ['core', 'ASC'],
                         ],
                     });
                 } else {
@@ -50,7 +51,8 @@ export default {
                         order: [
                             ['discipline', 'ASC'],
                             ['workload', 'ASC'],
-                            ['updatedAt', 'ASC'],
+                            ['specialty', 'ASC'],
+                            ['core', 'ASC'],
                         ],
                     });
                 }
@@ -68,7 +70,8 @@ export default {
                         order: [
                             ['discipline', 'ASC'],
                             ['workload', 'ASC'],
-                            ['updatedAt', 'ASC'],
+                            ['specialty', 'ASC'],
+                            ['core', 'ASC'],
                         ],
                     });
                 } else if (_user.role === 2) {
@@ -81,7 +84,8 @@ export default {
                         order: [
                             ['discipline', 'ASC'],
                             ['workload', 'ASC'],
-                            ['updatedAt', 'ASC'],
+                            ['specialty', 'ASC'],
+                            ['core', 'ASC'],
                         ],
                     });
                 } else {
@@ -94,7 +98,8 @@ export default {
                         order: [
                             ['discipline', 'ASC'],
                             ['workload', 'ASC'],
-                            ['updatedAt', 'ASC'],
+                            ['specialty', 'ASC'],
+                            ['core', 'ASC'],
                         ],
                     });
                 }
@@ -111,7 +116,8 @@ export default {
                         order: [
                             ['discipline', 'ASC'],
                             ['workload', 'ASC'],
-                            ['updatedAt', 'ASC'],
+                            ['specialty', 'ASC'],
+                            ['core', 'ASC'],
                         ],
                     });
                 } else if (_user.role === 2) {
@@ -138,7 +144,8 @@ export default {
                         order: [
                             ['discipline', 'ASC'],
                             ['workload', 'ASC'],
-                            ['updatedAt', 'ASC'],
+                            ['specialty', 'ASC'],
+                            ['core', 'ASC'],
                         ],
                     });
                 } else if (_user.role === 3) {
@@ -151,7 +158,8 @@ export default {
                         order: [
                             ['discipline', 'ASC'],
                             ['workload', 'ASC'],
-                            ['updatedAt', 'ASC'],
+                            ['specialty', 'ASC'],
+                            ['core', 'ASC'],
                         ],
                     });
                 } else {
@@ -164,7 +172,8 @@ export default {
                         order: [
                             ['discipline', 'ASC'],
                             ['workload', 'ASC'],
-                            ['updatedAt', 'ASC'],
+                            ['specialty', 'ASC'],
+                            ['core', 'ASC'],
                         ],
                     });
                 }
