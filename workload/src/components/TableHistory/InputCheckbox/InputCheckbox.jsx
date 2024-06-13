@@ -24,27 +24,28 @@ function InputCheckbox(props) {
         </th>
       ) : (
         <td style={stylesTd} className={styles.InputCheckbox}>
-          <div
-            className={styles.bacground}
-            // style={
-            //   props.obj.number === 0
-            //     ? {
-            //         borderRight: "3px solid green",
-            //         height: `${150 * props.obj.length - 50}px`,
-            //       }
-            //     : null
-            // }
-          ></div>
+          <div className={styles.bacground}></div>
 
           <input
             onChange={(e) => props.clickTr(e, props.itemId)}
             type="checkbox"
             checked={props.checked}
           ></input>
-          {props.obj.action === "after" && (
+          {(props.obj.action === "after" ||
+            props.obj.type === "Обновленная") && (
             <>
               <div className={styles.arrow}>
-                <img src="img/Arrow.svg" alt=">" />
+                <img
+                  style={{
+                    transform:
+                      props.obj.type === "Обновленная"
+                        ? "rotate(-90deg)"
+                        : "none",
+                  }}
+                  src="img/Arrow.svg"
+                  alt=">"
+                />
+
                 <div className={styles.type}>{props.obj.type}</div>
               </div>
             </>

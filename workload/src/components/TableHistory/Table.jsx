@@ -68,9 +68,9 @@ function Table(props) {
 
   const clickTrAll = () => {
     let ids = [];
-    if (basicTabData.props.historyData.length !== tabPar.selectedTr.length) {
-      basicTabData.props.historyData.map((item) => {
-        ids.push(item.id);
+    if (props.historyData.length !== tabPar.selectedTr.length) {
+      props.historyData.map((item) => {
+        ids.push(item.value.objid);
       });
       tabPar.setOnCheckBoxAll(true);
     } else {
@@ -82,7 +82,7 @@ function Table(props) {
 
   //определение каласса tr
   const getClassNameTr = (itemss) => {
-    const itemId = itemss.value.id;
+    const itemId = itemss.value.objid;
     let classText = null;
     classText = tabPar.selectedTr?.includes(itemId)
       ? `${styles.selectedTr}`
@@ -159,20 +159,21 @@ function Table(props) {
                 onMouseLeave={() => getBorder("")}
                 // выделяем цветом если выбранно для контекстного меню
                 className={getClassNameTr(item)}
-                onClick={(e) => clickTr(e, item.value.id)}
+                onClick={(e) => clickTr(e, item.value.objid)}
                 onContextMenu={
                   getConfirmation(item.value.id).blocked
                     ? null
-                    : () => clickTrContetx(item.value.id)
+                    : () => clickTrContetx(item.value.objid)
                 }
                 key={item.value.id + number + "tr"}
-                style={
-                  item.length - 1 === item.number
-                    ? {
-                        borderBottom: "4px solid #3b28cc",
-                      }
-                    : null
-                }
+                // style={
+                //   item.length - 1 === item.number
+                //     ? {
+                //         borderBottom: "4px solid #3b28cc",
+                //       }
+                //     : null
+                // }
+                name={item.number === 0 ? "bottomBorder" : null}
               >
                 <InputCheckbox
                   clickTr={() => {}}
@@ -181,7 +182,7 @@ function Table(props) {
                   number={number}
                   obj={item}
                   getConfirmation={getConfirmation(item.value.id)}
-                  checked={tabPar.selectedTr.includes(item.value.id)}
+                  checked={tabPar.selectedTr.includes(item.value.objid)}
                 />
                 {basicTabData.tableHeaders.map((itemKey) => (
                   <TableTd
@@ -194,6 +195,7 @@ function Table(props) {
                 ))}
               </tr>
             ))}
+
           <tr
             key={"tr3"}
             className={styles.trPlug}
