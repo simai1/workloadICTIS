@@ -106,6 +106,8 @@ function Table(props) {
     setBorderState(item.id);
   };
 
+  console.log("props.historyData", props.historyData);
+
   return (
     <div>
       <table className={styles.table} ref={props.tableRef}>
@@ -132,13 +134,16 @@ function Table(props) {
         {props.historyData.length === 0 && (
           <tbody className={styles.NotData}>
             <tr>
-              <td className={styles.tdfix}></td>
-              <td className={styles.tdfix2}>
-                {props.historyData.length === 0 && (
-                  <div className={styles.notdatadiv}>
-                    {getTextForNotData(tabPar.selectedFilter)}
-                  </div>
-                )}
+              <td
+                className={styles.tdfix}
+                style={{ pointerEvents: "none" }}
+              ></td>
+              <td className={styles.tdfix2} style={{ pointerEvents: "none" }}>
+                <div className={styles.notdatadiv}>
+                  {tabPar.perenesenAction
+                    ? "Нет данных"
+                    : "Нет перенесенных данных"}
+                </div>
               </td>
             </tr>
           </tbody>
