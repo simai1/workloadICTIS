@@ -7,6 +7,8 @@ import { headersEducator } from "../TableWorkload/Data";
 import { Educator, apiEducatorDepartment } from "../../api/services/ApiRequest";
 import Button from "../../ui/Button/Button";
 import { SamplePoints } from "./SamplePoints/SamplePoints";
+import { ContextFunc } from "./ContextFunc/ContextFunc";
+import { PopUpEditEmploy } from "./PopUpEditEmploy/PopUpEditEmploy";
 
 function TableTeachers(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]);
@@ -15,7 +17,11 @@ function TableTeachers(props) {
   const { appData, basicTabData, checkPar } = React.useContext(DataContext);
   const [sampleShow, setSampleShow] = useState(false);
   const [sampleData, setSampleData] = useState([]);
+  const [selectRows, setSelectRow] = useState(null)
+  const [vizibleCont, setVizibleCont] = useState(false)
   const tableHeaders = headersEducator;
+  const [positionMenu, setPositionMenu] = useState({ x: 0, y: 0 });
+
   useEffect(() => {
     props.changeInput();
   }, []);
@@ -51,7 +57,17 @@ function TableTeachers(props) {
       });
     }
   }, [basicTabData.actionUpdTabTeach]);
-
+  const updateTable = ()=>{
+    Educator().then((res) => {
+      console.log("teatcher ", res);
+      if (res && res.status === 200) {
+        appData.setEducator(res.data);
+        setFilteredData(res.data);
+        setUpdatedData(res.data);
+        setUpdatedHeader(tableHeaders);
+      }
+    });
+  }
   const handleNameClick = (index, id) => {
     props.setEducatorIdforLk(id);
     console.log("ideducator", id);
@@ -121,6 +137,13 @@ function TableTeachers(props) {
     return bg;
   }
 
+  const clickTrRows = (id, x, y) => {
+    setSelectRow(id);
+    console.log("settId", id);
+    setPositionMenu({ x, y });
+  };
+
+
   return (
     <div className={styles.TableTeachers}>
       {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 4) ? (
@@ -175,8 +198,16 @@ function TableTeachers(props) {
             </tr>
           </thead>
           <tbody>
+          {/* onClick={()=>{clickTrRows(row.id)}} */}
             {filteredData.map((row, index) => (
-              <tr key={index}>
+              <tr 
+                key={index} 
+                className={selectRows === row.id ? styles.SelectedTr : null}
+                onContextMenu={(e) => {
+                  e.preventDefault(); // Предотвращаем стандартное контекстное меню
+                  clickTrRows(row.id, e.clientX, e.clientY); // Передаем координаты курсора
+                }}
+              >
                 {Object.keys(row).map((key) => {
                   if (key === "name") {
                     return (
@@ -213,6 +244,8 @@ function TableTeachers(props) {
           </tbody>
         </table>
       </div>
+      {selectRows&& <ContextFunc updateTable={updateTable} setSelectRow={setSelectRow} selectRows={selectRows} x={positionMenu.x} y={positionMenu.y}/>}
+      <PopUpEditEmploy/>
     </div>
   );
 }

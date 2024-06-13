@@ -455,3 +455,15 @@ export const WorkloadBlocked = async (idTable) => {
     throw error;
   }
 };
+
+//! блокировак таблицы нагрузок
+export const DeleteTeacher = async (idTeacher) => {
+  try {
+    const response = await http.delete(`${server}/educator/${idTeacher}`);
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
