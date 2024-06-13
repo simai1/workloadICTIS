@@ -148,6 +148,7 @@ function App() {
   const [spShow, setSpShow] = useState(null); // отображение модального окна th
   const [contextMenuShow, setContextMenuShow] = useState(false); // показать скрыть контекст меню
   const [contextPosition, setContextPosition] = useState({ x: 300, y: 300 }); // позиция контекст меню в таблице
+  const [perenesenAction, setPerenesenAction] = useState(false); // флаг который открывает перенесенные в истории
 
   const changedDataObj = {
     split: [],
@@ -209,6 +210,8 @@ function App() {
     setChangedData,
     selectedFilter,
     setSelectedFilter,
+    perenesenAction,
+    setPerenesenAction,
   };
 
   //! функция обновления комментаривев
