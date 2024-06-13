@@ -2,13 +2,13 @@ import styles from "./TableTeachers.module.scss";
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import DataContext from "../../context";
-import { getDataEducator } from "../../api/services/AssignApiData";
 import { headersEducator } from "../TableWorkload/Data";
 import { Educator, apiEducatorDepartment } from "../../api/services/ApiRequest";
 import Button from "../../ui/Button/Button";
 import { SamplePoints } from "./SamplePoints/SamplePoints";
 import { ContextFunc } from "./ContextFunc/ContextFunc";
-import { PopUpEditEmploy } from "./PopUpEditEmploy/PopUpEditEmploy";
+import { PopUpEditTeacher } from "./PopUpEditTeacher/PopUpEditTeacher";
+
 
 function TableTeachers(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]);
@@ -244,8 +244,8 @@ function TableTeachers(props) {
           </tbody>
         </table>
       </div>
-      {selectRows&& <ContextFunc updateTable={updateTable} setSelectRow={setSelectRow} selectRows={selectRows} x={positionMenu.x} y={positionMenu.y}/>}
-      <PopUpEditEmploy/>
+      {selectRows&& <ContextFunc setVizibleCont={setVizibleCont} updateTable={updateTable} setSelectRow={setSelectRow} selectRows={selectRows} x={positionMenu.x} y={positionMenu.y}/>}
+      {vizibleCont && <PopUpEditTeacher  setVizibleCont={setVizibleCont} IdRows={selectRows} setSelectRow={setSelectRow} updateTable={updateTable} selectRows={filteredData.find((el)=>el.id === selectRows)}/>}
     </div>
   );
 }

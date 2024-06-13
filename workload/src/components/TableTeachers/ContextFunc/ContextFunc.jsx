@@ -35,7 +35,7 @@ return(
     <div ref={refMenu} style={positStyle} className={styles.MenuCont}>
         <div className={styles.MenuContInner}>
             <div>
-                <button className={styles.butttonMenuContext}>Редактировать</button>
+                <button className={styles.butttonMenuContext} onClick={()=>props.setVizibleCont(true)}>Редактировать</button>
             </div>
             <div>
                 <button className={styles.butttonMenuContext} onClick={deleteTeacher}>Удалить</button>  

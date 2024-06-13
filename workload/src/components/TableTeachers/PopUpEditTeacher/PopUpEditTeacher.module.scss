@@ -1,8 +1,11 @@
+.Mt{
+    padding-top: 100px;
+}
 .mainPop{
     position: fixed;
     height: 100vh;
     width: 100%;
-    top: 0;
+    top: 100px;
     left: 0;
     display: flex;
     align-items: center;
@@ -16,7 +19,6 @@
         text-align: center;
         position: relative;
         padding: 35px 20px;
-       
        .buttonCancel{
         position: absolute;
         right: 10px;

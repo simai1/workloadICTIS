@@ -456,7 +456,7 @@ export const WorkloadBlocked = async (idTable) => {
   }
 };
 
-//! блокировак таблицы нагрузок
+//! Удаление преподователя
 export const DeleteTeacher = async (idTeacher) => {
   try {
     const response = await http.delete(`${server}/educator/${idTeacher}`);
@@ -466,4 +466,18 @@ export const DeleteTeacher = async (idTeacher) => {
     throw error;
   }
 };
+
+
+
+//! Редактирование преподователя
+export const EditTeacher = async (idTeacher, data) => {
+  try {
+    const response = await http.patch(`${server}/educator/${idTeacher}`, data);
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
 
