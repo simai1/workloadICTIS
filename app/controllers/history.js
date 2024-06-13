@@ -28,6 +28,7 @@ export default {
             department: mapDepartments[history.department],
             departmentId: history.department,
             type: mapHistory[1],
+            checked: history.checked,
             before,
             after,
             createdAt: Date.now()
@@ -40,6 +41,7 @@ export default {
             department: mapDepartments[history.department],
             departmentId: history.department,
             type: mapHistory[2],
+            checked: history.checked,
             before,
             after,
             createdAt: Date.now()
@@ -50,6 +52,7 @@ export default {
             department: mapDepartments[history.department],
             departmentId: history.department,
             type: mapHistory[3],
+            checked: history.checked,
             before: [],
             after: [],
             createdAt: Date.now()
@@ -87,6 +90,7 @@ export default {
           id: history.id,
           department: mapDepartments[history.department],
           departmentId: history.department,
+          checked: history.checked,
           type: mapHistory[1],
           before,
           after,
@@ -99,6 +103,7 @@ export default {
           id: history.id,
           department: mapDepartments[history.department],
           departmentId: history.department,
+          checked: history.checked,
           type: mapHistory[2],
           before,
           after,
@@ -110,6 +115,7 @@ export default {
           department: mapDepartments[history.department],
           departmentId: history.department,
           type: mapHistory[3],
+          checked: history.checked,
           before: [],
           after: [],
           createdAt: Date.now()
@@ -132,6 +138,12 @@ export default {
       }
     }
     res.json(resArr);
+  },
+
+  async check({ body: { ids } }, res){
+    if (!ids) throw new AppErrorMissing('ids');
+    await History.update({ checked: true }, { where: { id: ids } });
+    res.json({ status: 'OK' });
   },
 
   async delete({params: {historyId}}, res){
