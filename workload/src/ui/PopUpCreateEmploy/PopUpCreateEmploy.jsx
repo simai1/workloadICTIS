@@ -161,7 +161,7 @@ export function PopUpCreateEmploy(props) {
         >
           <Button
             text="Сохранить"
-            Bg="#8bc975"
+            Bg="#3b28cc"
             textColot="#fff"
             handleClicks={handleClicks}
           />

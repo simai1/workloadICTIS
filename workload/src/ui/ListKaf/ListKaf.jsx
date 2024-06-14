@@ -55,12 +55,8 @@ function ListKaf({
 
   //! функция при клике на история
   const clickHistory = (item) => {
-    apiGetHistory().then((req) => {
-      basicTabData.setHistoryChanges(req);
-      setactiveList(false);
-      setopenLists("");
-      
-    });
+    setactiveList(false);
+    setopenLists("");
     tabPar.setSelectedFilter("Все Дисциплины");
     basicTabData.setnameKaf(item.name);
     appData.setSelectedComponent("History");
@@ -112,22 +108,22 @@ function ListKaf({
         {activeList && (
           <div className={styles.ListData}>
             {dataList.map((item, index) => (
-              <div>
+              <div key={index}>
                 <p
                   className={styles.NameForList}
-                  onClick={
-                    ()=>{
-                      if(item.blocked){
-                        if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 28)){
-                          setopenList(index)
-                        }
+                  onClick={() => {
+                    if (item.blocked) {
+                      if (
+                        appData.metodRole[appData.myProfile?.role]?.some(
+                          (el) => el === 28
+                        )
+                      ) {
+                        setopenList(index);
                       }
-                      else{
-                        addKafedra(item)
-                      }
+                    } else {
+                      addKafedra(item);
                     }
-                  
-                  }
+                  }}
                   style={item.blocked ? { color: "#E81414" } : null}
                 >
                   {item.name}

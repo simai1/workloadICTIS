@@ -2,11 +2,12 @@ import React from "react";
 import styles from "./PopUpContainer.module.scss";
 import DataContext from "../../context";
 
-function PopUpContainer({ children, title,mT }) {
+function PopUpContainer({ children, title,mT, setVizibleCont }) {
     const { appData } = React.useContext(DataContext);
     const closePopUp = () =>{
        appData.setcreateEdicatorPopUp(false)
        appData.setgodPopUp(false)
+       setVizibleCont && setVizibleCont(false)
     }
     return (
         <div style={{paddingTop:`${mT}px`}} className={styles.PopUpContainer}>

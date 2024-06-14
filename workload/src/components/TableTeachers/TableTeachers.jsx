@@ -2,11 +2,13 @@ import styles from "./TableTeachers.module.scss";
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import DataContext from "../../context";
-import { getDataEducator } from "../../api/services/AssignApiData";
 import { headersEducator } from "../TableWorkload/Data";
 import { Educator, apiEducatorDepartment } from "../../api/services/ApiRequest";
 import Button from "../../ui/Button/Button";
 import { SamplePoints } from "./SamplePoints/SamplePoints";
+import { ContextFunc } from "./ContextFunc/ContextFunc";
+import { PopUpEditTeacher } from "./PopUpEditTeacher/PopUpEditTeacher";
+
 
 function TableTeachers(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]);
@@ -15,7 +17,11 @@ function TableTeachers(props) {
   const { appData, basicTabData, checkPar } = React.useContext(DataContext);
   const [sampleShow, setSampleShow] = useState(false);
   const [sampleData, setSampleData] = useState([]);
+  const [selectRows, setSelectRow] = useState(null)
+  const [vizibleCont, setVizibleCont] = useState(false)
   const tableHeaders = headersEducator;
+  const [positionMenu, setPositionMenu] = useState({ x: 0, y: 0 });
+
   useEffect(() => {
     props.changeInput();
   }, []);
@@ -51,7 +57,17 @@ function TableTeachers(props) {
       });
     }
   }, [basicTabData.actionUpdTabTeach]);
-
+  const updateTable = ()=>{
+    Educator().then((res) => {
+      console.log("teatcher ", res);
+      if (res && res.status === 200) {
+        appData.setEducator(res.data);
+        setFilteredData(res.data);
+        setUpdatedData(res.data);
+        setUpdatedHeader(tableHeaders);
+      }
+    });
+  }
   const handleNameClick = (index, id) => {
     props.setEducatorIdforLk(id);
     console.log("ideducator", id);
@@ -107,19 +123,26 @@ function TableTeachers(props) {
     let OgranHours = 900;
     let AllHours = OgranHours * stavka;
 
-    if (totalHours <= OgranHours - 300) {
+    if (totalHours <= AllHours - 300) {
       bg = "#19C20A"; // Зеленый цвет
     } else if (
-      OgranHours - 300 < totalHours &&
-      totalHours <= OgranHours - 100
+      AllHours - 300 < totalHours &&
+      totalHours <= AllHours - 100
     ) {
       bg = "#FFD600"; // Желтый цвет
     }
-    if (totalHours >= OgranHours) {
+    else{
       bg = "#E81414"; // Красный цвет
     }
     return bg;
   }
+
+  const clickTrRows = (id, x, y) => {
+    setSelectRow(id);
+    console.log("settId", id);
+    setPositionMenu({ x, y });
+  };
+
 
   return (
     <div className={styles.TableTeachers}>
@@ -175,8 +198,16 @@ function TableTeachers(props) {
             </tr>
           </thead>
           <tbody>
+          {/* onClick={()=>{clickTrRows(row.id)}} */}
             {filteredData.map((row, index) => (
-              <tr key={index}>
+              <tr 
+                key={index} 
+                className={selectRows === row.id ? styles.SelectedTr : null}
+                onContextMenu={(e) => {
+                  e.preventDefault(); // Предотвращаем стандартное контекстное меню
+                  clickTrRows(row.id, e.clientX, e.clientY); // Передаем координаты курсора
+                }}
+              >
                 {Object.keys(row).map((key) => {
                   if (key === "name") {
                     return (
@@ -213,6 +244,8 @@ function TableTeachers(props) {
           </tbody>
         </table>
       </div>
+      {selectRows&& <ContextFunc setVizibleCont={setVizibleCont} updateTable={updateTable} setSelectRow={setSelectRow} selectRows={selectRows} x={positionMenu.x} y={positionMenu.y}/>}
+      {vizibleCont && <PopUpEditTeacher  setVizibleCont={setVizibleCont} IdRows={selectRows} setSelectRow={setSelectRow} updateTable={updateTable} selectRows={filteredData.find((el)=>el.id === selectRows)}/>}
     </div>
   );
 }

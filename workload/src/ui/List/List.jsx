@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import styles from "./List.module.scss";
 import DataContext from "../../context";
 import arrow from "./../../img/arrow_down.svg"
-function List({ dataList, Textlabel, defaultValue, handleInputChange, name, handleInputList}) {
+function List({ dataList, Textlabel, defaultValue, handleInputChange, name, handleInputList, value}) {
   const { context } = React.useContext(DataContext);
 
   const [activeList, setactiveList] = useState(false);
-  const [nameClient, setnameClient] = useState("");
+  const [nameClient, setnameClient] = useState(value);
   const addClient = (el) => {
     console.log(el)
     setnameClient(el.name);

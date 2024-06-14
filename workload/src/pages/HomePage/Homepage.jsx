@@ -51,6 +51,8 @@ function HomePage() {
   const [popupExport, setPopupExport] = useState(false); // открыть/закрыть попап подтверждения блокировки таблицы
   const [departments, setdepartments] = useState([]);
   const [kafedralIsOpen, setKafedralIsOpen] = useState(false);
+  const [cafedral, setCafedral] = useState(false);
+
   const handleButtonClick = () => {
     setEducatorIdforLk("");
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 28)) {
@@ -119,65 +121,10 @@ function HomePage() {
     popupSaveAll == true && setPopupSaveAll(false);
   };
 
-  //! при клике на подтверждение блокировки таблицы
-  const exportClick = (action) => {
-    if (action) {
-      if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 33)) {
-        const id = basicTabData.tableDepartment.find(
-          (el) => el.name === appData.myProfile.educator.department
-        ).id;
-        WorkloadBlocked(id).then((resp) => {
-          if (resp.status == 200) {
-            basicTabData.funUpdateTable(0);
-            appData.setgodPopUp(true);
-          }
-        });
-      } else {
-        if (basicTabData.selectISOid) {
-          WorkloadBlocked(0).then((resp) => {
-            if (resp.status == 200) {
-              basicTabData.funUpdateTable("0");
-              appData.setgodPopUp(true);
-              basicTabData.funGetDepartment();
-            }
-          });
-        } else {
-          console.log("tableDepartment", basicTabData.tableDepartment);
-          const index = basicTabData.tableDepartment.find(
-            (el) => el.name === basicTabData.nameKaf
-          ).id;
-          WorkloadBlocked(index).then((resp) => {
-            if (resp.status == 200) {
-              basicTabData.funUpdateTable(index);
-              appData.setgodPopUp(true);
-              basicTabData.funGetDepartment();
-            }
-          });
-        }
-      }
-    } else {
-      setPopupExport(false);
-    }
-  };
-
   //! при нажатии на подтвердить сохранение изменений
   const confirmClick = (action) => {
     if (action) {
-      // //! отправляем все запросы на обработку
-      // console.log("Сохранено", appData.bufferAction);
-      // bufferRequestToApi(appData.bufferAction).then(() => {
-      //   appData.setBufferAction([0]);
-      //   basicTabData.updateAlldata();
-      // });
-      // tabPar.setSelectedTr([]);
-      // tabPar.setChangedData({
-      //   splitjoin: [],
-      //   educator: [],
-      //   hours: [],
-      //   numberOfStudents: [],
-      //   deleted: [],
-      // });
-      // console.log("выполнено и очищено", appData.bufferAction);
+      //! отправляем все запросы на обработку
       console.log("Сохранено", appData.bufferAction);
       bufferRequestToApi(appData.bufferAction).then(() => {
         appData.setBufferAction([0]);
@@ -190,8 +137,57 @@ function HomePage() {
       setPopupSaveAll(false);
     }
   };
+  const [confirmationSave, setConfirmationSave] = useState(false); // флаг открывается если не сохранили данные и блокируем
 
-  // //! функции для импорта файла
+  //! при клике на подтверждение блокировки таблицы
+  const exportClick = (action) => {
+    if (appData.bufferAction.length === 0) {
+      if (action) {
+        if (
+          appData.metodRole[appData.myProfile?.role]?.some((el) => el === 33)
+        ) {
+          const id = basicTabData.tableDepartment.find(
+            (el) => el.name === appData.myProfile.educator.department
+          ).id;
+          WorkloadBlocked(id).then((resp) => {
+            if (resp.status == 200) {
+              basicTabData.funUpdateTable(0);
+              appData.setgodPopUp(true);
+            }
+          });
+        } else {
+          if (basicTabData.selectISOid) {
+            WorkloadBlocked(0).then((resp) => {
+              if (resp.status == 200) {
+                basicTabData.funUpdateTable("0");
+                appData.setgodPopUp(true);
+                basicTabData.funGetDepartment();
+              }
+            });
+          } else {
+            console.log("tableDepartment", basicTabData.tableDepartment);
+            const index = basicTabData.tableDepartment.find(
+              (el) => el.name === basicTabData.nameKaf
+            ).id;
+            WorkloadBlocked(index).then((resp) => {
+              if (resp.status == 200) {
+                basicTabData.funUpdateTable(index);
+                appData.setgodPopUp(true);
+                basicTabData.funGetDepartment();
+              }
+            });
+          }
+        }
+      } else {
+        setPopupExport(false);
+      }
+    } else {
+      setPopupExport(false);
+      setConfirmationSave(true);
+    }
+  };
+
+  //! функции для импорта файла
   const OpenPoPUpFile = () => {
     setfilePopUp(!filePopUp);
   };
@@ -206,6 +202,22 @@ function HomePage() {
   return (
     <Layout>
       <div className={styles.HomePage}>
+        {confirmationSave && (
+          <div className={styles.nosavedData}>
+            <span>У вас есть несохраненные данные</span>
+            <button onClick={() => setConfirmationSave(false)}>Закрыть</button>
+          </div>
+        )}
+        {appData.loaderAction && (
+          <div className={styles.nosavedData}>
+            <div className={styles.nosavedDataInner}>
+              <div className={styles.loader}>
+                <span className={styles.loaderInner}></span>
+              </div>
+              <span>Загружаем данные...</span>
+            </div>
+          </div>
+        )}
         <div className={styles.header}>
           <div className={styles.header_top}>
             <div className={styles.header_top_save_search}>
@@ -217,6 +229,8 @@ function HomePage() {
                     className={styles.btnMenuBox}
                     onClick={appData.backBuffer}
                   >
+                    <div className={styles.text}>Отменить</div>
+
                     <img src="./img/backBuffer.svg" />
                   </div>
                 )}
@@ -240,22 +254,24 @@ function HomePage() {
 
                 {appData.metodRole[appData.myProfile?.role]?.some(
                   (el) => el === 27
-                ) && (
-                  <div
-                    style={{ marginRight: "20px" }}
-                    className={styles.btnMenuBox}
-                    onClick={onExportClick}
-                  >
-                    <img className={styles.btnLeft} src="./img/export.svg" />
-                    {popupExport && (
-                      <ConfirmSaving
-                        title={"Вы уверены, что хотите отправить таблицу?"}
-                        confirmClick={exportClick}
-                        setShow={setPopupExport}
-                      />
-                    )}
-                  </div>
-                )}
+                ) &&
+                  ((basicTabData.nameKaf != "Все" && cafedral) ||
+                    (basicTabData.nameKaf === "Все" && !cafedral)) && (
+                    <div
+                      style={{ marginRight: "20px" }}
+                      className={styles.btnMenuBox}
+                      onClick={onExportClick}
+                    >
+                      <img className={styles.btnLeft} src="./img/export.svg" />
+                      {popupExport && (
+                        <ConfirmSaving
+                          title={"Вы уверены, что хотите отправить таблицу?"}
+                          confirmClick={exportClick}
+                          setShow={setPopupExport}
+                        />
+                      )}
+                    </div>
+                  )}
               </div>
               <div className={styles.header_search}>
                 <input
@@ -392,6 +408,7 @@ function HomePage() {
                         basicTabData.setnameKaf("Все");
                         tabPar.setSelectedFilter("Все Дисциплины");
                         appData.setSelectedComponent("Disciplines");
+                        setCafedral(false);
                       }}
                     />
                     <Button
@@ -406,6 +423,7 @@ function HomePage() {
                         basicTabData.setnameKaf("Все");
                         tabPar.setSelectedFilter("Все Дисциплины");
                         appData.setSelectedComponent("Disciplines");
+                        setCafedral(true);
                       }}
                     />
                     {!basicTabData.selectISOid && (
@@ -415,11 +433,24 @@ function HomePage() {
                         setTableMode={setTableMode}
                       />
                     )}
+                    {appData.selectedComponent === "History" && (
+                      <div className={styles.perenesen}>
+                        <button
+                          onClick={() => {
+                            tabPar.setPerenesenAction(!tabPar.perenesenAction);
+                          }}
+                        >
+                          {!tabPar.perenesenAction
+                            ? "Не перенесенные"
+                            : "Перенесенные"}
+                        </button>
+                      </div>
+                    )}
                   </>
                 )}
 
               {appData.selectedComponent === "Disciplines" &&
-                appData.selectedComponent != "History" && <FiltredRows />}
+                appData.selectedComponent !== "History" && <FiltredRows />}
             </div>
 
             <div className={styles.right_button}>
@@ -498,6 +529,11 @@ function HomePage() {
             />
           </div>
         </div>
+        {appData.selectedComponent !== "Teachers" && (
+          <div className={styles.countSet}>
+            Кол-во выделенных нагрузок: {new Set(tabPar.selectedTr).size}
+          </div>
+        )}
       </div>
       {filePopUp && (
         <PopUpFile

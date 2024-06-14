@@ -55,7 +55,7 @@ export const EducatorLK = async (data) => {
 };
 
 //! получаем историю блокированных таблиц
-export const apiGetHistory = async (data) => {
+export const apiGetHistory = async () => {
   try {
     const response = await http.get(`${server}/history/getAll`);
     console.log("история", response);
@@ -438,7 +438,7 @@ export const GetRole = async () => {
 export const GetDepartment = async () => {
   try {
     const response = await http.get(`${server}/workload/get/usableDepartments`);
-    console.log("GetDepartment", response?.data);
+    console.log("GetDepartment", response);
     return response;
   } catch (error) {
     console.error("Error:", error);
@@ -455,3 +455,37 @@ export const WorkloadBlocked = async (idTable) => {
     throw error;
   }
 };
+
+//! Удаление преподователя
+export const DeleteTeacher = async (idTeacher) => {
+  try {
+    const response = await http.delete(`${server}/educator/${idTeacher}`);
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+//! Изменение шготово не готово из истории
+export const apiCheckedUpdate = async (ids) => {
+  try {
+    const response = await http.patch(`${server}/history/check`, ids);
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
+//! Редактирование преподователя
+export const EditTeacher = async (idTeacher, data) => {
+  try {
+    const response = await http.patch(`${server}/educator/${idTeacher}`, data);
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
+

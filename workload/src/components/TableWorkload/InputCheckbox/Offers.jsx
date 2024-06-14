@@ -45,7 +45,7 @@ function Offers(props) {
         setOfferWindowShow(false);
         // обновляем данные таблицы и предложений
         basicTabData.funUpdateOffers();
-        basicTabData.funUpdateTable();
+        basicTabData.funUpdateTable(basicTabData.tableDepartment.find((el) => el.name === basicTabData.nameKaf)?.id);
       });
     }
     //! принимаем от дирекции
@@ -55,7 +55,7 @@ function Offers(props) {
         setOfferWindowShow(false);
         // обновляем данные таблицы и предложений
         basicTabData.funUpdateOffers();
-        basicTabData.funUpdateTable();
+        basicTabData.funUpdateTable(basicTabData.tableDepartment.find((el) => el.name === basicTabData.nameKaf)?.id);
       });
     }
   };
@@ -94,7 +94,9 @@ function Offers(props) {
   }, []);
 
   return (
-    <div
+    <>
+    { (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 34)) &&
+      <div
       ref={offerRef}
       className={styles.Offers}
       onClick={(e) => e.stopPropagation()}
@@ -130,6 +132,8 @@ function Offers(props) {
         </div>
       )}
     </div>
+    }
+   </>
   );
 }
 

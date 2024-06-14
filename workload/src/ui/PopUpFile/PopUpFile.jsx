@@ -9,7 +9,7 @@ export function PopUpFile(props) {
   const { appData, basicTabData } = React.useContext(DataContext);
   const [valueCafedra, setvalueCafedra] = useState("");
   const [openListFlag, setopenListFlag] = useState(false);
-  const [fileData, setfileData] = useState(null)
+  const [fileData, setfileData] = useState(null);
   const cafData = [
     { name: "ОИД", id: 0 },
     { name: "БИТ", id: 1 },
@@ -23,7 +23,7 @@ export function PopUpFile(props) {
     { name: "САИТ", id: 9 },
     { name: "САПР", id: 10 },
     { name: "СиПУ", id: 11 },
-    {name: "ФМОИО", id: 12}
+    { name: "ФМОИО", id: 12 },
   ];
   const fileInputRef = useRef(null);
 
@@ -33,18 +33,20 @@ export function PopUpFile(props) {
   };
 
   const UpdateTable = () => {
+    appData.setLoaderAction(true);
     closeMenuPopFile();
-    const constIdCafedra = cafData.find((e)=>(e.name === valueCafedra)).id 
+    const constIdCafedra = cafData.find((e) => e.name === valueCafedra).id;
     const fileData = appData?.fileData;
     const formData = new FormData();
-    formData.append('file', fileData);
-    SubmitFileXLSX(constIdCafedra, formData).then((resp)=>{
-      if(resp){
+    formData.append("file", fileData);
+    SubmitFileXLSX(constIdCafedra, formData).then((resp) => {
+      appData.setLoaderAction(false);
+      if (resp) {
         basicTabData.funGetDepartment();
         basicTabData.funUpdateTable();
-        appData.setgodPopUp(true)
+        appData.setgodPopUp(true);
       }
-    })
+    });
   };
   const refSave = useRef(null);
   useEffect(() => {
@@ -53,30 +55,30 @@ export function PopUpFile(props) {
         closeMenuPopFile();
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
- 
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     setfileData(file);
     appData.setFileData(file);
   };
 
-  const clickFile = ()=>{
-    fileInputRef.current.click();  
-  }
+  const clickFile = () => {
+    fileInputRef.current.click();
+  };
 
   const setCaf = (nameKaf) => {
     setvalueCafedra(nameKaf);
     setopenListFlag(false);
   };
 
-  useEffect(()=>{
-    console.log("file", appData.fileData?.name)
-  },[])
+  useEffect(() => {
+    console.log("file", appData.fileData?.name);
+  }, []);
   return (
     <div className={styles.mainPop} ref={refSave}>
       <div className={styles.mainPop__inner}>
@@ -85,7 +87,7 @@ export function PopUpFile(props) {
             <h3>Импорт файла</h3>
           </div>
           <div onClick={closeMenuPopFile}>
-            <img src="./img/close.svg"/>
+            <img src="./img/close.svg" />
           </div>
         </div>
         <div className={styles.import_blocktwo}>
@@ -93,11 +95,11 @@ export function PopUpFile(props) {
             <input
               type="file"
               ref={fileInputRef}
-              style={{display: "none"}}
+              style={{ display: "none" }}
               onChange={handleFileChange} // Attach the onChange event here
             />
             <div>
-              <img src="./img/doc.svg"/>
+              <img src="./img/doc.svg" />
             </div>
             <div>
               <p>{fileData ? fileData.name : "Загрузите документ"}</p>
@@ -108,24 +110,42 @@ export function PopUpFile(props) {
           <div>
             <p>Выберите подразделение:</p>
           </div>
-          <div className={styles.SelectCafInput} onClick={() => setopenListFlag(!openListFlag)}>
+          <div
+            className={styles.SelectCafInput}
+            onClick={() => setopenListFlag(!openListFlag)}
+          >
             <div className={styles.SelectCafInput__inner}>
-              <input placeholder="Выберите подра..." value={valueCafedra} readOnly onClick={() => setopenListFlag(true)} />
-              <img style={{ transform: !openListFlag ? "rotate(-90deg)" : "rotate(0deg)" }} src={arrow} />
+              <input
+                placeholder="Выберите подра..."
+                value={valueCafedra}
+                readOnly
+                onClick={() => setopenListFlag(true)}
+              />
+              <img
+                style={{
+                  transform: !openListFlag ? "rotate(-90deg)" : "rotate(0deg)",
+                }}
+                src={arrow}
+              />
             </div>
           </div>
           {openListFlag && (
             <div className={styles.list}>
               <div className={styles.listInner}>
-              {cafData?.map((item) => (
-                <p key={item.id} onClick={() => setCaf(item.name)}>{item.name}</p>
-              ))}
+                {cafData?.map((item) => (
+                  <p key={item.id} onClick={() => setCaf(item.name)}>
+                    {item.name}
+                  </p>
+                ))}
               </div>
             </div>
           )}
         </div>
         <div className={styles.block4}>
-          <p>Вы уверены, что хотите импортировать новые данные в таблицу? Данное действие нельзя будет отменить!</p>
+          <p>
+            Вы уверены, что хотите импортировать новые данные в таблицу? Данное
+            действие нельзя будет отменить!
+          </p>
         </div>
         <div className={styles.blockButton}>
           <button onClick={closeMenuPopFile}>Нет</button>
