@@ -24,7 +24,7 @@ export default {
 
         const educator = await Educator.findOne({ where: { userId: user } });
 
-        const workloadColor = { color, educatorId: educator.userId };
+        const workloadColor = { color, educatorId: educator.id };
 
         const colors = [];
         for (const workloadId of workloadIds) {
