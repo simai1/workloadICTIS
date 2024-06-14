@@ -14,10 +14,9 @@ export default {
     async parseWorkload(req, res) {
         const numberDepartment = req.params.numberDepartment;
         const workbook = XLSX.readFile(req.file.path);
-        const trimString = extractFileNameWithoutExtension(req.file.originalname);
-        console.log(departments[trimString]);
-        console.log('trimString', trimString);
-        // if (departments[trimString] != numberDepartment) {
+        //const trimString = extractFileNameWithoutExtension(req.file.originalname);
+        
+        // if(departments[trimString] != numberDepartment){
         //     throw new Error('Подгружен файл, не соответствующий выбарнной кафедры');
         // }
         const recordsToDelete = await Workload.findAll({
