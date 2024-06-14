@@ -27,7 +27,6 @@ function ListKaf({
     if(el.name === "ОИД"){
       basicTabData.setselectISOid(true);
       tabPar.setDataIsOid(true);
-
     }else{
       basicTabData.setselectISOid(false);
       tabPar.setDataIsOid(false);
@@ -120,7 +119,7 @@ console.log("openLists", openLists)
             <p className={styles.NameForList}>Общеинститутские</p>
             {/* {  <p className={styles.NameForListSecond} onClick={() => addKafedra("ОИД")}>ОИД</p>} */}
            
-            <div key={"ОИД"}>
+            <div key={"ОИД"} className={styles.ListDatas}>
                 {
                   dataList[1].name === "ОИД" &&
                 
@@ -164,7 +163,7 @@ console.log("openLists", openLists)
                 
             <p className={styles.NameForList}>Кафедральные</p>
             {dataList.map((item, index) => (
-              <div key={index}>
+              <div key={index} className={styles.ListDatas}>
                  {
                   item.name !== "ОИД" &&
                 <p

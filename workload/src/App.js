@@ -267,8 +267,9 @@ function App() {
   function funGetDepartment() {
     GetDepartment().then((response) => {
       if (response && response.status === 200) {
-        // settableDepartment([{ id: 14, name: "Все" }, ...response?.data]);
+        settableDepartment([{ id: 14, name: "Все" }, ...response?.data]);
         setnameKaf("ОИД");
+        console.log("Записал")
       }
     });
   }
