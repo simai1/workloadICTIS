@@ -77,7 +77,7 @@ export async function bufferRequestToApi(buffer) {
       count++;
     }
   }
-  return count === buffer.length;
+  return count === buffer.length - 1;
 }
 /////////////////////////////////////////////////
 //! возвращение предыдущего стостояния таблицы

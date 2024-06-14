@@ -475,9 +475,12 @@ function App() {
       if (event.ctrlKey && (event.key === "s" || event.key === "ы")) {
         event.preventDefault();
         console.log("Сохранено", bufferAction);
-        bufferRequestToApi(bufferAction).then(() => {
-          setBufferAction([0]);
-          updateAlldata();
+        bufferRequestToApi(bufferAction).then((action) => {
+          console.log(action);
+          if (action) {
+            setBufferAction([0]);
+            funUpdateTable();
+          }
         });
         setSelectedTr([]);
         setChangedData(changedDataObj);

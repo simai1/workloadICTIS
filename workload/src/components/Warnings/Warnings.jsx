@@ -26,7 +26,7 @@ function Warnings(props) {
       console.log("socketConnect", data);
       getAllWarnin(appData.setAllWarningMessage);
     });
-    console.log('allWarningMessage',appData.allWarningMessage)
+    console.log("allWarningMessage", appData.allWarningMessage);
   }, []);
 
   //! закрытие модального окна при нажатии вне него
