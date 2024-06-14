@@ -269,9 +269,7 @@ function HomePage() {
 
                 {appData.metodRole[appData.myProfile?.role]?.some(
                   (el) => el === 27
-                ) &&
-                  ((basicTabData.nameKaf != "Все" && cafedral) ||
-                    (basicTabData.nameKaf === "Все" && !cafedral)) && (
+                ) && (basicTabData.nameKaf != "Все кафедры") && (
                     <div
                       style={{ marginRight: "20px" }}
                       className={styles.btnMenuBox}
