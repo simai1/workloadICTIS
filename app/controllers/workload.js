@@ -1,4 +1,4 @@
-import { AppErrorInvalid, AppErrorMissing, AppErrorNotExist } from '../utils/errors.js';
+import { AppErrorForbiddenAction, AppErrorInvalid, AppErrorMissing, AppErrorNotExist } from "../utils/errors.js";
 // eslint-disable-next-line import/no-duplicates
 import departments from '../config/departments.js';
 import Workload from '../models/workload.js';
@@ -13,7 +13,7 @@ import checkHours from '../utils/notification.js';
 import History from '../models/history.js';
 import sendMail from '../services/email.js';
 import { Op, Sequelize } from 'sequelize';
-import Color from "../models/color.js";
+import Color from '../models/color.js';
 
 const getIds = modelsArr => {
     const arr = [];
@@ -207,7 +207,7 @@ export default {
         res.json(workloadsDto);
     },
 
-    async splitRow({ body: { ids, n }, user}, res) {
+    async splitRow({ body: { ids, n }, user }, res) {
         if (!ids || !Array.isArray(ids) || ids.length === 0) {
             throw new Error('Укажите идентификаторы нагрузок для разделения');
         }
@@ -222,6 +222,10 @@ export default {
 
         // Проверяем существование всех нагрузок
         const existingWorkloads = await Workload.findAll({ where: { id: ids } });
+
+        for (const workload of existingWorkloads) {
+            if (workload.isSplit) throw new AppErrorForbiddenAction();
+        }
 
         if (existingWorkloads.length !== ids.length) {
             const existingIds = existingWorkloads.map(workload => workload.id);
