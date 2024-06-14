@@ -19,7 +19,7 @@ export default {
         console.log(departments[trimString])
         // if(departments[trimString] != numberDepartment){
         //     throw new Error('Подгружен файл, не соответствующий выбарнной кафедры');
-        // }
+        // }s
         const recordsToDelete = await Workload.findAll({
             where: {
                 department: numberDepartment

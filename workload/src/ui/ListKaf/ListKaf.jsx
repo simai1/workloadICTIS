@@ -24,29 +24,22 @@ function ListKaf({
     }
   };
   const addKafedra = (el) => {
-    if(el === "ОИД"){
-      basicTabData.setnameKaf("ОИД")
-      basicTabData.funUpdateTable(0);
+    if(el.name === "ОИД"){
       basicTabData.setselectISOid(true);
       tabPar.setDataIsOid(true);
-      setactiveList(!activeList);
-      appData.setSelectedComponent("Disciplines");
-      tabPar.setSelectedFilter("Все Дисциплины");
-      setTableMode("cathedrals");
+
     }else{
-      console.log(el);
-      basicTabData.setnameKaf(el.name);
-      setactiveList(!activeList);
       basicTabData.setselectISOid(false);
       tabPar.setDataIsOid(false);
-      setTableMode("cathedrals");
-      basicTabData.funUpdateTable(el.id);
-      tabPar.setSelectedFilter("Все Дисциплины");
-      setopenLists("");
-      appData.setSelectedComponent("Disciplines");
     }
-
-   
+    console.log("selectEl", el)
+    basicTabData.funUpdateTable(el.id);
+    basicTabData.setnameKaf(el.name)
+    setactiveList(!activeList);
+    setopenLists("");
+    setTableMode("cathedrals");
+    tabPar.setSelectedFilter("Все Дисциплины");
+    appData.setSelectedComponent("Disciplines");
   };
 
   const refDiv = useRef(null);
@@ -74,6 +67,10 @@ function ListKaf({
     basicTabData.setnameKaf(item.name);
     appData.setSelectedComponent("History");
   };
+
+  useEffect(()=>{
+console.log("openLists", openLists)
+  },[openLists])
 
   return (
     <div ref={refDiv} className={styles.List}>
@@ -121,10 +118,55 @@ function ListKaf({
         {activeList && basicTabData.tableDepartment.length !== 1 && (
           <div className={styles.ListData}>
             <p className={styles.NameForList}>Общеинститутские</p>
-            {  <p className={styles.NameForListSecond} onClick={() => addKafedra("ОИД")}>ОИД</p>}
+            {/* {  <p className={styles.NameForListSecond} onClick={() => addKafedra("ОИД")}>ОИД</p>} */}
+           
+            <div key={"ОИД"}>
+                {
+                  dataList[1].name === "ОИД" &&
+                
+                <p
+                  className={styles.NameForListSecond}
+                  onClick={() => {
+                    if (dataList[1].blocked) {
+                      if (
+                        appData.metodRole[appData.myProfile?.role]?.some(
+                          (el) => el === 28
+                        )
+                      ) {
+                        setopenList(0);
+                      }
+                    } else {
+                      addKafedra(dataList[1]);
+                    }
+                  }}
+                  style={dataList[1].blocked ? { color: "#E81414" } : null}
+                >
+                  {dataList[1].name}
+                </p>
+                }
+                {dataList[1].blocked && openLists === 0 && (
+                  <div className={styles.ListVRot}>
+                    <p
+                      className={styles.NameForList}
+                      onClick={() => addKafedra(dataList[1])}
+                    >
+                      Нагрузка
+                    </p>
+                    <p
+                      className={styles.NameForList}
+                      onClick={() => clickHistory(dataList[1])}
+                    >
+                      История
+                    </p>
+                  </div>
+                )}
+              </div>
+                
             <p className={styles.NameForList}>Кафедральные</p>
             {dataList.map((item, index) => (
               <div key={index}>
+                 {
+                  item.name !== "ОИД" &&
                 <p
                   className={styles.NameForListSecond}
                   onClick={() => {
@@ -144,7 +186,7 @@ function ListKaf({
                 >
                   {item.name}
                 </p>
-                {item.blocked && openLists === index && (
+                } {item.blocked && openLists === index && (
                   <div className={styles.ListVRot}>
                     <p
                       className={styles.NameForList}
@@ -160,6 +202,7 @@ function ListKaf({
                     </p>
                   </div>
                 )}
+            
               </div>
             ))}
           </div>

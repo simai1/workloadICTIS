@@ -269,7 +269,7 @@ function HomePage() {
 
                 {appData.metodRole[appData.myProfile?.role]?.some(
                   (el) => el === 27
-                ) && (basicTabData.nameKaf != "Все кафедры") && (
+                ) && (basicTabData.nameKaf != "Все") && (!blockTable) && (appData.selectedComponent !== "History") &&(
                     <div
                       style={{ marginRight: "20px" }}
                       className={styles.btnMenuBox}
