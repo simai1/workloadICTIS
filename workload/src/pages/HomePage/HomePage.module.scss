@@ -225,15 +225,59 @@ body {
   }
 
   .nosavedData {
-    position: absolute;
+    position: fixed;
+    width: 100%;
+    height: 100%;
     z-index: 400;
-    top: 50%;
-    left: 42%;
-    background-color: #fff;
-    padding: 20px;
+    background-color: #4d4d4d93;
     @include boxShadow;
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    font-weight: 500;
+
+    .nosavedDataInner {
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      width: 300px;
+      height: 220px;
+      background-color: #fff;
+    }
+    .loader {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 90px;
+      height: 90px;
+      padding: 10px;
+      margin-bottom: 20px;
+
+      .loaderInner {
+        width: 100%;
+        height: 100%;
+        border: 6px solid var(--blue-color);
+        border-bottom-color: transparent;
+        border-radius: 50%;
+        display: inline-block;
+        box-sizing: border-box;
+        animation: rotation 1s linear infinite;
+      }
+
+      @keyframes rotation {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    }
     button {
       @include button(var(--blue-color), #fff, 10px, 10px);
       margin-top: 10px;

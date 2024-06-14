@@ -106,8 +106,6 @@ function Table(props) {
     setBorderState(item.id);
   };
 
-  console.log("props.historyData", props.historyData);
-
   return (
     <div>
       <table className={styles.table} ref={props.tableRef}>

@@ -59,8 +59,13 @@ function TableHistory(props) {
       const fixHistory = funHistoryFix(hd);
       console.log("fixHistory", fixHistory);
       sethistoryData(fixHistory);
+      visibleDataPar.setStartData(0);
     });
-  }, [basicTabData.historyChanges, tabPar.perenesenAction]);
+  }, [
+    basicTabData.historyChanges,
+    tabPar.perenesenAction,
+    basicTabData.nameKaf,
+  ]);
 
   //! функция контекстного меню для перекидывания перенесенных нагрузок
   const funPerenos = () => {
