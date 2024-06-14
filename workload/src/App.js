@@ -107,7 +107,6 @@ function App() {
   const [actionUpdTabTeach, setActionUpdTabTeach] = useState(false); // при изменении обновляется таблицы преподавателей
   const [tableDepartment, settableDepartment] = useState([]);
   const [selectISOid, setselectISOid] = useState(true);
-  // const [nameKaf, setnameKaf] = useState("");
   const [nameKaf, setnameKaf] = useState("ОИД");
   const [historyChanges, setHistoryChanges] = useState([]);
 

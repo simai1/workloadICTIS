@@ -15,10 +15,11 @@ export default {
         const numberDepartment  = req.params.numberDepartment;
         const workbook = XLSX.readFile(req.file.path);
         const trimString = extractFileNameWithoutExtension(req.file.originalname);
+        console.log('trimString', trimString)
         console.log(departments[trimString])
-        if(departments[trimString] != numberDepartment){
-            throw new Error('Подгружен файл, не соответствующий выбарнной кафедры');
-        }
+        // if(departments[trimString] != numberDepartment){
+        //     throw new Error('Подгружен файл, не соответствующий выбарнной кафедры');
+        // }
         const recordsToDelete = await Workload.findAll({
             where: {
                 department: numberDepartment
