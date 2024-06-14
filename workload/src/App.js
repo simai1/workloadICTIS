@@ -19,6 +19,7 @@ import {
   getAllColors,
   getOffers,
   apiGetHistory,
+  getOffersLecturer,
 } from "./api/services/ApiRequest";
 
 import {
@@ -42,7 +43,7 @@ function App() {
   //! в файле RoleMetods можно посмотреть назание метода и их id
   const metodRole = {
     METHODIST: [1, 3, 4, 8, 9, 10, 13, 14, 17, 20, 21, 25, 26, 27, 28, 31],
-    LECTURER: [2, 8, 15, 18, 19, 22, 24],
+    LECTURER: [2, 8, 15, 18, 19, 22, 24, 34],
     DEPARTMENT_HEAD: [
       2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 22, 25, 26, 27, 30, 31, 32, 33,
       34,
@@ -124,6 +125,7 @@ function App() {
     setAllCommentsData,
     funUpdateAllComments,
     funUpdateOffers,
+    funUpdateOffersLecturer,
     funUpdateTable,
     funUpdateFastenedData,
     funUpdateAllColors,
@@ -418,6 +420,11 @@ function App() {
       // получение предложений
       funUpdateOffers();
     }
+
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 19)) {
+      // получение предложений для лектора
+      funUpdateOffersLecturer();
+    }
     // получение закрепленных строк
     funUpdateFastenedData();
     // получение выделенных строк
@@ -457,7 +464,7 @@ function App() {
     setOnCheckBoxAll(false);
   }, [dataIsOid, selectedFilter, workloadDataFix, selectedTable, fastenedData]);
 
-  //! обновляем вертуальный скролл при переходе на другуюс таблицу
+  //! обновляем вертуальный скролл при переходе на другую таблицу
   useEffect(() => {
     setStartData(0);
     const table = document.querySelector("table");

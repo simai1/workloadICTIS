@@ -45,7 +45,11 @@ function Offers(props) {
         setOfferWindowShow(false);
         // обновляем данные таблицы и предложений
         basicTabData.funUpdateOffers();
-        basicTabData.funUpdateTable(basicTabData.tableDepartment.find((el) => el.name === basicTabData.nameKaf)?.id);
+        basicTabData.funUpdateTable(
+          basicTabData.tableDepartment.find(
+            (el) => el.name === basicTabData.nameKaf
+          )?.id
+        );
       });
     }
     //! принимаем от дирекции
@@ -55,7 +59,11 @@ function Offers(props) {
         setOfferWindowShow(false);
         // обновляем данные таблицы и предложений
         basicTabData.funUpdateOffers();
-        basicTabData.funUpdateTable(basicTabData.tableDepartment.find((el) => el.name === basicTabData.nameKaf)?.id);
+        basicTabData.funUpdateTable(
+          basicTabData.tableDepartment.find(
+            (el) => el.name === basicTabData.nameKaf
+          )?.id
+        );
       });
     }
   };
@@ -67,14 +75,18 @@ function Offers(props) {
         <div className={styles.offerEducator}>
           {offerData.offer.educator.name}
         </div>
-        <div className={styles.offerButton}>
-          <button className={styles.left} onClick={() => reject(offerData)}>
-            Отклонить
-          </button>
-          <button className={styles.rigth} onClick={() => accept(offerData)}>
-            Принять
-          </button>
-        </div>
+        {appData.metodRole[appData.myProfile?.role]?.some(
+          (el) => el === 17
+        ) && (
+          <div className={styles.offerButton}>
+            <button className={styles.left} onClick={() => reject(offerData)}>
+              Отклонить
+            </button>
+            <button className={styles.rigth} onClick={() => accept(offerData)}>
+              Принять
+            </button>
+          </div>
+        )}
       </div>
     );
   };
@@ -95,45 +107,45 @@ function Offers(props) {
 
   return (
     <>
-    { (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 34)) &&
-      <div
-      ref={offerRef}
-      className={styles.Offers}
-      onClick={(e) => e.stopPropagation()}
-    >
-      {props.offerData.length > 0 && (
-        <div>
-          <div className={styles.circle} onClick={circleClick}>
-            {props.offerData.length}
-          </div>
-        </div>
-      )}
-      {offerWindowShow && (
-        <div className={styles.containerOffer}>
-          {onAllOffersShow ? (
-            <div className={styles.offerScroll}>
-              {props.offerData.map((item) => offerRender(item))}
-            </div>
-          ) : (
-            offerRender(props.offerData[0])
-          )}
-          {props.offerData.length > 1 && (
-            <div className={styles.btn_left} onClick={allOffersClick}>
-              <span className={onAllOffersShow ? styles.blue : null}>
+      {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 34) && (
+        <div
+          ref={offerRef}
+          className={styles.Offers}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {props.offerData.length > 0 && (
+            <div>
+              <div className={styles.circle} onClick={circleClick}>
                 {props.offerData.length}
-              </span>
-              <LogoAllComment
-                className={onAllOffersShow ? styles.svg : null}
-                height={10}
-                width={15}
-              />
+              </div>
+            </div>
+          )}
+          {offerWindowShow && (
+            <div className={styles.containerOffer}>
+              {onAllOffersShow ? (
+                <div className={styles.offerScroll}>
+                  {props.offerData.map((item) => offerRender(item))}
+                </div>
+              ) : (
+                offerRender(props.offerData[0])
+              )}
+              {props.offerData.length > 1 && (
+                <div className={styles.btn_left} onClick={allOffersClick}>
+                  <span className={onAllOffersShow ? styles.blue : null}>
+                    {props.offerData.length}
+                  </span>
+                  <LogoAllComment
+                    className={onAllOffersShow ? styles.svg : null}
+                    height={10}
+                    width={15}
+                  />
+                </div>
+              )}
             </div>
           )}
         </div>
       )}
-    </div>
-    }
-   </>
+    </>
   );
 }
 
