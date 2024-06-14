@@ -1,16 +1,16 @@
 import Educator from '../models/educator.js';
 import EducatorDto from '../dtos/educator-dto.js';
 import EducatorProfileDto from '../dtos/educator-profile-dto.js';
-import { AppErrorAlreadyExists, AppErrorMissing, AppErrorNotExist } from '../utils/errors.js';
+import { AppErrorAlreadyExists, AppErrorForbiddenAction, AppErrorMissing, AppErrorNotExist } from '../utils/errors.js';
 import { map as mapPositions } from '../config/position.js';
 import { map as mapTypeOfEmployments } from '../config/type-of-employment.js';
-import associateEducator from "../utils/associate-educator.js";
+import associateEducator from '../utils/associate-educator.js';
 import departments from '../config/departments.js';
 import Workload from '../models/workload.js';
 import SummaryWorkload from '../models/summary-workload.js';
 import WorkloadProfileDto from '../dtos/workload-profile-dto.js';
 import EducatorListDto from '../dtos/educator-list-dto.js';
-import User from "../models/user.js";
+import User from '../models/user.js';
 
 export default {
     async getAll(params, res) {
@@ -53,7 +53,7 @@ export default {
                 educatorId,
             },
         });
-        console.log(workloads.length)
+        console.log(workloads.length);
         const workloadsDto = [];
         let flag;
         for (const workload of workloads) {
@@ -67,7 +67,7 @@ export default {
                     workloadDto.hoursSecondPeriod += workload.period === 2 ? workload.hours : 0;
                     workloadDto.hoursWithoutPeriod += workload.period === null ? workload.hours : 0;
                     flag = false;
-                    console.log(workloadDto)
+                    console.log(workloadDto);
                     break;
                 }
             }
@@ -134,8 +134,12 @@ export default {
         res.json(mapTypeOfEmployments);
     },
 
-    async deleteEducator({ params: { educatorId } }, res) {
+    async deleteEducator({ params: { educatorId }, user }, res) {
         if (!educatorId) throw new AppErrorMissing('educatorId');
+
+        const thisEducator = await Educator.findOne({ where: { userId: user } });
+
+        if (educatorId === thisEducator.id) throw AppErrorForbiddenAction();
 
         const educator = await Educator.findByPk(educatorId);
 
