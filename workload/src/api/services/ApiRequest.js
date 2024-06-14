@@ -151,6 +151,17 @@ export const getOffers = async () => {
   }
 };
 
+//! получение предложений для лектора
+export const getOffersLecturer = async () => {
+  try {
+    const response = await http.get(`${server}/offers/getAllOffersByLecture`);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
 //! запрос на добавление преподавателя к нагрузке
 export const addEducatorWorkload = async (data) => {
   console.log("Добавление преподавателя ", data);
@@ -487,5 +498,3 @@ export const EditTeacher = async (idTeacher, data) => {
     throw error;
   }
 };
-
-

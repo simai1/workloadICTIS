@@ -53,6 +53,16 @@ $heightCell: 150px;
   overflow: auto;
   padding-left: 64px;
   margin-right: 52px;
+  background-color: #fff;
+  &::after {
+    content: "";
+    background-color: var(--bgraund);
+    width: 64px;
+    height: 100%;
+    position: absolute;
+    z-index: 1;
+    left: 0px;
+  }
 
   .table {
     width: 100vw;
@@ -207,11 +217,9 @@ $heightCell: 150px;
 
     th,
     td {
-      // padding: 17px 20px;
       min-width: 160px;
       max-width: 160px;
       box-sizing: border-box;
-      // border: 1px solid #a6a6a6;
     }
 
     .trBlocked {

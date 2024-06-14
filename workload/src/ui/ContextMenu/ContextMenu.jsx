@@ -65,7 +65,8 @@ const ContextMenu = (props) => {
 
   //! Выбор преподавателя
   const selectedEducator = (id) => {
-    appData.metodRole[appData.myProfile?.role]?.some((el) => el === 9) && tabPar.setContextMenuShow(!tabPar.contextMenuShow);
+    appData.metodRole[appData.myProfile?.role]?.some((el) => el === 9) &&
+      tabPar.setContextMenuShow(!tabPar.contextMenuShow);
     setMenuShow("");
 
     const data = {
@@ -108,7 +109,6 @@ const ContextMenu = (props) => {
   //! функция для подтверждения или отмены отправки предложения
   const onClickOfferPopup = (action) => {
     const id = popupOffer;
-    console.log("Я вызвал вот Action", action)
     if (action) {
       //! отправляем запрос на добавление предложения
       EducatorLK(id).then((Educator) => {
@@ -121,8 +121,10 @@ const ContextMenu = (props) => {
         createOffer(offer).then(() => {
           setPopupOffer(null);
           tabPar.setContextMenuShow(false);
-          appData.metodRole[appData.myProfile?.role]?.some((el) => el === 17) &&   basicTabData.funUpdateOffers();
-        
+          appData.metodRole[appData.myProfile?.role]?.some((el) => el === 17) &&
+            basicTabData.funUpdateOffers();
+          appData.metodRole[appData.myProfile?.role]?.some((el) => el === 19) &&
+            basicTabData.funUpdateOffersLecturer();
         });
       });
     } else {
@@ -292,8 +294,7 @@ const ContextMenu = (props) => {
         tabPar.setFastenedData(mass);
         tabPar.setContextMenuShow(false);
         tabPar.setSelectedTr([]);
-        basicTabData.funUpdateTable()
-
+        basicTabData.funUpdateTable();
       });
     }
   };
@@ -358,14 +359,14 @@ const ContextMenu = (props) => {
               img={false}
             />
           )}
-          {/* {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 31)&& */}
-          
-            <MenuPop btnText={"Закрепить"} func={pinaCell} img={false} />
-          {/* } */}
-          {/* {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 31)&& */}
-            <MenuPop btnText={"Открепить"} func={unPinaCell} img={false} />
-          {/* } */}
-       
+        {/* {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 31)&& */}
+
+        <MenuPop btnText={"Закрепить"} func={pinaCell} img={false} />
+        {/* } */}
+        {/* {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 31)&& */}
+        <MenuPop btnText={"Открепить"} func={unPinaCell} img={false} />
+        {/* } */}
+
         {appData.metodRole[appData.myProfile?.role]?.some(
           (el) => el === 11
         ) && (
