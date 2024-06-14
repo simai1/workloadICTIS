@@ -208,10 +208,14 @@ function HomePage() {
             <button onClick={() => setConfirmationSave(false)}>Закрыть</button>
           </div>
         )}
-        {appData.loaderAction && (
+        {!appData.loaderAction && (
           <div className={styles.nosavedData}>
-            <span>Загружаем данные...</span>
-            <div>Loading...</div>
+            <div className={styles.nosavedDataInner}>
+              <div className={styles.loader}>
+                <span className={styles.loaderInner}></span>
+              </div>
+              <span>Загружаем данные...</span>
+            </div>
           </div>
         )}
         <div className={styles.header}>
@@ -525,13 +529,11 @@ function HomePage() {
             />
           </div>
         </div>
-        {
-          appData.selectedComponent !== "Teachers" && 
+        {appData.selectedComponent !== "Teachers" && (
           <div className={styles.countSet}>
             Кол-во выделенных нагрузок: {new Set(tabPar.selectedTr).size}
           </div>
-        }
-       
+        )}
       </div>
       {filePopUp && (
         <PopUpFile
