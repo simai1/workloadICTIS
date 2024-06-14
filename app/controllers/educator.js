@@ -130,10 +130,12 @@ export default {
         res.json(mapTypeOfEmployments);
     },
 
-    async deleteEducator({ params: { educatorId } }, res) {
+    async deleteEducator(req, { params: { educatorId } }, res) {
         if (!educatorId) throw new AppErrorMissing('educatorId');
 
         const educator = await Educator.findByPk(educatorId);
+
+        if(educator.userId === req.user) throw new Error('Вы не можете удалить сами себя!');
 
         if (!educator) {
             return res.status(404).json('Educator not found');
