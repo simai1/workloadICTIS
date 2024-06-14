@@ -208,7 +208,7 @@ function HomePage() {
             <button onClick={() => setConfirmationSave(false)}>Закрыть</button>
           </div>
         )}
-        {!appData.loaderAction && (
+        {appData.loaderAction && (
           <div className={styles.nosavedData}>
             <div className={styles.nosavedDataInner}>
               <div className={styles.loader}>
