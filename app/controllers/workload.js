@@ -522,10 +522,8 @@ export default {
         const role = checkUser.role;
         const usableDepartments = [];
 
-        // const queryResult = await sequelize.query('SELECT DISTINCT department FROM workloads WHERE department <> 13 ORDER BY department ASC;');
         if (role === 2 || role === 3 || role === 5) {
             const educator = await Educator.findOne({ where: { userId } });
-            console.log(educator);
             const department = educator.department;
             const workload = await Workload.findOne({ where: { department } });
             if (workload?.isBlocked === true) {
@@ -543,11 +541,6 @@ export default {
             }
         } else {
             const departments = await Workload.findAll({
-                where: {
-                    department: {
-                        [Op.ne]: 0,
-                    },
-                },
                 attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('department')), 'department']],
                 order: [['department', 'ASC']],
             });
