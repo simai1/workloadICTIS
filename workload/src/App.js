@@ -42,7 +42,7 @@ function App() {
   //! в файле RoleMetods можно посмотреть назание метода и их id
   const metodRole = {
     METHODIST: [1, 3, 4, 8, 9, 10, 13, 14, 17, 20, 21, 25, 26, 27, 28, 31],
-    LECTURER: [2, 8, 15, 18, 22, 24],
+    LECTURER: [2, 8, 15, 18, 19, 22, 24],
     DEPARTMENT_HEAD: [
       2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 22, 25, 26, 27, 30, 31, 32, 33,
       34,
@@ -233,6 +233,13 @@ function App() {
   function funUpdateOffers() {
     getOffers().then((data) => {
       console.log("предложения", data);
+      setAllOffersData(data);
+    });
+  }
+  //! функция обновления предложений от Лектора (чтобы он видел свои предложения)
+  function funUpdateOffersLecturer() {
+    getOffersLecturer().then((data) => {
+      console.log("предложения лектора", data);
       setAllOffersData(data);
     });
   }
