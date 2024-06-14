@@ -41,10 +41,18 @@ function App() {
 
   //! в файле RoleMetods можно посмотреть назание метода и их id
   const metodRole = {
-    METHODIST: [1, 3, 4, 8, 9, 10, 13, 14, 17, 20, 21, 25, 26, 27, 28, 31, 34, 35],
+    METHODIST: [
+      1, 3, 4, 8, 9, 10, 13, 14, 17, 20, 21, 25, 26, 27, 28, 31, 34, 35,
+    ],
     LECTURER: [2, 8, 15, 18, 22, 24],
-    DEPARTMENT_HEAD: [2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 22, 25, 26, 27, 30, 31, 32, 33 ],
-    DIRECTORATE: [1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31, 34, 35],
+    DEPARTMENT_HEAD: [
+      2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 22, 25, 26, 27, 30, 31, 32, 33,
+      34,
+    ],
+    DIRECTORATE: [
+      1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
+      34, 35,
+    ],
     EDUCATOR: [15, 24],
   };
   // appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)
@@ -88,7 +96,7 @@ function App() {
     setLoaderAction,
   };
 
-  // ! параметры таблицы
+  //! параметры таблицы
   const [tableHeaders, setTableHeaders] = useState(headers);
   const [workloadData, setWorkloadData] = useState([]); // данные с бд нагрузок
   const [workloadDataFix, setWorkloadDataFix] = useState([]); //данные с убранным массиовм преподавателя
@@ -138,7 +146,7 @@ function App() {
   const [coloredData, setColoredData] = useState([]); // выделенные цветом
   const [fastenedData, setFastenedData] = useState([]); // закрепленные строки (храним их id)
   const [selectedTable, setSelectedTable] = useState("Disciplines");
-  const [dataIsOid, setDataIsOid] = useState(true); // состояние при котором открываются общеинститутские или кафедральные
+  // const [dataIsOid, setDataIsOid] = useState(true); // состояние при котором открываются общеинститутские или кафедральные
   const [selectedFilter, setSelectedFilter] = useState("Все дисциплины"); // текст в FiltredRows
   const [selectedTr, setSelectedTr] = useState([]); //выбранные tr
   const [onCheckBoxAll, setOnCheckBoxAll] = useState(false); //выбранные tr
@@ -168,7 +176,8 @@ function App() {
   };
   //! для виртуального скролла
   const [startData, setStartData] = useState(0); // индекс элемента с которого показывается таблица
-  const visibleData = filtredData.length > 10 ? 10 : filtredData.length; // кооличество данных которые мы видим в таблице
+  let visibleData = filtredData.length > 10 ? 10 : filtredData.length; // кооличество данных которые мы видим в таблице
+
   const heightTd = 150; // высота td
 
   const visibleDataPar = {
@@ -179,8 +188,8 @@ function App() {
   };
 
   const tabPar = {
-    dataIsOid,
-    setDataIsOid,
+    // dataIsOid,
+    // setDataIsOid,
     selectedTable,
     setSelectedTable,
     selectedTr,
@@ -396,7 +405,6 @@ function App() {
         funUpdateTable(14);
       }
     }
-    // получаем данные таблицы
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 20)) {
       // получаем все комментарии
       funUpdateAllComments();
@@ -429,7 +437,9 @@ function App() {
   //! при переходе с кафедральных на общеинституские и обратно фильтруем основные
   //! фильтруем по FiltredRows
   useEffect(() => {
-    const splitData = funSplitData(workloadDataFix, dataIsOid);
+    // const splitData = funSplitData(workloadDataFix, dataIsOid);
+    const splitData = [...workloadDataFix];
+
     const filterSelected = funFilterSelected(
       splitData,
       selectedFilter,
@@ -437,12 +447,13 @@ function App() {
       changedData,
       fastenedData
     );
-    // setFiltredData(filterSelected);
-    //!если что тут раскоментить
-    setFiltredData(funSortedFastened(filterSelected, fastenedData));
+    if (filterSelected) {
+      setFiltredData(funSortedFastened(filterSelected, fastenedData));
+    }
+
     setSelectedTr([]);
     setOnCheckBoxAll(false);
-  }, [dataIsOid, selectedFilter, workloadDataFix, selectedTable, fastenedData]);
+  }, [selectedFilter, workloadDataFix, selectedTable, fastenedData]);
 
   //! обновляем вертуальный скролл при переходе на другуюс таблицу
   useEffect(() => {
@@ -451,17 +462,15 @@ function App() {
     if (table) {
       table.scrollIntoView(true);
     }
-  }, [dataIsOid, selectedFilter, selectedTable]);
-
-  // useEffect(() => {
-  //   setFiltredData([...workloadDataFix]);
-  // }, [workloadDataFix]);
+  }, [selectedFilter, selectedTable]);
 
   //! при изменении закрпеленных перемещаем их наверх и сортируем массив
-  useEffect(() => {
-    const fd = funSortedFastened(filtredData, fastenedData);
-    setFiltredData(fd);
-  }, [fastenedData, filtredData]);
+  //? ЕСЛИ ЧТО РАСКОМЕНТИТЬ
+  // useEffect(() => {
+  //   const fd = funSortedFastened(filtredData, fastenedData);
+  //   console.log("fd", fd);
+  //   setFiltredData(fd);
+  // }, [fastenedData, filtredData]);
 
   //! следим за нажатием ctrl + s для сохранения изменений
   useEffect(() => {

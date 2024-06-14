@@ -68,6 +68,7 @@ export function funSortedFastened(data, fastenedData) {
       }
       return 0; // Не изменять порядок, если оба элемента в secondArray или оба не в secondArray
     });
+
     return sortedArray;
   } else {
     return data;

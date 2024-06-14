@@ -54,6 +54,16 @@ $heightCell: 150px;
   padding-left: 64px;
   margin-right: 52px;
 
+  &::after {
+    content: "";
+    background-color: var(--bgraund);
+    width: 64px;
+    height: 100%;
+    position: absolute;
+    z-index: 1;
+    left: 0px;
+  }
+
   .contextShow {
     position: absolute;
     z-index: 100;
