@@ -52,7 +52,7 @@ function HomePage() {
   const [departments, setdepartments] = useState([]);
   const [kafedralIsOpen, setKafedralIsOpen] = useState(false);
   const [cafedral, setCafedral] = useState(false);
-
+  const [blockTable, setBlockTable ] = useState(false);
   const handleButtonClick = () => {
     setEducatorIdforLk("");
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 28)) {
@@ -199,6 +199,21 @@ function HomePage() {
     table.scrollIntoView(true);
   };
 
+  //! ФУНКЦИЯ ПРОВЕРКИ НА БЛОКИРОВАННЫЕ 
+  const checkBlocked = () =>{
+    let blocked = false;
+    if(appData.selectedComponent === "History" || appData.selectedComponent === "Teachers"){
+      return false;
+    }
+    if(appData.selectedComponent != "History" || appData.selectedComponent != "Teachers") {
+      basicTabData.filtredData.map((el) =>el.isBlocked === true ? blocked = true : blocked = false)
+      return blocked;
+    }
+  }
+  useEffect(()=>{
+    setBlockTable(checkBlocked)
+  }, [basicTabData.tableDepartment, basicTabData.filtredData, appData.selectedComponent,  tabPar.setSelectedFilter])
+
   return (
     <Layout>
       <div className={styles.HomePage}>
@@ -329,7 +344,7 @@ function HomePage() {
                     tabPar.setDataIsOid(false);
                     basicTabData.setselectISOid(false);
                   }}
-                  text="Преподователи"
+                  text="Преподаватели"
                 />
               )}
               {appData.metodRole[appData.myProfile?.role]?.some(
@@ -369,10 +384,7 @@ function HomePage() {
               />
             </div>
           </div>
-          {basicTabData.tableDepartment?.find(
-            (el) => el.name === basicTabData.nameKaf
-          )?.blocked &&
-            appData.selectedComponent != "History" && (
+          {blockTable && (
               <div className={styles.blockedTextTable}>
                 <div>
                   <img src="./img/errorTreangle.svg" />
@@ -394,45 +406,10 @@ function HomePage() {
                 (appData.selectedComponent === "Disciplines" ||
                   appData.selectedComponent === "History") && (
                   <>
-                    <Button
-                      Bg={!kafedralIsOpen ? "#3B28CC" : "#efedf3"}
-                      textColot={kafedralIsOpen ? "#000000" : "#efedf3"}
-                      text="Общеинститутские"
-                      onClick={() => {
-                        setTableMode("genInstitute");
-                        EditTableData("genInstitute");
-                        basicTabData.setselectISOid(true);
-                        tabPar.setDataIsOid(true);
-                        basicTabData.funUpdateTable("0");
-                        setKafedralIsOpen(false);
-                        basicTabData.setnameKaf("Все");
-                        tabPar.setSelectedFilter("Все Дисциплины");
-                        appData.setSelectedComponent("Disciplines");
-                        setCafedral(false);
-                      }}
-                    />
-                    <Button
-                      Bg={kafedralIsOpen ? "#3B28CC" : "#efedf3"}
-                      textColot={!kafedralIsOpen ? "#000000" : "#efedf3"}
-                      text="Кафедральные"
-                      onClick={() => {
-                        basicTabData.funUpdateTable("14");
-                        tabPar.setDataIsOid(false);
-                        basicTabData.setselectISOid(false);
-                        setKafedralIsOpen(true);
-                        basicTabData.setnameKaf("Все");
-                        tabPar.setSelectedFilter("Все Дисциплины");
-                        appData.setSelectedComponent("Disciplines");
-                        setCafedral(true);
-                      }}
-                    />
-                    {!basicTabData.selectISOid && (
                       <ListKaf
                         dataList={departments}
-                        defaultValue={"Все"}
                         setTableMode={setTableMode}
                       />
-                    )}
                     {appData.selectedComponent === "History" && (
                       <div className={styles.perenesen}>
                         <button
@@ -466,8 +443,9 @@ function HomePage() {
                   />
                 )}
               </div>
-              {(appData.selectedComponent === "Disciplines" ||
-                appData.selectedComponent === "History") && (
+              
+              {((appData.selectedComponent === "Disciplines" ||
+                appData.selectedComponent === "History")) &&(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 35)) && (
                 <div className={styles.import}>
                   <button onClick={OpenPoPUpFile}>
                     <p>Импорт файла</p>

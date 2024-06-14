@@ -24,16 +24,29 @@ function ListKaf({
     }
   };
   const addKafedra = (el) => {
-    console.log(el);
-    basicTabData.setnameKaf(el.name);
-    setactiveList(!activeList);
-    basicTabData.setselectISOid(false);
-    tabPar.setDataIsOid(false);
-    setTableMode("cathedrals");
-    basicTabData.funUpdateTable(el.id);
-    tabPar.setSelectedFilter("Все Дисциплины");
-    setopenLists("");
-    appData.setSelectedComponent("Disciplines");
+    if(el === "ОИД"){
+      basicTabData.setnameKaf("ОИД")
+      basicTabData.funUpdateTable(0);
+      basicTabData.setselectISOid(true);
+      tabPar.setDataIsOid(true);
+      setactiveList(!activeList);
+      appData.setSelectedComponent("Disciplines");
+      tabPar.setSelectedFilter("Все Дисциплины");
+      setTableMode("cathedrals");
+    }else{
+      console.log(el);
+      basicTabData.setnameKaf(el.name);
+      setactiveList(!activeList);
+      basicTabData.setselectISOid(false);
+      tabPar.setDataIsOid(false);
+      setTableMode("cathedrals");
+      basicTabData.funUpdateTable(el.id);
+      tabPar.setSelectedFilter("Все Дисциплины");
+      setopenLists("");
+      appData.setSelectedComponent("Disciplines");
+    }
+
+   
   };
 
   const refDiv = useRef(null);
@@ -75,8 +88,8 @@ function ListKaf({
           <input
             readOnly
             style={{
-              backgroundColor: !basicTabData.selectISOid ? "#3b28cc" : "#fff",
-              color: !basicTabData.selectISOid ? "#fff" : "#000",
+              backgroundColor: !activeList ? "#3b28cc" : "#fff",
+              color: !activeList ? "#fff" : "#000",
             }}
             onClick={() => setactiveList(!activeList)}
             value={basicTabData.nameKaf}
@@ -87,7 +100,7 @@ function ListKaf({
             onClick={() => setactiveList(!activeList)}
             className={styles.arrowBot}
           >
-            {!basicTabData.selectISOid && (
+            {!activeList && (
               <img
                 src={arrowWhite}
                 style={{
@@ -95,7 +108,7 @@ function ListKaf({
                 }}
               />
             )}
-            {activeList && (
+            {activeList &&(
               <img
                 src={arrowBlack}
                 style={{
@@ -105,12 +118,15 @@ function ListKaf({
             )}
           </span>
         </div>
-        {activeList && (
+        {activeList && basicTabData.tableDepartment.length !== 1 && (
           <div className={styles.ListData}>
+            <p className={styles.NameForList}>Общеинститутские</p>
+            {  <p className={styles.NameForListSecond} onClick={() => addKafedra("ОИД")}>ОИД</p>}
+            <p className={styles.NameForList}>Кафедральные</p>
             {dataList.map((item, index) => (
               <div key={index}>
                 <p
-                  className={styles.NameForList}
+                  className={styles.NameForListSecond}
                   onClick={() => {
                     if (item.blocked) {
                       if (

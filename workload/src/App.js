@@ -19,7 +19,6 @@ import {
   getAllColors,
   getOffers,
   apiGetHistory,
-  getOffersLecturer,
 } from "./api/services/ApiRequest";
 
 import {
@@ -42,16 +41,10 @@ function App() {
 
   //! в файле RoleMetods можно посмотреть назание метода и их id
   const metodRole = {
-    METHODIST: [1, 3, 4, 8, 9, 10, 13, 14, 17, 20, 21, 25, 26, 27, 28, 31],
-    LECTURER: [2, 8, 15, 18, 19, 22, 24, 34],
-    DEPARTMENT_HEAD: [
-      2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 22, 25, 26, 27, 30, 31, 32, 33,
-      34,
-    ],
-    DIRECTORATE: [
-      1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
-      34,
-    ],
+    METHODIST: [1, 3, 4, 8, 9, 10, 13, 14, 17, 20, 21, 25, 26, 27, 28, 31, 34, 35],
+    LECTURER: [2, 8, 15, 18, 22, 24],
+    DEPARTMENT_HEAD: [2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 22, 25, 26, 27, 30, 31, 32, 33 ],
+    DIRECTORATE: [1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31, 34, 35],
     EDUCATOR: [15, 24],
   };
   // appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)
@@ -107,7 +100,7 @@ function App() {
   const [tableDepartment, settableDepartment] = useState([]);
   const [selectISOid, setselectISOid] = useState(true);
   // const [nameKaf, setnameKaf] = useState("");
-  const [nameKaf, setnameKaf] = useState("Все");
+  const [nameKaf, setnameKaf] = useState("ОИД");
   const [historyChanges, setHistoryChanges] = useState([]);
 
   const basicTabData = {
@@ -125,7 +118,6 @@ function App() {
     setAllCommentsData,
     funUpdateAllComments,
     funUpdateOffers,
-    funUpdateOffersLecturer,
     funUpdateTable,
     funUpdateFastenedData,
     funUpdateAllColors,
@@ -238,13 +230,6 @@ function App() {
       setAllOffersData(data);
     });
   }
-  //! функция обновления предложений от Лектора (чтобы он видел свои предложения)
-  function funUpdateOffersLecturer() {
-    getOffersLecturer().then((data) => {
-      console.log("предложения лектора", data);
-      setAllOffersData(data);
-    });
-  }
 
   //! функция обновления истории
   function funUpdateHistory() {
@@ -267,8 +252,8 @@ function App() {
   function funGetDepartment() {
     GetDepartment().then((response) => {
       if (response && response.status === 200) {
-        settableDepartment([{ id: 14, name: "Все" }, ...response?.data]);
-        setnameKaf("Все");
+        // settableDepartment([{ id: 14, name: "Все" }, ...response?.data]);
+        setnameKaf("ОИД");
       }
     });
   }
@@ -420,11 +405,6 @@ function App() {
       // получение предложений
       funUpdateOffers();
     }
-
-    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 19)) {
-      // получение предложений для лектора
-      funUpdateOffersLecturer();
-    }
     // получение закрепленных строк
     funUpdateFastenedData();
     // получение выделенных строк
@@ -464,7 +444,7 @@ function App() {
     setOnCheckBoxAll(false);
   }, [dataIsOid, selectedFilter, workloadDataFix, selectedTable, fastenedData]);
 
-  //! обновляем вертуальный скролл при переходе на другую таблицу
+  //! обновляем вертуальный скролл при переходе на другуюс таблицу
   useEffect(() => {
     setStartData(0);
     const table = document.querySelector("table");
@@ -489,12 +469,9 @@ function App() {
       if (event.ctrlKey && (event.key === "s" || event.key === "ы")) {
         event.preventDefault();
         console.log("Сохранено", bufferAction);
-        bufferRequestToApi(bufferAction).then((action) => {
-          console.log(action);
-          if (action) {
-            setBufferAction([0]);
-            funUpdateTable();
-          }
+        bufferRequestToApi(bufferAction).then(() => {
+          setBufferAction([0]);
+          updateAlldata();
         });
         setSelectedTr([]);
         setChangedData(changedDataObj);
