@@ -217,8 +217,10 @@ function HomePage() {
       <div className={styles.HomePage}>
         {confirmationSave && (
           <div className={styles.nosavedData}>
-            <span>У вас есть несохраненные данные</span>
-            <button onClick={() => setConfirmationSave(false)}>Закрыть</button>
+            <div className={styles.nosavedDataInner}>
+            <div style={{display: "flex", justifyContent: "center", textAlign: "center"}}>У вас есть несохраненные данные</div>
+            <button style={{marginTop: "25px", width: "150px"}}  onClick={() => setConfirmationSave(false)}>Закрыть</button>
+            </div>
           </div>
         )}
         {appData.loaderAction && (
