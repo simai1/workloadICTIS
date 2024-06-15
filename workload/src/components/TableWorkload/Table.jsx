@@ -183,6 +183,7 @@ function Table(props) {
                   clickTr={() => {}}
                   itemId={item.id + "checkBox"}
                   itid={item.id}
+                  workload={item}
                   number={number}
                   getConfirmation={getConfirmation(item.id)}
                   checked={tabPar.selectedTr.includes(item.id)}

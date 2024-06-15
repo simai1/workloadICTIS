@@ -52,6 +52,12 @@ function InputCheckbox(props) {
               itid={props.itid}
             />
           )}
+          {
+            //! определяем разделенная ли нагрузка
+            props.workload?.isSplit === true && (
+              <div className={styles.isSplit}>Разделенная</div>
+            )
+          }
           <div className={styles.bacground}>
             {getComment().length > 0 &&
               appData.metodRole[appData.myProfile?.role]?.some(
