@@ -63,6 +63,16 @@ $heightCell: 150px;
     z-index: 1;
     left: 0px;
   }
+  &::before {
+    content: "";
+    background-color: var(--bgraund);
+    width: 64px;
+    height: 70px;
+    position: absolute;
+    top: 0;
+    right: 0px;
+    z-index: 1;
+  }
 
   .table {
     width: 100vw;
@@ -360,6 +370,15 @@ $heightCell: 150px;
 
   .InputCheckbox {
     padding-left: 0 !important;
+
+    .isSplit {
+      position: absolute;
+      bottom: 0;
+      padding-left: 10px;
+      box-sizing: border-box;
+      color: red;
+    }
+
     input {
       appearance: none;
       -webkit-appearance: none;

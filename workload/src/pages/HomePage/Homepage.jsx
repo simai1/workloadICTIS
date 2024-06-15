@@ -103,9 +103,7 @@ function HomePage() {
     setSearchTerm(event.target.value);
   };
 
-  const EditTableData = (tableMode) => {
-    tabPar.setDataIsOid(tableMode === "genInstitute");
-  };
+  
   useEffect(() => {
     basicTabData.funGetDepartment();
   }, []);
@@ -315,7 +313,6 @@ function HomePage() {
                 onClick={() => {
                   handleComponentChange("Disciplines");
                   handleButtonClick();
-                  tabPar.setDataIsOid(true);
                   basicTabData.setselectISOid(true);
                 }}
                 text="Дисциплины"
@@ -339,7 +336,6 @@ function HomePage() {
                   onClick={() => {
                     handleComponentChange("Teachers");
                     handleButtonClick();
-                    tabPar.setDataIsOid(false);
                     basicTabData.setselectISOid(false);
                   }}
                   text="Преподаватели"

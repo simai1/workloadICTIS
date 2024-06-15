@@ -156,10 +156,12 @@ const ContextMenu = (props) => {
       ids: tabPar.selectedTr,
       n: count,
     };
-    console.log("dataContextMenu", dataSel);
     const prev = basicTabData.workloadDataFix.filter((item) =>
       tabPar.selectedTr.some((el) => el === item.id)
     );
+
+    console.log("prev", prev);
+
     // Создаем новый массив для измененных данных
     let updatedData = [...basicTabData.workloadDataFix];
     const funData = splitWorkloadCount(updatedData, tabPar.selectedTr, count);
@@ -371,7 +373,11 @@ const ContextMenu = (props) => {
         {/* } */}
 
         {appData.metodRole[appData.myProfile?.role]?.some(
-          (el) => el === 11
+          (el) =>
+            el === 11 &&
+            basicTabData.workloadDataFix
+              .filter((item) => tabPar.selectedTr.some((el) => el === item.id))
+              .every((it) => it.isSplit === false)
         ) && (
           <MenuPop
             btnText={"Разделить"}
