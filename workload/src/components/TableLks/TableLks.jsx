@@ -197,7 +197,9 @@ function TableLks(props) {
                                   : null
                               }
                             >
-                              {gettdInnerText(row[key], index)}
+                            <p className={styles.textDist}>
+                              {gettdInnerText(row[key], index)} 
+                            </p>
                             </div>
                           </div>
                         </td>

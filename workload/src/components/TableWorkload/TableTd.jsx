@@ -93,7 +93,7 @@ function TableTd(props) {
   };
 
   const [showFullText, setShowFullText] = useState(false); // при наведении на td показывает весь текст ячейки
-  const lenSlice = props.itemKey.key === "groups" ? 50 : 100;
+  const lenSlice = props.itemKey.key === "groups" ? 50 : 70;
   //! фуункция котороя определяет какой формат текста выводить
   const gettdInnerText = () => {
     if (showFullText) {

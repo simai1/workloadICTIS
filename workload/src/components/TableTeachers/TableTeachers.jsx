@@ -85,6 +85,7 @@ function TableTeachers(props) {
     const updatedHeader = tableHeaders.filter((header) =>
       filters.includes(header.key)
     );
+    console.log("updatedHeader", updatedHeader)
     const updatedData = educator.map((data) => {
       const updatedRow = {};
       Object.keys(data).forEach((key) => {
@@ -215,6 +216,7 @@ function TableTeachers(props) {
                         key={key}
                         onClick={() => handleNameClick(index, row.id)}
                         className={styles.tdName}
+                        name={key}
                       >
                         {row[key]}
                       </td>
@@ -222,7 +224,7 @@ function TableTeachers(props) {
                   }
                   if (key === "totalHours") {
                     return (
-                      <td key={key}>
+                      <td key={key} name={key}>
                         <div
                           style={{
                             backgroundColor: WhyColor(row.totalHours, row.rate),
@@ -235,7 +237,7 @@ function TableTeachers(props) {
                     );
                   } else {
                     return (
-                      <td key={key}>{key === "id" ? index + 1 : row[key]}</td>
+                      <td key={key} name={key}>{key === "id" ? index + 1 : row[key]}</td>
                     );
                   }
                 })}

@@ -8,7 +8,7 @@ import thimbtack from "./../../img/thumbtack.svg";
 import DataContext from "../../context";
 const FiltredRows = () => {
   const [OpenCloseMenu, setOpenCloseMenu] = useState(false);
-  const { tabPar, basicTabData } = useContext(DataContext);
+  const { tabPar, basicTabData, appData } = useContext(DataContext);
 
   //! закрытие модального окна при нажатии вне него
   const refFR = React.useRef(null);
@@ -31,10 +31,10 @@ const FiltredRows = () => {
     setOpenCloseMenu(!OpenCloseMenu);
     tabPar.setSelectedFilter(text);
   };
-  const AllDist = ()=>{
+  const AllDist = () => {
     basicTabData.funUpdateTable();
     Fuctionmenu("Все дисциплины");
-  }
+  };
   return (
     <div ref={refFR} className={styles.FiltredRows}>
       <div className={styles.FiltredRows__inner}>
@@ -43,9 +43,7 @@ const FiltredRows = () => {
         </button>
         {OpenCloseMenu && (
           <ul className={styles.FiltredRows__list}>
-            <li onClick={() =>
-              AllDist()
-            }>
+            <li onClick={() => AllDist()}>
               Все дисциплины
               <img
                 className={styles.FirstImg}
@@ -56,9 +54,14 @@ const FiltredRows = () => {
             <li onClick={() => Fuctionmenu("Закрепленные")}>
               Закрепленные <img src={thimbtack} alt="thimbtack"></img>
             </li>
-            <li onClick={() => Fuctionmenu("Измененные")}>
-              Измененные <img src={filter} alt="filter"></img>
-            </li>
+            {appData.metodRole[appData.myProfile?.role]?.some(
+              (el) => el === 36
+            ) && (
+              <li onClick={() => Fuctionmenu("Измененные")}>
+                Измененные <img src={filter} alt="filter"></img>
+              </li>
+            )}
+
             <li onClick={() => Fuctionmenu("Выделенные")}>
               Выделенные <img src={pencil} alt="pencil"></img>
             </li>

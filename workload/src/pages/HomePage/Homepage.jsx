@@ -103,9 +103,7 @@ function HomePage() {
     setSearchTerm(event.target.value);
   };
 
-  const EditTableData = (tableMode) => {
-    tabPar.setDataIsOid(tableMode === "genInstitute");
-  };
+  
   useEffect(() => {
     basicTabData.funGetDepartment();
   }, []);
@@ -219,8 +217,10 @@ function HomePage() {
       <div className={styles.HomePage}>
         {confirmationSave && (
           <div className={styles.nosavedData}>
-            <span>У вас есть несохраненные данные</span>
-            <button onClick={() => setConfirmationSave(false)}>Закрыть</button>
+            <div className={styles.nosavedDataInner}>
+            <div style={{display: "flex", justifyContent: "center", textAlign: "center"}}>У вас есть несохраненные данные</div>
+            <button style={{marginTop: "25px", width: "150px"}}  onClick={() => setConfirmationSave(false)}>Закрыть</button>
+            </div>
           </div>
         )}
         {appData.loaderAction && (
@@ -315,7 +315,6 @@ function HomePage() {
                 onClick={() => {
                   handleComponentChange("Disciplines");
                   handleButtonClick();
-                  tabPar.setDataIsOid(true);
                   basicTabData.setselectISOid(true);
                 }}
                 text="Дисциплины"
@@ -339,7 +338,6 @@ function HomePage() {
                   onClick={() => {
                     handleComponentChange("Teachers");
                     handleButtonClick();
-                    tabPar.setDataIsOid(false);
                     basicTabData.setselectISOid(false);
                   }}
                   text="Преподаватели"

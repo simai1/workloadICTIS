@@ -3,7 +3,6 @@ import EducatorDto from '../dtos/educator-dto.js';
 import EducatorProfileDto from '../dtos/educator-profile-dto.js';
 import { AppErrorAlreadyExists, AppErrorForbiddenAction, AppErrorMissing, AppErrorNotExist } from '../utils/errors.js';
 import { map as mapPositions } from '../config/position.js';
-import { map as mapTypeOfEmployments } from '../config/type-of-employment.js';
 import associateEducator from '../utils/associate-educator.js';
 import departments from '../config/departments.js';
 import Workload from '../models/workload.js';
@@ -129,9 +128,6 @@ export default {
     },
     async getPositions(params, res) {
         res.json(mapPositions);
-    },
-    async getTypeOfEmployments(params, res) {
-        res.json(mapTypeOfEmployments);
     },
 
     async deleteEducator({ params: { educatorId }, user }, res) {
