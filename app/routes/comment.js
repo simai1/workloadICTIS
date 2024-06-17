@@ -23,7 +23,7 @@ router
 router
     .route('/getAllComment')
     .get(
-        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST])),
+        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST, role.LECTURER])),
         asyncRoute(commentContorller.getAllComments)
     );
 router

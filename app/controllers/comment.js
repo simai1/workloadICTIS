@@ -2,6 +2,7 @@ import { AppErrorMissing } from '../utils/errors.js';
 import Comment from '../models/comment.js';
 import CommentDto from '../dtos/comment-dto.js';
 import Educator from '../models/educator.js';
+import User from '../models/user.js';
 
 export default {
     async createComment({ body: { workloadId, text }, user }, res) {
@@ -25,9 +26,21 @@ export default {
     },
 
     async getAllComments(req, res) {
-        const comments = await Comment.findAll({
-            include: [{ model: Educator }],
+        const educator = await Educator.findOne({
+            where: { userId: req.user },
+            include: [{ model: User }],
         });
+        let comments;
+        if (educator.User.role === 2) {
+            comments = await Comment.findAll({
+                where: { educatorId: educator.id },
+                include: [{ model: Educator }],
+            });
+        } else {
+            comments = await Comment.findAll({
+                include: [{ model: Educator }],
+            });
+        }
 
         const commentDtos = [];
 
