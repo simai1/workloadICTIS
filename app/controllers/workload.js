@@ -126,6 +126,9 @@ export default {
                         where: {
                             educatorId: _user.Educator.id,
                         },
+                        include: [{
+                            model: Educator,
+                        }]
                     });
 
                     const disciplines = [];
