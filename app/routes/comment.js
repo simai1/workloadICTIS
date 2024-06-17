@@ -27,6 +27,9 @@ router
         asyncRoute(commentContorller.getAllComments)
     );
 router
+    .route('/getOwnComments')
+    .get(asyncRoute(checkRole([role.LECTURER])), asyncRoute(commentContorller.getOwnComments));
+router
     .route('/deleteAllComments/:workloadId')
     .delete(
         asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST])),

@@ -25,22 +25,30 @@ export default {
         res.status(200).json('Successfully checked');
     },
 
-    async getAllComments(req, res) {
+    async getOwnComments(req, res) {
         const educator = await Educator.findOne({
             where: { userId: req.user },
             include: [{ model: User }],
         });
-        let comments;
-        if (educator.User.role === 2) {
-            comments = await Comment.findAll({
-                where: { educatorId: educator.id },
-                include: [{ model: Educator }],
-            });
-        } else {
-            comments = await Comment.findAll({
-                include: [{ model: Educator }],
-            });
+        const comments = await Comment.findAll({
+            where: { educatorId: educator.id },
+            include: [{ model: Educator }],
+        });
+
+        const commentDtos = [];
+
+        for (const comment of comments) {
+            const commentsDto = new CommentDto(comment);
+            commentDtos.push(commentsDto);
         }
+
+        res.json(commentDtos);
+    },
+
+    async getAllComments(req, res) {
+        const comments = await Comment.findAll({
+            include: [{ model: Educator }],
+        });
 
         const commentDtos = [];
 
