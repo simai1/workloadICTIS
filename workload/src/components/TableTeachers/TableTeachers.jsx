@@ -202,36 +202,36 @@ function TableTeachers(props) {
                   clickTrRows(row.id, e.clientX, e.clientY); // Передаем координаты курсора
                 }}
               >
-                {Object.keys(row).map((key) => {
-                  if (key === "name") {
+                {updatedHeader.map((key) => {
+                  if (key.key === "name") {
                     return (
                       <td
-                        key={key}
+                        key={key.key}
                         onClick={() => handleNameClick(index, row.id)}
                         className={styles.tdName}
-                        name={key}
+                        name={key.key}
                       >
-                        {row[key]}
+                        {row[key.key]}
                       </td>
                     );
                   }
-                  if (key === "totalHours") {
+                  if (key.key === "totalHours") {
                     return (
-                      <td key={key} name={key}>
+                      <td key={key.key} name={key.key}>
                         <div
                           style={{
                             backgroundColor: WhyColor(row.totalHours, row.rate),
                           }}
                           className={styles.tdHours}
                         >
-                          {row[key]}
+                          {row[key.key]}
                         </div>
                       </td>
                     );
                   } else {
                     return (
-                      <td key={key} name={key}>
-                        {key === "id" ? index + 1 : row[key]}
+                      <td key={key.key} name={key.key}>
+                        {key.key === "id" ? index + 1 : row[key.key]}
                       </td>
                     );
                   }
