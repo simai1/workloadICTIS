@@ -143,7 +143,7 @@ function TableTd(props) {
       onMouseEnter={() => setShowFullText(true)}
       onMouseLeave={() => setShowFullText(false)}
       name={props.itemKey.key}
-      key={props.item.id + "_" + props.itemKey.key}
+      key={props.item.id + "_" + props.itemKey.key + "_" + props.ind}
       className={getClassNameTr()}
       style={
         showFullText && props.item[props.itemKey.key]?.length > lenSlice
@@ -155,7 +155,7 @@ function TableTd(props) {
       }
     >
       <div
-        key={props.item.id + "div" + props.itemKey.key}
+        key={props.item.id + "div" + props.itemKey.key + "_" + props.ind}
         className={getClassNameTdInner()}
         onDoubleClick={funDubleClick}
         style={
