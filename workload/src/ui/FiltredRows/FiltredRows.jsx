@@ -32,7 +32,11 @@ const FiltredRows = () => {
     tabPar.setSelectedFilter(text);
   };
   const AllDist = () => {
-    basicTabData.funUpdateTable();
+    basicTabData.funUpdateTable(
+      basicTabData.tableDepartment.find(
+        (el) => el.name === basicTabData.nameKaf
+      )?.id
+    );
     Fuctionmenu("Все дисциплины");
   };
   return (
@@ -65,6 +69,21 @@ const FiltredRows = () => {
             <li onClick={() => Fuctionmenu("Выделенные")}>
               Выделенные <img src={pencil} alt="pencil"></img>
             </li>
+
+            {appData.metodRole[appData.myProfile?.role]?.some(
+              (el) => el === 20
+            ) && (
+              <li onClick={() => Fuctionmenu("Комментарии")}>
+                Комментарии <img src={filter} alt="filter"></img>
+              </li>
+            )}
+            {appData.metodRole[appData.myProfile?.role]?.some(
+              (el) => el === 34
+            ) && (
+              <li onClick={() => Fuctionmenu("Предложения")}>
+                Предложения <img src={filter} alt="filter"></img>
+              </li>
+            )}
           </ul>
         )}
       </div>
