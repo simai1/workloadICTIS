@@ -2,6 +2,7 @@ import { AppErrorMissing } from '../utils/errors.js';
 import Comment from '../models/comment.js';
 import CommentDto from '../dtos/comment-dto.js';
 import Educator from '../models/educator.js';
+import User from '../models/user.js';
 
 export default {
     async createComment({ body: { workloadId, text }, user }, res) {
@@ -22,6 +23,26 @@ export default {
         const comment = await Comment.findByPk(commentId);
         await comment.destroy({ force: true });
         res.status(200).json('Successfully checked');
+    },
+
+    async getOwnComments(req, res) {
+        const educator = await Educator.findOne({
+            where: { userId: req.user },
+            include: [{ model: User }],
+        });
+        const comments = await Comment.findAll({
+            where: { educatorId: educator.id },
+            include: [{ model: Educator }],
+        });
+
+        const commentDtos = [];
+
+        for (const comment of comments) {
+            const commentsDto = new CommentDto(comment);
+            commentDtos.push(commentsDto);
+        }
+
+        res.json(commentDtos);
     },
 
     async getAllComments(req, res) {
