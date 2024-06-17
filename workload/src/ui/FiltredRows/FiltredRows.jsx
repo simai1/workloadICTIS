@@ -32,7 +32,11 @@ const FiltredRows = () => {
     tabPar.setSelectedFilter(text);
   };
   const AllDist = () => {
-    basicTabData.funUpdateTable();
+    basicTabData.funUpdateTable(
+      basicTabData.tableDepartment.find(
+        (el) => el.name === basicTabData.nameKaf
+      )?.id
+    );
     Fuctionmenu("Все дисциплины");
   };
   return (
