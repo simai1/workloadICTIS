@@ -2,6 +2,7 @@ import XLSX from 'xlsx';
 import Educator from '../models/educator.js';
 import Workload from '../models/workload.js';
 import FullNameDepartments from '../config/full-name-departments.js';
+import SummaryWorkload from '../models/summary-workload.js';
 import departments from '../config/departments.js';
 import { sequelize } from '../models/index.js';
 import HeaderTranslation from '../config/header_translation.js';
@@ -14,11 +15,7 @@ export default {
     async parseWorkload(req, res) {
         const numberDepartment = req.params.numberDepartment;
         const workbook = XLSX.readFile(req.file.path);
-        //const trimString = extractFileNameWithoutExtension(req.file.originalname);
         
-        // if(departments[trimString] != numberDepartment){
-        //     throw new Error('Подгружен файл, не соответствующий выбарнной кафедры');
-        // }
         const recordsToDelete = await Workload.findAll({
             where: {
                 department: numberDepartment,
@@ -26,6 +23,8 @@ export default {
         });
 
         for (const record of recordsToDelete) {
+            console.log(record.id)
+            await this.deleteHours(record); // Прямой вызов deleteHours
             await Workload.destroy({
                 where: {
                     id: record.id,
@@ -128,7 +127,6 @@ export default {
                         numberPart = 0;
                     }
                     newEducator.rate = numberPart;
-                    newEducator.typeOfEmployment = 3;
                     await Educator.create(newEducator);
                 }
             } catch (e) {
@@ -145,13 +143,53 @@ export default {
 
         return res.json({ status: 'ok' });
     },
-};
+    
+    async deleteHours(newWorkload) {
+        const previousWorkload = newWorkload._previousDataValues;
+        if (previousWorkload.educatorId === null) return;
+        const summaryWorkload = await SummaryWorkload.findOne({ where: { educatorId: previousWorkload.educatorId } });
 
-function extractFileNameWithoutExtension(filePath) {
-    const dotIndex = filePath.lastIndexOf('.');
-    const newString = filePath.slice(0, dotIndex);
-    const arrayFromInput = newString.split(' ');
-    let resString = arrayFromInput[0];
-    if (resString.lastIndexOf('.') !== -1) resString = arrayFromInput[1];
-    return resString.replace(/\s+/g, '');
-}
+        const hours = {
+            kafedralAutumnWorkload: 0,
+            kafedralSpringWorkload: 0,
+            kafedralAdditionalWorkload: 0,
+            instituteAutumnWorkload: 0,
+            instituteSpringWorkload: 0,
+            instituteManagementWorkload: 0,
+            totalKafedralHours: 0,
+            totalOidHours: 0,
+            totalHours: 0,
+        };
+
+        // Проверяем предмет на общеинститутский ли он и период и устанавливаем часы для кафедральных или институтских дисциплин
+        if (!newWorkload.isOid && newWorkload.period === 1)
+            hours.kafedralAutumnWorkload += parseFloat(previousWorkload.hours);
+        if (!newWorkload.isOid && newWorkload.period === 2)
+            hours.kafedralSpringWorkload += parseFloat(previousWorkload.hours);
+        if (!newWorkload.isOid && !newWorkload.period)
+            hours.kafedralAdditionalWorkload += parseFloat(previousWorkload.hours);
+        if (newWorkload.isOid && newWorkload.period === 1)
+            hours.instituteAutumnWorkload += parseFloat(previousWorkload.hours);
+        if (newWorkload.isOid && newWorkload.period === 2)
+            hours.instituteSpringWorkload += parseFloat(previousWorkload.hours);
+        if (newWorkload.isOid && !newWorkload.period)
+            hours.instituteManagementWorkload += parseFloat(previousWorkload.hours);
+
+        hours.totalKafedralHours +=
+            hours.kafedralAutumnWorkload + hours.kafedralSpringWorkload + hours.kafedralAdditionalWorkload;
+        hours.totalOidHours +=
+            hours.instituteAutumnWorkload + hours.instituteSpringWorkload + hours.instituteManagementWorkload;
+        hours.totalHours += hours.totalKafedralHours + hours.totalOidHours;
+
+        summaryWorkload.kafedralAutumnWorkload -= hours.kafedralAutumnWorkload;
+        summaryWorkload.kafedralSpringWorkload -= hours.kafedralSpringWorkload;
+        summaryWorkload.kafedralAdditionalWorkload -= hours.kafedralAdditionalWorkload;
+        summaryWorkload.instituteAutumnWorkload -= hours.instituteAutumnWorkload;
+        summaryWorkload.instituteSpringWorkload -= hours.instituteSpringWorkload;
+        summaryWorkload.instituteManagementWorkload -= hours.instituteManagementWorkload;
+        summaryWorkload.totalKafedralHours -= hours.totalKafedralHours;
+        summaryWorkload.totalOidHours -= hours.totalOidHours;
+        summaryWorkload.totalHours -= hours.totalHours;
+        await summaryWorkload.save();
+    }
+};
