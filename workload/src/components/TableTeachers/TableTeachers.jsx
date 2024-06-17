@@ -70,8 +70,8 @@ function TableTeachers(props) {
   }
   const handleNameClick = (index, id) => {
     props.setEducatorIdforLk(id);
-    console.log("ideducator", id);
-    props.setEducatorData(appData.educator[index]);
+    props.setEducatorData(appData.educator.find((el)=>el.id === id));
+    basicTabData.setSearchTerm("");
   };
 
   const dispatch = useDispatch();
