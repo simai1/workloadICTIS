@@ -445,7 +445,9 @@ function App() {
       selectedFilter,
       coloredData,
       changedData,
-      fastenedData
+      fastenedData,
+      allCommentsData,
+      allOffersData
     );
     if (filterSelected) {
       setFiltredData(funSortedFastened(filterSelected, fastenedData));

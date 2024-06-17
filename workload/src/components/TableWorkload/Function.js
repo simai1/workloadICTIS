@@ -91,7 +91,9 @@ export function funFilterSelected(
   selectedFilter,
   colored,
   changedData,
-  fastenedData
+  fastenedData,
+  allCommentsData,
+  allOffersData
 ) {
   const origData = [...data];
   if (selectedFilter === "Выделенные" && colored.length > 0) {
@@ -111,6 +113,18 @@ export function funFilterSelected(
       fastenedData.some((el) => el.workloadId === item.id)
     );
     return fd;
+  } else if (selectedFilter === "Комментарии") {
+    let fd = [];
+    fd = origData.filter((item) =>
+      allCommentsData.some((el) => el.workloadId === item.id)
+    );
+    return fd;
+  } else if (selectedFilter === "Предложения") {
+    let fd = [];
+    fd = origData.filter((item) =>
+      allOffersData.some((el) => el.offer.workloadId === item.id)
+    );
+    return fd;
   } else {
     return data;
   }
@@ -126,6 +140,10 @@ export function getTextForNotData(selectedFilter) {
     return "Нет выделенных данных";
   } else if (selectedFilter === "Все дисциплины") {
     return "В таблице нет данных";
+  } else if (selectedFilter === "Комментарии") {
+    return "В таблице нет комментариев";
+  } else if (selectedFilter === "Предложения") {
+    return "В таблице нет предложений";
   } else {
     return "В таблице нет данных";
   }

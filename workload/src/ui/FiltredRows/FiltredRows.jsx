@@ -65,6 +65,21 @@ const FiltredRows = () => {
             <li onClick={() => Fuctionmenu("Выделенные")}>
               Выделенные <img src={pencil} alt="pencil"></img>
             </li>
+
+            {appData.metodRole[appData.myProfile?.role]?.some(
+              (el) => el === 20
+            ) && (
+              <li onClick={() => Fuctionmenu("Комментарии")}>
+                Комментарии <img src={filter} alt="filter"></img>
+              </li>
+            )}
+            {appData.metodRole[appData.myProfile?.role]?.some(
+              (el) => el === 34
+            ) && (
+              <li onClick={() => Fuctionmenu("Предложения")}>
+                Предложения <img src={filter} alt="filter"></img>
+              </li>
+            )}
           </ul>
         )}
       </div>
