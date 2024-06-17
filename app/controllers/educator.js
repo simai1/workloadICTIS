@@ -154,8 +154,15 @@ export default {
 
         const department = educator.department;
 
-        const educators = await Educator.findAll({ where: { department } });
-        const educatorsDto = educators.map(educator => new EducatorDto(educator));
+        const educators = await Educator.findAll({
+            where: { department },
+            include: [
+                {
+                    model: SummaryWorkload,
+                },
+            ],
+        });
+        const educatorsDto = educators.map(educator => new EducatorListDto(educator));
         res.json(educatorsDto);
     },
 };
