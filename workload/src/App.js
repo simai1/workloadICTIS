@@ -19,6 +19,7 @@ import {
   getAllColors,
   getOffers,
   apiGetHistory,
+  CommentsLecktorer,
 } from "./api/services/ApiRequest";
 
 import {
@@ -44,7 +45,7 @@ function App() {
     METHODIST: [
       1, 3, 4, 8, 9, 10, 13, 14, 17, 20, 21, 25, 26, 27, 28, 31, 34, 35, 36,
     ],
-    LECTURER: [2, 15, 18, 22, 24],
+    LECTURER: [2, 15, 18, 20, 22, 24, 37],
     DEPARTMENT_HEAD: [
       2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 22, 25, 26, 27, 30, 31, 32, 33,
       34, 36,
@@ -226,7 +227,14 @@ function App() {
 
   //! функция обновления комментаривев
   function funUpdateAllComments() {
-    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 20)) {
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 37)) {
+      CommentsLecktorer().then((data) => {
+        console.log("comments", data);
+        setAllCommentsData(data);
+      });
+    } else if (
+      appData.metodRole[appData.myProfile?.role]?.some((el) => el === 20)
+    ) {
       Comment().then((data) => {
         console.log("comments", data);
         setAllCommentsData(data);
@@ -408,7 +416,11 @@ function App() {
         funUpdateTable(14);
       }
     }
-    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 20)) {
+    if (
+      appData.metodRole[appData.myProfile?.role]?.some(
+        (el) => el === 20 || el === 37
+      )
+    ) {
       // получаем все комментарии
       funUpdateAllComments();
     }
