@@ -20,6 +20,7 @@ import {
   getOffers,
   apiGetHistory,
   CommentsLecktorer,
+  getOffersLecturer,
 } from "./api/services/ApiRequest";
 
 import {
@@ -43,16 +44,16 @@ function App() {
   //! в файле RoleMetods можно посмотреть назание метода и их id
   const metodRole = {
     METHODIST: [
-      1, 3, 4, 8, 9, 10, 13, 14, 17, 20, 21, 25, 26, 27, 28, 31, 34, 35, 36,
+      1, 3, 4, 8, 9, 10, 14, 17, 20, 21, 25, 26, 27, 28, 29, 31, 34, 35, 36,
     ],
-    LECTURER: [2, 15, 18, 20, 22, 24, 37],
+    LECTURER: [2, 15, 17, 17.1, 18, 20, 22, 24, 34, 37],
     DEPARTMENT_HEAD: [
       2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 22, 25, 26, 27, 30, 31, 32, 33,
-      34, 36,
+      34, 36, 38,
     ],
     DIRECTORATE: [
       1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
-      34, 35, 36,
+      34, 35, 36, 38,
     ],
     EDUCATOR: [15, 24],
   };
@@ -241,10 +242,17 @@ function App() {
 
   //! функция обновления предложений преподавателей
   function funUpdateOffers() {
-    getOffers().then((data) => {
-      console.log("предложения", data);
-      setAllOffersData(data);
-    });
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 17.1)) {
+      getOffersLecturer().then((data) => {
+        console.log("предложения", data);
+        setAllOffersData(data);
+      });
+    } else {
+      getOffers().then((data) => {
+        console.log("предложения", data);
+        setAllOffersData(data);
+      });
+    }
   }
 
   //! функция обновления истории
@@ -451,7 +459,7 @@ function App() {
   useEffect(() => {
     // const splitData = funSplitData(workloadDataFix, dataIsOid);
     const splitData = [...workloadDataFix];
-
+    console.log("workloadDataFix", splitData);
     const filterSelected = funFilterSelected(
       splitData,
       selectedFilter,
