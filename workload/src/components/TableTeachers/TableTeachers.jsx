@@ -63,7 +63,7 @@ function TableTeachers(props) {
 
   const handleNameClick = (index, id) => {
     props.setEducatorIdforLk(id);
-    props.setEducatorData(appData.educator.find((el)=>el.id === id));
+    props.setEducatorData(appData.educator.find((el) => el.id === id));
     basicTabData.setSearchTerm("");
   };
 
@@ -98,14 +98,18 @@ function TableTeachers(props) {
       fd = updatedData;
     } else {
       fd = updatedData.filter((row) => {
+        console.log(row);
         return Object.values(row)
           .splice(1)
-          .some((value) =>
-            value
-              .toString()
-              .toLowerCase()
-              .includes(props.searchTerm.toLowerCase())
-          );
+          .some((value) => {
+            if (value !== null) {
+              return value
+                .toString()
+                .toLowerCase()
+                .includes(props.searchTerm.toLowerCase());
+            }
+            return false;
+          });
       });
     }
     setFilteredData(fd);
