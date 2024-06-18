@@ -16,7 +16,7 @@ export default class EducatorProfileDto {
     this.position = positionsMap[model.position];
     this.department = departmentsMap[model.department];
     this.rate = model.rate;
-    this.totalHours = model.SummaryWorkload.totalHours;
+    this.totalHours = Math.round(model.SummaryWorkload.totalHours * 100) / 100;
     this.maxHours = model.maxHours;
     this.workloads = [];
   }
