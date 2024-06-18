@@ -12,7 +12,7 @@ export function Highlight() {
   //! функция занесения выбранных цветов в состояние
   const SetColor = (colorNumber) => {
     colorNumber = colorNumber + 1;
-    if (colorNumber === 0) {
+    if (colorNumber === 1) {
       //! удаляем выделение
       const coloerd = tabPar.coloredData
         .filter((item) =>
