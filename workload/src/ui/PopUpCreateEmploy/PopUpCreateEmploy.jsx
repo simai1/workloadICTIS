@@ -41,7 +41,7 @@ export function PopUpCreateEmploy(props) {
   ];
   const dataKaf = [
     { id: 1, name: "БИТ" },
-    { id: 2, name: "ВМ" },
+    { id: 2, name: "ИТиС" },
     { id: 3, name: "ВТ" },
     { id: 4, name: "ИАСБ" },
     { id: 5, name: "ИБТКС" },
@@ -51,6 +51,7 @@ export function PopUpCreateEmploy(props) {
     { id: 9, name: "САИТ" },
     { id: 10, name: "САПР" },
     { id: 11, name: "СиПУ" },
+    { id: 12, name: "ФМИО" },
   ];
 
   const handleInputChange = (name, value) => {
@@ -100,10 +101,21 @@ export function PopUpCreateEmploy(props) {
             placeholder="aaa@sfedu.ru"
             name={"email"}
             handleInputChange={handleInputChange}
-            style={{ border: !isEmailValid ? "1px solid red" : "none"}}
-
+            style={{ border: !isEmailValid ? "1px solid red" : "none" }}
           />
-          {!isEmailValid && <div className={styles.error} style={{color:"red", position: "relative", left:"80px", top:"-20px"}}>Почта должна быть в домене sfedu.ru</div>}
+          {!isEmailValid && (
+            <div
+              className={styles.error}
+              style={{
+                color: "red",
+                position: "relative",
+                left: "80px",
+                top: "-20px",
+              }}
+            >
+              Почта должна быть в домене sfedu.ru
+            </div>
+          )}
           <List
             dataList={dataListPosition}
             Textlabel="Должность"
@@ -123,9 +135,21 @@ export function PopUpCreateEmploy(props) {
             placeholder="0.5"
             name={"rate"}
             handleInputChange={handleInputChange}
-            style={{ border: !isRateValid ? "1px solid red" : "none"}}
+            style={{ border: !isRateValid ? "1px solid red" : "none" }}
           />
-          {!isRateValid && <div className={styles.error} style={{color:"red", position: "relative", left:"80px", top:"-20px"}} >Ставка должна быть от 0 до 1</div>}
+          {!isRateValid && (
+            <div
+              className={styles.error}
+              style={{
+                color: "red",
+                position: "relative",
+                left: "80px",
+                top: "-20px",
+              }}
+            >
+              Ставка должна быть от 0 до 1
+            </div>
+          )}
           <List
             dataList={dataKaf}
             Textlabel="кафедра"

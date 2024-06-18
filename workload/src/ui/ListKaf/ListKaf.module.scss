@@ -6,8 +6,9 @@
   justify-content: center;
   z-index: 120;
   margin-top: -4px;
+  margin-right: 10px;
 
- input {
+  input {
     @include input-text(225px, 8px);
     margin-bottom: 18px;
     height: 44px;
@@ -17,13 +18,12 @@
     &:hover {
       cursor: pointer;
     }
-  
   }
- 
+
   span {
     cursor: pointer;
   }
-  .inputList::placeholder{
+  .inputList::placeholder {
     color: #adadad;
   }
   .ListCont {
@@ -50,35 +50,35 @@
     color: #000000;
     border: 1px solid rgb(168, 167, 167);
     // background-color: #fff;
-    p{
+    p {
       margin: 0px;
     }
     .NameForList {
       font-size: 18px;
     }
-    .NameForListSecond{
+    .NameForListSecond {
       font-size: 18px;
       margin-left: 15px;
       transition: 0.15s linear all;
-      &:hover{
+      &:hover {
         cursor: pointer;
         opacity: 0.6;
       }
     }
-    .ListVRot{
+    .ListVRot {
       margin-left: 15px;
       padding-left: 10px;
-      border-left: #DDDDDD 1px solid;
-          .NameForList{
-            transition: 0.15s linear all;
-            &:hover{
-              cursor: pointer;
-              opacity: 0.6;
-            }
-          }
+      border-left: #dddddd 1px solid;
+      .NameForList {
+        transition: 0.15s linear all;
+        &:hover {
+          cursor: pointer;
+          opacity: 0.6;
+        }
+      }
     }
-    .ListDatas{
-      border-left: #DDDDDD 1px solid;
+    .ListDatas {
+      border-left: #dddddd 1px solid;
     }
   }
 }
