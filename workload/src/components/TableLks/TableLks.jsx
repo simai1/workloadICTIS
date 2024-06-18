@@ -131,7 +131,7 @@ function TableLks(props) {
 
   return (
     <div className={styles.TableLks}>
-      {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 17) && (
+      {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 16) && (
         <button className={styles.buttonBack} onClick={handleNameClick}>
           <img src={ArrowBack} alt="arrow"></img>
           <p>Назад</p>

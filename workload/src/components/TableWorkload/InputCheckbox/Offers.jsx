@@ -76,7 +76,7 @@ function Offers(props) {
           {offerData.offer.educator.name}
         </div>
         {appData.metodRole[appData.myProfile?.role]?.some(
-          (el) => el === 17
+          (el) => el === 38
         ) && (
           <div className={styles.offerButton}>
             <button className={styles.left} onClick={() => reject(offerData)}>

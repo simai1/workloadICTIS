@@ -32,8 +32,7 @@ function TableTeachers(props) {
     setSampleData([...modalData]);
   };
 
-  //! заносим данные о преподавателях в состояние
-  React.useEffect(() => {
+  const updateTable = () => {
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 2)) {
       apiEducatorDepartment().then((res) => {
         console.log("teatcher ", res);
@@ -56,21 +55,16 @@ function TableTeachers(props) {
         }
       });
     }
-  }, [basicTabData.actionUpdTabTeach]);
-  const updateTable = () => {
-    Educator().then((res) => {
-      console.log("teatcher ", res);
-      if (res && res.status === 200) {
-        appData.setEducator(res.data);
-        setFilteredData(res.data);
-        setUpdatedData(res.data);
-        setUpdatedHeader(tableHeaders);
-      }
-    });
   };
+  //! заносим данные о преподавателях в состояние
+  React.useEffect(() => {
+    updateTable();
+  }, [basicTabData.actionUpdTabTeach]);
+
   const handleNameClick = (index, id) => {
     props.setEducatorIdforLk(id);
-    props.setEducatorData(appData.educator[index]);
+    props.setEducatorData(appData.educator.find((el) => el.id === id));
+    basicTabData.setSearchTerm("");
   };
 
   const dispatch = useDispatch();
@@ -104,14 +98,18 @@ function TableTeachers(props) {
       fd = updatedData;
     } else {
       fd = updatedData.filter((row) => {
+        console.log(row);
         return Object.values(row)
           .splice(1)
-          .some((value) =>
-            value
-              .toString()
-              .toLowerCase()
-              .includes(props.searchTerm.toLowerCase())
-          );
+          .some((value) => {
+            if (value !== null) {
+              return value
+                .toString()
+                .toLowerCase()
+                .includes(props.searchTerm.toLowerCase());
+            }
+            return false;
+          });
       });
     }
     setFilteredData(fd);

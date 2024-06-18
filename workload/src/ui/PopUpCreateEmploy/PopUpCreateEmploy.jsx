@@ -9,16 +9,17 @@ import { CreateEducator } from "../../api/services/ApiRequest";
 
 export function PopUpCreateEmploy(props) {
   const { appData, basicTabData } = React.useContext(DataContext);
-  const [dataNewEdicator, setdataNewEdicator] = useState([
-    {
-      name: "",
-      email: "",
-      position: "",
-      rate: "",
-      typeOfEmployment: "",
-      department: "",
-    },
-  ]);
+  const [dataNewEdicator, setdataNewEdicator] = useState({
+    name: "",
+    email: "",
+    position: "",
+    rate: "",
+    typeOfEmployment: "",
+    department: "",
+  });
+  const [isEmailValid, setIsEmailValid] = useState(true);
+  const [isRateValid, setIsRateValid] = useState(true);
+
   const dataList = [
     { id: 1, name: "Внешнее совместительство" },
     { id: 2, name: "Внутреннее совместительство" },
@@ -39,57 +40,36 @@ export function PopUpCreateEmploy(props) {
     { id: 11, name: "Заведующий кафедрой" },
   ];
   const dataKaf = [
-    {
-      id: 1,
-      name: "БИТ",
-    },
-    {
-      id: 2,
-      name: "ВМ",
-    },
-    {
-      id: 3,
-      name: "ВТ",
-    },
-    {
-      id: 4,
-      name: "ИАСБ",
-    },
-    {
-      id: 5,
-      name: "ИБТКС",
-    },
-    {
-      id: 6,
-      name: "ИМС",
-    },
-    {
-      id: 7,
-      name: "МОП ЭВМ",
-    },
-    {
-      id: 8,
-      name: "ПиБЖ",
-    },
-    {
-      id: 9,
-      name: "САИТ",
-    },
-    {
-      id: 10,
-      name: "САПР",
-    },
-    {
-      id: 11,
-      name: "СиПУ",
-    },
+    { id: 1, name: "БИТ" },
+    { id: 2, name: "ИИТиС" },
+    { id: 3, name: "ВТ" },
+    { id: 4, name: "ИАСБ" },
+    { id: 5, name: "ИБТКС" },
+    { id: 6, name: "ИМС" },
+    { id: 7, name: "МОП ЭВМ" },
+    { id: 8, name: "ПиБЖ" },
+    { id: 9, name: "САИТ" },
+    { id: 10, name: "САПР" },
+    { id: 11, name: "СиПУ" },
+    { id: 12, name: "ФМОИО" },
   ];
+
   const handleInputChange = (name, value) => {
+    if (name === "email") {
+      setIsEmailValid(value.endsWith("@sfedu.ru"));
+    }
+    if (name === "rate") {
+      const rateValue = parseFloat(value.replace(",", "."));
+      setIsRateValid(rateValue >= 0 && rateValue <= 1);
+    }
+
     setdataNewEdicator((prevState) => ({ ...prevState, [name]: value }));
   };
+
   const handleInputList = (name, value) => {
     setdataNewEdicator((prevState) => ({ ...prevState, [name]: value }));
   };
+
   const handleClicks = () => {
     const data = {
       name: dataNewEdicator.name,
@@ -99,13 +79,13 @@ export function PopUpCreateEmploy(props) {
       typeOfEmployment: dataNewEdicator.typeOfEmployment,
       department: dataNewEdicator.department,
     };
-    console.log(data);
     CreateEducator(data).then(() => {
       appData.setcreateEdicatorPopUp(false);
       //! обновляем таблицу преподавателей
       basicTabData.setActionUpdTabTeach(!basicTabData.actionUpdTabTeach);
     });
   };
+
   return (
     <PopUpContainer title="Добавление преподавателя" mT="120">
       <div className={styles.mainPop__inner}>
@@ -121,7 +101,21 @@ export function PopUpCreateEmploy(props) {
             placeholder="aaa@sfedu.ru"
             name={"email"}
             handleInputChange={handleInputChange}
+            style={{ border: !isEmailValid ? "1px solid red" : "none" }}
           />
+          {!isEmailValid && (
+            <div
+              className={styles.error}
+              style={{
+                color: "red",
+                position: "relative",
+                left: "80px",
+                top: "-20px",
+              }}
+            >
+              Почта должна быть в домене sfedu.ru
+            </div>
+          )}
           <List
             dataList={dataListPosition}
             Textlabel="Должность"
@@ -141,7 +135,21 @@ export function PopUpCreateEmploy(props) {
             placeholder="0.5"
             name={"rate"}
             handleInputChange={handleInputChange}
+            style={{ border: !isRateValid ? "1px solid red" : "none" }}
           />
+          {!isRateValid && (
+            <div
+              className={styles.error}
+              style={{
+                color: "red",
+                position: "relative",
+                left: "80px",
+                top: "-20px",
+              }}
+            >
+              Ставка должна быть от 0 до 1
+            </div>
+          )}
           <List
             dataList={dataKaf}
             Textlabel="кафедра"
@@ -164,9 +172,12 @@ export function PopUpCreateEmploy(props) {
             Bg="#3b28cc"
             textColot="#fff"
             handleClicks={handleClicks}
+            style={{ opacity: !isEmailValid || !isRateValid ? 0.2 : 1 }}
           />
         </div>
       </div>
     </PopUpContainer>
   );
 }
+
+export default PopUpCreateEmploy;
