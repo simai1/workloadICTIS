@@ -111,8 +111,11 @@ function App() {
   const [selectISOid, setselectISOid] = useState(true);
   const [nameKaf, setnameKaf] = useState("ОИД");
   const [historyChanges, setHistoryChanges] = useState([]);
+  const [searchTerm, setSearchTerm] = useState(""); //поиск по таблице
 
   const basicTabData = {
+    searchTerm,
+    setSearchTerm,
     updateAlldata,
     tableHeaders,
     setTableHeaders,

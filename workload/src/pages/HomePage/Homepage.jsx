@@ -43,7 +43,6 @@ function HomePage() {
   // const [appData.selectedComponent, appData.setSelectedComponent] = useState("Disciplines");
   const [tableMode, setTableMode] = useState("cathedrals"); //выбранный компонент
   const [educatorData, setEducatorData] = useState([]); // данные о преподавателе получаем в TableTeachers
-  const [searchTerm, setSearchTerm] = useState(""); //поиск по таблице
   const [onenModalWind, setOpenModalWind] = useState(false); // переменная закрытия модального окна профиля
   const refProfile = React.useRef(null); // ссылка на модальное окно профиля
   const [educatorIdforLk, setEducatorIdforLk] = useState(""); // id для вывода LK, если пустое то LK не отображается
@@ -100,7 +99,7 @@ function HomePage() {
   };
 
   const handleSearch = (event) => {
-    setSearchTerm(event.target.value);
+    basicTabData.setSearchTerm(event.target.value);
   };
 
   
@@ -289,10 +288,11 @@ function HomePage() {
               <div className={styles.header_search}>
                 <input
                   type="text"
-                  placeholder="Поиск"
+                  placeholder="Поиск..."
                   id="search"
                   name="search"
                   onChange={handleSearch}
+                  value={basicTabData?.searchTerm}
                   className={styles.hedaer_search_inner}
                 />
                 <img src="./img/search.svg"></img>
@@ -457,8 +457,8 @@ function HomePage() {
             <TableWorkload
               tableMode={tableMode}
               tableHeaders={tableHeaders}
-              searchTerm={searchTerm}
-              setSearchTerm={setSearchTerm}
+              searchTerm={basicTabData.searchTerm}
+              setSearchTerm={basicTabData.setSearchTerm}
               refProfile={refProfile}
               setOpenModalWind={setOpenModalWind}
             />
@@ -469,8 +469,8 @@ function HomePage() {
               changeInput={changeInput}
               setTableHeaders={setTableHeaders}
               tableHeaders={tableHeaders}
-              searchTerm={searchTerm}
-              setSearchTerm={setSearchTerm}
+              searchTerm={basicTabData.searchTerm}
+              setSearchTerm={basicTabData.setSearchTerm}
               setEducatorData={setEducatorData}
             />
           ) : appData.selectedComponent === "Teachers" &&
@@ -480,15 +480,15 @@ function HomePage() {
               educatorIdforLk={educatorIdforLk}
               changeInput={changeInput}
               setTableHeaders={setTableHeaders}
-              searchTerm={searchTerm}
+              searchTerm={basicTabData.searchTerm}
               educatorData={educatorData}
             />
           ) : appData.selectedComponent === "History" ? (
             <TableHistory
               tableMode={tableMode}
               tableHeaders={tableHeaders}
-              searchTerm={searchTerm}
-              setSearchTerm={setSearchTerm}
+              searchTerm={basicTabData.searchTerm}
+              setSearchTerm={basicTabData.setSearchTerm}
               refProfile={refProfile}
               setOpenModalWind={setOpenModalWind}
             />
