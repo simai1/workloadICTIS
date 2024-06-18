@@ -41,7 +41,7 @@ export function PopUpCreateEmploy(props) {
   ];
   const dataKaf = [
     { id: 1, name: "БИТ" },
-    { id: 2, name: "ИТиС" },
+    { id: 2, name: "ИИТиС" },
     { id: 3, name: "ВТ" },
     { id: 4, name: "ИАСБ" },
     { id: 5, name: "ИБТКС" },
@@ -51,7 +51,7 @@ export function PopUpCreateEmploy(props) {
     { id: 9, name: "САИТ" },
     { id: 10, name: "САПР" },
     { id: 11, name: "СиПУ" },
-    { id: 12, name: "ФМИО" },
+    { id: 12, name: "ФМОИО" },
   ];
 
   const handleInputChange = (name, value) => {
