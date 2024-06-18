@@ -13,7 +13,7 @@ export function PopUpFile(props) {
   const cafData = [
     { name: "ОИД", id: 0 },
     { name: "БИТ", id: 1 },
-    { name: "ИИТИС", id: 2 },
+    { name: "ИИТиС", id: 2 },
     { name: "ВТ", id: 3 },
     { name: "ИАСБ", id: 4 },
     { name: "ИБТКС", id: 5 },
