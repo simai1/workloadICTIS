@@ -459,7 +459,7 @@ function App() {
   useEffect(() => {
     // const splitData = funSplitData(workloadDataFix, dataIsOid);
     const splitData = [...workloadDataFix];
-    console.log("workloadDataFix", splitData);
+    // console.log("workloadDataFix", splitData);
     const filterSelected = funFilterSelected(
       splitData,
       selectedFilter,

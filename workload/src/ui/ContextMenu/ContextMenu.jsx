@@ -105,9 +105,6 @@ const ContextMenu = (props) => {
       console.log("popup", id);
     }
   };
-  useEffect(() => {
-    console.log("popupOffer", popupOffer);
-  }, [popupOffer]);
 
   //! функция для подтверждения или отмены отправки предложения
   const onClickOfferPopup = (action) => {
