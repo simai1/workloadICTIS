@@ -109,13 +109,26 @@ class AppErrorNotExist extends AppError {
     }
 }
 
+class AppErrorForbiddenAction extends AppError {
+    constructor(status, key) {
+        super(
+          {
+              errCode: 'Forbidden',
+              message: 'You do not have access to this action',
+              key: key ?? 'FORBIDDEN_ACTION',
+          },
+          status ?? 403
+        );
+    }
+}
+
 function asyncRoute(route) {
     return (req, res, next = console.error) => {
         return Promise.resolve(route(req, res, next)).catch(e => next(e));
     };
 }
 
-export { asyncRoute, errorCodes, AppError, AppErrorMissing, AppErrorInvalid, AppErrorAlreadyExists, AppErrorNotExist };
+export { asyncRoute, errorCodes, AppError, AppErrorMissing, AppErrorInvalid, AppErrorAlreadyExists, AppErrorNotExist, AppErrorForbiddenAction};
 
 function toSnakeCase(str = '') {
     if (!str) return '';

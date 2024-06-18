@@ -52,6 +52,18 @@ function InputCheckbox(props) {
               itid={props.itid}
             />
           )}
+          {
+            //! определяем разделенная ли нагрузка
+            props.workload?.isSplit === true && (
+              <div className={styles.isSplit}>Разделенная</div>
+            )
+          }
+          {
+            //! определяем разделенная ли нагрузка
+            props.workload?.isMerged === true && (
+              <div className={styles.isSplit}>Объединенная</div>
+            )
+          }
           <div className={styles.bacground}>
             {getComment().length > 0 &&
               appData.metodRole[appData.myProfile?.role]?.some(

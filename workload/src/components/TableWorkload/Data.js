@@ -30,10 +30,18 @@ export const headersEducator = [
   { key: "position", label: "Должность" },
   { key: "department", label: "Кафедра" },
   { key: "rate", label: "Ставка" },
-  { key: "totalHours", label: "Часы" },
-  { key: "hoursFirstPeriod", label: "Часы период 1" },
-  { key: "hoursSecondPeriod", label: "Часы период 2" },
-  { key: "hoursWithoutPeriod", label: "Часы без периода" },
+
+  { key: "totalHours", label: "Всего часов" },
+  { key: "totalOidHours", label: "Общеинститутские часы" },
+  { key: "totalKafedralHours", label: "Кафедральные часы" },
+
+  { key: "instituteAutumnWorkload", label: "Институтская 1 (осень)" },
+  { key: "instituteSpringWorkload", label: "Институтская 2 (весна)" },
+  { key: "instituteManagementWorkload", label: "Институтская Руководство" },
+
+  { key: "kafedralAutumnWorkload", label: "Кафедральная 1 (осень)" },
+  { key: "kafedralSpringWorkload", label: "Кафедральная 2 (весна)" },
+  { key: "kafedralAdditionalWorkload", label: "Кафедральная Доп. нагрузка" },
 ];
 
 export const tableHeadersLks = [

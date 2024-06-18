@@ -2,11 +2,12 @@ import styles from "./TableTeachers.module.scss";
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import DataContext from "../../context";
-import { getDataEducator } from "../../api/services/AssignApiData";
 import { headersEducator } from "../TableWorkload/Data";
-import { apiEducatorDepartment } from "../../api/services/ApiRequest";
+import { Educator, apiEducatorDepartment } from "../../api/services/ApiRequest";
 import Button from "../../ui/Button/Button";
 import { SamplePoints } from "./SamplePoints/SamplePoints";
+import { ContextFunc } from "./ContextFunc/ContextFunc";
+import { PopUpEditTeacher } from "./PopUpEditTeacher/PopUpEditTeacher";
 
 function TableTeachers(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]);
@@ -15,7 +16,11 @@ function TableTeachers(props) {
   const { appData, basicTabData, checkPar } = React.useContext(DataContext);
   const [sampleShow, setSampleShow] = useState(false);
   const [sampleData, setSampleData] = useState([]);
+  const [selectRows, setSelectRow] = useState(null);
+  const [vizibleCont, setVizibleCont] = useState(false);
   const tableHeaders = headersEducator;
+  const [positionMenu, setPositionMenu] = useState({ x: 0, y: 0 });
+
   useEffect(() => {
     props.changeInput();
   }, []);
@@ -27,30 +32,39 @@ function TableTeachers(props) {
     setSampleData([...modalData]);
   };
 
-  //! заносим данные о преподавателях в состояние
-  React.useEffect(() => {
+  const updateTable = () => {
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 2)) {
-      apiEducatorDepartment().then((data) => {
-        appData.setEducator(data);
-        setFilteredData(data);
-        setUpdatedData(data);
-        setUpdatedHeader(tableHeaders);
+      apiEducatorDepartment().then((res) => {
+        console.log("teatcher ", res);
+        if (res && res.status === 200) {
+          appData.setEducator(res.data);
+          setFilteredData(res.data);
+          setUpdatedData(res.data);
+          setUpdatedHeader(tableHeaders);
+        }
       });
     }
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)) {
-      getDataEducator().then((data) => {
-        appData.setEducator(data);
-        setFilteredData(data);
-        setUpdatedData(data);
-        setUpdatedHeader(tableHeaders);
+      Educator().then((res) => {
+        console.log("teatcher ", res);
+        if (res && res.status === 200) {
+          appData.setEducator(res.data);
+          setFilteredData(res.data);
+          setUpdatedData(res.data);
+          setUpdatedHeader(tableHeaders);
+        }
       });
     }
+  };
+  //! заносим данные о преподавателях в состояние
+  React.useEffect(() => {
+    updateTable();
   }, [basicTabData.actionUpdTabTeach]);
 
   const handleNameClick = (index, id) => {
     props.setEducatorIdforLk(id);
-    console.log("ideducator", id);
-    props.setEducatorData(appData.educator[index]);
+    props.setEducatorData(appData.educator.find((el) => el.id === id));
+    basicTabData.setSearchTerm("");
   };
 
   const dispatch = useDispatch();
@@ -64,6 +78,7 @@ function TableTeachers(props) {
     const updatedHeader = tableHeaders.filter((header) =>
       filters.includes(header.key)
     );
+    console.log("updatedHeader", updatedHeader);
     const updatedData = educator.map((data) => {
       const updatedRow = {};
       Object.keys(data).forEach((key) => {
@@ -83,14 +98,18 @@ function TableTeachers(props) {
       fd = updatedData;
     } else {
       fd = updatedData.filter((row) => {
+        console.log(row);
         return Object.values(row)
           .splice(1)
-          .some((value) =>
-            value
-              .toString()
-              .toLowerCase()
-              .includes(props.searchTerm.toLowerCase())
-          );
+          .some((value) => {
+            if (value !== null) {
+              return value
+                .toString()
+                .toLowerCase()
+                .includes(props.searchTerm.toLowerCase());
+            }
+            return false;
+          });
       });
     }
     setFilteredData(fd);
@@ -101,16 +120,21 @@ function TableTeachers(props) {
     let bg;
     let OgranHours = 900;
     let AllHours = OgranHours * stavka;
-  
-    if (totalHours <= OgranHours - 300) {
+
+    if (totalHours <= AllHours - 300) {
       bg = "#19C20A"; // Зеленый цвет
-    } else if (OgranHours - 300 < totalHours && totalHours <= OgranHours - 100) {
+    } else if (AllHours - 300 < totalHours && totalHours <= AllHours - 100) {
       bg = "#FFD600"; // Желтый цвет
-    } if(totalHours >= OgranHours) {
+    } else {
       bg = "#E81414"; // Красный цвет
     }
     return bg;
   }
+
+  const clickTrRows = (id, x, y) => {
+    setSelectRow(id);
+    setPositionMenu({ x, y });
+  };
 
   return (
     <div className={styles.TableTeachers}>
@@ -166,36 +190,47 @@ function TableTeachers(props) {
             </tr>
           </thead>
           <tbody>
+            {/* onClick={()=>{clickTrRows(row.id)}} */}
             {filteredData.map((row, index) => (
-              <tr key={index}>
-                {Object.keys(row).map((key) => {
-                  if (key === "name") {
+              <tr
+                key={index}
+                className={selectRows === row.id ? styles.SelectedTr : null}
+                onContextMenu={(e) => {
+                  e.preventDefault(); // Предотвращаем стандартное контекстное меню
+                  clickTrRows(row.id, e.clientX, e.clientY); // Передаем координаты курсора
+                }}
+              >
+                {updatedHeader.map((key) => {
+                  if (key.key === "name") {
                     return (
                       <td
-                        key={key}
+                        key={key.key}
                         onClick={() => handleNameClick(index, row.id)}
                         className={styles.tdName}
+                        name={key.key}
                       >
-                        {row[key]}
+                        {row[key.key]}
                       </td>
                     );
-                  } if (key === "totalHours") {
+                  }
+                  if (key.key === "totalHours") {
                     return (
-                      
-                      <td
-                        key={key}
-                      >
+                      <td key={key.key} name={key.key}>
                         <div
-                           style={{backgroundColor: WhyColor(row.totalHours, row.rate)}}
-                        className={styles.tdHours}
+                          style={{
+                            backgroundColor: WhyColor(row.totalHours, row.rate),
+                          }}
+                          className={styles.tdHours}
                         >
-                          {row[key]}
+                          {row[key.key]}
                         </div>
                       </td>
                     );
                   } else {
                     return (
-                      <td key={key}>{key === "id" ? index + 1 : row[key]}</td>
+                      <td key={key.key} name={key.key}>
+                        {key.key === "id" ? index + 1 : row[key.key]}
+                      </td>
                     );
                   }
                 })}
@@ -204,6 +239,25 @@ function TableTeachers(props) {
           </tbody>
         </table>
       </div>
+      {selectRows && (
+        <ContextFunc
+          setVizibleCont={setVizibleCont}
+          updateTable={updateTable}
+          setSelectRow={setSelectRow}
+          selectRows={selectRows}
+          x={positionMenu.x}
+          y={positionMenu.y}
+        />
+      )}
+      {vizibleCont && (
+        <PopUpEditTeacher
+          setVizibleCont={setVizibleCont}
+          IdRows={selectRows}
+          setSelectRow={setSelectRow}
+          updateTable={updateTable}
+          selectRows={filteredData.find((el) => el.id === selectRows)}
+        />
+      )}
     </div>
   );
 }

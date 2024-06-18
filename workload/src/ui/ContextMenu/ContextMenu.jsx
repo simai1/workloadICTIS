@@ -65,7 +65,8 @@ const ContextMenu = (props) => {
 
   //! Выбор преподавателя
   const selectedEducator = (id) => {
-    tabPar.setContextMenuShow(!tabPar.contextMenuShow);
+    // appData.metodRole[appData.myProfile?.role]?.some((el) => el === 9) &&
+    //   tabPar.setContextMenuShow(!tabPar.contextMenuShow);
     setMenuShow("");
 
     const data = {
@@ -100,8 +101,8 @@ const ContextMenu = (props) => {
         );
       });
     } else if (menuShow === "propose") {
-      console.log("popup");
       setPopupOffer(id);
+      console.log("popup", id);
     }
   };
 
@@ -120,7 +121,10 @@ const ContextMenu = (props) => {
         createOffer(offer).then(() => {
           setPopupOffer(null);
           tabPar.setContextMenuShow(false);
-          basicTabData.funUpdateOffers();
+          appData.metodRole[appData.myProfile?.role]?.some((el) => el === 17) &&
+            basicTabData.funUpdateOffers();
+          appData.metodRole[appData.myProfile?.role]?.some((el) => el === 19) &&
+            basicTabData.funUpdateOffersLecturer();
         });
       });
     } else {
@@ -149,10 +153,12 @@ const ContextMenu = (props) => {
       ids: tabPar.selectedTr,
       n: count,
     };
-    console.log("dataContextMenu", dataSel);
     const prev = basicTabData.workloadDataFix.filter((item) =>
       tabPar.selectedTr.some((el) => el === item.id)
     );
+
+    console.log("prev", prev);
+
     // Создаем новый массив для измененных данных
     let updatedData = [...basicTabData.workloadDataFix];
     const funData = splitWorkloadCount(updatedData, tabPar.selectedTr, count);
@@ -290,8 +296,7 @@ const ContextMenu = (props) => {
         tabPar.setFastenedData(mass);
         tabPar.setContextMenuShow(false);
         tabPar.setSelectedTr([]);
-        basicTabData.funUpdateTable()
-
+        basicTabData.funUpdateTable();
       });
     }
   };
@@ -356,16 +361,20 @@ const ContextMenu = (props) => {
               img={false}
             />
           )}
-          {/* {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 31)&& */}
-          
-            <MenuPop btnText={"Закрепить"} func={pinaCell} img={false} />
-          {/* } */}
-          {/* {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 31)&& */}
-            <MenuPop btnText={"Открепить"} func={unPinaCell} img={false} />
-          {/* } */}
-       
+        {/* {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 31)&& */}
+
+        <MenuPop btnText={"Закрепить"} func={pinaCell} img={false} />
+        {/* } */}
+        {/* {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 31)&& */}
+        <MenuPop btnText={"Открепить"} func={unPinaCell} img={false} />
+        {/* } */}
+
         {appData.metodRole[appData.myProfile?.role]?.some(
-          (el) => el === 11
+          (el) =>
+            el === 11 &&
+            basicTabData.workloadDataFix
+              .filter((item) => tabPar.selectedTr.some((el) => el === item.id))
+              .every((it) => it.isSplit === false)
         ) && (
           <MenuPop
             btnText={"Разделить"}

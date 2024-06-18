@@ -68,6 +68,7 @@ export function funSortedFastened(data, fastenedData) {
       }
       return 0; // Не изменять порядок, если оба элемента в secondArray или оба не в secondArray
     });
+
     return sortedArray;
   } else {
     return data;
@@ -90,7 +91,9 @@ export function funFilterSelected(
   selectedFilter,
   colored,
   changedData,
-  fastenedData
+  fastenedData,
+  allCommentsData,
+  allOffersData
 ) {
   const origData = [...data];
   if (selectedFilter === "Выделенные" && colored.length > 0) {
@@ -110,22 +113,38 @@ export function funFilterSelected(
       fastenedData.some((el) => el.workloadId === item.id)
     );
     return fd;
+  } else if (selectedFilter === "Комментарии") {
+    let fd = [];
+    fd = origData.filter((item) =>
+      allCommentsData.some((el) => el.workloadId === item.id)
+    );
+    return fd;
+  } else if (selectedFilter === "Предложения") {
+    let fd = [];
+    fd = origData.filter((item) =>
+      allOffersData.some((el) => el.offer.workloadId === item.id)
+    );
+    return fd;
   } else {
     return data;
   }
 }
 
 export function getTextForNotData(selectedFilter) {
+  console.log("selectedFilter", selectedFilter);
   if (selectedFilter === "Измененные") {
     return "Нет измененных данных";
-  }
-  if (selectedFilter === "Закрепленные") {
+  } else if (selectedFilter === "Закрепленные") {
     return "Нет закрепленных данных";
-  }
-  if (selectedFilter === "Выделенные") {
+  } else if (selectedFilter === "Выделенные") {
     return "Нет выделенных данных";
-  }
-  if (selectedFilter === "Все дисциплины") {
+  } else if (selectedFilter === "Все дисциплины") {
+    return "В таблице нет данных";
+  } else if (selectedFilter === "Комментарии") {
+    return "В таблице нет комментариев";
+  } else if (selectedFilter === "Предложения") {
+    return "В таблице нет предложений";
+  } else {
     return "В таблице нет данных";
   }
 }
@@ -146,12 +165,16 @@ export function funfastenedDataSort(data, fastenedData) {
 
 //! функция удаления обьекта по id при нажатии на применить удаление
 export function deleteItemBuffer(buff, itemId, type) {
+  console.log("fundata", buff, itemId, type);
+
   let itemData = null;
   let newBuffer = buff
     .map((item) => {
       if (item.request === type) {
+        console.log("item.request true", type, "id");
         let p = { ...item };
         itemData = p;
+        p.data.ids = p.data.ids.filter((id) => id !== itemId.slice(0, -1));
         p.data.ids = p.data.ids.filter((id) => id !== itemId);
         if (p.data.ids.length > 0) {
           return p;

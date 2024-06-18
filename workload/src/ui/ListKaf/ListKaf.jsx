@@ -24,15 +24,18 @@ function ListKaf({
     }
   };
   const addKafedra = (el) => {
-    console.log(el);
+    if (el.name === "ОИД") {
+      basicTabData.setselectISOid(true);
+    } else {
+      basicTabData.setselectISOid(false);
+    }
+    console.log("selectEl", el);
+    basicTabData.funUpdateTable(el.id);
     basicTabData.setnameKaf(el.name);
     setactiveList(!activeList);
-    basicTabData.setselectISOid(false);
-    tabPar.setDataIsOid(false);
-    setTableMode("cathedrals");
-    basicTabData.funUpdateTable(el.id);
-    tabPar.setSelectedFilter("Все Дисциплины");
     setopenLists("");
+    setTableMode("cathedrals");
+    tabPar.setSelectedFilter("Все Дисциплины");
     appData.setSelectedComponent("Disciplines");
   };
 
@@ -55,16 +58,16 @@ function ListKaf({
 
   //! функция при клике на история
   const clickHistory = (item) => {
-    apiGetHistory().then((req) => {
-      basicTabData.setHistoryChanges(req);
-      setactiveList(false);
-      setopenLists("");
-      
-    });
+    setactiveList(false);
+    setopenLists("");
     tabPar.setSelectedFilter("Все Дисциплины");
     basicTabData.setnameKaf(item.name);
     appData.setSelectedComponent("History");
   };
+
+  useEffect(() => {
+    console.log("openLists", openLists);
+  }, [openLists]);
 
   return (
     <div ref={refDiv} className={styles.List}>
@@ -79,8 +82,8 @@ function ListKaf({
           <input
             readOnly
             style={{
-              backgroundColor: !basicTabData.selectISOid ? "#3b28cc" : "#fff",
-              color: !basicTabData.selectISOid ? "#fff" : "#000",
+              backgroundColor: !activeList ? "#3b28cc" : "#fff",
+              color: !activeList ? "#fff" : "#000",
             }}
             onClick={() => setactiveList(!activeList)}
             value={basicTabData.nameKaf}
@@ -91,7 +94,7 @@ function ListKaf({
             onClick={() => setactiveList(!activeList)}
             className={styles.arrowBot}
           >
-            {!basicTabData.selectISOid && (
+            {!activeList && (
               <img
                 src={arrowWhite}
                 style={{
@@ -109,29 +112,79 @@ function ListKaf({
             )}
           </span>
         </div>
-        {activeList && (
+        {activeList && basicTabData.tableDepartment.length !== 1 && (
           <div className={styles.ListData}>
-            {dataList.map((item, index) => (
-              <div>
+            <p className={styles.NameForList}>Общеинститутские</p>
+            {/* {  <p className={styles.NameForListSecond} onClick={() => addKafedra("ОИД")}>ОИД</p>} */}
+
+            <div key={"ОИД"} className={styles.ListDatas}>
+              {dataList[1].name === "ОИД" && (
                 <p
-                  className={styles.NameForList}
-                  onClick={
-                    ()=>{
-                      if(item.blocked){
-                        if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 28)){
-                          setopenList(index)
-                        }
+                  className={styles.NameForListSecond}
+                  onClick={() => {
+                    if (dataList[1].blocked) {
+                      if (
+                        appData.metodRole[appData.myProfile?.role]?.some(
+                          (el) => el === 28
+                        )
+                      ) {
+                        setopenList(0);
                       }
-                      else{
-                        addKafedra(item)
-                      }
+                    } else {
+                      addKafedra(dataList[1]);
                     }
-                  
-                  }
-                  style={item.blocked ? { color: "#E81414" } : null}
+                  }}
+                  style={dataList[1].blocked ? { color: "#E81414" } : null}
                 >
-                  {item.name}
+                  {dataList[1].name}
                 </p>
+              )}
+              {dataList[1].blocked && openLists === 0 && (
+                <div className={styles.ListVRot}>
+                  <p
+                    className={styles.NameForList}
+                    onClick={() => addKafedra(dataList[1])}
+                  >
+                    Нагрузка
+                  </p>
+                  {appData.metodRole[appData.myProfile?.role]?.some(
+                    (el) => el === 29
+                  ) && (
+                    <p
+                      className={styles.NameForList}
+                      onClick={() => clickHistory(dataList[1])}
+                    >
+                      История
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <p className={styles.NameForList}>Кафедральные</p>
+            {dataList.map((item, index) => (
+              <div key={index} className={styles.ListDatas}>
+                {item.name !== "ОИД" && (
+                  <p
+                    className={styles.NameForListSecond}
+                    onClick={() => {
+                      if (item.blocked) {
+                        if (
+                          appData.metodRole[appData.myProfile?.role]?.some(
+                            (el) => el === 28
+                          )
+                        ) {
+                          setopenList(index);
+                        }
+                      } else {
+                        addKafedra(item);
+                      }
+                    }}
+                    style={item.blocked ? { color: "#E81414" } : null}
+                  >
+                    {item.name}
+                  </p>
+                )}{" "}
                 {item.blocked && openLists === index && (
                   <div className={styles.ListVRot}>
                     <p
@@ -140,12 +193,16 @@ function ListKaf({
                     >
                       Нагрузка
                     </p>
-                    <p
-                      className={styles.NameForList}
-                      onClick={() => clickHistory(item)}
-                    >
-                      История
-                    </p>
+                    {appData.metodRole[appData.myProfile?.role]?.some(
+                      (el) => el === 29
+                    ) && (
+                      <p
+                        className={styles.NameForList}
+                        onClick={() => clickHistory(item)}
+                      >
+                        История
+                      </p>
+                    )}
                   </div>
                 )}
               </div>

@@ -38,12 +38,6 @@ router
         asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST])),
         asyncRoute(eduController.getPositions)
     );
-router
-    .route('/get/typeOfEmployments')
-    .get(
-        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.METHODIST, role.DIRECTORATE])),
-        asyncRoute(eduController.getTypeOfEmployments)
-    );
 router.route('/get/educatorsByDepartment').get(asyncRoute(eduController.getEducatorsByDepartment));
 
 export default router;

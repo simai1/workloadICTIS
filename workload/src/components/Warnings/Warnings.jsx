@@ -20,14 +20,13 @@ function Warnings(props) {
     props.setSelectedComponent("Teachers"); // переходим к компоненту с преподавателями
     props.setEducatorIdforLk(id);
   };
-
   useEffect(() => {
     socketConnect().then((data) => {
       console.log("socketConnect", data);
       getAllWarnin(appData.setAllWarningMessage);
     });
-    console.log('allWarningMessage',appData.allWarningMessage)
-  }, []);
+    console.log("allWarningMessage", appData.allWarningMessage);
+  }, [appData.allWarningMessage]);
 
   //! закрытие модального окна при нажатии вне него
   const refLO = useRef(null);

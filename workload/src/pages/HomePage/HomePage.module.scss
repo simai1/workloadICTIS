@@ -53,7 +53,7 @@ body {
             background-color: #efedf3;
             font-size: 18px;
             font-weight: 500;
-            color: #929292;
+            color: #000000;
           }
           .hedaer_search::-webkit-input-placeholder {
             color: #b0b0b0;
@@ -70,13 +70,13 @@ body {
         // }
       }
     }
-    .blockedTextTable{
+    .blockedTextTable {
       display: flex;
       position: relative;
-      color: #E81414;
+      color: #e81414;
       top: 50px;
       align-items: center;
-      img{
+      img {
         margin-right: 5px;
         position: relative;
         top: 2px;
@@ -192,6 +192,15 @@ body {
     transition: opacity 0.15s linear;
   }
 
+  .perenesen {
+    button {
+      @include button(var(--blue-color), #fff, 10px, 16px);
+      font-size: 18px;
+      border: none;
+    }
+    margin-left: 10px;
+  }
+
   .saveBuffre {
     display: flex;
     flex-direction: row;
@@ -200,9 +209,11 @@ body {
       display: flex;
       background-color: #fff;
       border-radius: 8px;
-      width: 45px;
       height: 45px;
       padding: 12px;
+      .text {
+        padding-right: 10px;
+      }
       cursor: pointer;
     }
     .btnMenuBox:nth-child(1) {
@@ -211,5 +222,70 @@ body {
     .btnMenuBox:nth-child(2) {
       margin-right: 15px;
     }
+  }
+
+  .nosavedData {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 400;
+    background-color: #4d4d4d93;
+    @include boxShadow;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    font-weight: 500;
+
+    .nosavedDataInner {
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      width: 300px;
+      // height: 220px;
+      background-color: #fff;
+    }
+    .loader {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 90px;
+      height: 90px;
+      padding: 10px;
+      margin-bottom: 20px;
+
+      .loaderInner {
+        width: 100%;
+        height: 100%;
+        border: 6px solid var(--blue-color);
+        border-bottom-color: transparent;
+        border-radius: 50%;
+        display: inline-block;
+        box-sizing: border-box;
+        animation: rotation 1s linear infinite;
+      }
+
+      @keyframes rotation {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    }
+    button {
+      @include button(var(--blue-color), #fff, 10px, 10px);
+      margin-top: 10px;
+      border: none;
+    }
+  }
+  .countSet {
+    margin-left: 65px;
+    margin-top: 5px;
   }
 }

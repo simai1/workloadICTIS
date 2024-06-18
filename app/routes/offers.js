@@ -15,12 +15,17 @@ router
         asyncRoute(offersController.getAllOffers)
     );
 router
+    .route('/getAllOffersByLecture')
+    .get(
+        asyncRoute(checkRole([role.LECTURER])),
+        asyncRoute(offersController.getAllOffersByLecture)
+    )
+router
     .route('/createOffer')
     .post(
         asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.LECTURER])), 
         asyncRoute(offersController.createOffer)
     );
-
 router
     .route('/introduceOrDecline/:offerId')
     .post(
