@@ -9,7 +9,6 @@ import { SamplePoints } from "./SamplePoints/SamplePoints";
 import { ContextFunc } from "./ContextFunc/ContextFunc";
 import { PopUpEditTeacher } from "./PopUpEditTeacher/PopUpEditTeacher";
 
-
 function TableTeachers(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]);
   const [updatedData, setUpdatedData] = useState([]);
@@ -17,8 +16,8 @@ function TableTeachers(props) {
   const { appData, basicTabData, checkPar } = React.useContext(DataContext);
   const [sampleShow, setSampleShow] = useState(false);
   const [sampleData, setSampleData] = useState([]);
-  const [selectRows, setSelectRow] = useState(null)
-  const [vizibleCont, setVizibleCont] = useState(false)
+  const [selectRows, setSelectRow] = useState(null);
+  const [vizibleCont, setVizibleCont] = useState(false);
   const tableHeaders = headersEducator;
   const [positionMenu, setPositionMenu] = useState({ x: 0, y: 0 });
 
@@ -37,6 +36,7 @@ function TableTeachers(props) {
   React.useEffect(() => {
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 2)) {
       apiEducatorDepartment().then((res) => {
+        console.log("teatcher ", res);
         if (res && res.status === 200) {
           appData.setEducator(res.data);
           setFilteredData(res.data);
@@ -57,7 +57,7 @@ function TableTeachers(props) {
       });
     }
   }, [basicTabData.actionUpdTabTeach]);
-  const updateTable = ()=>{
+  const updateTable = () => {
     Educator().then((res) => {
       console.log("teatcher ", res);
       if (res && res.status === 200) {
@@ -67,10 +67,9 @@ function TableTeachers(props) {
         setUpdatedHeader(tableHeaders);
       }
     });
-  }
+  };
   const handleNameClick = (index, id) => {
     props.setEducatorIdforLk(id);
-    console.log("ideducator", id);
     props.setEducatorData(appData.educator[index]);
   };
 
@@ -85,7 +84,7 @@ function TableTeachers(props) {
     const updatedHeader = tableHeaders.filter((header) =>
       filters.includes(header.key)
     );
-    console.log("updatedHeader", updatedHeader)
+    console.log("updatedHeader", updatedHeader);
     const updatedData = educator.map((data) => {
       const updatedRow = {};
       Object.keys(data).forEach((key) => {
@@ -126,13 +125,9 @@ function TableTeachers(props) {
 
     if (totalHours <= AllHours - 300) {
       bg = "#19C20A"; // Зеленый цвет
-    } else if (
-      AllHours - 300 < totalHours &&
-      totalHours <= AllHours - 100
-    ) {
+    } else if (AllHours - 300 < totalHours && totalHours <= AllHours - 100) {
       bg = "#FFD600"; // Желтый цвет
-    }
-    else{
+    } else {
       bg = "#E81414"; // Красный цвет
     }
     return bg;
@@ -140,10 +135,8 @@ function TableTeachers(props) {
 
   const clickTrRows = (id, x, y) => {
     setSelectRow(id);
-    console.log("settId", id);
     setPositionMenu({ x, y });
   };
-
 
   return (
     <div className={styles.TableTeachers}>
@@ -199,45 +192,47 @@ function TableTeachers(props) {
             </tr>
           </thead>
           <tbody>
-          {/* onClick={()=>{clickTrRows(row.id)}} */}
+            {/* onClick={()=>{clickTrRows(row.id)}} */}
             {filteredData.map((row, index) => (
-              <tr 
-                key={index} 
+              <tr
+                key={index}
                 className={selectRows === row.id ? styles.SelectedTr : null}
                 onContextMenu={(e) => {
                   e.preventDefault(); // Предотвращаем стандартное контекстное меню
                   clickTrRows(row.id, e.clientX, e.clientY); // Передаем координаты курсора
                 }}
               >
-                {Object.keys(row).map((key) => {
-                  if (key === "name") {
+                {updatedHeader.map((key) => {
+                  if (key.key === "name") {
                     return (
                       <td
-                        key={key}
+                        key={key.key}
                         onClick={() => handleNameClick(index, row.id)}
                         className={styles.tdName}
-                        name={key}
+                        name={key.key}
                       >
-                        {row[key]}
+                        {row[key.key]}
                       </td>
                     );
                   }
-                  if (key === "totalHours") {
+                  if (key.key === "totalHours") {
                     return (
-                      <td key={key} name={key}>
+                      <td key={key.key} name={key.key}>
                         <div
                           style={{
                             backgroundColor: WhyColor(row.totalHours, row.rate),
                           }}
                           className={styles.tdHours}
                         >
-                          {row[key]}
+                          {row[key.key]}
                         </div>
                       </td>
                     );
                   } else {
                     return (
-                      <td key={key} name={key}>{key === "id" ? index + 1 : row[key]}</td>
+                      <td key={key.key} name={key.key}>
+                        {key.key === "id" ? index + 1 : row[key.key]}
+                      </td>
                     );
                   }
                 })}
@@ -246,8 +241,25 @@ function TableTeachers(props) {
           </tbody>
         </table>
       </div>
-      {selectRows&& <ContextFunc setVizibleCont={setVizibleCont} updateTable={updateTable} setSelectRow={setSelectRow} selectRows={selectRows} x={positionMenu.x} y={positionMenu.y}/>}
-      {vizibleCont && <PopUpEditTeacher  setVizibleCont={setVizibleCont} IdRows={selectRows} setSelectRow={setSelectRow} updateTable={updateTable} selectRows={filteredData.find((el)=>el.id === selectRows)}/>}
+      {selectRows && (
+        <ContextFunc
+          setVizibleCont={setVizibleCont}
+          updateTable={updateTable}
+          setSelectRow={setSelectRow}
+          selectRows={selectRows}
+          x={positionMenu.x}
+          y={positionMenu.y}
+        />
+      )}
+      {vizibleCont && (
+        <PopUpEditTeacher
+          setVizibleCont={setVizibleCont}
+          IdRows={selectRows}
+          setSelectRow={setSelectRow}
+          updateTable={updateTable}
+          selectRows={filteredData.find((el) => el.id === selectRows)}
+        />
+      )}
     </div>
   );
 }

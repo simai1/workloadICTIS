@@ -129,6 +129,17 @@ export const Comment = async () => {
   }
 };
 
+//! получаем комментарии к нагрузкам от лектора
+export const CommentsLecktorer = async () => {
+  try {
+    const response = await http.get(`${server}/comment/getOwnComments`);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
 //! получение предупреждений о перегрузках
 export const getAllWarningMessage = async () => {
   try {

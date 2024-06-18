@@ -18,6 +18,18 @@ export function filteredWorkload(data, text) {
     );
   });
 }
+//! фильтрация массива истории
+export function filteredWorkloadHistory(data, text) {
+  const fd = [...data];
+  return fd.filter((row) => {
+    return Object.values(row.value).some(
+      (value) =>
+        value !== null &&
+        value !== undefined &&
+        value.toString().toLowerCase().includes(text.toLowerCase())
+    );
+  });
+}
 
 //! функция поднятия закрпепленных наверх таблицы
 export function funSortedFastened(data, fastenedData) {

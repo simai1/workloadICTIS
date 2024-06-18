@@ -188,11 +188,12 @@ function Table(props) {
                   getConfirmation={getConfirmation(item.id)}
                   checked={tabPar.selectedTr.includes(item.id)}
                 />
-                {basicTabData.tableHeaders.map((itemKey) => (
+                {basicTabData.tableHeaders.map((itemKey, index) => (
                   <TableTd
-                    key={item.id + "td" + itemKey.key}
+                    key={item.id + "td" + itemKey.key + "_" + index}
                     item={item}
                     itemKey={itemKey}
+                    ind={index}
                     index={visibleDataPar.startData + number}
                   />
                 ))}

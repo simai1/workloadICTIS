@@ -60,7 +60,7 @@ export default {
             for (const workloadDto of workloadsDto) {
                 if (
                     departments[workloadDto.department] === workload.department &&
-                    workloadDto.specialty === workload.specialty
+                    workloadDto.discipline === workload.discipline
                 ) {
                     workloadDto.hoursFirstPeriod += workload.period === 1 ? workload.hours : 0;
                     workloadDto.hoursSecondPeriod += workload.period === 2 ? workload.hours : 0;
