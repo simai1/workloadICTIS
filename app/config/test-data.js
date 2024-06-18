@@ -257,7 +257,7 @@ export const educators = [
     },
     {
         name: 'Суханов Александр Сергеевич',
-        department: 6,
+        department: 11,
         email: 'sukhanov@sfedu.ru',
         position: 5,
         typeOfEmployment: 1,

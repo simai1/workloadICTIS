@@ -2,6 +2,7 @@ import XLSX from 'xlsx';
 import Educator from '../models/educator.js';
 import Workload from '../models/workload.js';
 import FullNameDepartments from '../config/full-name-departments.js';
+import SummaryWorkload from '../models/summary-workload.js';
 import departments from '../config/departments.js';
 import { sequelize } from '../models/index.js';
 import HeaderTranslation from '../config/header_translation.js';
@@ -14,11 +15,7 @@ export default {
     async parseWorkload(req, res) {
         const numberDepartment = req.params.numberDepartment;
         const workbook = XLSX.readFile(req.file.path);
-        //const trimString = extractFileNameWithoutExtension(req.file.originalname);
         
-        // if(departments[trimString] != numberDepartment){
-        //     throw new Error('Подгружен файл, не соответствующий выбарнной кафедры');
-        // }
         const recordsToDelete = await Workload.findAll({
             where: {
                 department: numberDepartment,
@@ -30,6 +27,7 @@ export default {
                 where: {
                     id: record.id,
                 },
+                individualHooks: true,
             });
         }
 
@@ -128,7 +126,6 @@ export default {
                         numberPart = 0;
                     }
                     newEducator.rate = numberPart;
-                    newEducator.typeOfEmployment = 3;
                     await Educator.create(newEducator);
                 }
             } catch (e) {
@@ -146,12 +143,3 @@ export default {
         return res.json({ status: 'ok' });
     },
 };
-
-function extractFileNameWithoutExtension(filePath) {
-    const dotIndex = filePath.lastIndexOf('.');
-    const newString = filePath.slice(0, dotIndex);
-    const arrayFromInput = newString.split(' ');
-    let resString = arrayFromInput[0];
-    if (resString.lastIndexOf('.') !== -1) resString = arrayFromInput[1];
-    return resString.replace(/\s+/g, '');
-}
