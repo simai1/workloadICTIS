@@ -70,16 +70,23 @@ export function PopUpEditTeacher(props) {
     let position;
 
     !Number(dataNewEdicator?.department)
-      ? (depart = dataKaf.find((el) => el.name === dataNewEdicator?.department).id)
+      ? (depart = dataKaf.find(
+          (el) => el.name === dataNewEdicator?.department
+        ).id)
       : (depart = dataNewEdicator?.department);
     !Number(dataNewEdicator?.position)
-      ? (position = dataListPosition.find((el) => el.name === dataNewEdicator?.position).id)
+      ? (position = dataListPosition.find(
+          (el) => el.name === dataNewEdicator?.position
+        ).id)
       : (position = dataNewEdicator?.position);
 
     const data = {
       name: dataNewEdicator?.name,
       position: position,
-      rate: Number(dataNewEdicator?.rate.replace(",", ".")),
+      rate:
+        typeof dataNewEdicator?.rate === "string"
+          ? Number(dataNewEdicator?.rate.replace(",", "."))
+          : dataNewEdicator?.rate,
       department: depart,
     };
 
@@ -96,7 +103,10 @@ export function PopUpEditTeacher(props) {
 
   return (
     <div className={styles.Mt}>
-      <PopUpContainer setVizibleCont={props.setVizibleCont} title={"Редактирование Преподавателя"}>
+      <PopUpContainer
+        setVizibleCont={props.setVizibleCont}
+        title={"Редактирование Преподавателя"}
+      >
         <div className={styles.mainPop__inner}>
           <div className={styles.inputBlock}>
             <Input
@@ -122,7 +132,19 @@ export function PopUpEditTeacher(props) {
               value={dataNewEdicator.rate}
               type="number"
             />
-            {!isRateValid && <div className={styles.error} style={{color:"red", position: "relative", left:"80px", top:"-20px"}}>Ставка должна быть от 0 до 1</div>}
+            {!isRateValid && (
+              <div
+                className={styles.error}
+                style={{
+                  color: "red",
+                  position: "relative",
+                  left: "80px",
+                  top: "-20px",
+                }}
+              >
+                Ставка должна быть от 0 до 1
+              </div>
+            )}
             <List
               dataList={dataKaf}
               Textlabel="Кафедра"
