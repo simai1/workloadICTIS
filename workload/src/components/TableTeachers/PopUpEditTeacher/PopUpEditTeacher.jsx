@@ -34,7 +34,7 @@ export function PopUpEditTeacher(props) {
 
   const dataKaf = [
     { id: 1, name: "БИТ" },
-    { id: 2, name: "ВМ" },
+    { id: 2, name: "ИИТиС" },
     { id: 3, name: "ВТ" },
     { id: 4, name: "ИАСБ" },
     { id: 5, name: "ИБТКС" },
@@ -44,6 +44,7 @@ export function PopUpEditTeacher(props) {
     { id: 9, name: "САИТ" },
     { id: 10, name: "САПР" },
     { id: 11, name: "СиПУ" },
+    { id: 12, name: "ФМОИО" },
   ];
 
   const handleInputChange = (name, value) => {
