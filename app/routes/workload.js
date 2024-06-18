@@ -4,22 +4,22 @@ import { asyncRoute } from '../utils/errors.js';
 import verify from '../middlewares/verify-token.js';
 import role from '../config/roles.js';
 import checkRole from '../middlewares/checkRoles.js';
-import checkHours from '../utils/notification.js';
+ // import checkHours from '../utils/notification.js';
 
 const router = Router();
 router.use(verify.general);
 
 router
-    .route('/:department')
+  .route('/split')
+  .post(
+    asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE])),
+    asyncRoute(workloadController.splitRow)
+  );
+router
+    .route('/getDepartment/:department')
     .get(
         asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST])),
         asyncRoute(workloadController.getDepartment)
-    );
-router
-    .route('/split')
-    .post(
-        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE])), 
-        asyncRoute(workloadController.splitRow)
     );
 router
     .route('/faculty')
@@ -50,7 +50,7 @@ router
 router
     .route('/map')
     .post(
-        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE])), 
+        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE])),
         asyncRoute(workloadController.mapRow)
     );
 router
@@ -68,7 +68,7 @@ router
 router
     .route('/')
     .get(
-        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST])),
+        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST, role.EDUCATOR, role.LECTURER])),
         asyncRoute(workloadController.getAllWorkload)
     );
 router
@@ -83,4 +83,22 @@ router
         asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.EDUCATOR, role.METHODIST, role.LECTURER, role.DIRECTORATE])),
         asyncRoute(workloadController.getDepartmentWorkload)
     );
+router
+    .route('/get/usableDepartments')
+    .get(
+        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST, role.LECTURER, role.EDUCATOR])),
+        asyncRoute(workloadController.getUsableDepartments)
+    );
+router
+  .route('/block/:department')
+  .patch(
+    asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE])),
+    asyncRoute(workloadController.blockWorkload)
+  );
+router
+  .route('/unblock/:department')
+  .patch(
+    asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE])),
+    asyncRoute(workloadController.unblockWorkload)
+  );
 export default router;

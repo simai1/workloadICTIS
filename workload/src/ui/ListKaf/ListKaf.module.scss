@@ -1,0 +1,84 @@
+@import "./../../style/colors.scss";
+@import "./../../style/mixin.scss";
+
+.List {
+  display: flex;
+  justify-content: center;
+  z-index: 120;
+  margin-top: -4px;
+
+ input {
+    @include input-text(225px, 8px);
+    margin-bottom: 18px;
+    height: 44px;
+    font-size: 16px;
+    color: #ffffff;
+    background-color: #3b28cc;
+    &:hover {
+      cursor: pointer;
+    }
+  
+  }
+ 
+  span {
+    cursor: pointer;
+  }
+  .inputList::placeholder{
+    color: #adadad;
+  }
+  .ListCont {
+    position: relative;
+    color: #ffffff;
+  }
+  .arrowBot img {
+    position: absolute;
+    right: 10px;
+    top: 22px;
+    transform: rotate(-90deg);
+    z-index: 150;
+  }
+  .ListData {
+    width: auto;
+    position: relative;
+    top: -62px;
+    padding: 10px;
+    // padding-top: 10px;
+    padding-left: 10px;
+    border-radius: 8px;
+    box-shadow: 4px 4px 20px 0px rgba(0, 0, 0, 0.1490196078);
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid rgb(168, 167, 167);
+    // background-color: #fff;
+    p{
+      margin: 0px;
+    }
+    .NameForList {
+      font-size: 18px;
+    }
+    .NameForListSecond{
+      font-size: 18px;
+      margin-left: 15px;
+      transition: 0.15s linear all;
+      &:hover{
+        cursor: pointer;
+        opacity: 0.6;
+      }
+    }
+    .ListVRot{
+      margin-left: 15px;
+      padding-left: 10px;
+      border-left: #DDDDDD 1px solid;
+          .NameForList{
+            transition: 0.15s linear all;
+            &:hover{
+              cursor: pointer;
+              opacity: 0.6;
+            }
+          }
+    }
+    .ListDatas{
+      border-left: #DDDDDD 1px solid;
+    }
+  }
+}

@@ -1,0 +1,752 @@
+@import "./../../style/colors.scss";
+@import "./../../style/mixin.scss";
+
+// высота всех tr td
+$heightCell: 150px;
+.NotData {
+  position: relative;
+
+  tr {
+    height: 150px;
+
+    .tdfix {
+      position: sticky;
+      left: 64px;
+      background-color: #b3b0b0;
+      height: 150px;
+      &:after {
+        position: absolute;
+        display: flex;
+        content: "";
+        background-color: var(--bgraund);
+        height: 150px;
+        left: -64px;
+        top: 0;
+        width: 64px;
+      }
+    }
+    .tdfix {
+      position: sticky;
+      left: 60px;
+    }
+    width: 100%;
+    .notdatadiv {
+      position: fixed;
+      width: 100%;
+      left: 0px;
+      font-size: 22px;
+      font-weight: 500;
+      transform: translateY(-15px);
+    }
+  }
+}
+.DataGrid {
+  display: flex;
+  width: 100%;
+  height: 80vh;
+  padding-left: 64px;
+}
+.tabledisciplinesMain {
+  display: flex;
+  // width: 100%;
+  height: 76vh;
+  overflow: auto;
+  padding-left: 64px;
+  margin-right: 52px;
+
+  &::after {
+    content: "";
+    background-color: var(--bgraund);
+    width: 64px;
+    height: 100%;
+    position: absolute;
+    z-index: 1;
+    left: 0px;
+  }
+
+  .contextShow {
+    position: absolute;
+    z-index: 100;
+    @include boxShadow;
+    background-color: #fff;
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+
+  .table {
+    width: 100vw;
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    background-color: #fff;
+    font-size: 14px;
+    font-weight: 400;
+    // table-layout: fixed; /* Фиксированная ширина ячеек */
+    position: relative; /* Относительное позиционирование для таблицы */
+
+    //history
+    .after {
+      background-color: #ff8a8a;
+    }
+    .before {
+      background-color: rgb(218, 255, 161);
+    }
+    .opasiti {
+      opacity: 0.5;
+    }
+    .border0 {
+      td {
+        background-color: rgb(242, 242, 242);
+      }
+    }
+    .arrow {
+      position: absolute;
+      bottom: 0;
+      left: 14px;
+    }
+    .type {
+      position: absolute;
+      z-index: 300;
+      left: 24px;
+      top: 0;
+      color: red;
+      font-weight: 500;
+    }
+    // .border1 {
+    //   border-top: 1px solid #000000;
+    //   border-left: 1px solid #000000;
+    //   border-right: 1px solid #000000;
+    // }
+    // .border2 {
+    //   border-left: 1px solid #000000;
+    //   border-right: 1px solid #000000;
+    // }
+    // .border3 {
+    //   border-bottom: 1px solid #000000;
+    //   border-left: 1px solid #000000;
+    //   border-right: 1px solid #000000;
+    // }
+
+    .gettdInner {
+      max-height: 300px;
+      overflow-wrap: break-word;
+      word-break: break-all;
+      hyphens: auto;
+      overflow-x: hidden;
+      overflow-y: auto;
+      position: absolute;
+      background-color: inherit;
+      width: 100%;
+      top: 10px;
+      padding: 4px;
+      box-shadow: 0px 3px 18px rgba(0, 0, 0, 0.15);
+      z-index: 200;
+      @include scrollStyle(4px, 4px);
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      background-color: var(--gray-color);
+      z-index: 11;
+    }
+    td {
+      background-color: #fff;
+      box-sizing: border-box;
+      min-height: $heightCell;
+      padding: 4px 10px;
+      max-height: $heightCell;
+      .textarea {
+        width: 100%;
+        height: 100%;
+        resize: none !important;
+        border: none;
+        box-shadow: 0px 0px 7px #b3b0b0;
+        border-radius: 8px;
+        padding: 5px;
+        outline: none;
+      }
+      .svg_textarea {
+        display: flex;
+        justify-content: end;
+        svg {
+          margin: 3px;
+          cursor: pointer;
+        }
+
+        svg:hover * {
+          fill: #3b28cc;
+        }
+      }
+    }
+
+    tr:hover {
+      position: relative;
+      td {
+        // background-color: var(--tr-bg);
+        // background-color: inherit;
+        box-shadow: inset 0 2px 0 0 #9fa1f4, inset 0 -2px 0 0 #9fa1f4;
+      }
+    }
+
+    td {
+      .tdInner:hover {
+        background-color: var(--td-bg);
+        border-radius: 8px;
+        padding: 5px 0px;
+      }
+    }
+    th[name="specialty"],
+    td[name="specialty"] {
+      @include customTd(200px);
+    }
+
+    th[name="core"],
+    td[name="core"] {
+      @include customTd(200px);
+    }
+
+    th[name="curriculumUnit"],
+    td[name="curriculumUnit"] {
+      @include customTd(200px);
+    }
+
+    th[name="curriculum"],
+    td[name="curriculum"] {
+      @include customTd(200px);
+      // @include customTdFixWidth;
+    }
+
+    // td[name="groups"] {
+    //   @include customTdFixWidth;
+    // }
+    // td[name="core"] {
+    //   // @include customTdFixWidth;
+    //   overflow: hidden;
+    //   text-overflow: ellipsis;
+    //   white-space: normal;
+    // }
+
+    th[name="period"],
+    td[name="period"] {
+      @include customTd(110px);
+    }
+
+    th[name="numberOfStudents"],
+    td[name="numberOfStudents"] {
+      @include customTd(120px);
+    }
+
+    th[name="hours"],
+    td[name="hours"] {
+      @include customTd(120px);
+    }
+
+    th[name="audienceHours"],
+    td[name="audienceHours"] {
+      @include customTd(120px);
+    }
+    td[name="workload"] {
+      &::after {
+        content: "";
+        position: absolute;
+        background-color: var(--td-bg);
+        box-shadow: 5px 0px 15px #b3b0b0;
+        opacity: 0.5;
+        width: 2px;
+        height: 100%;
+        right: 0;
+        top: 0;
+      }
+    }
+
+    th[name="ratingControlHours"],
+    td[name="ratingControlHours"] {
+      @include customTd(120px);
+    }
+
+    th,
+    td {
+      // padding: 17px 20px;
+      min-width: 160px;
+      max-width: 160px;
+      box-sizing: border-box;
+      // border: 1px solid #a6a6a6;
+    }
+
+    .trBlocked {
+      td {
+        background-color: var(--color--blockedBg);
+      }
+      pointer-events: none;
+    }
+
+    .trDeleted {
+      td {
+        background-color: var(--color--deletedBg);
+      }
+      pointer-events: none;
+    }
+    .tdChanged {
+      .tdInner {
+        background-color: var(--red-color);
+        border-radius: 8px;
+        padding: 5px 0px;
+        color: #fff;
+      }
+      .tdInner:hover {
+        background-color: var(--red-color);
+      }
+    }
+
+    .trPlug {
+      background-color: #fff;
+      padding: 0;
+      margin: 0;
+    }
+    .th_inner {
+      display: flex;
+      justify-content: center;
+      cursor: pointer;
+      img {
+        padding: 0 6px;
+      }
+    }
+
+    thead {
+      tr {
+        background-color: var(--gray-color);
+        td:first-child {
+          border-radius: 8px 0 0 0;
+        }
+      }
+      td {
+        position: sticky;
+        top: 0;
+        left: 0;
+        z-index: 15;
+      }
+    }
+    tbody {
+      tr {
+        padding: 0;
+        margin: 0;
+        min-height: $heightCell;
+        max-height: $heightCell;
+        height: $heightCell;
+      }
+
+      tr[name="bottomBorder"] {
+        // border-bottom: 4px solid #3b28cc;
+        &::after {
+          content: "";
+          position: absolute;
+          background-color: #b3b0b0;
+          width: 100%;
+          height: 2px;
+          left: 0;
+        }
+      }
+
+      td {
+        min-height: $heightCell;
+        max-height: $heightCell;
+        width: $heightCell;
+        // vertical-align: top;
+        .fastenedImg {
+          display: flex;
+          position: absolute;
+          top: 10px;
+          left: 10px;
+        }
+      }
+    }
+
+    td:nth-child(1) {
+      @include stickyTd(60px, 0);
+      z-index: 1;
+    }
+    td:nth-child(2) {
+      @include stickyTd(60px, 60px);
+    }
+    td:nth-child(3) {
+      @include stickyTd(200px, 120px);
+    }
+    td:nth-child(4) {
+      @include stickyTd(160px, 320px);
+    }
+
+    th:nth-child(1) {
+      @include stickyTd(60px, 0);
+      background-color: var(--gray-color);
+      z-index: 15;
+    }
+    th:nth-child(2) {
+      @include stickyTd(60px, 60px);
+      background-color: var(--gray-color);
+      z-index: 15;
+    }
+    th:nth-child(3) {
+      @include stickyTd(200px, 120px);
+      background-color: var(--gray-color);
+      z-index: 15;
+    }
+    th:nth-child(4) {
+      @include stickyTd(160px, 320px);
+      background-color: var(--gray-color);
+      z-index: 15;
+    }
+  }
+  .selectedTr {
+    td {
+      background-color: var(--color--blueBg) !important;
+    }
+  }
+
+  //выбор цветов
+  .colored2 {
+    background-color: var(--colored1);
+    td {
+      background-color: var(--colored1);
+    }
+  }
+  .colored3 {
+    background-color: var(--colored2);
+    td {
+      background-color: var(--colored2);
+    }
+  }
+  .colored4 {
+    background-color: var(--colored3);
+    td {
+      background-color: var(--colored3);
+    }
+  }
+
+  .InputCheckbox {
+    padding-left: 0 !important;
+    input {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      width: 17px;
+      height: 17px;
+      outline: none;
+      cursor: pointer;
+      border: 1px solid #a6a6a6;
+      border-radius: 4px;
+    }
+    input[type="checkbox"]:checked {
+      background-color: var(--blue-color);
+      border-color: var(--blue-color);
+    }
+
+    .confirmation {
+      position: absolute;
+      width: 100vw;
+      // height: 100%;
+      opacity: 0;
+      pointer-events: auto;
+      top: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      button {
+        margin-right: 20px;
+        padding: 10px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      .btn_left {
+        background-color: #fff;
+      }
+      .btn_right {
+        background-color: var(--blue-color);
+        color: #fff;
+        border: none;
+        margin-right: 50px;
+      }
+      &:hover {
+        opacity: 1;
+        background-color: #ffffff5d;
+        transition: all ease 0.25s;
+        z-index: 30;
+      }
+    }
+
+    .bacground {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: absolute;
+      left: -64px;
+      top: 0px;
+      background-color: var(--bgraund);
+      width: 64px;
+      height: 110%;
+    }
+    .bacground:last-of-type {
+      height: 300%;
+    }
+    .Offers {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding-bottom: 10px;
+      .circle {
+        position: relative;
+        margin-top: 4px;
+        @include circle(var(--yellow-color));
+        &::before {
+          content: "";
+          @include line(var(--yellow-color));
+          height: 130%;
+          bottom: -6px;
+        }
+      }
+      .line {
+        @include line(var(--yellow-color));
+        bottom: 0;
+      }
+      .containerOffer {
+        position: absolute;
+        left: 80px;
+        z-index: 40;
+        top: 20px;
+        background-color: #fff;
+        padding: 16px;
+        padding-right: 10px;
+        width: 250px;
+        // height: 160px;
+        @include boxShadow();
+        .offerScroll {
+          overflow-y: auto;
+          max-height: 360px;
+          overflow-x: hidden;
+          @include scrollStyle(5px, 4px);
+        }
+        .offerbox {
+          // display: flex;
+          flex-direction: column;
+          justify-content: left;
+          margin-bottom: 20px;
+        }
+        .offerTitle {
+          @include fontText(16px, 500);
+          text-align: left;
+          padding-bottom: 5px;
+        }
+        .offerCenter {
+          @include fontText(14px, 400);
+          color: #5a5a5a;
+          padding-bottom: 5px;
+          text-align: left;
+        }
+        .offerEducator {
+          @include fontText(16px, 500);
+          text-align: left;
+          padding-bottom: 10px;
+        }
+        .offerButton {
+          display: flex;
+          flex-direction: row;
+          .left {
+            @include button(#fff, #000, 10px, 14px);
+            border: 1px solid #000;
+            margin-right: 10px;
+          }
+          .rigth {
+            @include button(var(--blue-color), #fff, 10px, 22px);
+            border: none;
+          }
+        }
+        .btn_left {
+          display: flex;
+          align-items: center;
+          cursor: pointer;
+          @include fontText(18px, 500);
+          span {
+            padding-right: 4px;
+          }
+          .svg {
+            transform: rotate(180deg);
+          }
+          .svg * {
+            fill: var(--blue-color);
+          }
+          .blue {
+            color: var(--blue-color);
+          }
+        }
+      }
+    }
+    .Comments {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding-bottom: 10px;
+
+      .confirmationDel {
+        display: flex;
+        flex-direction: column;
+        width: 230px;
+        .text {
+          display: flex;
+          width: 100%;
+          justify-content: center;
+          text-align: center;
+          padding-bottom: 10px;
+        }
+        .btn {
+          display: flex;
+          width: 100%;
+          justify-content: center;
+          .btn_left {
+            @include button(#fff, #000, 5px, 10px);
+            margin-right: 5px;
+          }
+          .btn_rig {
+            @include button(var(--blue-color), #fff, 5px, 10px);
+            font-size: 12px;
+            border: none;
+          }
+        }
+      }
+
+      .circle {
+        position: relative;
+        @include circle(var(--red-color));
+        &::before {
+          content: "";
+          @include line(var(--red-color));
+          height: 130%;
+          bottom: -6px;
+        }
+      }
+      // .line {
+      //   @include line(var(--red-color));
+      //   top: 0;
+      // }
+      .commentWindow {
+        display: flex;
+        justify-content: left;
+        position: absolute;
+        left: 80px;
+        z-index: 40;
+        top: 20px;
+        background-color: #fff;
+        padding: 16px;
+        width: 250px;
+        // height: 160px;
+        @include boxShadow();
+        .containerScroll {
+          max-height: 360px;
+          overflow-y: auto;
+          @include scrollStyle(5px, 4px);
+          margin-bottom: 10px;
+        }
+
+        .commentTitle {
+          display: flex;
+          text-align: left;
+          @include fontText(16px, 600);
+          padding-bottom: 5px;
+        }
+        .commentBody {
+          display: flex;
+          text-align: left;
+          @include fontText(14px, 400);
+          padding-bottom: 10px;
+        }
+        .commentButton {
+          height: 20px;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          .btn_left {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            @include fontText(18px, 500);
+            span {
+              padding-right: 4px;
+            }
+            .svg {
+              transform: rotate(180deg);
+            }
+            .svg * {
+              fill: var(--blue-color);
+            }
+            .blue {
+              color: var(--blue-color);
+            }
+          }
+          .btn_rigth {
+            display: flex;
+            align-items: center;
+            width: 40px;
+            justify-content: space-between;
+            cursor: pointer;
+            .svg * {
+              fill: var(--blue-color);
+            }
+          }
+        }
+        .textAreaBox {
+          height: 180px;
+          transition: height 0.3s ease;
+          .textArea {
+            display: block;
+            box-sizing: border-box;
+            padding: 5px;
+            width: 100%;
+            height: 65%;
+            font-size: 14px;
+            margin-top: 10px;
+            outline: none;
+            border-radius: 8px;
+            resize: none;
+            border: 1px solid #bdbdbd;
+          }
+          span {
+            color: red;
+          }
+          button {
+            width: 100%;
+            margin-top: 10px;
+            height: 40px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            background-color: var(--blue-color);
+            color: #fff;
+          }
+        }
+      }
+    }
+  }
+}
+
+.tabledisciplinesMain::-webkit-scrollbar {
+  width: 12px; /* ширина scrollbar */
+  height: 12px;
+}
+.tabledisciplinesMain::-webkit-scrollbar-track {
+  background: var(--bgraund); /* цвет дорожки */
+  margin-top: 70px;
+  margin-left: 64px;
+}
+.tabledisciplinesMain::-webkit-scrollbar-thumb,
+.tabledisciplinesMain::-webkit-scrollbar-thumb {
+  background-color: #a6a6a6;
+  border-radius: 5px;
+  border: 3px solid #a6a6a6;
+}
+.BgInput {
+  background-color: red;
+}

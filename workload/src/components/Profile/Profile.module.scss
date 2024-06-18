@@ -1,7 +1,7 @@
 .Profile {
   position: relative;
   background-color: #fff;
-  width: 270px;
+  // width: 270px;
   height: 45px;
   border-radius: 8px;
 
@@ -13,6 +13,7 @@
     height: 100%;
     justify-content: center;
     align-items: center;
+    padding: 10px;
   }
 
   .container:hover {
@@ -50,8 +51,11 @@
       color: red;
       display: flex;
       cursor: pointer;
-      span {
+      a {
         margin-right: 8px;
+        text-decoration: none;
+        outline: none;
+        color: red;
       }
     }
     .exid:hover {

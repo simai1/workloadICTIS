@@ -6,13 +6,17 @@ function Button(props) {
     if (props.onClick) {
       props.onClick();
     }
+    if(props.handleClicks){
+      props.handleClicks();
+    }
+
   };
 
   return (
     <button
       className={styles.Button}
       onClick={handleClick}
-      style={{ backgroundColor: props.Bg, color: props.textColot }}
+      style={{ backgroundColor: props.Bg, color: props.textColot, border: props.border}}
     >
       {props.text}
     </button>

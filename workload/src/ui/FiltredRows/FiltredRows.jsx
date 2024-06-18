@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import styles from "./FiltredRows.module.scss";
 import ArrowImg from "./../../img/arrow-White.svg";
 import Arrowtop from "./../../img/arrow.svg";
 import pencil from "./../../img/pencil.svg";
 import filter from "./../../img/filter.svg";
 import thimbtack from "./../../img/thumbtack.svg";
-const FiltredRows = (props) => {
+import DataContext from "../../context";
+const FiltredRows = () => {
   const [OpenCloseMenu, setOpenCloseMenu] = useState(false);
+  const { tabPar, basicTabData, appData } = useContext(DataContext);
 
   //! закрытие модального окна при нажатии вне него
   const refFR = React.useRef(null);
@@ -27,17 +29,25 @@ const FiltredRows = (props) => {
   };
   const Fuctionmenu = (text) => {
     setOpenCloseMenu(!OpenCloseMenu);
-    props.setSelectedText(text);
+    tabPar.setSelectedFilter(text);
+  };
+  const AllDist = () => {
+    basicTabData.funUpdateTable(
+      basicTabData.tableDepartment.find(
+        (el) => el.name === basicTabData.nameKaf
+      )?.id
+    );
+    Fuctionmenu("Все дисциплины");
   };
   return (
     <div ref={refFR} className={styles.FiltredRows}>
       <div className={styles.FiltredRows__inner}>
         <button onClick={OpCloseMenu}>
-          {props.SelectedText} <img src={ArrowImg} alt="ArrowImg"></img>
+          {tabPar.selectedFilter} <img src={ArrowImg} alt="ArrowImg"></img>
         </button>
         {OpenCloseMenu && (
           <ul className={styles.FiltredRows__list}>
-            <li onClick={() => Fuctionmenu("Все дисциплины")}>
+            <li onClick={() => AllDist()}>
               Все дисциплины
               <img
                 className={styles.FirstImg}
@@ -45,15 +55,35 @@ const FiltredRows = (props) => {
                 alt="Arrowtop"
               ></img>
             </li>
-            <li onClick={() => Fuctionmenu("Выделенные")}>
-              Выделенные <img src={pencil} alt="pencil"></img>
-            </li>
-            <li onClick={() => Fuctionmenu("Измененные")}>
-              Измененные <img src={filter} alt="filter"></img>
-            </li>
             <li onClick={() => Fuctionmenu("Закрепленные")}>
               Закрепленные <img src={thimbtack} alt="thimbtack"></img>
             </li>
+            {appData.metodRole[appData.myProfile?.role]?.some(
+              (el) => el === 36
+            ) && (
+              <li onClick={() => Fuctionmenu("Измененные")}>
+                Измененные <img src={filter} alt="filter"></img>
+              </li>
+            )}
+
+            <li onClick={() => Fuctionmenu("Выделенные")}>
+              Выделенные <img src={pencil} alt="pencil"></img>
+            </li>
+
+            {appData.metodRole[appData.myProfile?.role]?.some(
+              (el) => el === 20
+            ) && (
+              <li onClick={() => Fuctionmenu("Комментарии")}>
+                Комментарии <img src={filter} alt="filter"></img>
+              </li>
+            )}
+            {appData.metodRole[appData.myProfile?.role]?.some(
+              (el) => el === 34
+            ) && (
+              <li onClick={() => Fuctionmenu("Предложения")}>
+                Предложения <img src={filter} alt="filter"></img>
+              </li>
+            )}
           </ul>
         )}
       </div>

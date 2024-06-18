@@ -9,7 +9,7 @@ import passport from 'passport';
 
 import 'dotenv/config';
 
-import corsMiddleware from './middlewares/cors.js';
+// import corsMiddleware from './middlewares/cors.js';
 
 import dbUtils from './utils/db.js';
 import testUtils from './utils/test-data.js';
@@ -24,9 +24,10 @@ import offerRoute from './routes/offers.js';
 import userRoute from './routes/user.js';
 import colorRoute from './routes/color.js';
 import attachesRoute from './routes/attached.js';
+import historyRoute from './routes/history.js';
 // FIX ME
 import roleRoute from './routes/role.js';
-
+import cors from 'cors';
 import { eventEmitter } from './utils/notification.js';
 
 const app = express();
@@ -47,7 +48,7 @@ const io = new Server(server, {
     try {
         await dbUtils.initializeDbModels();
         if (process.env.NODE_ENV === 'development') {
-            await testUtils.fillWorkload();
+            // await testUtils.fillWorkload();
             await testUtils.fillEducators();
         }
     } catch (e) {
@@ -62,14 +63,19 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(
     cookieSession({
-        maxAge: 24 * 60 * 60 * 1000,
+        maxAge: 30 * 24 * 60 * 60 * 1000,
         keys: [process.env.COOKIE_KEY],
     })
 );
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(corsMiddleware);
-
+// app.use(corsMiddleware);
+app.use(cors({
+    credentials: true,
+    origin: true,
+    exposedHeaders: ['*'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use('/comment', commentRoute);
 app.use('/notification', notificationRoute);
 app.use('/educator', eduRoute);
@@ -81,6 +87,7 @@ app.use('/offers', offerRoute);
 app.use('/role', roleRoute);
 app.use('/color', colorRoute);
 app.use('/attaches', attachesRoute);
+app.use('/history', historyRoute);
 
 io.on('connection', socket => {
     console.log(`socket ${socket.id} connected`);
@@ -90,7 +97,7 @@ io.on('connection', socket => {
         console.log('Уведомление отправилось клиенту', eventData);
     });
 
-    socket.on('response', data => {
+    socket.on('response', () => {
         socket.emit('response', 'data received');
     });
 

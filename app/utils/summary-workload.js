@@ -95,4 +95,44 @@ async function deleteHours(newWorkload) {
     await summaryWorkload.save();
 }
 
-export { setHours, deleteHours };
+async function addHoursForEducator(newWorkload) {
+    const summaryWorkload = await SummaryWorkload.findOne({ where: { educatorId: newWorkload.educatorId } });
+    if (summaryWorkload){
+        const hours = {
+            kafedralAutumnWorkload: summaryWorkload.kafedralAutumnWorkload,
+            kafedralSpringWorkload: summaryWorkload.kafedralSpringWorkload,
+            kafedralAdditionalWorkload: summaryWorkload.kafedralAdditionalWorkload,
+            instituteAutumnWorkload: summaryWorkload.instituteAutumnWorkload,
+            instituteSpringWorkload: summaryWorkload.instituteSpringWorkload,
+            instituteManagementWorkload: summaryWorkload.instituteManagementWorkload,
+            totalKafedralHours: summaryWorkload.totalKafedralHours,
+            totalOidHours: summaryWorkload.totalOidHours,
+            totalHours: summaryWorkload.totalHours,
+        };
+        // Проверяем предмет на общеинститутский ли он и период и устанавливаем часы для кафедральных или институтских дисциплин
+        if (!newWorkload.isOid && newWorkload.period === 1) hours.kafedralAutumnWorkload += newWorkload.hours;
+        if (!newWorkload.isOid && newWorkload.period === 2) hours.kafedralSpringWorkload += newWorkload.hours;
+        if (!newWorkload.isOid && !newWorkload.period) hours.kafedralAdditionalWorkload += newWorkload.hours;
+        if (newWorkload.isOid && newWorkload.period === 1) hours.instituteAutumnWorkload += newWorkload.hours;
+        if (newWorkload.isOid && newWorkload.period === 2) hours.instituteSpringWorkload += newWorkload.hours;
+        if (newWorkload.isOid && !newWorkload.period) hours.instituteManagementWorkload += newWorkload.hours;
+    
+        hours.totalKafedralHours = hours.kafedralAutumnWorkload + hours.kafedralSpringWorkload + hours.kafedralAdditionalWorkload;
+        hours.totalOidHours = hours.instituteAutumnWorkload + hours.instituteSpringWorkload + hours.instituteManagementWorkload;
+        hours.totalHours = hours.totalKafedralHours + hours.totalOidHours;
+    
+        summaryWorkload.kafedralAutumnWorkload = hours.kafedralAutumnWorkload;
+        summaryWorkload.kafedralSpringWorkload = hours.kafedralSpringWorkload;
+        summaryWorkload.kafedralAdditionalWorkload = hours.kafedralAdditionalWorkload;
+        summaryWorkload.instituteAutumnWorkload = hours.instituteAutumnWorkload;
+        summaryWorkload.instituteSpringWorkload = hours.instituteSpringWorkload;
+        summaryWorkload.instituteManagementWorkload = hours.instituteManagementWorkload;
+        summaryWorkload.totalKafedralHours = hours.totalKafedralHours;
+        summaryWorkload.totalOidHours = hours.totalOidHours;
+        summaryWorkload.totalHours = hours.totalHours;
+        await summaryWorkload.save();
+        await checkHours(summaryWorkload);
+    };
+}
+
+export { setHours, deleteHours, addHoursForEducator };

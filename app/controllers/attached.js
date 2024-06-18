@@ -8,6 +8,7 @@ export default {
     async getAllAttaches(req, res) {
         const userId = req.user;
         const educator = await Educator.findOne({ where: { userId } });
+        if (!educator) res.json({});
 
         const attached = await Attaches.findAll({ where: { educatorId: educator.userId } });
 
@@ -15,32 +16,40 @@ export default {
         res.json(attachedDto);
     },
 
-    async setAttaches({ body: { workloadId }, user }, res) {
-        if (!workloadId) throw new AppErrorMissing('workloadId');
-
+    async setAttaches({ body: { workloadIds }, user }, res) {
+        if (!workloadIds || !Array.isArray(workloadIds) || workloadIds.length === 0) {
+            throw new AppErrorMissing('workloadIds');
+        }
         const educator = await Educator.findOne({ where: { userId: user } });
+        const attachedDtos = [];
 
-        const workload = await Workload.findOne({ where: { educatorId: educator.id, id: workloadId } });
+        for (const workloadId of workloadIds) {
+            const workload = await Workload.findOne({ where: { id: workloadId } });
+            if (!workload) throw new AppErrorMissing('Workload not found');
+            const newAttach = await Attaches.create({
+                educatorId: educator.userId,
+                workloadId: workload.id,
+                isAttach: true,
+            });
+            console.log(newAttach);
 
-        console.log(workload);
+            const attachedDto = new AttachedDto(newAttach);
+            attachedDtos.push(attachedDto);
+        }
 
-        const newAttach = await Attaches.create({
-            educatorId: educator.userId,
-            workloadId: workload.id,
-            isAttach: true,
-        });
-        console.log(newAttach);
-        const attachedDto = new AttachedDto(newAttach);
-        res.json(attachedDto);
+        res.json(attachedDtos);
     },
 
-    async unAttaches({ params: { attachesId } }, res) {
-        if (!attachesId) throw new AppErrorMissing('attachedId');
+    async unAttaches({ body: { attachesIds } }, res) {
+        if (!attachesIds || !Array.isArray(attachesIds) || attachesIds.length === 0) {
+            throw new AppErrorMissing('attachesIds');
+        }
+        for (const attachesId of attachesIds) {
+            const attached = await Attaches.findByPk(attachesId);
+            if (!attached) throw new AppErrorMissing('Attached not found');
 
-        const attached = await Attaches.findByPk(attachesId);
-        if (!attached) throw new AppErrorMissing('Attached not found');
-
-        await attached.destroy({ force: true });
+            await attached.destroy({ force: true });
+        }
         res.json('Successfully deleted');
     },
 };

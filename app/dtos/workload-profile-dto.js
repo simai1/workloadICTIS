@@ -1,6 +1,7 @@
 import {map as departmentMap} from "../config/departments.js";
 export default class WorkloadProfileDto {
     department;
+    discipline;
     workload;
     type;
     curriculumUnit;
@@ -13,6 +14,7 @@ export default class WorkloadProfileDto {
 
     constructor(model) {
         this.department = departmentMap[model.department];
+        this.discipline = model.discipline;
         this.workload = model.workload;
         this.type = model.isOid? "ОИД" : "Общеинститутская";
         this.curriculumUnit = model.curriculumUnit;

@@ -11,8 +11,7 @@ const storage = multer.diskStorage({
         cb(null, './uploads');
     },
     filename: function (req, file, cb) {
-        var datetimestamp = Date.now();
-        cb(null, file.fieldname + '-' + datetimestamp + '.' + file.originalname.split('.')[file.originalname.split('.').length - 1]);
+        cb(null, file.originalname);
     }
 });
 
@@ -25,6 +24,12 @@ router
     .post(
         upload.single('file'),
         asyncRoute(parserController.parseWorkload)
+    )
+router
+    .route('/parseEducators')
+    .post(
+        upload.single('file'),
+        asyncRoute(parserController.parseEducators)
     )
 
 export default router;

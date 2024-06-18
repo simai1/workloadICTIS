@@ -1,6 +1,7 @@
 import { mapObjectKeys } from '../utils/map.js';
 
 const departments = {
+    ОИД: 0,
     БИТ: 1,
     ВМ: 2,
     ВТ: 3,
@@ -12,6 +13,7 @@ const departments = {
     САИТ: 9,
     САПР: 10,
     СиПУ: 11,
+    ФМОИО: 12,
 };
 
 export default departments;

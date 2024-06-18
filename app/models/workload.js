@@ -1,6 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 import EnumDepartments from '../config/departments.js';
 import { deleteHours, setHours } from '../utils/summary-workload.js';
+import {promiseForAddHoursForEducator} from '../utils/promise-for-add-hours-for-educator.js';
 // import checkHours from '../utils/notification.js';
 export default class Workload extends Model {
     static initialize(sequelize) {
@@ -43,11 +44,11 @@ export default class Workload extends Model {
                     type: DataTypes.SMALLINT,
                 },
                 curriculum: {
-                    type: DataTypes.STRING(600),
+                    type: DataTypes.STRING(1000),
                     allowNull: false,
                 },
                 curriculumUnit: {
-                    type: DataTypes.STRING(600),
+                    type: DataTypes.STRING(1000),
                     allowNull: false,
                 },
                 formOfEducation: {
@@ -86,6 +87,12 @@ export default class Workload extends Model {
                 isSplit: {
                     type: DataTypes.BOOLEAN,
                     allowNull: false,
+                    defaultValue: false,
+                },
+                isMerged: {
+                    type: DataTypes.BOOLEAN,
+                    allowNull: false,
+                    defaultValue: false,
                 },
                 originalId: {
                     type: DataTypes.UUID,
@@ -100,6 +107,11 @@ export default class Workload extends Model {
                     allowNull: false,
                     defaultValue: false,
                 },
+                isBlocked: {
+                  type: DataTypes.BOOLEAN,
+                  allowNull: false,
+                  defaultValue: false,
+                }
             },
             {
                 sequelize,
@@ -109,6 +121,10 @@ export default class Workload extends Model {
                 paranoid: true,
             }
         );
+
+        Workload.afterCreate(async (workload) => {
+            await promiseForAddHoursForEducator(workload);
+        });
 
         Workload.beforeDestroy(async workload => {
             await deleteHours(workload);
@@ -121,5 +137,6 @@ export default class Workload extends Model {
         Workload.afterUpdate(async workload => {
             await setHours(workload);
         });
+
     }
 }
