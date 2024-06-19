@@ -14,17 +14,16 @@ export function PopUpCreateEmploy(props) {
     email: "",
     position: "",
     rate: "",
-    typeOfEmployment: "",
     department: appData.metodRole[appData.myProfile?.role]?.some((el) => el === 39) ? appData.myProfile.educator.department : "",
   });
   const [isEmailValid, setIsEmailValid] = useState(true);
   const [isRateValid, setIsRateValid] = useState(true);
-  const dataList = [
-    { id: 1, name: "Внешнее совместительство" },
-    { id: 2, name: "Внутреннее совместительство" },
-    { id: 3, name: "Основное место работы" },
-    { id: 4, name: "Почасовая оплата труда" },
-  ];
+  // const dataList = [
+  //   { id: 1, name: "Внешнее совместительство" },
+  //   { id: 2, name: "Внутреннее совместительство" },
+  //   { id: 3, name: "Основное место работы" },
+  //   { id: 4, name: "Почасовая оплата труда" },
+  // ];
   const dataListPosition = [
     { id: 1, name: "Ассистент" },
     { id: 2, name: "Ведущий научный сотрудник" },
@@ -75,7 +74,6 @@ export function PopUpCreateEmploy(props) {
       email: dataNewEdicator.email,
       position: dataNewEdicator.position,
       rate: Number(dataNewEdicator.rate.replace(",", ".")),
-      typeOfEmployment: dataNewEdicator.typeOfEmployment,
       department: appData.metodRole[appData.myProfile?.role]?.some((el) => el === 39) ? dataKaf.find((el)=>el.name === dataNewEdicator.department).id : dataNewEdicator.department
     };
     console.log("data", data)
@@ -121,13 +119,6 @@ export function PopUpCreateEmploy(props) {
             Textlabel="Должность"
             defaultValue="Выберите должность"
             name={"position"}
-            handleInputList={handleInputList}
-          />
-          <List
-            dataList={dataList}
-            Textlabel="Вид занятости"
-            defaultValue="Выберите вид занятости"
-            name={"typeOfEmployment"}
             handleInputList={handleInputList}
           />
           <Input
