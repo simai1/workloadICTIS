@@ -24,6 +24,7 @@ import { PopUpCreateEmploy } from "../../ui/PopUpCreateEmploy/PopUpCreateEmploy"
 import {
   GetDepartment,
   WorkloadBlocked,
+  apiGetUser,
   getAllWarningMessage,
 } from "../../api/services/ApiRequest";
 import ConfirmSaving from "../../ui/ConfirmSaving/ConfirmSaving";
@@ -80,6 +81,13 @@ function HomePage() {
       setdepartments([{ id: 14, name: "Все" }, ...response.data]);
     });
   }, [basicTabData.tableDepartment]);
+
+  //! получаем и записываем данные usera
+  useEffect(() => {
+    apiGetUser().then((data) => {
+      appData.setMyProfile(data);
+    });
+  }, []);
 
   const handleComponentChange = (component) => {
     appData.setSelectedComponent(component);

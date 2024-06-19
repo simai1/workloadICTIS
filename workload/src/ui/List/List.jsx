@@ -1,24 +1,31 @@
 import React, { useEffect, useState } from "react";
 import styles from "./List.module.scss";
 import DataContext from "../../context";
-import arrow from "./../../img/arrow_down.svg"
-function List({ dataList, Textlabel, defaultValue, handleInputChange, name, handleInputList, value}) {
+import arrow from "./../../img/arrow_down.svg";
+function List({
+  dataList,
+  Textlabel,
+  defaultValue,
+  handleInputChange,
+  name,
+  handleInputList,
+  value,
+}) {
   const { context, appData } = React.useContext(DataContext);
 
   const [activeList, setactiveList] = useState(false);
   const [nameClient, setnameClient] = useState(value);
   const addClient = (el) => {
-    console.log(el)
+    console.log(el);
     setnameClient(el.name);
-    setactiveList(!activeList)
-    handleInputList(name, el.id)
+    setactiveList(!activeList);
+    handleInputList(name, el.id);
   };
 
   return (
     <div className={styles.List}>
       {
         name === "department" && appData.metodRole[appData.myProfile?.role]?.some((el) => el === 39) ? <></> :
-
         <div>
         {Textlabel && (
           <div>

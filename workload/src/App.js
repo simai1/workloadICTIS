@@ -13,8 +13,6 @@ import {
   Comment,
   GetDepartment,
   Workload,
-  apiGetUser,
-  apiGetWorkloadDepartment,
   getAllAttaches,
   getAllColors,
   getOffers,
@@ -27,7 +25,6 @@ import {
   funFilterSelected,
   funFixEducator,
   funSortedFastened,
-  funSplitData,
 } from "./components/TableWorkload/Function";
 import { delChangeData } from "./ui/ContextMenu/Function";
 import { FilteredSample } from "./ui/SamplePoints/Function";
@@ -44,16 +41,16 @@ function App() {
   //! в файле RoleMetods можно посмотреть назание метода и их id
   const metodRole = {
     METHODIST: [
-      1, 3, 4, 8, 9, 10, 14, 17, 20, 21, 25, 26, 27, 28, 29, 31, 34, 35, 36, 16, 40
+      1, 3, 4, 8, 9, 10, 14, 17, 20, 21, 25, 26, 28, 29, 31, 34, 35, 36, 16,
     ],
     LECTURER: [2, 15, 17, 17.1, 18, 20, 22, 24, 34, 37],
     DEPARTMENT_HEAD: [
       2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 22, 23, 25, 26, 27, 30, 31, 32,
-      33, 34, 36, 16, 39
+      33, 34, 36, 16,
     ],
     DIRECTORATE: [
       1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
-      34, 35, 36, 38, 16, 40
+      34, 35, 36, 38, 16,
     ],
     EDUCATOR: [15, 24],
   };
@@ -96,6 +93,8 @@ function App() {
     setSelectedComponent,
     loaderAction,
     setLoaderAction,
+    myProfile,
+    setMyProfile,
   };
 
   //! параметры таблицы
@@ -441,13 +440,6 @@ function App() {
     // получение выделенных строк
     funUpdateAllColors();
   }
-
-  //! получаем и записываем данные usera
-  useEffect(() => {
-    apiGetUser().then((data) => {
-      setMyProfile(data);
-    });
-  }, []);
 
   //! получаем данные нагрузок с бд
   useEffect(() => {

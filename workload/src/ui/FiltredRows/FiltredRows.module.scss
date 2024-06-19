@@ -16,6 +16,8 @@
       img {
         position: relative;
         top: -2px;
+        width: 14px;
+        left: 2px;
       }
     }
     button:hover {
@@ -44,7 +46,8 @@
         .FirstImg {
           transform: rotate(180deg);
           position: relative;
-          top: -2px;
+          top: +2px;
+          left: -2px;
         }
         img {
           margin-left: 10px;

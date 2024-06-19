@@ -32,13 +32,15 @@ export const apiEducatorDepartment = async () => {
   }
 };
 
-//! получение данных user
+//! получение данных user профиль
 export const apiGetUser = async () => {
   try {
     const response = await http.get(`${server}/user`);
     return response.data;
   } catch (error) {
     console.error("Error:", error, `${server}/workload`);
+    //! если возникли проблемы с получение профиля пользователя перенаправляем на регистрацию
+    window.location.href = "http://localhost:3002/auth/logout";
   }
 };
 
