@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { getDataEducatorLK } from "../../api/services/AssignApiData";
 import { actions } from "../../store/filter/filter.slice";
 import DataContext from "../../context";
+import { EducatorKard, EducatorLK } from "../../api/services/ApiRequest";
+import { headersEducator } from "../TableWorkload/Data";
 function TableLks(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]);
   const [updatedData, setUpdatedData] = useState([]);
@@ -15,21 +17,23 @@ function TableLks(props) {
   const [colorHours, setColorHours] = useState(null);
   const { appData, basicTabData, checkPar } = React.useContext(DataContext);
   const [filteredData, setFilteredData] = useState([]);
-  const [tableHeaders, setTableHeaders] = useState([
+
+  const th = [
     { key: "department", label: "Кафедра" },
     { key: "discipline", label: "Дисциплина" },
     { key: "hoursFirstPeriod", label: "Часы период 1" },
     { key: "hoursSecondPeriod", label: "Часы период 2" },
     { key: "hoursWithoutPeriod", label: "Дополнительные часы" },
-  ]);
+  ];
+  const [tableHeaders, setTableHeaders] = useState(th);
 
   //!!!!!!!!!!!!!! сброс состояния редукса //!!!!!!!!!!!
-  const updateTable = () => {
-    dispatch(actions.initializeFilters(tableHeaders));
-  };
-  useEffect(() => {
-    updateTable();
-  }, []);
+  // const updateTable = () => {
+  //   dispatch(actions.initializeFilters(tableHeaders));
+  // };
+  // useEffect(() => {
+  //   updateTable();
+  // }, []);
 
   // useEffect(()=>{
   //   console.log("EducatorLkData", EducatorLkData)
@@ -42,7 +46,22 @@ function TableLks(props) {
   //! получаем данные личного кабинета преподавателя
   useEffect(() => {
     console.log(props.educatorIdforLk);
-    getDataEducatorLK(props.educatorIdforLk, setEducatorLkData, setTableData);
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 41)) {
+      EducatorLK(props.educatorIdforLk).then((data) => {
+        console.log("EducatorKard ", data);
+        setEducatorLkData([data]);
+        setTableData([data]);
+        setTableHeaders(headersEducator);
+      });
+    }
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 40)) {
+      EducatorKard(props.educatorIdforLk).then((data) => {
+        console.log("EducatorKard ", data);
+        setEducatorLkData(data);
+        setTableData(data.workloads[0]);
+        setTableHeaders(th);
+      });
+    }
   }, [props.educatorIdforLk]);
 
   //! то что введено в поисковую строку, обновляет данные компонента
@@ -58,7 +77,7 @@ function TableLks(props) {
 
   const dispatch = useDispatch();
   const filters = useSelector((state) => state.filters);
-  console.log("filters", filters);
+
   useEffect(() => {
     addHeadersTable(filters, tableHeaders, tableData);
     console.log(filters);
@@ -68,7 +87,7 @@ function TableLks(props) {
     const updatedHeader = tableHeaders.filter((header) =>
       filters.includes(header.key)
     );
-    const updatedData = tableData.map((data) => {
+    const updatedData = tableData?.map((data) => {
       const updatedRow = {};
       Object.keys(data).forEach((key) => {
         if (filters.includes(key)) {

@@ -56,6 +56,18 @@ export const EducatorLK = async (data) => {
   }
 };
 
+//! получаем данных личного кабинета преподавателя
+export const EducatorKard = async (data) => {
+  try {
+    const response = await http.get(`${server}/educator/lk/${data}`);
+    console.log("response_EducatorLK", response);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};
+
 //! получаем историю блокированных таблиц
 export const apiGetHistory = async () => {
   try {
