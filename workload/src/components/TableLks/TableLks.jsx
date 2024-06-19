@@ -72,6 +72,9 @@ function TableLks(props) {
 
   // Функция для определения цвета фона
   const [showFullText, setShowFullText] = useState(false);
+  // useEffect(()=>{
+  //   console.log("showFullText", showFullText)
+  // },[showFullText])
   const lenSlice = 100;
   const gettdInnerText = (key, item, index) => {
     if (showFullText === index) {
@@ -142,16 +145,7 @@ function TableLks(props) {
           <p>Должность: {EducatorLkData?.position}</p>
           <p>Ставка: {EducatorLkData?.rate}</p>
         </div>
-        {/* {tableData[0] && (
-          <div className={styles.EditInput}>
-            <EditInput
-              originalHeader={tableHeaders}
-              updateTable={updateTable}
-              top={60.3}
-              h={64}
-            />
-          </div>
-        )} */}
+      
       </div>
 
       {filteredData.length > 0 ? (
@@ -208,13 +202,13 @@ function TableLks(props) {
                               row[key.key]?.length > lenSlice
                                 ? {
                                     position: "absolute",
-                                    backgroundColor: "inherit",
+                                    backgroundColor: "#fff",
                                     width: "100%",
                                     padding: "4px",
                                     top: "-45px",
                                     boxShadow:
                                       "0px 3px 18px rgba(0, 0, 0, 0.15)",
-                                    zIndex: "100",
+                                    zIndex: "200",
                                   }
                                 : null
                             }

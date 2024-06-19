@@ -8,7 +8,7 @@
 }
 .TableLks__inner::-webkit-scrollbar-track {
   background: var(--bgraund); /* цвет дорожки */
-  margin-top: 40px;
+  margin-top: 87px;
   background-color: var(--bgraund);
 }
 .TableLks__inner::-webkit-scrollbar-thumb,
@@ -41,12 +41,13 @@
 
     margin: 16px 64px 0px 64px;
     // height: 60vh;
-    .TableLks {
+    .tbody {
       width: 100%;
       overflow: auto;
       width: 100vw;
       height: 80vh;
       overflow: hidden;
+      position: relative;
     }
   }
 
@@ -107,6 +108,13 @@
       padding: 10px 8px;
       position: sticky;
       top: 0;
+    }
+    
+    thead{
+      position: sticky;
+      top: 0px;
+      height: 57px;
+      z-index: 20;
     }
     th:first-child {
       border-radius: 8px 0px 0px 0px;
