@@ -18,7 +18,6 @@
     width: 310px;
     height: 45px;
     align-items: center;
-    border-radius: 8px;
     border: 1px solid var(--border-color);
     padding: 9px 0px 9px 16px;
     display: flex;
@@ -37,10 +36,6 @@
     height: 74vh;
 
     overflow-x: scroll;
-    border-radius: 8px;
-    border-left: 1px solid var(--gray-color);
-    border-right: 1px solid var(--gray-color);
-    border-top: 1px solid var(--gray-color);
     position: relative;
     @include scrollTable(12px, 12px, #a6a6a6, 60px, 0);
     .TableTeachers {
@@ -48,25 +43,21 @@
     }
   }
   .TableTeachers__inner::-webkit-scrollbar {
-    background-color: #ffffff;
-    height: 5px;
-    margin-bottom: 8px;
+    width: 12px; 
   }
-
-  .TableTeachers__inner::-webkit-scrollbar-thumb {
-    background-color: #cccccc;
-    border-radius: 8px;
-    width: 200px !important;
-  }
-
+  
   .TableTeachers__inner::-webkit-scrollbar-track {
-    background-color: transparent;
-    border-left: 1px solid var(--gray-color);
-    border-right: 1px solid var(--gray-color);
-    border-bottom: 1px solid var(--gray-color);
-    border-radius: 0px 0px 8px 8px;
+    background: var(--bgraund);
+    border: none; 
+    margin-top: 62px;
   }
-
+  
+  .TableTeachers__inner::-webkit-scrollbar-thumb {
+    background-color: #a6a6a6; 
+    border-radius: 5px;
+    border: none; 
+  }
+  
   table {
     width: 100%;
     border-collapse: collapse;
@@ -99,12 +90,7 @@
       background-color: var(--gray-color);
       padding: 8px;
     }
-    th:first-child {
-      border-radius: 8px 0px 0px 0px;
-    }
-    th:last-child {
-      border-radius: 0px 8px 0px 0px;
-    }
+   
     tr {
       background-color: var(--white-color);
       margin: 17px 0;
