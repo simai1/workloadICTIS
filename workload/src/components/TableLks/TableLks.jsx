@@ -1,39 +1,25 @@
 import React, { useState, useEffect, useRef } from "react";
 import styles from "./TableLks.module.scss";
-import EditInput from "../EditInput/EditInput";
 import ArrowBack from "./../../img/arrow-back.svg";
-import { useDispatch, useSelector } from "react-redux";
-import { getDataEducatorLK } from "../../api/services/AssignApiData";
-import { actions } from "../../store/filter/filter.slice";
 import DataContext from "../../context";
 import { EducatorKard, EducatorLK } from "../../api/services/ApiRequest";
-import { headersEducator } from "../TableWorkload/Data";
+import { headersEducator, tableHeadersLks } from "../TableWorkload/Data";
 function TableLks(props) {
-  const [updatedHeader, setUpdatedHeader] = useState([]);
-  const [updatedData, setUpdatedData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [EducatorLkData, setEducatorLkData] = useState([]);
   const [tableData, setTableData] = useState([]);
-  const [colorHours, setColorHours] = useState(null);
-  const { appData, basicTabData, checkPar } = React.useContext(DataContext);
+  // const [colorHours, setColorHours] = useState(null);
+  const { appData } = React.useContext(DataContext);
   const [filteredData, setFilteredData] = useState([]);
 
-  const th = [
-    { key: "department", label: "Кафедра" },
-    { key: "discipline", label: "Дисциплина" },
-    { key: "hoursFirstPeriod", label: "Часы период 1" },
-    { key: "hoursSecondPeriod", label: "Часы период 2" },
-    { key: "hoursWithoutPeriod", label: "Дополнительные часы" },
-  ];
-  const [tableHeaders, setTableHeaders] = useState(th);
-
-  //!!!!!!!!!!!!!! сброс состояния редукса //!!!!!!!!!!!
-  // const updateTable = () => {
-  //   dispatch(actions.initializeFilters(tableHeaders));
-  // };
-  // useEffect(() => {
-  //   updateTable();
-  // }, []);
+  // const th = [
+  //   { key: "department", label: "Кафедра" },
+  //   { key: "discipline", label: "Дисциплина" },
+  //   { key: "hoursFirstPeriod", label: "Часы период 1" },
+  //   { key: "hoursSecondPeriod", label: "Часы период 2" },
+  //   { key: "hoursWithoutPeriod", label: "Дополнительные часы" },
+  // ];
+  const [tableHeaders, setTableHeaders] = useState(tableHeadersLks);
 
   // useEffect(()=>{
   //   console.log("EducatorLkData", EducatorLkData)
@@ -48,8 +34,8 @@ function TableLks(props) {
     console.log(props.educatorIdforLk);
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 41)) {
       EducatorLK(props.educatorIdforLk).then((data) => {
-        console.log("EducatorKard ", data);
-        setEducatorLkData([data]);
+        console.log("EducatorKard ", [data]);
+        setEducatorLkData(data);
         setTableData([data]);
         setTableHeaders(headersEducator);
       });
@@ -59,7 +45,7 @@ function TableLks(props) {
         console.log("EducatorKard ", data);
         setEducatorLkData(data);
         setTableData(data.workloads[0]);
-        setTableHeaders(th);
+        setTableHeaders(tableHeadersLks);
       });
     }
   }, [props.educatorIdforLk]);
@@ -75,55 +61,30 @@ function TableLks(props) {
     props.changeInput();
   };
 
-  const dispatch = useDispatch();
-  const filters = useSelector((state) => state.filters);
-
   useEffect(() => {
-    addHeadersTable(filters, tableHeaders, tableData);
-    console.log(filters);
-  }, [filters, dispatch, tableHeaders, tableData]);
-
-  function addHeadersTable(filters, tableHeaders, tableData) {
-    const updatedHeader = tableHeaders.filter((header) =>
-      filters.includes(header.key)
-    );
-    const updatedData = tableData?.map((data) => {
-      const updatedRow = {};
-      Object.keys(data).forEach((key) => {
-        if (filters.includes(key)) {
-          updatedRow[key] = data[key];
-        }
-      });
-      return updatedRow;
-    });
-    setUpdatedHeader(updatedHeader);
-    setUpdatedData(updatedData);
-  }
-
-  useEffect(() => {
-    const fd = updatedData.filter((row) => {
+    const fd = tableData.filter((row) => {
       return Object.values(row).some((value) =>
         value.toString().toLowerCase().includes(searchTerm.toLowerCase())
       );
     });
     setFilteredData(fd);
-  }, [updatedData]);
+  }, [tableData]);
 
   // Функция для определения цвета фона
   const [showFullText, setShowFullText] = useState(false);
   const lenSlice = 100;
-  const gettdInnerText = (item, index) => {
+  const gettdInnerText = (key, item, index) => {
     if (showFullText === index) {
       if (item === null || item === undefined || item === "") {
         return "___";
       }
-      if (item === "id") {
+      if (key === "id") {
         return index + 1;
       } else {
         return item;
       }
     } else {
-      if (item === "id") {
+      if (key === "id") {
         return index + 1;
       } else if (item === null || item === undefined || item === "") {
         return "___";
@@ -172,7 +133,7 @@ function TableLks(props) {
             >
               <p>
                 <span>{EducatorLkData?.totalHours}</span>/
-                <span>{EducatorLkData?.maxHours}</span>
+                <span>{900 * EducatorLkData?.rate}</span>
               </p>
             </div>
           </div>
@@ -193,12 +154,14 @@ function TableLks(props) {
         )} */}
       </div>
 
-      {tableData[0] ? (
+      {filteredData.length > 0 ? (
         <div
           className={styles.TableLks__inner}
           style={
-            filteredData.length < 5
-              ? { height: `${150 * filteredData.length}px` }
+            filteredData.length === 1
+              ? { overflowY: "hidden" }
+              : filteredData.length < 5
+              ? { height: `${150 * (filteredData.length + 1)}px` }
               : null
           }
         >
@@ -206,26 +169,32 @@ function TableLks(props) {
             className={styles.TableLks}
             style={
               filteredData.length < 5
-                ? { height: `${150 * filteredData.length}px` }
+                ? { height: `${150 * (filteredData.length + 1)}px` }
                 : null
             }
           >
             <thead>
               <tr>
-                {updatedHeader.map((header) => (
-                  <th key={header.key}>{header.label}</th>
+                {tableHeaders.map((header) => (
+                  <th name={header.key} key={header.key}>
+                    {header.label}
+                  </th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {filteredData.map((row, index) => (
                 <tr key={index} className={styles.tableRow}>
-                  {Object.keys(row).map((key) => {
+                  {tableHeaders.map((key) => {
                     return (
-                      <td key={key} className={styles.tdspecialtyTd}>
+                      <td
+                        name={key.key}
+                        key={key.key}
+                        className={styles.tdspecialtyTd}
+                      >
                         <div
                           onMouseEnter={
-                            row[key]?.length > lenSlice
+                            row[key.key]?.length > lenSlice
                               ? () => setShowFullText(index)
                               : null
                           }
@@ -233,10 +202,10 @@ function TableLks(props) {
                           className={styles.tdInner}
                         >
                           <div
-                            className={getClaasNametdInner(index, row[key])}
+                            className={getClaasNametdInner(index, row[key.key])}
                             style={
                               showFullText === index &&
-                              row[key]?.length > lenSlice
+                              row[key.key]?.length > lenSlice
                                 ? {
                                     position: "absolute",
                                     backgroundColor: "inherit",
@@ -250,7 +219,7 @@ function TableLks(props) {
                                 : null
                             }
                           >
-                            {gettdInnerText(row[key], index)}
+                            {gettdInnerText(key.key, row[key.key], index)}
                           </div>
                         </div>
                       </td>

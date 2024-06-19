@@ -9,7 +9,6 @@
 .TableLks__inner::-webkit-scrollbar-track {
   background: var(--bgraund); /* цвет дорожки */
   margin-top: 40px;
-  margin-left: 64px;
   background-color: var(--bgraund);
 }
 .TableLks__inner::-webkit-scrollbar-thumb,
@@ -34,7 +33,7 @@
   }
 
   .TableLks__inner {
-    overflow-y: scroll;
+    overflow: auto;
     height: 60vh;
     background-color: var(--bgraund);
 
@@ -44,7 +43,8 @@
     // height: 60vh;
     .TableLks {
       width: 100%;
-      overflow-y: scroll;
+      overflow: auto;
+      width: 100vw;
       height: 80vh;
       overflow: hidden;
     }
@@ -58,7 +58,6 @@
     font-size: 14px;
     table-layout: fixed;
     border-spacing: 0;
-
     .gettdInner {
       max-height: 300px;
       overflow-y: auto;
@@ -75,13 +74,28 @@
       @include scrollStyle(4px, 4px);
     }
 
+    th[name="curriculumUnit"],
+    td[name="curriculumUnit"] {
+      @include customTd(250px);
+    }
+
+    th[name="workload"],
+    td[name="workload"] {
+      @include customTd(80px);
+    }
+
+    th[name="department"],
+    td[name="department"] {
+      @include customTd(80px);
+    }
+
     th {
       padding: 10px 8px;
     }
     td {
       text-align: center;
-      height: 120px;
-      max-height: 120px;
+      height: 150px;
+      max-height: 150px;
       vertical-align: middle;
       padding: 10px 8px;
     }
@@ -111,7 +125,7 @@
         top: 0;
       }
       .tdspecialtyTd {
-        width: 200px;
+        // width: 200px;
         .tdspecialty {
           margin: 0 auto;
           width: 200px;
