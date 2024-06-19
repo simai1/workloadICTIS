@@ -78,15 +78,14 @@ export default {
     },
 
     // Обновляем данные преподователя
-    async update({ params: { educatorId }, body: { name, position, typeOfEmployment, rate, email, department } }, res) {
+    async update({ params: { educatorId }, body: { name, position, rate, email, department } }, res) {
         if (!educatorId) throw new AppErrorMissing('educatorId');
         const educator = await Educator.findByPk(educatorId);
         if (!educator) throw new AppErrorNotExist('educator');
 
-        if (!name && !position && !typeOfEmployment && !rate) throw new AppErrorMissing('body');
+        if (!name && !position && !rate) throw new AppErrorMissing('body');
         if (!name) name = educator.name;
         if (!position) position = educator.position;
-        if (!typeOfEmployment) typeOfEmployment = educator.typeOfEmployment;
         if (!rate) rate = educator.rate;
         if (!email) email = educator.email;
         if (!department) department = educator.department;
@@ -94,7 +93,6 @@ export default {
         await educator.update({
             name,
             position,
-            typeOfEmployment,
             rate,
             email,
             department,
@@ -103,10 +101,9 @@ export default {
         res.json(educator);
     },
     // Создаем преподователя
-    async create({ body: { name, position, typeOfEmployment, rate, email, department }, user }, res) {
+    async create({ body: { name, position, rate, email, department }, user }, res) {
         if (!name) throw new AppErrorMissing('name');
         if (!position) throw new AppErrorMissing('position');
-        if (!typeOfEmployment) throw new AppErrorMissing('typeOfEmployment');
         if (!rate) throw new AppErrorMissing('rate');
         if (!email) throw new AppErrorMissing('email');
         if (!department) throw new AppErrorMissing('department');
@@ -117,13 +114,16 @@ export default {
             name,
             email,
             position,
-            typeOfEmployment,
             rate,
             department,
         });
         const educatorDto = new EducatorDto(educator);
-        const _user = await User.findOne({ where: { email } });
-        if (_user) await associateEducator(_user);
+        try {
+            const _user = await User.findOne({ where: { email } });
+            if (_user) await associateEducator(_user);
+        } catch (e) {
+            console.log("Educator is not associated");
+        }
         res.json(educatorDto);
     },
     async getPositions(params, res) {
