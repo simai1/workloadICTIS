@@ -68,7 +68,7 @@ function TableLks(props) {
       );
     });
     setFilteredData(fd);
-  }, [tableData]);
+  }, [tableData, searchTerm]);
 
   // Функция для определения цвета фона
   const [showFullText, setShowFullText] = useState(false);
