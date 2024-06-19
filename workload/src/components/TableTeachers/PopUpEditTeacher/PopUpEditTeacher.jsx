@@ -9,13 +9,14 @@ import { EditTeacher } from "../../../api/services/ApiRequest";
 
 export function PopUpEditTeacher(props) {
   const { appData, basicTabData } = React.useContext(DataContext);
-  const [selectedRowsId, setSelectedRowsId] = useState(props.IdRows)
+  const [selectedRowsId, setSelectedRowsId] = useState(props.IdRows);
   const [dataNewEdicator, setdataNewEdicator] = useState({
     name: props.selectRows?.name,
     position: props.selectRows?.position,
     rate: props.selectRows?.rate,
     department: props.selectRows?.department,
   });
+  const [isRateValid, setIsRateValid] = useState(true);
 
   const dataListPosition = [
     { id: 1, name: "Ассистент" },
@@ -33,7 +34,7 @@ export function PopUpEditTeacher(props) {
 
   const dataKaf = [
     { id: 1, name: "БИТ" },
-    { id: 2, name: "ВМ" },
+    { id: 2, name: "ИИТиС" },
     { id: 3, name: "ВТ" },
     { id: 4, name: "ИАСБ" },
     { id: 5, name: "ИБТКС" },
@@ -43,9 +44,15 @@ export function PopUpEditTeacher(props) {
     { id: 9, name: "САИТ" },
     { id: 10, name: "САПР" },
     { id: 11, name: "СиПУ" },
+    { id: 12, name: "ФМОИО" },
   ];
 
   const handleInputChange = (name, value) => {
+    if (name === "rate") {
+      const rateValue = parseFloat(value.replace(",", "."));
+      setIsRateValid(rateValue >= 0 && rateValue <= 1);
+    }
+
     setdataNewEdicator((prevState) => ({
       ...prevState,
       [name]: value,
@@ -62,33 +69,45 @@ export function PopUpEditTeacher(props) {
   const handleClicks = () => {
     let depart;
     let position;
-    // let rates;
 
-    !Number(dataNewEdicator?.department) ? depart = dataKaf.find((el)=>el.name === dataNewEdicator?.department).id : depart = dataNewEdicator?.department;
-    !Number(dataNewEdicator?.position) ? position = dataListPosition.find((el)=>el.name === dataNewEdicator?.position).id : position = dataNewEdicator?.position;
-    // [...dataNewEdicator.rate].some((el)=>el === ",") ?  rates= Number(dataNewEdicator?.rate.replace(",", ".")) :  rates = Number(dataNewEdicator?.rate)
-    
+    !Number(dataNewEdicator?.department)
+      ? (depart = dataKaf.find(
+          (el) => el.name === dataNewEdicator?.department
+        ).id)
+      : (depart = dataNewEdicator?.department);
+    !Number(dataNewEdicator?.position)
+      ? (position = dataListPosition.find(
+          (el) => el.name === dataNewEdicator?.position
+        ).id)
+      : (position = dataNewEdicator?.position);
+
     const data = {
-          name: dataNewEdicator?.name,
-          position: position,
-          rate:Number(dataNewEdicator?.rate.replace(",", ".")),
-          department: depart
-        };
+      name: dataNewEdicator?.name,
+      position: position,
+      rate:
+        typeof dataNewEdicator?.rate === "string"
+          ? Number(dataNewEdicator?.rate.replace(",", "."))
+          : dataNewEdicator?.rate,
+      department: depart,
+    };
 
-        console.log("IdRows", selectedRowsId)
-        console.log("dataNewEdicator", data)
-        EditTeacher(selectedRowsId, data).then((resp)=>{
-            if(resp.status === 200){
-                props.updateTable();
-                props.setSelectRow(null);
-                props.setVizibleCont(false);
-            }
-        })
+    console.log("IdRows", selectedRowsId);
+    console.log("dataNewEdicator", data);
+    EditTeacher(selectedRowsId, data).then((resp) => {
+      if (resp.status === 200) {
+        props.updateTable();
+        props.setSelectRow(null);
+        props.setVizibleCont(false);
+      }
+    });
   };
 
   return (
     <div className={styles.Mt}>
-      <PopUpContainer setVizibleCont={props.setVizibleCont} title={"Редактирование Преподователя"}>
+      <PopUpContainer
+        setVizibleCont={props.setVizibleCont}
+        title={"Редактирование Преподавателя"}
+      >
         <div className={styles.mainPop__inner}>
           <div className={styles.inputBlock}>
             <Input
@@ -114,6 +133,19 @@ export function PopUpEditTeacher(props) {
               value={dataNewEdicator.rate}
               type="number"
             />
+            {!isRateValid && (
+              <div
+                className={styles.error}
+                style={{
+                  color: "red",
+                  position: "relative",
+                  left: "80px",
+                  top: "-20px",
+                }}
+              >
+                Ставка должна быть от 0 до 1
+              </div>
+            )}
             <List
               dataList={dataKaf}
               Textlabel="Кафедра"
@@ -137,6 +169,7 @@ export function PopUpEditTeacher(props) {
               Bg="#3b28cc"
               textColot="#fff"
               handleClicks={handleClicks}
+              disabled={!isRateValid}
             />
           </div>
         </div>

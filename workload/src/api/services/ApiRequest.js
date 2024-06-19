@@ -15,7 +15,7 @@ export const Educator = async () => {
     return response;
   } catch (error) {
     console.error("Error:", error, `${server}/workload`);
-    throw error;
+    //throw error;
   }
 };
 
@@ -28,7 +28,7 @@ export const apiEducatorDepartment = async () => {
     return response;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
+    //throw error;
   }
 };
 
@@ -50,7 +50,7 @@ export const EducatorLK = async (data) => {
     return response.data;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
+    //throw error;
   }
 };
 
@@ -62,7 +62,7 @@ export const apiGetHistory = async () => {
     return response.data;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
+    //throw error;
   }
 };
 
@@ -72,7 +72,7 @@ export const CreateEducator = async (data) => {
     return response.data;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
+    //throw error;
   }
 };
 
@@ -82,7 +82,7 @@ export const Positions = async () => {
     return response.data;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
+    //throw error;
   }
 };
 
@@ -92,7 +92,7 @@ export const TypeOfEmployments = async () => {
     return response.data;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
+    //throw error;
   }
 };
 
@@ -114,7 +114,7 @@ export const apiGetWorkloadDepartment = async () => {
     return response.data;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
+    //throw error;
   }
 };
 
@@ -125,7 +125,7 @@ export const Comment = async () => {
     return response.data;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
+    //throw error;
   }
 };
 
@@ -136,7 +136,7 @@ export const CommentsLecktorer = async () => {
     return response.data;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
+    //throw error;
   }
 };
 
@@ -147,7 +147,7 @@ export const getAllWarningMessage = async () => {
     return response.data;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
+    //throw error;
   }
 };
 
@@ -158,7 +158,7 @@ export const getOffers = async () => {
     return response.data;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
+    //throw error;
   }
 };
 
@@ -169,7 +169,7 @@ export const getOffersLecturer = async () => {
     return response.data;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
+    //throw error;
   }
 };
 
@@ -182,7 +182,7 @@ export const addEducatorWorkload = async (data) => {
     return response.data;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
+    //throw error;
   }
 };
 
@@ -195,7 +195,7 @@ export const splitWorkload = async (data) => {
     return response.data;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
+    //throw error;
   }
 };
 
@@ -228,7 +228,7 @@ export const AcceptOffer = async (data) => {
     return response.data;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
+    //throw error;
   }
 };
 
@@ -247,7 +247,7 @@ export const AcceptOfferZK = async (data) => {
     return response.data;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
+    //throw error;
   }
 };
 //! запрос на удаление нагрузки
@@ -262,7 +262,7 @@ export const deleteWorkload = async (data) => {
     return response.data;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
+    //throw error;
   }
 };
 
@@ -291,7 +291,7 @@ export const deleteComment = async (data) => {
     return response.data;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
+    //throw error;
   }
 };
 
@@ -304,7 +304,7 @@ export const createComment = async (data) => {
     return response.data;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
+    //throw error;
   }
 };
 
@@ -317,7 +317,7 @@ export const createOffer = async (data) => {
     return response.data;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
+    //throw error;
   }
 };
 
@@ -332,7 +332,7 @@ export const workloadUpdata = async (data) => {
     return response.data;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
+    //throw error;
   }
 };
 
@@ -343,7 +343,7 @@ export const getAllColors = async () => {
     return response.data;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
+    //throw error;
   }
 };
 
@@ -356,7 +356,7 @@ export const apiAddColored = async (data) => {
     return response.data;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
+    //throw error;
   }
 };
 
@@ -369,7 +369,7 @@ export const apiUpdateColors = async (data) => {
     return response.data;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
+    //throw error;
   }
 };
 
@@ -384,7 +384,7 @@ export const apiDelColors = async (data) => {
     return response.data;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
+    //throw error;
   }
 };
 
@@ -395,7 +395,7 @@ export const getAllAttaches = async () => {
     return response.data;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
+    //throw error;
   }
 };
 
@@ -408,7 +408,7 @@ export const apiAddAttaches = async (data) => {
     return response.data;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
+    //throw error;
   }
 };
 
@@ -423,7 +423,7 @@ export const apiUnAttaches = async (data) => {
     return response.data;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
+    //throw error;
   }
 };
 
@@ -439,7 +439,7 @@ export const SubmitFileXLSX = async (constIdCafedra, file) => {
     return response.data;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
+    //throw error;
   }
 };
 
@@ -452,7 +452,7 @@ export const GetRole = async () => {
     return response;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
+    //throw error;
   }
 };
 
@@ -474,7 +474,7 @@ export const WorkloadBlocked = async (idTable) => {
     return response;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
+    //throw error;
   }
 };
 
@@ -485,7 +485,7 @@ export const DeleteTeacher = async (idTeacher) => {
     return response;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
+    //throw error;
   }
 };
 //! Изменение шготово не готово из истории
@@ -495,7 +495,7 @@ export const apiCheckedUpdate = async (ids) => {
     return response;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
+    //throw error;
   }
 };
 
@@ -506,6 +506,6 @@ export const EditTeacher = async (idTeacher, data) => {
     return response;
   } catch (error) {
     console.error("Error:", error);
-    throw error;
+    //throw error;
   }
 };

@@ -43,7 +43,6 @@ function HomePage() {
   // const [appData.selectedComponent, appData.setSelectedComponent] = useState("Disciplines");
   const [tableMode, setTableMode] = useState("cathedrals"); //выбранный компонент
   const [educatorData, setEducatorData] = useState([]); // данные о преподавателе получаем в TableTeachers
-  const [searchTerm, setSearchTerm] = useState(""); //поиск по таблице
   const [onenModalWind, setOpenModalWind] = useState(false); // переменная закрытия модального окна профиля
   const refProfile = React.useRef(null); // ссылка на модальное окно профиля
   const [educatorIdforLk, setEducatorIdforLk] = useState(""); // id для вывода LK, если пустое то LK не отображается
@@ -52,7 +51,7 @@ function HomePage() {
   const [departments, setdepartments] = useState([]);
   const [kafedralIsOpen, setKafedralIsOpen] = useState(false);
   const [cafedral, setCafedral] = useState(false);
-  const [blockTable, setBlockTable ] = useState(false);
+  const [blockTable, setBlockTable] = useState(false);
   const handleButtonClick = () => {
     setEducatorIdforLk("");
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 28)) {
@@ -100,10 +99,9 @@ function HomePage() {
   };
 
   const handleSearch = (event) => {
-    setSearchTerm(event.target.value);
+    basicTabData.setSearchTerm(event.target.value);
   };
 
-  
   useEffect(() => {
     basicTabData.funGetDepartment();
   }, []);
@@ -124,9 +122,11 @@ function HomePage() {
     if (action) {
       //! отправляем все запросы на обработку
       console.log("Сохранено", appData.bufferAction);
-      bufferRequestToApi(appData.bufferAction).then(() => {
-        appData.setBufferAction([0]);
-        basicTabData.updateAlldata();
+      bufferRequestToApi(appData.bufferAction).then((act) => {
+        if (act) {
+          appData.setBufferAction([0]);
+          basicTabData.updateAlldata();
+        }
       });
       tabPar.setSelectedTr([]);
       tabPar.setChangedData(tabPar.changedDataObj);
@@ -197,20 +197,33 @@ function HomePage() {
     table.scrollIntoView(true);
   };
 
-  //! ФУНКЦИЯ ПРОВЕРКИ НА БЛОКИРОВАННЫЕ 
-  const checkBlocked = () =>{
+  //! ФУНКЦИЯ ПРОВЕРКИ НА БЛОКИРОВАННЫЕ
+  const checkBlocked = () => {
     let blocked = false;
-    if(appData.selectedComponent === "History" || appData.selectedComponent === "Teachers"){
+    if (
+      appData.selectedComponent === "History" ||
+      appData.selectedComponent === "Teachers"
+    ) {
       return false;
     }
-    if(appData.selectedComponent != "History" || appData.selectedComponent != "Teachers") {
-      basicTabData.filtredData.map((el) =>el.isBlocked === true ? blocked = true : blocked = false)
+    if (
+      appData.selectedComponent != "History" ||
+      appData.selectedComponent != "Teachers"
+    ) {
+      basicTabData.filtredData.map((el) =>
+        el.isBlocked === true ? (blocked = true) : (blocked = false)
+      );
       return blocked;
     }
-  }
-  useEffect(()=>{
-    setBlockTable(checkBlocked)
-  }, [basicTabData.tableDepartment, basicTabData.filtredData, appData.selectedComponent,  tabPar.setSelectedFilter])
+  };
+  useEffect(() => {
+    setBlockTable(checkBlocked);
+  }, [
+    basicTabData.tableDepartment,
+    basicTabData.filtredData,
+    appData.selectedComponent,
+    tabPar.setSelectedFilter,
+  ]);
 
   return (
     <Layout>
@@ -218,8 +231,21 @@ function HomePage() {
         {confirmationSave && (
           <div className={styles.nosavedData}>
             <div className={styles.nosavedDataInner}>
-            <div style={{display: "flex", justifyContent: "center", textAlign: "center"}}>У вас есть несохраненные данные</div>
-            <button style={{marginTop: "25px", width: "150px"}}  onClick={() => setConfirmationSave(false)}>Закрыть</button>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  textAlign: "center",
+                }}
+              >
+                У вас есть несохраненные данные
+              </div>
+              <button
+                style={{ marginTop: "25px", width: "150px" }}
+                onClick={() => setConfirmationSave(false)}
+              >
+                Закрыть
+              </button>
             </div>
           </div>
         )}
@@ -269,7 +295,10 @@ function HomePage() {
 
                 {appData.metodRole[appData.myProfile?.role]?.some(
                   (el) => el === 27
-                ) && (basicTabData.nameKaf != "Все") && (!blockTable) && (appData.selectedComponent !== "History") &&(
+                ) &&
+                  basicTabData.nameKaf != "Все" &&
+                  !blockTable &&
+                  appData.selectedComponent !== "History" && (
                     <div
                       style={{ marginRight: "20px" }}
                       className={styles.btnMenuBox}
@@ -289,10 +318,11 @@ function HomePage() {
               <div className={styles.header_search}>
                 <input
                   type="text"
-                  placeholder="Поиск"
+                  placeholder="Поиск..."
                   id="search"
                   name="search"
                   onChange={handleSearch}
+                  value={basicTabData?.searchTerm}
                   className={styles.hedaer_search_inner}
                 />
                 <img src="./img/search.svg"></img>
@@ -381,18 +411,18 @@ function HomePage() {
             </div>
           </div>
           {blockTable && (
-              <div className={styles.blockedTextTable}>
-                <div>
-                  <img src="./img/errorTreangle.svg" />
-                </div>
-                <div>
-                  <p>
-                    Таблица находится в состоянии "Блокировки", редактирование
-                    временно отключено!
-                  </p>
-                </div>
+            <div className={styles.blockedTextTable}>
+              <div>
+                <img src="./img/errorTreangle.svg" />
               </div>
-            )}
+              <div>
+                <p>
+                  Таблица находится в состоянии "Блокировки", редактирование
+                  временно отключено!
+                </p>
+              </div>
+            </div>
+          )}
 
           <div className={styles.header_bottom}>
             <div className={styles.header_bottom_button}>
@@ -402,10 +432,10 @@ function HomePage() {
                 (appData.selectedComponent === "Disciplines" ||
                   appData.selectedComponent === "History") && (
                   <>
-                      <ListKaf
-                        dataList={departments}
-                        setTableMode={setTableMode}
-                      />
+                    <ListKaf
+                      dataList={departments}
+                      setTableMode={setTableMode}
+                    />
                     {appData.selectedComponent === "History" && (
                       <div className={styles.perenesen}>
                         <button
@@ -439,16 +469,19 @@ function HomePage() {
                   />
                 )}
               </div>
-              
-              {((appData.selectedComponent === "Disciplines" ||
-                appData.selectedComponent === "History")) &&(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 35)) && (
-                <div className={styles.import}>
-                  <button onClick={OpenPoPUpFile}>
-                    <p>Импорт файла</p>
-                    <img src="./img/import.svg" alt=">"></img>
-                  </button>
-                </div>
-              )}
+
+              {(appData.selectedComponent === "Disciplines" ||
+                appData.selectedComponent === "History") &&
+                appData.metodRole[appData.myProfile?.role]?.some(
+                  (el) => el === 35
+                ) && (
+                  <div className={styles.import}>
+                    <button onClick={OpenPoPUpFile}>
+                      <p>Импорт файла</p>
+                      <img src="./img/import.svg" alt=">"></img>
+                    </button>
+                  </div>
+                )}
             </div>
           </div>
         </div>
@@ -457,8 +490,8 @@ function HomePage() {
             <TableWorkload
               tableMode={tableMode}
               tableHeaders={tableHeaders}
-              searchTerm={searchTerm}
-              setSearchTerm={setSearchTerm}
+              searchTerm={basicTabData.searchTerm}
+              setSearchTerm={basicTabData.setSearchTerm}
               refProfile={refProfile}
               setOpenModalWind={setOpenModalWind}
             />
@@ -469,8 +502,8 @@ function HomePage() {
               changeInput={changeInput}
               setTableHeaders={setTableHeaders}
               tableHeaders={tableHeaders}
-              searchTerm={searchTerm}
-              setSearchTerm={setSearchTerm}
+              searchTerm={basicTabData.searchTerm}
+              setSearchTerm={basicTabData.setSearchTerm}
               setEducatorData={setEducatorData}
             />
           ) : appData.selectedComponent === "Teachers" &&
@@ -480,15 +513,15 @@ function HomePage() {
               educatorIdforLk={educatorIdforLk}
               changeInput={changeInput}
               setTableHeaders={setTableHeaders}
-              searchTerm={searchTerm}
+              searchTerm={basicTabData.searchTerm}
               educatorData={educatorData}
             />
           ) : appData.selectedComponent === "History" ? (
             <TableHistory
               tableMode={tableMode}
               tableHeaders={tableHeaders}
-              searchTerm={searchTerm}
-              setSearchTerm={setSearchTerm}
+              searchTerm={basicTabData.searchTerm}
+              setSearchTerm={basicTabData.setSearchTerm}
               refProfile={refProfile}
               setOpenModalWind={setOpenModalWind}
             />
