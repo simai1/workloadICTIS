@@ -86,6 +86,7 @@ export function PopUpFile(props) {
 
   return (
     <div className={styles.mainPop} ref={refSave}>
+      <div className={styles.triangle}></div>
       <div className={styles.mainPop__inner}>
         <div className={styles.import_blockFirst}>
           <div>

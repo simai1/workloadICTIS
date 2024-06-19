@@ -4,14 +4,25 @@
 .mainPop {
   position: absolute;
   right: 60px;
-  top: 180px;
+  top: 190px;
   z-index: 200;
+  .triangle {
+    position: absolute;
+    top: -15px;
+    right: 15px;
+    width: 26px;
+    height: 14px;
+    border-left: 11px solid transparent;
+    border-right: 11px solid transparent;
+    border-bottom: 24px solid #fff;
+    border-radius: 100%;
+  }
 }
 .mainPop__inner {
   background-color: #ffffff;
   box-shadow: 4px 4px 20px 0px #00000026;
   border-radius: 12px;
-  width: 467px;
+  width: 462px;
   transition: 0.1s linear all;
   padding: 19px;
   .import_blockFirst {
