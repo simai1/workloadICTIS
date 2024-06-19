@@ -60,7 +60,7 @@ function HomePage() {
     } else {
       basicTabData.funUpdateTable("14");
     }
-    basicTabData.setnameKaf("Все");
+    basicTabData.setnameKaf("ОИД");
     setKafedralIsOpen(false);
     tabPar.setSelectedFilter("Все дисциплины");
   };

@@ -90,7 +90,7 @@ export function PopUpCreateEmploy(props) {
         <div className={styles.inputBlock}>
           <Input
             Textlabel="ФИО"
-            placeholder="Иваннов Иван Михайлович"
+            placeholder="Иванов Иван Михайлович"
             name={"name"}
             handleInputChange={handleInputChange}
           />
@@ -143,7 +143,7 @@ export function PopUpCreateEmploy(props) {
           )}
           <List
             dataList={dataKaf}
-            Textlabel="кафедра"
+            Textlabel="Кафедра"
             defaultValue="Выберите кафедру"
             name={"department"}
             handleInputList={handleInputList}

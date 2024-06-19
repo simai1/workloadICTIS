@@ -48,6 +48,7 @@ export function PopUpFile(props) {
       }
     });
   };
+
   const refSave = useRef(null);
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -79,6 +80,10 @@ export function PopUpFile(props) {
   useEffect(() => {
     console.log("file", appData.fileData?.name);
   }, []);
+
+  // Determine if the button should be disabled
+  const isButtonDisabled = !fileData || !valueCafedra;
+
   return (
     <div className={styles.mainPop} ref={refSave}>
       <div className={styles.mainPop__inner}>
@@ -96,7 +101,7 @@ export function PopUpFile(props) {
               type="file"
               ref={fileInputRef}
               style={{ display: "none" }}
-              onChange={handleFileChange} // Attach the onChange event here
+              onChange={handleFileChange}
             />
             <div>
               <img src="./img/doc.svg" />
@@ -143,13 +148,22 @@ export function PopUpFile(props) {
         </div>
         <div className={styles.block4}>
           <p>
-            Вы уверены, что хотите импортировать новые данные в таблицу? Данное
+            Вы уверены, что хотите импортировать новые данные в таблицу? Данное
             действие нельзя будет отменить!
           </p>
         </div>
         <div className={styles.blockButton}>
           <button onClick={closeMenuPopFile}>Нет</button>
-          <button onClick={UpdateTable}>Да</button>
+          <button
+            onClick={UpdateTable}
+            disabled={isButtonDisabled}
+            style={{
+              backgroundColor: isButtonDisabled ? "grey" : "#3b28cc",
+              cursor: isButtonDisabled ? "not-allowed" : "pointer",
+            }}
+          >
+            Да
+          </button>
         </div>
       </div>
     </div>
