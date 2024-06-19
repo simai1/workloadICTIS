@@ -116,8 +116,6 @@ function TableTeachers(props) {
     setFilteredData(fd);
   }, [updatedData, props.searchTerm]);
 
-  
-
   const clickTrRows = (id, x, y) => {
     setSelectRow(id);
     setPositionMenu({ x, y });
@@ -177,14 +175,13 @@ function TableTeachers(props) {
             </tr>
           </thead>
           <tbody>
-          
             {filteredData.map((row, index) => (
               <tr
                 key={index}
                 className={selectRows === row.id ? styles.SelectedTr : null}
                 onContextMenu={(e) => {
-                  e.preventDefault(); 
-                  clickTrRows(row.id, e.clientX, e.clientY); 
+                  e.preventDefault();
+                  clickTrRows(row.id, e.clientX, e.clientY);
                 }}
               >
                 {updatedHeader.map((key) => {
@@ -205,7 +202,11 @@ function TableTeachers(props) {
                       <td key={key.key} name={key.key}>
                         <div
                           style={{
-                            backgroundColor: appData.WhyColor(row.position,row.totalHours, row.rate),
+                            backgroundColor: appData.WhyColor(
+                              row.position,
+                              row.totalHours,
+                              row.rate
+                            ),
                           }}
                           className={styles.tdHours}
                         >

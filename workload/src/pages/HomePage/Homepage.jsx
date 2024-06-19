@@ -31,6 +31,7 @@ import ConfirmSaving from "../../ui/ConfirmSaving/ConfirmSaving";
 import socketConnect from "../../api/services/socket";
 import PopUpGoodMessage from "../../ui/PopUpGoodMessage/PopUpGoodMessage";
 import TableHistory from "../../components/TableHistory/TableHistory";
+import ErrorHelper from "../../components/ErrorHelper/ErrorHelper";
 
 function HomePage() {
   const { appData, tabPar, visibleDataPar, basicTabData } =
@@ -54,7 +55,7 @@ function HomePage() {
   const [cafedral, setCafedral] = useState(false);
   const [blockTable, setBlockTable] = useState(false);
   const handleButtonClick = () => {
-    setEducatorIdforLk(""); 
+    setEducatorIdforLk("");
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 28)) {
       basicTabData.funUpdateTable("0");
     } else {
@@ -308,7 +309,7 @@ function HomePage() {
                   !blockTable &&
                   appData.selectedComponent !== "History" && (
                     <div
-                      style={{ marginRight: "20px" }}
+                      style={{ marginRight: "15px" }}
                       className={styles.btnMenuBox}
                       onClick={onExportClick}
                     >
@@ -323,7 +324,14 @@ function HomePage() {
                     </div>
                   )}
               </div>
-              <div className={styles.header_search}>
+              <div
+                className={styles.header_search}
+                style={
+                  basicTabData?.searchTerm
+                    ? { backgroundColor: "#fff", border: "none" }
+                    : null
+                }
+              >
                 <input
                   type="text"
                   placeholder="Поиск..."
@@ -332,6 +340,11 @@ function HomePage() {
                   onChange={handleSearch}
                   value={basicTabData?.searchTerm}
                   className={styles.hedaer_search_inner}
+                  style={
+                    basicTabData?.searchTerm
+                      ? { backgroundColor: "#fff" }
+                      : null
+                  }
                 />
                 <img src="./img/search.svg"></img>
               </div>
@@ -399,6 +412,7 @@ function HomePage() {
               )}
             </div>
             <div className={styles.header_left_component}>
+              <ErrorHelper />
               {appData.metodRole[appData.myProfile?.role]?.some(
                 (el) => el === 30
               ) && (
