@@ -5,6 +5,9 @@
   display: flex;
   justify-content: center;
   z-index: 120;
+  label{
+    margin-left: 10px;
+  }
   input {
     @include input-text(300px, 8px);
     margin-bottom: 18px;
@@ -17,12 +20,11 @@
   span {
     cursor: pointer;
   }
-  .inputList::placeholder{
+  .inputList::placeholder {
     color: #adadad;
   }
   .ListCont {
     position: relative;
-
   }
   .arrowBot img {
     position: absolute;

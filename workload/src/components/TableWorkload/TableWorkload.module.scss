@@ -635,12 +635,16 @@ $heightCell: 150px;
           }
           .btn_rigth {
             display: flex;
+            flex-direction: row;
             align-items: center;
             width: 40px;
-            justify-content: space-between;
+            // justify-content: space-between;
             cursor: pointer;
             .svg * {
               fill: var(--blue-color);
+            }
+            .btn_rigth_svg {
+              margin-left: 5px;
             }
           }
         }

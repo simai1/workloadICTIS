@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect, useRef } from "react";
 import styles from "./EditInput.module.scss";
 import arrow from "./../../img/arrow.svg";
@@ -123,7 +121,15 @@ function EditInput({ selectedComponent, originalHeader }) {
         <div className={`${styles.EditInputOpen} ${styles.fadein}`}>
           <button onClick={toggleList}>
             <p>Редактирование полей</p>
-            <img src={arrow} alt="arrow"></img>
+            <img
+              src={arrow}
+              alt="arrow"
+              style={{
+                transform: "rotate(-180deg)",
+                left: "10px",
+                position: "relative",
+              }}
+            ></img>
           </button>
           <input
             placeholder="Поиск"

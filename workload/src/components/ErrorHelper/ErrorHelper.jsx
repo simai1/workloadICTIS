@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import styles from "./Warnings.module.scss";
+import styles from "./ErrorHelper.module.scss";
 import WarningMessage from "../../ui/WarningMessage/WarningMessage";
 import socketConnect from "../../api/services/socket";
 import DataContext from "../../context";
@@ -7,7 +7,7 @@ import { ReactComponent as SvgNotification } from "./../../img/notification.svg"
 import { Educator } from "../../api/services/ApiRequest";
 import { getAllWarnin } from "../../api/services/AssignApiData";
 import Input from "../../ui/UniversalInput/Input";
-function Warnings(props) {
+function ErrorHelper(props) {
   const { appData } = React.useContext(DataContext);
   const [filteredData, setFilteredData] = useState([]);
   const [isListOpen, setListOpen] = useState(false);
@@ -68,54 +68,21 @@ function Warnings(props) {
   };
 
   return (
-    <div ref={refLO} className={styles.Warnings}>
+    <div ref={refLO} className={styles.ErrorHelper}>
       <div onClick={toggleList} className={styles.WarningsButton}>
-        {appData.allWarningMessage.length > 0 && (
-          <div className={styles.red_circle}></div>
-        )}
-        <SvgNotification className={styles.svg_notice} />
+        {/* <SvgNotification className={styles.svg_notice} /> */}
+        <img src="./img/errorHelper.svg" alt="e" />
       </div>
       {isListOpen && (
         <div className={styles.WarningsOpen}>
           <div className={styles.triangle}></div>
-          <div className={styles.WarningsButtonOpen}>
-            <div className={styles.circlesbuttonWarn}>
-              <div className={styles.span_length}>
-                {appData.allWarningMessage?.length}
-              </div>
-            </div>
-            <p>Предупреждения</p>
-          </div>
-          <div className={styles.seach}>
-            <Input
-              type="text"
-              placeholder={"Поиск..."}
-              value={inpValue}
-              funOnChange={funOnChange}
-            />
-          </div>
-          <div className={styles.WarningsList}>
-            <ul>
-              {appData.allWarningMessage?.length > 0 ? (
-                filteredData?.map((item, index) => {
-                  return (
-                    <WarningMessage
-                      item={item}
-                      key={item.id}
-                      index={index}
-                      directLks={directLks}
-                    />
-                  );
-                })
-              ) : (
-                <div className={styles.noWarning}>Предупреждений нет</div>
-              )}
-            </ul>
-          </div>
+          <p>Сообщите об ошибке на почту</p>
+          {/* <span>alis@sfedu.ru</span> */}
+          <a href="mailto:example@example.com">alis@sfedu.ru</a>
         </div>
       )}
     </div>
   );
 }
 
-export default Warnings;
+export default ErrorHelper;

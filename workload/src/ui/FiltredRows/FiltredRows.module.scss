@@ -2,22 +2,33 @@
 
 .FiltredRows {
   // margin-left: 8px;
+  width: 210px;
 
   .FiltredRows__inner {
+    width: 100%;
+    .FiltredRows__inner_img {
+      width: 14px;
+      height: 100%;
+    }
+
     button {
+      width: 100%;
       border: none;
       background: var(--blue-color);
       color: #fff;
       font-size: 18px;
       padding: 9px 16px;
       border-radius: 8px;
-      align-items: center;
+      // align-items: center;
+      display: flex;
+      justify-content: space-between;
       transition: 0.15s linear all;
       img {
-        position: relative;
-        top: -2px;
+        // position: relative;
+        // top: -2px;
+        padding-bottom: 2px;
         width: 14px;
-        left: 2px;
+        left: 8px;
       }
     }
     button:hover {

@@ -14,18 +14,16 @@ export function PopUpCreateEmploy(props) {
     email: "",
     position: "",
     rate: "",
-    typeOfEmployment: "",
-    department: "",
+    department: appData.metodRole[appData.myProfile?.role]?.some((el) => el === 39) ? appData.myProfile.educator.department : "",
   });
   const [isEmailValid, setIsEmailValid] = useState(true);
   const [isRateValid, setIsRateValid] = useState(true);
-
-  const dataList = [
-    { id: 1, name: "Внешнее совместительство" },
-    { id: 2, name: "Внутреннее совместительство" },
-    { id: 3, name: "Основное место работы" },
-    { id: 4, name: "Почасовая оплата труда" },
-  ];
+  // const dataList = [
+  //   { id: 1, name: "Внешнее совместительство" },
+  //   { id: 2, name: "Внутреннее совместительство" },
+  //   { id: 3, name: "Основное место работы" },
+  //   { id: 4, name: "Почасовая оплата труда" },
+  // ];
   const dataListPosition = [
     { id: 1, name: "Ассистент" },
     { id: 2, name: "Ведущий научный сотрудник" },
@@ -76,14 +74,20 @@ export function PopUpCreateEmploy(props) {
       email: dataNewEdicator.email,
       position: dataNewEdicator.position,
       rate: Number(dataNewEdicator.rate.replace(",", ".")),
-      typeOfEmployment: dataNewEdicator.typeOfEmployment,
-      department: dataNewEdicator.department,
+      department: appData.metodRole[appData.myProfile?.role]?.some((el) => el === 39) ? dataKaf.find((el)=>el.name === dataNewEdicator.department).id : dataNewEdicator.department
     };
-    CreateEducator(data).then(() => {
-      appData.setcreateEdicatorPopUp(false);
-      //! обновляем таблицу преподавателей
-      basicTabData.setActionUpdTabTeach(!basicTabData.actionUpdTabTeach);
+    console.log("data", data)
+    CreateEducator(data).then((resp) => {
+      if(resp.status === 200){
+        appData.setcreateEdicatorPopUp(false);
+        basicTabData.setActionUpdTabTeach(!basicTabData.actionUpdTabTeach);
+        appData.setgodPopUp(true)
+      }else{
+        appData.setcreateEdicatorPopUp(false);
+        appData.seterrorPopUp(true);
+      }
     });
+  
   };
 
   return (
@@ -92,7 +96,7 @@ export function PopUpCreateEmploy(props) {
         <div className={styles.inputBlock}>
           <Input
             Textlabel="ФИО"
-            placeholder="Иваннов Иван Михайлович"
+            placeholder="Иванов Иван Михайлович"
             name={"name"}
             handleInputChange={handleInputChange}
           />
@@ -123,13 +127,6 @@ export function PopUpCreateEmploy(props) {
             name={"position"}
             handleInputList={handleInputList}
           />
-          <List
-            dataList={dataList}
-            Textlabel="Вид занятости"
-            defaultValue="Выберите вид занятости"
-            name={"typeOfEmployment"}
-            handleInputList={handleInputList}
-          />
           <Input
             Textlabel="Ставка"
             placeholder="0.5"
@@ -152,10 +149,11 @@ export function PopUpCreateEmploy(props) {
           )}
           <List
             dataList={dataKaf}
-            Textlabel="кафедра"
+            Textlabel="Кафедра"
             defaultValue="Выберите кафедру"
             name={"department"}
             handleInputList={handleInputList}
+            value = {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 39) ? appData.myProfile.educator.department : null}
           />
         </div>
         <div
@@ -167,13 +165,31 @@ export function PopUpCreateEmploy(props) {
             bottom: "-10px",
           }}
         >
-          <Button
-            text="Сохранить"
-            Bg="#3b28cc"
-            textColot="#fff"
-            handleClicks={handleClicks}
-            style={{ opacity: !isEmailValid || !isRateValid ? 0.2 : 1 }}
-          />
+            <button
+            className={styles.buttonSave}
+            onClick={handleClicks}
+            disabled={!isRateValid || !isEmailValid || !dataNewEdicator.name || !dataNewEdicator.email || !dataNewEdicator.position || !dataNewEdicator.rate || !dataNewEdicator.department}
+            style={{
+              backgroundColor: (!isRateValid || !isEmailValid || !dataNewEdicator.name || !dataNewEdicator.email || !dataNewEdicator.position || !dataNewEdicator.rate || !dataNewEdicator.department) ? "#b9b9ba" : "#3b28cc",
+              cursor: (!isRateValid || !isEmailValid || !dataNewEdicator.name || !dataNewEdicator.email || !dataNewEdicator.position || !dataNewEdicator.rate || !dataNewEdicator.department) ? "not-allowed" : "pointer",
+                color:"#fff",
+                borderRadius:"8px",
+                paddingLeft: "16px",
+                paddingRight: "16px",
+                paddingTop: "10px",
+                paddingBlock: "10px",
+                width: "150px",
+                transition: "opacity 0.3s ease",
+                opacity: 1,
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.transition = "opacity 0.15s ease"; 
+                e.target.style.opacity = 0.7;
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transition = "opacity 0.15s ease"; 
+                e.target.style.opacity = 1; 
+              }}>Сохранить</button>
         </div>
       </div>
     </PopUpContainer>
