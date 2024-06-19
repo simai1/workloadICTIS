@@ -47,7 +47,7 @@ function App() {
     LECTURER: [2, 15, 17, 17.1, 18, 20, 22, 24, 34, 37],
     DEPARTMENT_HEAD: [
       2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 22, 23, 25, 26, 27, 30, 31, 32,
-      33, 34, 36, 16, 39
+      33, 34, 36, 16, 39,
     ],
     DIRECTORATE: [
       1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
@@ -136,6 +136,7 @@ function App() {
     funUpdateAllColors,
     setselectkafedra,
     funGetDepartment,
+    funFilteredFilterSelected,
     selectkafedra,
     actionUpdTabTeach,
     setActionUpdTabTeach,
@@ -478,13 +479,8 @@ function App() {
     }
   }, [myProfile, tableDepartment]); // [myProfile, tableDepartment]
 
-  //! при переходе с кафедральных на общеинституские и обратно фильтруем основные
-  //! фильтруем по FiltredRows
-  useEffect(() => {
-    // const splitData = funSplitData(workloadDataFix, dataIsOid);
-    const splitData = [...workloadDataFix];
-    // console.log("workloadDataFix", splitData);
-    const filterSelected = funFilterSelected(
+  function funFilteredFilterSelected(splitData = [...workloadDataFix]) {
+    return funFilterSelected(
       splitData,
       selectedFilter,
       coloredData,
@@ -493,6 +489,13 @@ function App() {
       allCommentsData,
       allOffersData
     );
+  }
+  //! при переходе с кафедральных на общеинституские и обратно фильтруем основные
+  //! фильтруем по FiltredRows
+  useEffect(() => {
+    // const splitData = funSplitData(workloadDataFix, dataIsOid);
+    // console.log("workloadDataFix", splitData);
+    const filterSelected = funFilteredFilterSelected();
     if (filterSelected) {
       setFiltredData(funSortedFastened(filterSelected, fastenedData));
     }

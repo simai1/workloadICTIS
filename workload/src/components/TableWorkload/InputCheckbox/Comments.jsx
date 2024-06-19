@@ -164,26 +164,29 @@ function Comments(props) {
                   )}
                 </div>
                 <div className={styles.btn_rigth}>
-                  {appData.metodRole[appData.myProfile?.role]?.some(
-                    (el) => el === 22
-                  ) && (
-                    <CommentsSvg
-                      onClick={onTextArea}
-                      className={textArea ? styles.svg : null}
-                      height={16}
-                      width={16}
-                    />
-                  )}
-
-                  {appData.metodRole[appData.myProfile?.role]?.some(
-                    (el) => el === 21
-                  ) && (
-                    <Checkmark
-                      onClick={checkmarkClick}
-                      height={16}
-                      width={16}
-                    />
-                  )}
+                  <div className={styles.btn_rigth_svg}>
+                    {appData.metodRole[appData.myProfile?.role]?.some(
+                      (el) => el === 22
+                    ) && (
+                      <CommentsSvg
+                        onClick={onTextArea}
+                        className={textArea ? styles.svg : null}
+                        height={16}
+                        width={16}
+                      />
+                    )}
+                  </div>
+                  <div className={styles.btn_rigth_svg}>
+                    {appData.metodRole[appData.myProfile?.role]?.some(
+                      (el) => el === 21
+                    ) && (
+                      <Checkmark
+                        onClick={checkmarkClick}
+                        height={16}
+                        width={16}
+                      />
+                    )}
+                  </div>
                 </div>
               </div>
               {textArea && (
