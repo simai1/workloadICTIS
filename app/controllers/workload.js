@@ -110,7 +110,6 @@ export default {
                     workloads = await Workload.findAll({
                         where: {
                             educatorId: _user.Educator.id,
-                            isBlocked: false,
                         },
                         include: { model: Educator },
                         order: [
@@ -155,7 +154,6 @@ export default {
                     workloads = await Workload.findAll({
                         where: {
                             department: _user.Educator.department,
-                            isBlocked: false,
                         },
                         include: { model: Educator },
                         order: [

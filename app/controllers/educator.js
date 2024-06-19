@@ -1,13 +1,9 @@
 import Educator from '../models/educator.js';
 import EducatorDto from '../dtos/educator-dto.js';
-import EducatorProfileDto from '../dtos/educator-profile-dto.js';
 import { AppErrorAlreadyExists, AppErrorForbiddenAction, AppErrorMissing, AppErrorNotExist } from '../utils/errors.js';
 import { map as mapPositions } from '../config/position.js';
 import associateEducator from '../utils/associate-educator.js';
-import departments from '../config/departments.js';
-import Workload from '../models/workload.js';
 import SummaryWorkload from '../models/summary-workload.js';
-import WorkloadProfileDto from '../dtos/workload-profile-dto.js';
 import EducatorListDto from '../dtos/educator-list-dto.js';
 import User from '../models/user.js';
 
@@ -45,35 +41,8 @@ export default {
             },
         });
         if (!educator) throw new AppErrorNotExist('educator');
-        const educatorProfileDto = new EducatorProfileDto(educator);
+        const educatorProfileDto = new EducatorListDto(educator);
 
-        const workloads = await Workload.findAll({
-            where: {
-                educatorId,
-            },
-        });
-        console.log(workloads.length);
-        const workloadsDto = [];
-        let flag;
-        for (const workload of workloads) {
-            flag = true;
-            for (const workloadDto of workloadsDto) {
-                if (
-                    departments[workloadDto.department] === workload.department &&
-                    workloadDto.discipline === workload.discipline
-                ) {
-                    workloadDto.hoursFirstPeriod += workload.period === 1 ? workload.hours : 0;
-                    workloadDto.hoursSecondPeriod += workload.period === 2 ? workload.hours : 0;
-                    workloadDto.hoursWithoutPeriod += workload.period === null ? workload.hours : 0;
-                    flag = false;
-                    console.log(workloadDto);
-                    break;
-                }
-            }
-            if (flag) workloadsDto.push(new WorkloadProfileDto(workload));
-        }
-
-        educatorProfileDto.workloads.push(workloadsDto);
         res.json(educatorProfileDto);
     },
 
