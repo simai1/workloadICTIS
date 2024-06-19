@@ -53,7 +53,7 @@ function HomePage() {
   const [cafedral, setCafedral] = useState(false);
   const [blockTable, setBlockTable] = useState(false);
   const handleButtonClick = () => {
-    setEducatorIdforLk("");
+    setEducatorIdforLk(""); 
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 28)) {
       basicTabData.funUpdateTable("0");
     } else {
@@ -61,7 +61,7 @@ function HomePage() {
     }
     basicTabData.setnameKaf("Все");
     setKafedralIsOpen(false);
-    tabPar.setSelectedFilter("Все Дисциплины");
+    tabPar.setSelectedFilter("Все дисциплины");
   };
 
   //! связь с сокетом

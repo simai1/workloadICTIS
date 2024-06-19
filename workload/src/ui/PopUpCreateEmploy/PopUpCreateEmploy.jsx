@@ -15,7 +15,7 @@ export function PopUpCreateEmploy(props) {
     position: "",
     rate: "",
     typeOfEmployment: "",
-    department: "",
+    department: appData.metodRole[appData.myProfile?.role]?.some((el) => el === 39) ? appData.myProfile.educator.department : "",
   });
   const [isEmailValid, setIsEmailValid] = useState(true);
   const [isRateValid, setIsRateValid] = useState(true);
@@ -76,8 +76,9 @@ export function PopUpCreateEmploy(props) {
       position: dataNewEdicator.position,
       rate: Number(dataNewEdicator.rate.replace(",", ".")),
       typeOfEmployment: dataNewEdicator.typeOfEmployment,
-      department: dataNewEdicator.department,
+      department: appData.metodRole[appData.myProfile?.role]?.some((el) => el === 39) ? dataKaf.find((el)=>el.name === dataNewEdicator.department).id : dataNewEdicator.department
     };
+    console.log("data", data)
     CreateEducator(data).then(() => {
       appData.setcreateEdicatorPopUp(false);
       //! обновляем таблицу преподавателей

@@ -16,7 +16,10 @@ function List({ dataList, Textlabel, defaultValue, handleInputChange, name, hand
 
   return (
     <div className={styles.List}>
-      <div>
+      {
+        name === "department" && appData.metodRole[appData.myProfile?.role]?.some((el) => el === 39) ? <></> :
+
+        <div>
         {Textlabel && (
           <div>
             <label>{Textlabel}</label>
@@ -36,16 +39,14 @@ function List({ dataList, Textlabel, defaultValue, handleInputChange, name, hand
           >
             <img
               style={{
-                transform: activeList ? "rotate(0deg)" : "rotate(-90deg)",
-                // display: appData.metodRole[appData.myProfile?.role]?.some((el) => el === 40) ? "block" : "none"
-              }}
+                transform: activeList ? "rotate(0deg)" : "rotate(-90deg)"
+            }}
               src={arrow}
             />
           </span>
         </div>
-        {/* {(activeList && appData.metodRole[appData.myProfile?.role]?.some((el) => el === 40)) &&  */}
-        {activeList &&(
-          <div className={styles.ListData}>
+        { activeList &&
+            <div className={styles.ListData}>
             {dataList.map((item) => (
               <p
                 className={styles.NameForList}
@@ -56,8 +57,12 @@ function List({ dataList, Textlabel, defaultValue, handleInputChange, name, hand
               </p>
             ))}
           </div>
-        )}
+        }
+        
       </div>
+        
+      }
+     
     </div>
   );
 }
