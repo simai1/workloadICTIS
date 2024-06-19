@@ -10,15 +10,7 @@
   justify-content: center;
   border-radius: 8px;
   z-index: 200;
-  .span_length {
-    display: flex;
-    font-size: 14px;
-    justify-content: center;
-    align-items: center;
-    transform: translateX(0.5px);
-    transform: translateY(0.5px);
-    min-width: 22px;
-  }
+
   .WarningsButton {
     display: flex;
     width: 45px;
@@ -94,6 +86,7 @@
   padding: 0;
   width: 219px;
   max-height: 60vh;
+  margin-top: 0;
 }
 .WarningsList {
   display: flex;
@@ -122,8 +115,6 @@
 }
 
 .circlesbuttonWarn {
-  width: auto;
-  height: auto;
   padding: 2px;
   color: var(--white-color);
   border-radius: 50%;
@@ -131,4 +122,13 @@
   align-items: center;
   text-align: center;
   background-color: #e81414;
+
+  .span_length {
+    display: flex;
+    font-size: 14px;
+    justify-content: center;
+    align-items: center;
+    transform: translateY(0.5px);
+    padding-left: 1px;
+  }
 }
