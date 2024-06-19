@@ -220,7 +220,7 @@ function TableLks(props) {
         </div>
       ) : (
         <div className={styles.notData}>
-          <h2>У вас отсутствуют нагрузки</h2>
+          <h2>Нет данных</h2>
         </div>
       )}
     </div>
