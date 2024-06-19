@@ -80,7 +80,16 @@ function Warnings(props) {
           <div className={styles.triangle}></div>
           <div className={styles.WarningsButtonOpen}>
             <div className={styles.circlesbuttonWarn}>
-              <div className={styles.span_length}>
+              <div
+                className={styles.span_length}
+                style={
+                  appData.allWarningMessage?.length > 100
+                    ? { fontSize: "10px" }
+                    : appData.allWarningMessage?.length > 1000
+                    ? { fontSize: "8px" }
+                    : null
+                }
+              >
                 {appData.allWarningMessage?.length}
               </div>
             </div>
