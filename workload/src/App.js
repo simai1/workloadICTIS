@@ -13,8 +13,6 @@ import {
   Comment,
   GetDepartment,
   Workload,
-  apiGetUser,
-  apiGetWorkloadDepartment,
   getAllAttaches,
   getAllColors,
   getOffers,
@@ -27,7 +25,6 @@ import {
   funFilterSelected,
   funFixEducator,
   funSortedFastened,
-  funSplitData,
 } from "./components/TableWorkload/Function";
 import { delChangeData } from "./ui/ContextMenu/Function";
 import { FilteredSample } from "./ui/SamplePoints/Function";
@@ -96,6 +93,8 @@ function App() {
     setSelectedComponent,
     loaderAction,
     setLoaderAction,
+    myProfile,
+    setMyProfile,
   };
 
   //! параметры таблицы
@@ -441,13 +440,6 @@ function App() {
     // получение выделенных строк
     funUpdateAllColors();
   }
-
-  //! получаем и записываем данные usera
-  useEffect(() => {
-    apiGetUser().then((data) => {
-      setMyProfile(data);
-    });
-  }, []);
 
   //! получаем данные нагрузок с бд
   useEffect(() => {
