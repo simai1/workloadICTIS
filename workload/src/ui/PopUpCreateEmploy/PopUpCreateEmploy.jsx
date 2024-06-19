@@ -19,7 +19,6 @@ export function PopUpCreateEmploy(props) {
   });
   const [isEmailValid, setIsEmailValid] = useState(true);
   const [isRateValid, setIsRateValid] = useState(true);
-
   const dataList = [
     { id: 1, name: "Внешнее совместительство" },
     { id: 2, name: "Внутреннее совместительство" },
@@ -156,6 +155,7 @@ export function PopUpCreateEmploy(props) {
             defaultValue="Выберите кафедру"
             name={"department"}
             handleInputList={handleInputList}
+            value = {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 39) ? appData.myProfile.educator.department : null}
           />
         </div>
         <div

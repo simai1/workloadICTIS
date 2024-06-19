@@ -3,7 +3,7 @@ import styles from "./List.module.scss";
 import DataContext from "../../context";
 import arrow from "./../../img/arrow_down.svg"
 function List({ dataList, Textlabel, defaultValue, handleInputChange, name, handleInputList, value}) {
-  const { context } = React.useContext(DataContext);
+  const { context, appData } = React.useContext(DataContext);
 
   const [activeList, setactiveList] = useState(false);
   const [nameClient, setnameClient] = useState(value);
@@ -37,12 +37,14 @@ function List({ dataList, Textlabel, defaultValue, handleInputChange, name, hand
             <img
               style={{
                 transform: activeList ? "rotate(0deg)" : "rotate(-90deg)",
+                // display: appData.metodRole[appData.myProfile?.role]?.some((el) => el === 40) ? "block" : "none"
               }}
               src={arrow}
             />
           </span>
         </div>
-        {activeList && (
+        {/* {(activeList && appData.metodRole[appData.myProfile?.role]?.some((el) => el === 40)) &&  */}
+        {activeList &&(
           <div className={styles.ListData}>
             {dataList.map((item) => (
               <p
