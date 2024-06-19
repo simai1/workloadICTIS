@@ -77,7 +77,8 @@ function ErrorHelper(props) {
         <div className={styles.WarningsOpen}>
           <div className={styles.triangle}></div>
           <p>Сообщите об ошибке на почту</p>
-          <span>alis@sfedu.ru</span>
+          {/* <span>alis@sfedu.ru</span> */}
+          <a href="mailto:example@example.com">alis@sfedu.ru</a>
         </div>
       )}
     </div>

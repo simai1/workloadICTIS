@@ -24,6 +24,7 @@
   .WarningsButton:hover {
     cursor: pointer;
     opacity: 0.6;
+    transition: all 0.15s ease;
   }
   .WarningsOpen {
     position: absolute;
@@ -41,10 +42,11 @@
       margin: 0;
       padding-bottom: 4px;
     }
-    span {
+    a {
       color: #e81414;
       padding: 4px 16px;
       cursor: pointer;
+      text-decoration: none !important;
     }
 
     .WarningsButtonOpen {

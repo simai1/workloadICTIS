@@ -41,6 +41,13 @@ body {
           border: 1px solid #b0b0b0;
           border-radius: 8px;
           color: #b0b0b0;
+          cursor: pointer;
+
+          &:hover {
+            cursor: pointer;
+            opacity: 0.6;
+            transition: all 0.15s ease;
+          }
 
           .hedaer_search_inner {
             width: 100%;
@@ -54,6 +61,7 @@ body {
             font-size: 18px;
             font-weight: 500;
             color: #000000;
+            cursor: pointer;
           }
           .hedaer_search::-webkit-input-placeholder {
             color: #b0b0b0;
@@ -204,6 +212,7 @@ body {
   .saveBuffre {
     display: flex;
     flex-direction: row;
+
     .btnMenuBox {
       position: relative;
       display: flex;
@@ -215,6 +224,17 @@ body {
         padding-right: 10px;
       }
       cursor: pointer;
+      &:hover {
+        img {
+          cursor: pointer;
+          opacity: 0.6;
+          transition: all 0.15s ease;
+        }
+        .text {
+          opacity: 0.6;
+          transition: all 0.15s ease;
+        }
+      }
     }
     .btnMenuBox:nth-child(1) {
       margin-right: 15px;
