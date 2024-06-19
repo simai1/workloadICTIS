@@ -80,27 +80,20 @@ function Warnings(props) {
           <div className={styles.triangle}></div>
           <div className={styles.WarningsButtonOpen}>
             <div className={styles.circlesbuttonWarn}>
-              <div
-                className={styles.span_length}
-                style={
-                  appData.allWarningMessage?.length > 100
-                    ? { fontSize: "10px" }
-                    : appData.allWarningMessage?.length > 1000
-                    ? { fontSize: "8px" }
-                    : null
-                }
-              >
+              <div className={styles.span_length}>
                 {appData.allWarningMessage?.length}
               </div>
             </div>
             <p>Предупреждения</p>
           </div>
-          <Input
-            type="text"
-            placeholder={"Поиск..."}
-            value={inpValue}
-            funOnChange={funOnChange}
-          />
+          <div className={styles.seach}>
+            <Input
+              type="text"
+              placeholder={"Поиск..."}
+              value={inpValue}
+              funOnChange={funOnChange}
+            />
+          </div>
           <div className={styles.WarningsList}>
             <ul>
               {appData.allWarningMessage?.length > 0 ? (
