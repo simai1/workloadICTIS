@@ -96,7 +96,7 @@ function App() {
     setLoaderAction,
     myProfile,
     setMyProfile,
-    WhyColor
+    WhyColor,
   };
 
   //! параметры таблицы
@@ -319,26 +319,29 @@ function App() {
   function WhyColor(position, totalHours, rate) {
     let bg;
     let phuthicalHours = 900;
-    let max =  horsTeacher.find((el)=>el.name === position).max
-    let min =  horsTeacher.find((el)=>el.name === position).min
+    let max = horsTeacher
+      ? horsTeacher.find((el) => el.name === position)?.max
+      : 0;
+    let min = horsTeacher
+      ? horsTeacher.find((el) => el.name === position)?.min
+      : 0;
     let maxHours = max * rate;
     let minHorse = min * rate;
-  
-    if(totalHours === 0){
+
+    if (totalHours === 0) {
       bg = "#e2e0e5"; // серый цвет
-    }
-    else if(totalHours > phuthicalHours || totalHours > maxHours){
+    } else if (totalHours > phuthicalHours || totalHours > maxHours) {
       bg = "#E81414"; // Красный цвет
-    }else if(totalHours < minHorse){
+    } else if (totalHours < minHorse) {
       bg = "#FFD600"; // Желтый цвет
-    }else if(totalHours >= minHorse && totalHours <= maxHours){
+    } else if (totalHours >= minHorse && totalHours <= maxHours) {
       bg = "#19C20A"; // Зеленый цвет
-    }else if(totalHours > maxHours && totalHours <= phuthicalHours){
+    } else if (totalHours > maxHours && totalHours <= phuthicalHours) {
       bg = "#ffa600"; // оранжевый цвет
     }
     return bg;
   }
-  
+
   //! функция обновления таблицы
   function funUpdateTable(param = 0) {
     console.log("param", param);

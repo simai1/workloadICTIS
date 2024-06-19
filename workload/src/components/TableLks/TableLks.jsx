@@ -12,7 +12,7 @@ function TableLks(props) {
   const [searchTerm, setSearchTerm] = useState("");
   const [EducatorLkData, setEducatorLkData] = useState([]);
   const [tableData, setTableData] = useState([]);
-  const [colorHours, setColorHours] = useState(null)
+  const [colorHours, setColorHours] = useState(null);
   const { appData, basicTabData, checkPar } = React.useContext(DataContext);
   const [tableHeaders, setTableHeaders] = useState([
     { key: "department", label: "Кафедра" },
@@ -135,10 +135,21 @@ function TableLks(props) {
             <h1>{EducatorLkData?.name}</h1>
             <div
               className={styles.DataLksHeadSchet}
-              style={{ backgroundColor: appData.WhyColor(EducatorLkData?.position, EducatorLkData?.totalHours, EducatorLkData?.rate) }}
+              style={
+                EducatorLkData
+                  ? {
+                      backgroundColor: appData.WhyColor(
+                        EducatorLkData?.position,
+                        EducatorLkData?.totalHours,
+                        EducatorLkData?.rate
+                      ),
+                    }
+                  : null
+              }
             >
               <p>
-                <span>{EducatorLkData?.totalHours}</span>/<span>{EducatorLkData?.maxHours}</span>
+                <span>{EducatorLkData?.totalHours}</span>/
+                <span>{EducatorLkData?.maxHours}</span>
               </p>
             </div>
           </div>
@@ -189,9 +200,9 @@ function TableLks(props) {
                                   : null
                               }
                             >
-                            <p className={styles.textDist}>
-                              {gettdInnerText(row[key], index)} 
-                            </p>
+                              <p className={styles.textDist}>
+                                {gettdInnerText(row[key], index)}
+                              </p>
                             </div>
                           </div>
                         </td>
