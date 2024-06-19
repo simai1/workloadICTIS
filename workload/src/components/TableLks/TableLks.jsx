@@ -14,6 +14,7 @@ function TableLks(props) {
   const [tableData, setTableData] = useState([]);
   const [colorHours, setColorHours] = useState(null);
   const { appData, basicTabData, checkPar } = React.useContext(DataContext);
+  const [filteredData, setFilteredData] = useState([]);
   const [tableHeaders, setTableHeaders] = useState([
     { key: "department", label: "Кафедра" },
     { key: "discipline", label: "Дисциплина" },
@@ -80,11 +81,14 @@ function TableLks(props) {
     setUpdatedData(updatedData);
   }
 
-  const filteredData = updatedData.filter((row) => {
-    return Object.values(row).some((value) =>
-      value.toString().toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  });
+  useEffect(() => {
+    const fd = updatedData.filter((row) => {
+      return Object.values(row).some((value) =>
+        value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    });
+    setFilteredData(fd);
+  }, [updatedData]);
 
   // Функция для определения цвета фона
   const [showFullText, setShowFullText] = useState(false);
@@ -171,8 +175,22 @@ function TableLks(props) {
       </div>
 
       {tableData[0] ? (
-        <div className={styles.TableLks__inner}>
-          <table className={styles.TableLks}>
+        <div
+          className={styles.TableLks__inner}
+          style={
+            filteredData.length < 5
+              ? { height: `${150 * filteredData.length}px` }
+              : null
+          }
+        >
+          <table
+            className={styles.TableLks}
+            style={
+              filteredData.length < 5
+                ? { height: `${150 * filteredData.length}px` }
+                : null
+            }
+          >
             <thead>
               <tr>
                 {updatedHeader.map((header) => (
@@ -184,34 +202,40 @@ function TableLks(props) {
               {filteredData.map((row, index) => (
                 <tr key={index} className={styles.tableRow}>
                   {Object.keys(row).map((key) => {
-                    if (key === "discipline") {
-                      return (
-                        <td key={key} className={styles.tdspecialtyTd}>
+                    return (
+                      <td key={key} className={styles.tdspecialtyTd}>
+                        <div
+                          onMouseEnter={
+                            row[key]?.length > lenSlice
+                              ? () => setShowFullText(index)
+                              : null
+                          }
+                          onMouseLeave={() => setShowFullText(null)}
+                          className={styles.tdInner}
+                        >
                           <div
-                            className={styles.tdspecialty}
-                            onMouseEnter={() => setShowFullText(index)}
-                            onMouseLeave={() => setShowFullText(null)}
+                            className={getClaasNametdInner(index, row[key])}
+                            style={
+                              showFullText === index &&
+                              row[key]?.length > lenSlice
+                                ? {
+                                    position: "absolute",
+                                    backgroundColor: "inherit",
+                                    width: "100%",
+                                    padding: "4px",
+                                    top: "-45px",
+                                    boxShadow:
+                                      "0px 3px 18px rgba(0, 0, 0, 0.15)",
+                                    zIndex: "100",
+                                  }
+                                : null
+                            }
                           >
-                            <div
-                              className={getClaasNametdInner(index, row[key])}
-                              style={
-                                index === filteredData.length - 1
-                                  ? { top: "-160px" }
-                                  : null
-                              }
-                            >
-                              <p className={styles.textDist}>
-                                {gettdInnerText(row[key], index)}
-                              </p>
-                            </div>
+                            {gettdInnerText(row[key], index)}
                           </div>
-                        </td>
-                      );
-                    } else {
-                      return (
-                        <td key={key}>{key === "id" ? index + 1 : row[key]}</td>
-                      );
-                    }
+                        </div>
+                      </td>
+                    );
                   })}
                 </tr>
               ))}
