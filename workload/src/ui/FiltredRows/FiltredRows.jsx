@@ -45,7 +45,10 @@ const FiltredRows = () => {
     <div ref={refFR} className={styles.FiltredRows}>
       <div className={styles.FiltredRows__inner}>
         <button onClick={OpCloseMenu}>
-          {tabPar.selectedFilter} <img src={ArrowImg} alt="ArrowImg"></img>
+          {tabPar.selectedFilter}
+          <div className={styles.FiltredRows__inner_img}>
+            <img src={ArrowImg} alt="ArrowImg"></img>
+          </div>
         </button>
         {OpenCloseMenu && (
           <ul className={styles.FiltredRows__list}>

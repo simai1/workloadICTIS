@@ -7,7 +7,11 @@
   z-index: 120;
   margin-top: -4px;
   margin-right: 12px;
-
+  &:hover {
+    cursor: pointer;
+    opacity: 0.75;
+    transition: all 0.2s ease;
+  }
   input {
     @include input-text(225px, 8px);
     margin-bottom: 18px;

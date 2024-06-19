@@ -121,6 +121,11 @@ body {
         input::placeholder {
           color: #0040e5;
         }
+        &:hover {
+          cursor: pointer;
+          opacity: 0.75;
+          transition: all 0.2s ease;
+        }
 
         input {
           cursor: pointer;
