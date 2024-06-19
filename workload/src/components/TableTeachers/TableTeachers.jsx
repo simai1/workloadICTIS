@@ -8,6 +8,7 @@ import Button from "../../ui/Button/Button";
 import { SamplePoints } from "./SamplePoints/SamplePoints";
 import { ContextFunc } from "./ContextFunc/ContextFunc";
 import { PopUpEditTeacher } from "./PopUpEditTeacher/PopUpEditTeacher";
+import { horsTeacher } from "./dataHoursForTeacher/HoursTicher";
 
 function TableTeachers(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]);
@@ -115,22 +116,6 @@ function TableTeachers(props) {
     setFilteredData(fd);
   }, [updatedData, props.searchTerm]);
 
-  // Функция для определения цвета фона
-  function WhyColor(totalHours, stavka) {
-    let bg;
-    let OgranHours = 900;
-    let AllHours = OgranHours * stavka;
-
-    if (totalHours <= AllHours - 300) {
-      bg = "#19C20A"; // Зеленый цвет
-    } else if (AllHours - 300 < totalHours && totalHours <= AllHours - 100) {
-      bg = "#FFD600"; // Желтый цвет
-    } else {
-      bg = "#E81414"; // Красный цвет
-    }
-    return bg;
-  }
-
   const clickTrRows = (id, x, y) => {
     setSelectRow(id);
     setPositionMenu({ x, y });
@@ -190,14 +175,13 @@ function TableTeachers(props) {
             </tr>
           </thead>
           <tbody>
-            {/* onClick={()=>{clickTrRows(row.id)}} */}
             {filteredData.map((row, index) => (
               <tr
                 key={index}
                 className={selectRows === row.id ? styles.SelectedTr : null}
                 onContextMenu={(e) => {
-                  e.preventDefault(); // Предотвращаем стандартное контекстное меню
-                  clickTrRows(row.id, e.clientX, e.clientY); // Передаем координаты курсора
+                  e.preventDefault();
+                  clickTrRows(row.id, e.clientX, e.clientY);
                 }}
               >
                 {updatedHeader.map((key) => {
@@ -218,7 +202,11 @@ function TableTeachers(props) {
                       <td key={key.key} name={key.key}>
                         <div
                           style={{
-                            backgroundColor: WhyColor(row.totalHours, row.rate),
+                            backgroundColor: appData.WhyColor(
+                              row.position,
+                              row.totalHours,
+                              row.rate
+                            ),
                           }}
                           className={styles.tdHours}
                         >

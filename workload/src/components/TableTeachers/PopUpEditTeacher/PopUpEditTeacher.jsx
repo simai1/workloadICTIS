@@ -164,13 +164,35 @@ export function PopUpEditTeacher(props) {
               bottom: "-10px",
             }}
           >
-            <Button
-              text="Сохранить"
-              Bg="#3b28cc"
-              textColot="#fff"
-              handleClicks={handleClicks}
-              disabled={!isRateValid}
-            />
+           <button
+              className={styles.buttonSave}
+              onClick={handleClicks}
+              disabled={!isRateValid || !dataNewEdicator.name || !dataNewEdicator.position || !dataNewEdicator.rate || !dataNewEdicator.department}
+              style={{
+                backgroundColor: (!isRateValid || !dataNewEdicator.name || !dataNewEdicator.position || !dataNewEdicator.rate || !dataNewEdicator.department) ? "#b9b9ba" : "#3b28cc",
+                cursor: (!isRateValid || !dataNewEdicator.name || !dataNewEdicator.position || !dataNewEdicator.rate || !dataNewEdicator.department) ? "not-allowed" : "pointer",
+                color: "#fff",
+                borderRadius: "8px",
+                paddingLeft: "16px",
+                paddingRight: "16px",
+                paddingTop: "10px",
+                paddingBottom: "10px",
+                width: "150px",
+                transition: "opacity 0.3s ease",
+                opacity: 1,
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.transition = "opacity 0.15s ease"; 
+                e.target.style.opacity = 0.7;
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transition = "opacity 0.15s ease"; 
+                e.target.style.opacity = 1; 
+              }}
+            >
+              Сохранить
+            </button>
+
           </div>
         </div>
       </PopUpContainer>
