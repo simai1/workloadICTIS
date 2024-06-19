@@ -135,7 +135,7 @@ function TableLks(props) {
             <h1>{EducatorLkData?.name}</h1>
             <div
               className={styles.DataLksHeadSchet}
-              style={{ backgroundColor: colorHours }}
+              style={{ backgroundColor: appData.WhyColor(EducatorLkData?.position, EducatorLkData?.totalHours, EducatorLkData?.rate) }}
             >
               <p>
                 <span>{EducatorLkData?.totalHours}</span>/<span>{EducatorLkData?.maxHours}</span>
