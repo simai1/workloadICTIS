@@ -12,6 +12,7 @@ function TableLks(props) {
   const [searchTerm, setSearchTerm] = useState("");
   const [EducatorLkData, setEducatorLkData] = useState([]);
   const [tableData, setTableData] = useState([]);
+  const [colorHours, setColorHours] = useState(null)
   const { appData, basicTabData, checkPar } = React.useContext(DataContext);
   const [tableHeaders, setTableHeaders] = useState([
     { key: "department", label: "Кафедра" },
@@ -29,13 +30,19 @@ function TableLks(props) {
     updateTable();
   }, []);
 
+  // useEffect(()=>{
+  //   console.log("EducatorLkData", EducatorLkData)
+  //   console.log("EducatorLkData?.position", EducatorLkData.position)
+  //   console.log("EducatorLkData?.totalHours", EducatorLkData.totalHours)
+  //   console.log("EducatorLkData?.rate", EducatorLkData.rate)
+  //   setColorHours(appData.WhyColor(EducatorLkData?.position, EducatorLkData?.totalHours, EducatorLkData?.rate))
+  // },[EducatorLkData,])
+
   //! получаем данные личного кабинета преподавателя
   useEffect(() => {
     console.log(props.educatorIdforLk);
     getDataEducatorLK(props.educatorIdforLk, setEducatorLkData, setTableData);
   }, [props.educatorIdforLk]);
-  console.log("EducatorLkData", EducatorLkData);
-  console.log("tableData", tableData);
 
   //! то что введено в поисковую строку, обновляет данные компонента
   useEffect(() => {
@@ -79,22 +86,7 @@ function TableLks(props) {
     );
   });
 
-  // const AllHours = EducatorLkData?.totalHours;
-  // const OgranHours = EducatorLkData?.maxHours;
-  // var BackgroundColorHours = WhyColor(EducatorLkData?.totalHours, EducatorLkData?.maxHours);
-
   // Функция для определения цвета фона
-  function WhyColor(AllHours, OgranHours) {
-    let bg;
-    if (AllHours <= OgranHours - 300) {
-      bg = "#19C20A"; // Зеленый цвет
-    } else if (OgranHours - 300 < AllHours && AllHours <= OgranHours - 100) {
-      bg = "#FFD600"; // Желтый цвет
-    } else {
-      bg = "#E81414"; // Красный цвет
-    }
-    return bg;
-  }
   const [showFullText, setShowFullText] = useState(false);
   const lenSlice = 100;
   const gettdInnerText = (item, index) => {
@@ -143,7 +135,7 @@ function TableLks(props) {
             <h1>{EducatorLkData?.name}</h1>
             <div
               className={styles.DataLksHeadSchet}
-              style={{ backgroundColor: WhyColor(EducatorLkData?.totalHours, EducatorLkData?.maxHours) }}
+              style={{ backgroundColor: colorHours }}
             >
               <p>
                 <span>{EducatorLkData?.totalHours}</span>/<span>{EducatorLkData?.maxHours}</span>

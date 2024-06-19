@@ -14,7 +14,15 @@ function List({
   const { context, appData } = React.useContext(DataContext);
 
   const [activeList, setactiveList] = useState(false);
-  const [nameClient, setnameClient] = useState(value);
+  const [nameClient, setnameClient] = useState(null);
+
+  useEffect(()=>{
+    if(value != "undefined"){
+      setnameClient(value)
+    }
+   
+  },[])
+  
   const addClient = (el) => {
     console.log(el);
     setnameClient(el.name);
@@ -36,7 +44,7 @@ function List({
           <input
             readOnly
             onClick={() => setactiveList(!activeList)}
-            value={nameClient}
+            value={nameClient || ""}
             placeholder={defaultValue}
             className={styles.inputList}
           />

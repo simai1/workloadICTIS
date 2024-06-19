@@ -28,6 +28,7 @@ import {
 } from "./components/TableWorkload/Function";
 import { delChangeData } from "./ui/ContextMenu/Function";
 import { FilteredSample } from "./ui/SamplePoints/Function";
+import { horsTeacher } from "./components/TableTeachers/dataHoursForTeacher/HoursTicher";
 
 function App() {
   const [educator, setEducator] = useState([]); // преподаватели
@@ -95,6 +96,7 @@ function App() {
     setLoaderAction,
     myProfile,
     setMyProfile,
+    WhyColor
   };
 
   //! параметры таблицы
@@ -313,6 +315,30 @@ function App() {
     setFiltredData(fdfix);
   };
 
+  //! Функция для определения цвета фона
+  function WhyColor(position, totalHours, rate) {
+    let bg;
+    let phuthicalHours = 900;
+    let max =  horsTeacher.find((el)=>el.name === position).max
+    let min =  horsTeacher.find((el)=>el.name === position).min
+    let maxHours = max * rate;
+    let minHorse = min * rate;
+  
+    if(totalHours === 0){
+      bg = "#e2e0e5"; // серый цвет
+    }
+    else if(totalHours > phuthicalHours || totalHours > maxHours){
+      bg = "#E81414"; // Красный цвет
+    }else if(totalHours < minHorse){
+      bg = "#FFD600"; // Желтый цвет
+    }else if(totalHours >= minHorse && totalHours <= maxHours){
+      bg = "#19C20A"; // Зеленый цвет
+    }else if(totalHours > maxHours && totalHours <= phuthicalHours){
+      bg = "#ffa600"; // оранжевый цвет
+    }
+    return bg;
+  }
+  
   //! функция обновления таблицы
   function funUpdateTable(param = 0) {
     console.log("param", param);
