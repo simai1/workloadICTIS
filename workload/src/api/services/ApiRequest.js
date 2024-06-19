@@ -71,7 +71,7 @@ export const apiGetHistory = async () => {
 export const CreateEducator = async (data) => {
   try {
     const response = await http.post(`${server}/educator/`, data);
-    return response.data;
+    return response;
   } catch (error) {
     console.error("Error:", error);
     //throw error;

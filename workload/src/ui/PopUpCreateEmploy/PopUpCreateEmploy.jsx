@@ -77,11 +77,17 @@ export function PopUpCreateEmploy(props) {
       department: appData.metodRole[appData.myProfile?.role]?.some((el) => el === 39) ? dataKaf.find((el)=>el.name === dataNewEdicator.department).id : dataNewEdicator.department
     };
     console.log("data", data)
-    CreateEducator(data).then(() => {
-      appData.setcreateEdicatorPopUp(false);
-      //! обновляем таблицу преподавателей
-      basicTabData.setActionUpdTabTeach(!basicTabData.actionUpdTabTeach);
+    CreateEducator(data).then((resp) => {
+      if(resp.status === 200){
+        appData.setcreateEdicatorPopUp(false);
+        basicTabData.setActionUpdTabTeach(!basicTabData.actionUpdTabTeach);
+        appData.setgodPopUp(true)
+      }else{
+        appData.setcreateEdicatorPopUp(false);
+        appData.seterrorPopUp(true);
+      }
     });
+  
   };
 
   return (
@@ -159,13 +165,31 @@ export function PopUpCreateEmploy(props) {
             bottom: "-10px",
           }}
         >
-          <Button
-            text="Сохранить"
-            Bg="#3b28cc"
-            textColot="#fff"
-            handleClicks={handleClicks}
-            style={{ opacity: !isEmailValid || !isRateValid ? 0.2 : 1 }}
-          />
+            <button
+            className={styles.buttonSave}
+            onClick={handleClicks}
+            disabled={!isRateValid || !isEmailValid || !dataNewEdicator.name || !dataNewEdicator.email || !dataNewEdicator.position || !dataNewEdicator.rate || !dataNewEdicator.department}
+            style={{
+              backgroundColor: (!isRateValid || !isEmailValid || !dataNewEdicator.name || !dataNewEdicator.email || !dataNewEdicator.position || !dataNewEdicator.rate || !dataNewEdicator.department) ? "#b9b9ba" : "#3b28cc",
+              cursor: (!isRateValid || !isEmailValid || !dataNewEdicator.name || !dataNewEdicator.email || !dataNewEdicator.position || !dataNewEdicator.rate || !dataNewEdicator.department) ? "not-allowed" : "pointer",
+                color:"#fff",
+                borderRadius:"8px",
+                paddingLeft: "16px",
+                paddingRight: "16px",
+                paddingTop: "10px",
+                paddingBlock: "10px",
+                width: "150px",
+                transition: "opacity 0.3s ease",
+                opacity: 1,
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.transition = "opacity 0.15s ease"; 
+                e.target.style.opacity = 0.7;
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transition = "opacity 0.15s ease"; 
+                e.target.style.opacity = 1; 
+              }}>Сохранить</button>
         </div>
       </div>
     </PopUpContainer>
