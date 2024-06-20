@@ -220,10 +220,10 @@ function TableLks(props) {
                                     backgroundColor: "#fff",
                                     width: "100%",
                                     padding: "4px",
-                                    top: "-80px",
+                                    top: "-60px",
                                     boxShadow:
                                       "0px 3px 18px rgba(0, 0, 0, 0.15)",
-                                    zIndex: "200",
+                                    zIndex: "1",
                                   }
                                 : null
                             }

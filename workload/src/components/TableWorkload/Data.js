@@ -48,7 +48,7 @@ export const tableHeadersLks = [
   { key: "id", label: "№" },
   { key: "workload", label: "Нагрузка" },
   { key: "department", label: "Кафедра" },
-  { key: "type", label: "Тип" },
+  // { key: "type", label: "Тип" },
   { key: "curriculumUnit", label: "Подразделение учебного плана" },
   {
     key: "specialty",
