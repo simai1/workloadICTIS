@@ -1,6 +1,6 @@
 import styles from "./TableTeachers.module.scss";
 import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+// import { useDispatch, useSelector } from "react-redux";
 import DataContext from "../../context";
 import { headersEducator } from "../TableWorkload/Data";
 import { Educator, apiEducatorDepartment } from "../../api/services/ApiRequest";
@@ -22,6 +22,17 @@ function TableTeachers(props) {
   const tableHeaders = headersEducator;
   const [positionMenu, setPositionMenu] = useState({ x: 0, y: 0 });
 
+  //! достаем из sessionStorage заголовок для редактирования полей
+  useEffect(() => {
+    const ssUpdatedHeader = JSON.parse(
+      sessionStorage.getItem("headerTeachers")
+    );
+    console.log("ssUpdatedHeader", ssUpdatedHeader);
+
+    if (ssUpdatedHeader) {
+      setUpdatedHeader(ssUpdatedHeader);
+    }
+  }, [sessionStorage.getItem("headerTeachers")]);
   useEffect(() => {
     props.changeInput();
   }, []);
@@ -41,7 +52,7 @@ function TableTeachers(props) {
           appData.setEducator(res.data);
           setFilteredData(res.data);
           setUpdatedData(res.data);
-          setUpdatedHeader(tableHeaders);
+          // setUpdatedHeader(tableHeaders);
         }
       });
     }
@@ -52,7 +63,7 @@ function TableTeachers(props) {
           appData.setEducator(res.data);
           setFilteredData(res.data);
           setUpdatedData(res.data);
-          setUpdatedHeader(tableHeaders);
+          // setUpdatedHeader(tableHeaders);
         }
       });
     }
@@ -68,18 +79,8 @@ function TableTeachers(props) {
     basicTabData.setSearchTerm("");
   };
 
-  const dispatch = useDispatch();
-  const filters = useSelector((state) => state.filters);
-
-  useEffect(() => {
-    addHeadersTable(filters, tableHeaders, appData.educator);
-  }, [filters, dispatch]);
-
-  function addHeadersTable(filters, tableHeaders, educator) {
-    const updatedHeader = tableHeaders.filter((header) =>
-      filters.includes(header.key)
-    );
-    console.log("updatedHeader", updatedHeader);
+  function addHeadersTable(tableHeaders, educator) {
+    const filters = tableHeaders.map((el) => el.key);
     const updatedData = educator.map((data) => {
       const updatedRow = {};
       Object.keys(data).forEach((key) => {
@@ -89,11 +90,22 @@ function TableTeachers(props) {
       });
       return updatedRow;
     });
-    setUpdatedHeader(updatedHeader);
+    setUpdatedHeader(tableHeaders);
     setUpdatedData(updatedData);
+    console.log("filters", filters);
   }
 
-  React.useEffect(() => {
+  //! фильтрация по редактированию полей
+  useEffect(() => {
+    const ssUpdatedHeader = JSON.parse(
+      sessionStorage.getItem("headerTeachers")
+    );
+    console.log("basicTabData.tableHeaders", basicTabData.tableHeaders);
+    addHeadersTable(ssUpdatedHeader, appData.educator);
+  }, [basicTabData.tableHeaders, appData.educator]);
+
+  //! поиск
+  useEffect(() => {
     let fd;
     if (props.searchTerm === "") {
       fd = updatedData;
