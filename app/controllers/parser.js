@@ -102,7 +102,11 @@ export default {
         const validPositions = [
             'Ассистент',
             'Доцент',
+            'Ведущий научный сотрдуник',
+            'Главный научный сотрудник',
+            'Научный сотрудник',
             'Профессор',
+            'Старший научный сотрудник',
             'Заведующий кафедрой',
             'Директор',
             'Научный сотрудник',
@@ -122,8 +126,8 @@ export default {
                     newEducator.position = positions[newEducator.position];
                     const newRate = newEducator.rate.trim().split(' ');
                     let numberPart = parseFloat(newRate[0].replace(',', '.'));
-                    if (!Number(numberPart)) {
-                        numberPart = 0;
+                    if (!Number(numberPart) || Number(numberPart)< 0.1) {
+                        numberPart = 1;
                     }
                     newEducator.rate = numberPart;
                     await Educator.create(newEducator);
