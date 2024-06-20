@@ -219,9 +219,8 @@ function HomePage() {
       appData.selectedComponent != "History" ||
       appData.selectedComponent != "Teachers"
     ) {
-      basicTabData.filtredData.map((el) =>
-        el.isBlocked === true ? (blocked = true) : (blocked = false)
-      );
+      basicTabData.filtredData.every((el) =>
+         el.isBlocked === true ? (blocked = true) : (blocked = false))
       return blocked;
     }
   };
