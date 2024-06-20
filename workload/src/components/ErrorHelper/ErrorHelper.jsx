@@ -76,7 +76,7 @@ function ErrorHelper(props) {
       {isListOpen && (
         <div className={styles.WarningsOpen}>
           <div className={styles.triangle}></div>
-          <p>Сообщите об ошибке на почту</p>
+          <p>Если у вас возникла ошибка, сообщите на почту: </p>
           {/* <span>alis@sfedu.ru</span> */}
           <a href="mailto:example@example.com">alis@sfedu.ru</a>
         </div>
