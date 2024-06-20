@@ -490,6 +490,11 @@ function HomePage() {
                           ? workloadTableHeaders
                           : educatorTableHeaders
                       }
+                      ssname={
+                        appData.selectedComponent === "Disciplines"
+                          ? "headerWorkload"
+                          : "headerTeachers"
+                      }
                     />
                   )}
                 </div>
