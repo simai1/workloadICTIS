@@ -11,14 +11,6 @@ function TableLks(props) {
   // const [colorHours, setColorHours] = useState(null);
   const { appData } = React.useContext(DataContext);
   const [filteredData, setFilteredData] = useState([]);
-
-  // const th = [
-  //   { key: "department", label: "Кафедра" },
-  //   { key: "discipline", label: "Дисциплина" },
-  //   { key: "hoursFirstPeriod", label: "Часы период 1" },
-  //   { key: "hoursSecondPeriod", label: "Часы период 2" },
-  //   { key: "hoursWithoutPeriod", label: "Дополнительные часы" },
-  // ];
   const [tableHeaders, setTableHeaders] = useState(tableHeadersLks);
 
   // useEffect(()=>{
@@ -73,9 +65,7 @@ function TableLks(props) {
   // Функция для определения цвета фона
   const [showFullText, setShowFullText] = useState(false);
   const [showFullKey, setShowFullKey] = useState(false);
-  // useEffect(()=>{
-  //   console.log("showFullText", showFullText)
-  // },[showFullText])
+
   const lenSlice = 100;
   const gettdInnerText = (key, item, index) => {
     if (showFullText === index && showFullKey === key) {
@@ -139,110 +129,155 @@ function TableLks(props) {
                   : null
               }
             >
-              <p>
+              <div>
                 <span>{EducatorLkData?.totalHours}</span>/
                 <span>{900 * EducatorLkData?.rate}</span>
-              </p>
+              </div>
             </div>
           </div>
 
-          <p>Кафедра: {EducatorLkData?.department}</p>
-          <p>Должность: {EducatorLkData?.position}</p>
-          <p>Ставка: {EducatorLkData?.rate}</p>
+          <div className={styles.spanbox}>
+            <p>
+              <span className={styles.pTop}>
+                Кафедра: {EducatorLkData?.department}
+              </span>
+            </p>
+            <p>
+              <span className={styles.pTop}>
+                Должность: {EducatorLkData?.position}
+              </span>
+            </p>
+            <p>
+              <span className={styles.pTop}>
+                Ставка: {EducatorLkData?.rate}
+              </span>
+            </p>
+          </div>
+
+          {appData.metodRole[appData.myProfile?.role]?.some(
+            (el) => el === 41
+          ) && (
+            <div className={styles.dopContainer}>
+              <h2>Подробные часы</h2>
+              <div className={styles.dopContainer_title}>
+                <div className={styles.dopContainer_title_box}>
+                  <h3>Общеинститутская нагрузка</h3>
+                  <p>Часы: {tableData[0]?.totalOidHours}</p>
+                  <p>1 (осень): {tableData[0]?.instituteAutumnWorkload}</p>
+                  <p>2 (весна): {tableData[0]?.instituteSpringWorkload}</p>
+                  <p>
+                    Руководство: {tableData[0]?.instituteManagementWorkload}
+                  </p>
+                </div>
+                <div className={styles.dopContainer_title_box}>
+                  <h3>Кафедральная нагрузка</h3>
+                  <p>Часы: {tableData[0]?.totalKafedralHours}</p>
+                  <p>1 (осень): {tableData[0]?.kafedralAutumnWorkload}</p>
+                  <p>2 (весна): {tableData[0]?.kafedralSpringWorkload}</p>
+                  <p>
+                    Доп. нагрузка: {tableData[0]?.kafedralAdditionalWorkload}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
-
-      {filteredData.length > 0 ? (
-        <div
-          className={styles.TableLks__inner}
-          style={
-            filteredData.length === 1
-              ? { overflowY: "hidden" }
-              : filteredData.length < 5
-              ? { height: `${150 * (filteredData.length + 1)}px` }
-              : null
-          }
-        >
-          <table
-            className={styles.TableLks}
-            style={
-              filteredData.length < 5
-                ? { height: `${150 * (filteredData.length + 1)}px` }
-                : null
-            }
-          >
-            <thead>
-              <tr>
-                {tableHeaders.map((header) => (
-                  <th name={header.key} key={header.key}>
-                    {header.label}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {filteredData.map((row, index) => (
-                <tr key={index} className={styles.tableRow}>
-                  {tableHeaders.map((key) => {
-                    return (
-                      <td
-                        name={key.key}
-                        key={key.key}
-                        className={styles.tdspecialtyTd}
-                      >
-                        <div
-                          onMouseEnter={
-                            row[key.key]?.length > lenSlice
-                              ? () => {
-                                  setShowFullText(index);
-                                  setShowFullKey(key.key);
-                                }
-                              : null
-                          }
-                          onMouseLeave={() => {
-                            setShowFullText(null);
-                            setShowFullKey(null);
-                          }}
-                          className={styles.tdInner}
-                        >
-                          <div
-                            className={getClaasNametdInner(
-                              index,
-                              row[key.key],
-                              key.key
-                            )}
-                            style={
-                              showFullText === index &&
-                              showFullKey === key.key &&
-                              row[key.key]?.length > lenSlice
-                                ? {
-                                    position: "absolute",
-                                    backgroundColor: "#fff",
-                                    width: "100%",
-                                    padding: "4px",
-                                    top: "-80px",
-                                    boxShadow:
-                                      "0px 3px 18px rgba(0, 0, 0, 0.15)",
-                                    zIndex: "200",
-                                  }
-                                : null
-                            }
+      {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 40) && (
+        <>
+          {filteredData.length > 0 ? (
+            <div
+              className={styles.TableLks__inner}
+              style={
+                filteredData.length === 1
+                  ? { overflowY: "hidden" }
+                  : filteredData.length < 5
+                  ? { height: `${150 * (filteredData.length + 1)}px` }
+                  : null
+              }
+            >
+              <table
+                className={styles.TableLks}
+                style={
+                  filteredData.length < 5
+                    ? { height: `${150 * (filteredData.length + 1)}px` }
+                    : null
+                }
+              >
+                <thead>
+                  <tr>
+                    {tableHeaders.map((header) => (
+                      <th name={header.key} key={header.key}>
+                        {header.label}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredData.map((row, index) => (
+                    <tr key={index} className={styles.tableRow}>
+                      {tableHeaders.map((key) => {
+                        return (
+                          <td
+                            name={key.key}
+                            key={key.key}
+                            className={styles.tdspecialtyTd}
                           >
-                            {gettdInnerText(key.key, row[key.key], index)}
-                          </div>
-                        </div>
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <div className={styles.notData}>
-          <h2>Нет данных</h2>
-        </div>
+                            <div
+                              onMouseEnter={
+                                row[key.key]?.length > lenSlice
+                                  ? () => {
+                                      setShowFullText(index);
+                                      setShowFullKey(key.key);
+                                    }
+                                  : null
+                              }
+                              onMouseLeave={() => {
+                                setShowFullText(null);
+                                setShowFullKey(null);
+                              }}
+                              className={styles.tdInner}
+                            >
+                              <div
+                                className={getClaasNametdInner(
+                                  index,
+                                  row[key.key],
+                                  key.key
+                                )}
+                                style={
+                                  showFullText === index &&
+                                  showFullKey === key.key &&
+                                  row[key.key]?.length > lenSlice
+                                    ? {
+                                        position: "absolute",
+                                        backgroundColor: "#fff",
+                                        width: "100%",
+                                        padding: "4px",
+                                        top: "-60px",
+                                        boxShadow:
+                                          "0px 3px 18px rgba(0, 0, 0, 0.15)",
+                                        zIndex: "1",
+                                      }
+                                    : null
+                                }
+                              >
+                                {gettdInnerText(key.key, row[key.key], index)}
+                              </div>
+                            </div>
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className={styles.notData}>
+              <h2>Нет данных</h2>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

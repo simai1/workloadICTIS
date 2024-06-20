@@ -32,19 +32,42 @@
     top: 151px;
   }
 
+  .dopContainer {
+    padding-top: 10px;
+    .dopContainer_title {
+      display: flex;
+      width: 100%;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+    .dopContainer_title_box {
+      padding-top: 10px;
+      h3 {
+        font-weight: 400;
+      }
+      p {
+        padding: 4px 0px;
+        &:hover {
+          background-color: var(--gray-color);
+          padding: 4px 16px;
+          border-radius: 8px;
+          transition: all 0.15s ease;
+        }
+      }
+    }
+  }
   .TableLks__inner {
     overflow: auto;
+    width: 92vw;
     height: 60vh;
     background-color: var(--bgraund);
-
     border-radius: 8px;
-
     margin: 16px 64px 0px 64px;
+
     // height: 60vh;
     .tbody {
-      width: 100%;
       overflow: auto;
-      width: 100vw;
+      width: 100%;
       height: 80vh;
       overflow: hidden;
       position: relative;
@@ -52,9 +75,9 @@
   }
 
   table {
+    width: auto;
     background-color: var(--bgraund);
     position: relative;
-    width: 100%;
     border-collapse: collapse;
     font-size: 14px;
     table-layout: fixed;
@@ -73,21 +96,6 @@
       box-shadow: 0px 3px 18px rgba(0, 0, 0, 0.15);
       z-index: 200;
       @include scrollStyle(4px, 4px);
-    }
-
-    th[name="curriculumUnit"],
-    td[name="curriculumUnit"] {
-      @include customTd(250px);
-    }
-
-    th[name="workload"],
-    td[name="workload"] {
-      @include customTd(80px);
-    }
-
-    th[name="department"],
-    td[name="department"] {
-      @include customTd(80px);
     }
 
     th {
@@ -109,8 +117,8 @@
       position: sticky;
       top: 0;
     }
-    
-    thead{
+
+    thead {
       position: sticky;
       top: 0px;
       height: 57px;
@@ -152,6 +160,32 @@
           }
         }
       }
+    }
+    th[name="curriculumUnit"],
+    td[name="curriculumUnit"] {
+      @include customTd(240px);
+    }
+    th[name="specialty"],
+    td[name="specialty"] {
+      @include customTd(240px);
+    }
+    th[name="workload"],
+    td[name="workload"] {
+      @include customTd(150px);
+    }
+
+    th[name="department"],
+    td[name="department"] {
+      @include customTd(80px);
+    }
+
+    th[name="id"],
+    td[name="id"] {
+      @include customTd(60px);
+    }
+    th[name="hours"],
+    td[name="hours"] {
+      @include customTd(100px);
     }
   }
 
@@ -200,10 +234,14 @@
         .DataLksHeadSchet {
           width: auto;
           padding: 0 10px;
-          height: 45px;
+          height: 100%;
+          padding: 10px;
           border-radius: 8px;
           font-size: 18px;
           text-align: center;
+          span {
+            font-weight: 500;
+          }
           color: var(--black-color);
           p {
             padding-top: 10px;
@@ -217,12 +255,28 @@
           font-weight: 600;
         }
       }
+      .pTop {
+        width: auto;
+        &:hover {
+          background-color: var(--gray-color);
+          padding: 4px 16px;
+          border-radius: 8px;
+          transition: all 0.15s ease;
+        }
+      }
       p {
+        margin: 4px;
+      }
+      span {
         padding: 4px 0px;
         margin: 0;
         font-size: 18px;
         font-weight: 300;
-        max-width: 400px;
+        max-width: 100%;
+      }
+      .spanbox {
+        display: flex;
+        flex-direction: column;
       }
     }
   }
