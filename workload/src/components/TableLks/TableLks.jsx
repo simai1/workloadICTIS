@@ -72,12 +72,13 @@ function TableLks(props) {
 
   // Функция для определения цвета фона
   const [showFullText, setShowFullText] = useState(false);
+  const [showFullKey, setShowFullKey] = useState(false);
   // useEffect(()=>{
   //   console.log("showFullText", showFullText)
   // },[showFullText])
   const lenSlice = 100;
   const gettdInnerText = (key, item, index) => {
-    if (showFullText === index) {
+    if (showFullText === index && showFullKey === key) {
       if (item === null || item === undefined || item === "") {
         return "___";
       }
@@ -100,9 +101,13 @@ function TableLks(props) {
   };
 
   //! функция определения класса td для открытия длинного текста в попап со скролом
-  const getClaasNametdInner = (index, row) => {
+  const getClaasNametdInner = (index, row, key) => {
     let text = styles.notdatadiv;
-    if (showFullText === index && row?.length > lenSlice) {
+    if (
+      showFullText === index &&
+      showFullKey === key &&
+      row?.length > lenSlice
+    ) {
       text = `${text} ${styles.gettdInner}`;
     }
     return text;
@@ -145,7 +150,6 @@ function TableLks(props) {
           <p>Должность: {EducatorLkData?.position}</p>
           <p>Ставка: {EducatorLkData?.rate}</p>
         </div>
-      
       </div>
 
       {filteredData.length > 0 ? (
@@ -189,23 +193,34 @@ function TableLks(props) {
                         <div
                           onMouseEnter={
                             row[key.key]?.length > lenSlice
-                              ? () => setShowFullText(index)
+                              ? () => {
+                                  setShowFullText(index);
+                                  setShowFullKey(key.key);
+                                }
                               : null
                           }
-                          onMouseLeave={() => setShowFullText(null)}
+                          onMouseLeave={() => {
+                            setShowFullText(null);
+                            setShowFullKey(null);
+                          }}
                           className={styles.tdInner}
                         >
                           <div
-                            className={getClaasNametdInner(index, row[key.key])}
+                            className={getClaasNametdInner(
+                              index,
+                              row[key.key],
+                              key.key
+                            )}
                             style={
                               showFullText === index &&
+                              showFullKey === key.key &&
                               row[key.key]?.length > lenSlice
                                 ? {
                                     position: "absolute",
                                     backgroundColor: "#fff",
                                     width: "100%",
                                     padding: "4px",
-                                    top: "-45px",
+                                    top: "-80px",
                                     boxShadow:
                                       "0px 3px 18px rgba(0, 0, 0, 0.15)",
                                     zIndex: "200",
