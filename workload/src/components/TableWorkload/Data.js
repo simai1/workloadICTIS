@@ -26,7 +26,7 @@ export const headers = [
 
 export const headersEducator = [
   { key: "id", label: "№" },
-  { key: "name", label: "Преподователь" },
+  { key: "name", label: "Преподаватель" },
   { key: "position", label: "Должность" },
   { key: "department", label: "Кафедра" },
   { key: "rate", label: "Ставка" },
@@ -45,6 +45,7 @@ export const headersEducator = [
 ];
 
 export const tableHeadersLks = [
+  { key: "id", label: "№" },
   { key: "workload", label: "Нагрузка" },
   { key: "department", label: "Кафедра" },
   { key: "type", label: "Тип" },

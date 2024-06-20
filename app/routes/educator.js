@@ -11,7 +11,7 @@ router.use(verify.general);
 router
     .route('/:educatorId')
     .get(
-        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST, role.LECTURER, role.EDUCATOR])),
+        asyncRoute(checkRole([role.LECTURER, role.EDUCATOR])),
         asyncRoute(eduController.getOne)
     )
     .patch(
@@ -32,6 +32,11 @@ router
         asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST])),
         asyncRoute(eduController.create)
     );
+router.route('/lk/:educatorId')
+  .get(
+    asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST])),
+    asyncRoute(eduController.getOneLK)
+  )
 router
     .route('/get/positions')
     .get(

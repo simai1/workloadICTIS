@@ -1,19 +1,26 @@
 .nameWarnName {
   display: flex;
+  align-items: center;
+  margin-top: 5px;
 }
 .circlesbuttonWarn {
   width: 24px;
   height: 24px;
-  background-color: red;
-  color: var(--white-color);
+  // background-color: red;
+  color: #e81414;
+  font-size: 16px;
+  font-weight: 500;
   border-radius: 50%;
   margin-right: 8px;
   align-items: center;
   text-align: center;
+  margin-top: 0;
 }
 .name {
   display: flex;
   width: 80%;
+  margin-top: 0;
+  padding-top: 2px;
 }
 .buttonWarnBlock {
   display: flex;

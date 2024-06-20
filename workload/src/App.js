@@ -13,8 +13,6 @@ import {
   Comment,
   GetDepartment,
   Workload,
-  apiGetUser,
-  apiGetWorkloadDepartment,
   getAllAttaches,
   getAllColors,
   getOffers,
@@ -27,10 +25,10 @@ import {
   funFilterSelected,
   funFixEducator,
   funSortedFastened,
-  funSplitData,
 } from "./components/TableWorkload/Function";
 import { delChangeData } from "./ui/ContextMenu/Function";
 import { FilteredSample } from "./ui/SamplePoints/Function";
+import { horsTeacher } from "./components/TableTeachers/dataHoursForTeacher/HoursTicher";
 
 function App() {
   const [educator, setEducator] = useState([]); // преподаватели
@@ -44,18 +42,18 @@ function App() {
   //! в файле RoleMetods можно посмотреть назание метода и их id
   const metodRole = {
     METHODIST: [
-      1, 3, 4, 8, 9, 10, 14, 17, 20, 21, 25, 26, 27, 28, 29, 31, 34, 35, 36, 16
+      1, 3, 4, 8, 9, 10, 14, 17, 20, 21, 25, 26, 28, 29, 31, 34, 35, 36, 16, 40,
     ],
-    LECTURER: [2, 15, 17, 17.1, 18, 20, 22, 24, 34, 37],
+    LECTURER: [2, 15, 17, 17.1, 18, 20, 22, 24, 34, 37, 41],
     DEPARTMENT_HEAD: [
       2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 22, 23, 25, 26, 27, 30, 31, 32,
-      33, 34, 36, 16
+      33, 34, 36, 16, 39, 40,
     ],
     DIRECTORATE: [
       1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
-      34, 35, 36, 38, 16
+      34, 35, 36, 38, 16, 40,
     ],
-    EDUCATOR: [15, 24],
+    EDUCATOR: [15, 24, 41],
   };
   // appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)
 
@@ -96,6 +94,9 @@ function App() {
     setSelectedComponent,
     loaderAction,
     setLoaderAction,
+    myProfile,
+    setMyProfile,
+    WhyColor,
   };
 
   //! параметры таблицы
@@ -135,6 +136,7 @@ function App() {
     funUpdateAllColors,
     setselectkafedra,
     funGetDepartment,
+    funFilteredFilterSelected,
     selectkafedra,
     actionUpdTabTeach,
     setActionUpdTabTeach,
@@ -314,6 +316,33 @@ function App() {
     setFiltredData(fdfix);
   };
 
+  //! Функция для определения цвета фона
+  function WhyColor(position, totalHours, rate) {
+    let bg;
+    let phuthicalHours = 900;
+    let max = horsTeacher
+      ? horsTeacher.find((el) => el.name === position)?.max
+      : 0;
+    let min = horsTeacher
+      ? horsTeacher.find((el) => el.name === position)?.min
+      : 0;
+    let maxHours = max * rate;
+    let minHorse = min * rate;
+
+    if (totalHours === 0) {
+      bg = "#e2e0e5"; // серый цвет
+    } else if (totalHours > phuthicalHours || totalHours > maxHours) {
+      bg = "#E81414"; // Красный цвет
+    } else if (totalHours < minHorse) {
+      bg = "#FFD600"; // Желтый цвет
+    } else if (totalHours >= minHorse && totalHours <= maxHours) {
+      bg = "#19C20A"; // Зеленый цвет
+    } else if (totalHours > maxHours && totalHours <= phuthicalHours) {
+      bg = "#ffa600"; // оранжевый цвет
+    }
+    return bg;
+  }
+
   //! функция обновления таблицы
   function funUpdateTable(param = 0) {
     console.log("param", param);
@@ -442,13 +471,6 @@ function App() {
     funUpdateAllColors();
   }
 
-  //! получаем и записываем данные usera
-  useEffect(() => {
-    apiGetUser().then((data) => {
-      setMyProfile(data);
-    });
-  }, []);
-
   //! получаем данные нагрузок с бд
   useEffect(() => {
     if (myProfile) {
@@ -457,13 +479,8 @@ function App() {
     }
   }, [myProfile, tableDepartment]); // [myProfile, tableDepartment]
 
-  //! при переходе с кафедральных на общеинституские и обратно фильтруем основные
-  //! фильтруем по FiltredRows
-  useEffect(() => {
-    // const splitData = funSplitData(workloadDataFix, dataIsOid);
-    const splitData = [...workloadDataFix];
-    // console.log("workloadDataFix", splitData);
-    const filterSelected = funFilterSelected(
+  function funFilteredFilterSelected(splitData = [...workloadDataFix]) {
+    return funFilterSelected(
       splitData,
       selectedFilter,
       coloredData,
@@ -472,6 +489,13 @@ function App() {
       allCommentsData,
       allOffersData
     );
+  }
+  //! при переходе с кафедральных на общеинституские и обратно фильтруем основные
+  //! фильтруем по FiltredRows
+  useEffect(() => {
+    // const splitData = funSplitData(workloadDataFix, dataIsOid);
+    // console.log("workloadDataFix", splitData);
+    const filterSelected = funFilteredFilterSelected();
     if (filterSelected) {
       setFiltredData(funSortedFastened(filterSelected, fastenedData));
     }

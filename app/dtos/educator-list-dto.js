@@ -33,6 +33,5 @@ export default class EducatorListDto {
         this.instituteManagementWorkload = Math.round(model.SummaryWorkload.instituteManagementWorkload * 100) / 100;
         this.totalKafedralHours = Math.round(model.SummaryWorkload.totalKafedralHours * 100) / 100;
         this.totalOidHours = Math.round(model.SummaryWorkload.totalOidHours * 100) / 100;
-        this.hoursFirstPeriod = Math.round(model.SummaryWorkload.hoursFirstPeriod * 100) / 100;
     }
 }

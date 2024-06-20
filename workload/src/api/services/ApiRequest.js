@@ -32,13 +32,15 @@ export const apiEducatorDepartment = async () => {
   }
 };
 
-//! получение данных user
+//! получение данных user профиль
 export const apiGetUser = async () => {
   try {
     const response = await http.get(`${server}/user`);
     return response.data;
   } catch (error) {
     console.error("Error:", error, `${server}/workload`);
+    //! если возникли проблемы с получение профиля пользователя перенаправляем на регистрацию
+    window.location.href = "http://localhost:3002/auth/logout";
   }
 };
 
@@ -46,6 +48,18 @@ export const apiGetUser = async () => {
 export const EducatorLK = async (data) => {
   try {
     const response = await http.get(`${server}/educator/${data}`);
+    console.log("response_EducatorLK", response);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};
+
+//! получаем данных личного кабинета преподавателя
+export const EducatorKard = async (data) => {
+  try {
+    const response = await http.get(`${server}/educator/lk/${data}`);
     console.log("response_EducatorLK", response);
     return response.data;
   } catch (error) {
@@ -69,7 +83,7 @@ export const apiGetHistory = async () => {
 export const CreateEducator = async (data) => {
   try {
     const response = await http.post(`${server}/educator/`, data);
-    return response.data;
+    return response;
   } catch (error) {
     console.error("Error:", error);
     //throw error;

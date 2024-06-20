@@ -40,6 +40,21 @@ $heightCell: 150px;
     }
   }
 }
+.tabledisciplinesMain::-webkit-scrollbar {
+  width: 12px; /* ширина scrollbar */
+  height: 12px;
+}
+.tabledisciplinesMain::-webkit-scrollbar-track {
+  background: var(--bgraund); /* цвет дорожки */
+  margin-top: 70px;
+  margin-left: 64px;
+}
+.tabledisciplinesMain::-webkit-scrollbar-thumb,
+.tabledisciplinesMain::-webkit-scrollbar-thumb {
+  background-color: #a6a6a6;
+  border-radius: 5px;
+  border: 3px solid #a6a6a6;
+}
 .DataGrid {
   display: flex;
   width: 100%;
@@ -635,12 +650,16 @@ $heightCell: 150px;
           }
           .btn_rigth {
             display: flex;
+            flex-direction: row;
             align-items: center;
             width: 40px;
-            justify-content: space-between;
+            // justify-content: space-between;
             cursor: pointer;
             .svg * {
               fill: var(--blue-color);
+            }
+            .btn_rigth_svg {
+              margin-left: 5px;
             }
           }
         }
@@ -681,18 +700,4 @@ $heightCell: 150px;
   }
 }
 
-.tabledisciplinesMain::-webkit-scrollbar {
-  width: 12px; /* ширина scrollbar */
-  height: 12px;
-}
-.tabledisciplinesMain::-webkit-scrollbar-track {
-  background: var(--bgraund); /* цвет дорожки */
-  margin-top: 70px;
-  margin-left: 64px;
-}
-.tabledisciplinesMain::-webkit-scrollbar-thumb,
-.tabledisciplinesMain::-webkit-scrollbar-thumb {
-  background-color: #a6a6a6;
-  border-radius: 5px;
-  border: 3px solid #a6a6a6;
-}
+

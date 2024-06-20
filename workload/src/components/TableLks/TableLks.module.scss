@@ -1,9 +1,26 @@
 @import "./../../style/colors.scss";
 @import "./../../style/mixin.scss";
 
+.TableLks__inner::-webkit-scrollbar {
+  width: 12px; /* ширина scrollbar */
+  height: 12px;
+  background-color: var(--bgraund);
+}
+.TableLks__inner::-webkit-scrollbar-track {
+  background: var(--bgraund); /* цвет дорожки */
+  margin-top: 87px;
+  background-color: var(--bgraund);
+}
+.TableLks__inner::-webkit-scrollbar-thumb,
+.TableLks__inner::-webkit-scrollbar-thumb {
+  background-color: #a6a6a6;
+  border-radius: 5px;
+}
+
 .TableLks {
   width: 100%;
   box-sizing: border-box;
+
   // position: relative;
   // top: -75px;
   .ButtonCaf_gen {
@@ -16,45 +33,32 @@
   }
 
   .TableLks__inner {
-    // overflow-y: scroll;
+    overflow: auto;
+    height: 60vh;
+    background-color: var(--bgraund);
+
     border-radius: 8px;
-    border-left: 1px solid var(--gray-color);
-    border-right: 1px solid var(--gray-color);
-    border-top: 1px solid var(--gray-color);
+
     margin: 16px 64px 0px 64px;
     // height: 60vh;
-    .TableLks {
+    .tbody {
       width: 100%;
-      overflow-y: scroll;
+      overflow: auto;
+      width: 100vw;
       height: 80vh;
       overflow: hidden;
+      position: relative;
     }
-  }
-  .TableLks__inner::-webkit-scrollbar {
-    background-color: #ffffff;
-    height: 5px;
-    margin-bottom: 8px;
-  }
-
-  .TableLks__inner::-webkit-scrollbar-thumb {
-    background-color: #cccccc;
-    border-radius: 8px;
-    width: 200px !important;
-  }
-
-  .TableLks__inner::-webkit-scrollbar-track {
-    background-color: transparent;
-    border-left: 1px solid var(--gray-color);
-    border-right: 1px solid var(--gray-color);
-    border-bottom: 1px solid var(--gray-color);
-    border-radius: 0px 0px 8px 8px;
   }
 
   table {
+    background-color: var(--bgraund);
+    position: relative;
     width: 100%;
     border-collapse: collapse;
     font-size: 14px;
     table-layout: fixed;
+    border-spacing: 0;
     .gettdInner {
       max-height: 300px;
       overflow-y: auto;
@@ -71,6 +75,21 @@
       @include scrollStyle(4px, 4px);
     }
 
+    th[name="curriculumUnit"],
+    td[name="curriculumUnit"] {
+      @include customTd(250px);
+    }
+
+    th[name="workload"],
+    td[name="workload"] {
+      @include customTd(80px);
+    }
+
+    th[name="department"],
+    td[name="department"] {
+      @include customTd(80px);
+    }
+
     th {
       padding: 10px 8px;
     }
@@ -79,10 +98,23 @@
       height: 150px;
       max-height: 150px;
       vertical-align: middle;
+      padding: 10px 8px;
+    }
+    .tdInner {
+      position: relative;
     }
     th {
       background-color: var(--gray-color);
-      padding: 10px 20px;
+      padding: 10px 8px;
+      position: sticky;
+      top: 0;
+    }
+    
+    thead{
+      position: sticky;
+      top: 0px;
+      height: 57px;
+      z-index: 20;
     }
     th:first-child {
       border-radius: 8px 0px 0px 0px;
@@ -92,21 +124,23 @@
     }
     tr {
       background-color: var(--white-color);
-      min-height: 150px;
-      max-height: 150px;
+      // min-height: 150px;
+      // max-height: 150px;
       vertical-align: middle;
       th {
         margin: 0 40px;
+        position: sticky;
+        top: 0;
       }
       .tdspecialtyTd {
-        width: 200px;
+        // width: 200px;
         .tdspecialty {
           margin: 0 auto;
           width: 200px;
           align-items: center;
-          height: 150px;
-          min-height: 150px;
-          max-height: 150px;
+          // height: 150px;
+          // min-height: 150px;
+          // max-height: 150px;
           // overflow: hidden;
           align-items: center;
           text-align: center;
@@ -223,12 +257,12 @@
       background-color: #efedf3;
     }
   }
-  .tableRow {
-    width: 200px;
-    height: 150px;
-    min-height: 150px;
-    max-height: 150px;
-  }
+  // .tableRow {
+  //   width: 200px;
+  //   height: 150px;
+  //   min-height: 150px;
+  //   max-height: 150px;
+  // }
   .tableRow:hover {
     box-shadow: inset 0 2px 0 0 #9fa1f4, inset 0 -2px 0 0 #9fa1f4;
   }
@@ -241,7 +275,7 @@
     justify-content: center;
     border-radius: 12px;
   }
-  .textDist{
+  .textDist {
     display: flex;
     justify-content: center;
     text-align: center;

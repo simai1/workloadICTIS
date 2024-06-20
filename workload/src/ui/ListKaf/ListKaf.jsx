@@ -98,7 +98,7 @@ function ListKaf({
               <img
                 src={arrowWhite}
                 style={{
-                  transform: "rotate(-90deg)",
+                  transform: "rotate(0deg)",
                 }}
               />
             )}
@@ -106,7 +106,8 @@ function ListKaf({
               <img
                 src={arrowBlack}
                 style={{
-                  transform: "rotate(0deg)",
+                  transform: "rotate(-180deg)",
+                  paddingBottom: "4px",
                 }}
               />
             )}

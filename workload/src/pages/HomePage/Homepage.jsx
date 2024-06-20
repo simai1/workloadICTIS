@@ -24,12 +24,14 @@ import { PopUpCreateEmploy } from "../../ui/PopUpCreateEmploy/PopUpCreateEmploy"
 import {
   GetDepartment,
   WorkloadBlocked,
+  apiGetUser,
   getAllWarningMessage,
 } from "../../api/services/ApiRequest";
 import ConfirmSaving from "../../ui/ConfirmSaving/ConfirmSaving";
 import socketConnect from "../../api/services/socket";
 import PopUpGoodMessage from "../../ui/PopUpGoodMessage/PopUpGoodMessage";
 import TableHistory from "../../components/TableHistory/TableHistory";
+import ErrorHelper from "../../components/ErrorHelper/ErrorHelper";
 
 function HomePage() {
   const { appData, tabPar, visibleDataPar, basicTabData } =
@@ -59,9 +61,9 @@ function HomePage() {
     } else {
       basicTabData.funUpdateTable("14");
     }
-    basicTabData.setnameKaf("Все");
+    basicTabData.setnameKaf("ОИД");
     setKafedralIsOpen(false);
-    tabPar.setSelectedFilter("Все Дисциплины");
+    tabPar.setSelectedFilter("Все дисциплины");
   };
 
   //! связь с сокетом
@@ -80,6 +82,13 @@ function HomePage() {
       setdepartments([{ id: 14, name: "Все" }, ...response.data]);
     });
   }, [basicTabData.tableDepartment]);
+
+  //! получаем и записываем данные usera
+  useEffect(() => {
+    apiGetUser().then((data) => {
+      appData.setMyProfile(data);
+    });
+  }, []);
 
   const handleComponentChange = (component) => {
     appData.setSelectedComponent(component);
@@ -210,9 +219,8 @@ function HomePage() {
       appData.selectedComponent != "History" ||
       appData.selectedComponent != "Teachers"
     ) {
-      basicTabData.filtredData.map((el) =>
-        el.isBlocked === true ? (blocked = true) : (blocked = false)
-      );
+      basicTabData.filtredData.every((el) =>
+         el.isBlocked === true ? (blocked = true) : (blocked = false))
       return blocked;
     }
   };
@@ -300,7 +308,7 @@ function HomePage() {
                   !blockTable &&
                   appData.selectedComponent !== "History" && (
                     <div
-                      style={{ marginRight: "20px" }}
+                      style={{ marginRight: "15px" }}
                       className={styles.btnMenuBox}
                       onClick={onExportClick}
                     >
@@ -315,7 +323,14 @@ function HomePage() {
                     </div>
                   )}
               </div>
-              <div className={styles.header_search}>
+              <div
+                className={styles.header_search}
+                style={
+                  basicTabData?.searchTerm
+                    ? { backgroundColor: "#fff", border: "none" }
+                    : null
+                }
+              >
                 <input
                   type="text"
                   placeholder="Поиск..."
@@ -324,6 +339,11 @@ function HomePage() {
                   onChange={handleSearch}
                   value={basicTabData?.searchTerm}
                   className={styles.hedaer_search_inner}
+                  style={
+                    basicTabData?.searchTerm
+                      ? { backgroundColor: "#fff" }
+                      : null
+                  }
                 />
                 <img src="./img/search.svg"></img>
               </div>
@@ -391,6 +411,7 @@ function HomePage() {
               )}
             </div>
             <div className={styles.header_left_component}>
+              <ErrorHelper />
               {appData.metodRole[appData.myProfile?.role]?.some(
                 (el) => el === 30
               ) && (
@@ -424,66 +445,70 @@ function HomePage() {
             </div>
           )}
 
-          <div className={styles.header_bottom}>
-            <div className={styles.header_bottom_button}>
-              {appData.metodRole[appData.myProfile?.role]?.some(
-                (el) => el === 28
-              ) &&
-                (appData.selectedComponent === "Disciplines" ||
-                  appData.selectedComponent === "History") && (
-                  <>
-                    <ListKaf
-                      dataList={departments}
-                      setTableMode={setTableMode}
-                    />
-                    {appData.selectedComponent === "History" && (
-                      <div className={styles.perenesen}>
-                        <button
-                          onClick={() => {
-                            tabPar.setPerenesenAction(!tabPar.perenesenAction);
-                          }}
-                        >
-                          {!tabPar.perenesenAction
-                            ? "Не перенесенные"
-                            : "Перенесенные"}
-                        </button>
-                      </div>
-                    )}
-                  </>
-                )}
+          {educatorIdforLk === "" && (
+            <div className={styles.header_bottom}>
+              <div className={styles.header_bottom_button}>
+                {appData.metodRole[appData.myProfile?.role]?.some(
+                  (el) => el === 28
+                ) &&
+                  (appData.selectedComponent === "Disciplines" ||
+                    appData.selectedComponent === "History") && (
+                    <>
+                      <ListKaf
+                        dataList={departments}
+                        setTableMode={setTableMode}
+                      />
+                      {appData.selectedComponent === "History" && (
+                        <div className={styles.perenesen}>
+                          <button
+                            onClick={() => {
+                              tabPar.setPerenesenAction(
+                                !tabPar.perenesenAction
+                              );
+                            }}
+                          >
+                            {!tabPar.perenesenAction
+                              ? "Не перенесенные"
+                              : "Перенесенные"}
+                          </button>
+                        </div>
+                      )}
+                    </>
+                  )}
 
-              {appData.selectedComponent === "Disciplines" &&
-                appData.selectedComponent !== "History" && <FiltredRows />}
-            </div>
-
-            <div className={styles.right_button}>
-              <div className={styles.EditInput}>
-                {educatorIdforLk === "" && (
-                  <EditInput
-                    selectedComponent={appData.selectedComponent}
-                    originalHeader={
-                      appData.selectedComponent === "Disciplines"
-                        ? workloadTableHeaders
-                        : educatorTableHeaders
-                    }
-                  />
-                )}
+                {appData.selectedComponent === "Disciplines" &&
+                  appData.selectedComponent !== "History" && <FiltredRows />}
               </div>
 
-              {(appData.selectedComponent === "Disciplines" ||
-                appData.selectedComponent === "History") &&
-                appData.metodRole[appData.myProfile?.role]?.some(
-                  (el) => el === 35
-                ) && (
-                  <div className={styles.import}>
-                    <button onClick={OpenPoPUpFile}>
-                      <p>Импорт файла</p>
-                      <img src="./img/import.svg" alt=">"></img>
-                    </button>
-                  </div>
-                )}
+              <div className={styles.right_button}>
+                <div className={styles.EditInput}>
+                  {educatorIdforLk === "" && (
+                    <EditInput
+                      selectedComponent={appData.selectedComponent}
+                      originalHeader={
+                        appData.selectedComponent === "Disciplines"
+                          ? workloadTableHeaders
+                          : educatorTableHeaders
+                      }
+                    />
+                  )}
+                </div>
+
+                {(appData.selectedComponent === "Disciplines" ||
+                  appData.selectedComponent === "History") &&
+                  appData.metodRole[appData.myProfile?.role]?.some(
+                    (el) => el === 35
+                  ) && (
+                    <div className={styles.import}>
+                      <button onClick={OpenPoPUpFile}>
+                        <p>Импорт файла</p>
+                        <img src="./img/import.svg" alt=">"></img>
+                      </button>
+                    </div>
+                  )}
+              </div>
             </div>
-          </div>
+          )}
         </div>
         <div className={styles.Block__tables}>
           {appData.selectedComponent === "Disciplines" ? (
