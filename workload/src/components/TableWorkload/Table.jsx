@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import TableTh from "./TableTh";
 import TableTd from "./TableTd";
 import styles from "./TableWorkload.module.scss";
@@ -8,8 +8,11 @@ import { funGetConfirmation, getTextForNotData } from "./Function";
 
 function Table(props) {
   const { tabPar, visibleDataPar, basicTabData, appData } =
-    React.useContext(DataContext);
+    useContext(DataContext);
+
   const [tableHeaders, setTableHeaders] = useState([]);
+
+  //! заголово таблицы хранится в sessionStorage, есть он есть то применяем к таблице
   useEffect(() => {
     const ssUpdatedHeader = JSON.parse(
       sessionStorage.getItem("headerWorkload")
@@ -20,6 +23,7 @@ function Table(props) {
       setTableHeaders(basicTabData.tableHeaders);
     }
   }, [basicTabData.tableHeaders]);
+
   //! определение верхнего отступа таблицы
   const getTopHeight = () => {
     return visibleDataPar.startData * visibleDataPar.heightTd;

@@ -71,7 +71,7 @@ function TableTeachers(props) {
     updateTable();
   }, [basicTabData.actionUpdTabTeach]);
 
-  const handleNameClick = (index, id) => {
+  const handleNameClick = (id) => {
     props.setEducatorIdforLk(id);
     props.setEducatorData(appData.educator.find((el) => el.id === id));
     basicTabData.setSearchTerm("");
@@ -131,6 +131,14 @@ function TableTeachers(props) {
     setPositionMenu({ x, y });
   };
 
+  const funSpanRow = (header) => {
+    if (header.key === "instituteManagementWorkload") {
+      return "Институтская нагрузка";
+    } else if (header.key === "kafedralAdditionalWorkload") {
+      return "Кафедральная нагрузка";
+    } else return "";
+  };
+
   return (
     <div className={styles.TableTeachers}>
       {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 4) ? (
@@ -148,6 +156,21 @@ function TableTeachers(props) {
       <div className={styles.TableTeachers__inner}>
         <table className={styles.table}>
           <thead>
+            {/* <tr>
+                {updatedHeader.map((header, index) => {
+                  if (
+                    header.key !== "instituteSpringWorkload" &&
+                    header.key !== "instituteManagementWorkload" &&
+                    header.key !== "kafedralSpringWorkload" &&
+                    header.key !== "kafedralAdditionalWorkload"
+                  )
+                    return (
+                      <th colSpan={funSpanRow(header) !== "" ? 3 : 1}>
+                        {funSpanRow(header)}
+                      </th>
+                    );
+                })}
+              </tr> */}
             <tr>
               {updatedHeader.map((header, index) => (
                 <th
@@ -155,6 +178,19 @@ function TableTeachers(props) {
                   onClick={() => clickTh(index, header.key)}
                   key={header.key}
                 >
+                  <div
+                    style={{
+                      position: "absolute",
+                      height: "20px",
+                      top: "20px",
+                      width: "300px",
+                      left: "-212px",
+                      pointerEvents: "none",
+                      fontSize: "18px",
+                    }}
+                  >
+                    {funSpanRow(header)}
+                  </div>
                   {sampleShow === index && (
                     <SamplePoints
                       setSampleShow={setSampleShow}
@@ -199,7 +235,7 @@ function TableTeachers(props) {
                     return (
                       <td
                         key={key.key}
-                        onClick={() => handleNameClick(index, row.id)}
+                        onClick={() => handleNameClick(row.id)}
                         className={styles.tdName}
                         name={key.key}
                       >
