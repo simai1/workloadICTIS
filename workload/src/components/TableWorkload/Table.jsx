@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import TableTh from "./TableTh";
 import TableTd from "./TableTd";
 import styles from "./TableWorkload.module.scss";
@@ -9,7 +9,17 @@ import { funGetConfirmation, getTextForNotData } from "./Function";
 function Table(props) {
   const { tabPar, visibleDataPar, basicTabData, appData } =
     React.useContext(DataContext);
-
+  const [tableHeaders, setTableHeaders] = useState([]);
+  useEffect(() => {
+    const ssUpdatedHeader = JSON.parse(
+      sessionStorage.getItem("headerWorkload")
+    );
+    if (ssUpdatedHeader) {
+      setTableHeaders(ssUpdatedHeader);
+    } else {
+      setTableHeaders(basicTabData.tableHeaders);
+    }
+  }, [basicTabData.tableHeaders]);
   //! определение верхнего отступа таблицы
   const getTopHeight = () => {
     return visibleDataPar.startData * visibleDataPar.heightTd;
@@ -122,7 +132,7 @@ function Table(props) {
               th={true}
             />
 
-            {basicTabData.tableHeaders.map((item, index) => (
+            {tableHeaders.map((item, index) => (
               <TableTh
                 key={item.key}
                 item={item}
@@ -188,7 +198,7 @@ function Table(props) {
                   getConfirmation={getConfirmation(item.id)}
                   checked={tabPar.selectedTr.includes(item.id)}
                 />
-                {basicTabData.tableHeaders.map((itemKey, index) => (
+                {tableHeaders.map((itemKey, index) => (
                   <TableTd
                     key={item.id + "td" + itemKey.key + "_" + index}
                     item={item}

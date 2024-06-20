@@ -27,8 +27,6 @@ function TableTeachers(props) {
     const ssUpdatedHeader = JSON.parse(
       sessionStorage.getItem("headerTeachers")
     );
-    console.log("ssUpdatedHeader", ssUpdatedHeader);
-
     if (ssUpdatedHeader) {
       setUpdatedHeader(ssUpdatedHeader);
     }
