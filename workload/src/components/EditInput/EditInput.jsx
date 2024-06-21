@@ -13,9 +13,9 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
   const [searchResults, setSearchResults] = useState(headers);
   const [isListOpen, setListOpen] = useState(false);
   const ssUpdatedHeader = JSON.parse(sessionStorage.getItem(ssname));
-  console.log("length", ssUpdatedHeader.length, originalHeader.length);
+  // console.log("length", ssUpdatedHeader.length, originalHeader.length);
   const [isAllChecked, setIsAllChecked] = useState(
-    originalHeader.length === ssUpdatedHeader.length ? true : false
+    originalHeader?.length === ssUpdatedHeader?.length ? true : false
   );
   const [checkedItems, setCheckedItems] = useState(
     Array(originalHeader.slice(3).length).fill(true)
@@ -34,13 +34,13 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
 
   useEffect(() => {
     const ssuh = JSON.parse(sessionStorage.getItem(ssname));
-    const ssuhfix = ssuh.map((el) => el.key);
+    const ssuhfix = ssuh?.map((el) => el.key);
     const oh = originalHeader.map((item) => item.key);
-    const ohfix = oh.filter((el) => !ssuhfix.some((e) => e === el));
+    const ohfix = oh.filter((el) => !ssuhfix?.some((e) => e === el));
     console.log("isChecked", isChecked, "oh", oh, "ohfix", ohfix);
     setChecked(ohfix);
     setIsAllChecked(
-      originalHeader.length === ssUpdatedHeader.length ? true : false
+      originalHeader?.length === ssUpdatedHeader?.length ? true : false
     );
   }, [originalHeader]);
 
