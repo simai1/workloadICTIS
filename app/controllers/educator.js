@@ -6,10 +6,10 @@ import associateEducator from '../utils/associate-educator.js';
 import SummaryWorkload from '../models/summary-workload.js';
 import EducatorListDto from '../dtos/educator-list-dto.js';
 import User from '../models/user.js';
-import EducatorProfileDto from "../dtos/educator-profile-dto.js";
-import Workload from "../models/workload.js";
+import EducatorProfileDto from '../dtos/educator-profile-dto.js';
+import Workload from '../models/workload.js';
 import departments from '../config/departments.js';
-import WorkloadProfileDto from "../dtos/workload-profile-dto.js";
+import WorkloadProfileDto from '../dtos/workload-profile-dto.js';
 
 export default {
     async getAll(params, res) {
@@ -50,7 +50,7 @@ export default {
         res.json(educatorProfileDto);
     },
 
-    async getOneLK({params: { educatorId }}, res){
+    async getOneLK({ params: { educatorId } }, res) {
         if (!educatorId) throw new AppErrorMissing('educatorId');
         const educator = await Educator.findOne({
             where: { id: educatorId },
@@ -73,8 +73,8 @@ export default {
             flag = true;
             for (const workloadDto of workloadsDto) {
                 if (
-                  departments[workloadDto.department] === workload.department &&
-                  workloadDto.discipline === workload.discipline
+                    departments[workloadDto.department] === workload.department &&
+                    workloadDto.discipline === workload.discipline
                 ) {
                     workloadDto.hoursFirstPeriod += workload.period === 1 ? workload.hours : 0;
                     workloadDto.hoursSecondPeriod += workload.period === 2 ? workload.hours : 0;
@@ -136,7 +136,7 @@ export default {
             const _user = await User.findOne({ where: { email } });
             if (_user) await associateEducator(_user);
         } catch (e) {
-            console.log("Educator is not associated");
+            console.log('Educator is not associated');
         }
         res.json(educatorDto);
     },
@@ -163,19 +163,32 @@ export default {
     },
     async getEducatorsByDepartment(req, res) {
         const userId = req.user;
-
-        const educator = await Educator.findOne({ where: { userId } });
-
-        const department = educator.department;
-
-        const educators = await Educator.findAll({
-            where: { department },
-            include: [
-                {
-                    model: SummaryWorkload,
-                },
-            ],
+        const educator = await Educator.findOne({
+            where: { userId },
+            include: [{ model: User }],
         });
+        let educators;
+        if (educator.User.role === 6) {
+            educators = await Educator.findAll({
+                where: { department: educator.User.allowedDepartments },
+                include: [
+                    {
+                        model: SummaryWorkload,
+                    },
+                ],
+            });
+        } else {
+            const department = educator.department;
+
+            educators = await Educator.findAll({
+                where: { department },
+                include: [
+                    {
+                        model: SummaryWorkload,
+                    },
+                ],
+            });
+        }
         const educatorsDto = educators.map(educator => new EducatorListDto(educator));
         res.json(educatorsDto);
     },
