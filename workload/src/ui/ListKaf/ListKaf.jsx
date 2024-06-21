@@ -115,7 +115,7 @@ function ListKaf({
         </div>
         {activeList && basicTabData.tableDepartment.length !== 1 && (
           <div className={styles.ListData}>
-            <p className={styles.NameForList}>Общеинститутские</p>
+            {!appData.metodRole[appData.myProfile?.role]?.some((el) => el === 42) && <p className={styles.NameForList}>Общеинститутские</p>}
             {/* {  <p className={styles.NameForListSecond} onClick={() => addKafedra("ОИД")}>ОИД</p>} */}
 
             <div key={"ОИД"} className={styles.ListDatas}>

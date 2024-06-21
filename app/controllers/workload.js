@@ -502,6 +502,31 @@ export default {
                     blocked: false,
                 });
             }
+        } else if(role === 6) {
+            const allowedDepartments = checkUser.allowedDepartments;
+            const departments = await Workload.findAll({
+                attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('department')), 'department']],
+                order: [['department', 'ASC']],
+            });
+            for (const usableDepartment of departments) {
+                if(allowedDepartments.includes(usableDepartment.department)){
+                    const department = mapDepartments[usableDepartment.department];
+                    const workload = await Workload.findOne({ where: { department: usableDepartment.department } });
+                    if (workload.isBlocked === true ) {
+                        usableDepartments.push({
+                            id: usableDepartment.department,
+                            name: department,
+                            blocked: true,
+                        });
+                    } else {
+                        usableDepartments.push({
+                            id: usableDepartment.department,
+                            name: department,
+                            blocked: false,
+                        });
+                    }
+                }
+            }
         } else {
             const departments = await Workload.findAll({
                 attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('department')), 'department']],
