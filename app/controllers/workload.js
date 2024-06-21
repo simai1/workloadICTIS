@@ -1,4 +1,4 @@
-import { AppErrorForbiddenAction, AppErrorInvalid, AppErrorMissing, AppErrorNotExist } from "../utils/errors.js";
+import { AppErrorForbiddenAction, AppErrorInvalid, AppErrorMissing, AppErrorNotExist } from '../utils/errors.js';
 // eslint-disable-next-line import/no-duplicates
 import departments from '../config/departments.js';
 import Workload from '../models/workload.js';
@@ -22,10 +22,18 @@ const getIds = modelsArr => {
     return arr;
 };
 
+const orderRule = [
+      ['discipline', 'ASC'],
+      ['workload', 'ASC'],
+      ['specialty', 'ASC'],
+      ['core', 'ASC'],
+  ];
+
 export default {
     // Получение нагрузки
     async getAllWorkload({ query: { isOid, department }, user }, res) {
         const _user = await User.findByPk(user, { include: Educator });
+        let workloadsDto;
         try {
             let workloads;
             if (!(typeof isOid === 'undefined')) {
@@ -34,30 +42,18 @@ export default {
                         where: {
                             isOid,
                             educatorId: _user.Educator.id,
-                            isBlocked: false,
                         },
                         include: { model: Educator },
-                        order: [
-                            ['discipline', 'ASC'],
-                            ['workload', 'ASC'],
-                            ['specialty', 'ASC'],
-                            ['core', 'ASC'],
-                        ],
+                        order: orderRule,
                     });
                 } else {
                     workloads = await Workload.findAll({
                         where: { isOid },
                         include: { model: Educator },
-                        order: [
-                            ['discipline', 'ASC'],
-                            ['workload', 'ASC'],
-                            ['specialty', 'ASC'],
-                            ['core', 'ASC'],
-                        ],
+                        order: orderRule,
                     });
                 }
-                const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
-                res.json(workloadsDto);
+                workloadsDto = workloads.map(workload => new WorkloadDto(workload));
             } else if (department) {
                 if (_user.role === 5) {
                     workloads = await Workload.findAll({
@@ -67,12 +63,7 @@ export default {
                             educatorId: _user.Educator.id,
                         },
                         include: { model: Educator },
-                        order: [
-                            ['discipline', 'ASC'],
-                            ['workload', 'ASC'],
-                            ['specialty', 'ASC'],
-                            ['core', 'ASC'],
-                        ],
+                        order: orderRule,
                     });
                 } else if (_user.role === 2) {
                     workloads = await Workload.findAll({
@@ -81,12 +72,7 @@ export default {
                             department,
                         },
                         include: { model: Educator },
-                        order: [
-                            ['discipline', 'ASC'],
-                            ['workload', 'ASC'],
-                            ['specialty', 'ASC'],
-                            ['core', 'ASC'],
-                        ],
+                        order: orderRule,
                     });
                 } else {
                     workloads = await Workload.findAll({
@@ -95,16 +81,10 @@ export default {
                             department,
                         },
                         include: { model: Educator },
-                        order: [
-                            ['discipline', 'ASC'],
-                            ['workload', 'ASC'],
-                            ['specialty', 'ASC'],
-                            ['core', 'ASC'],
-                        ],
+                        order: orderRule
                     });
                 }
-                const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
-                res.json(workloadsDto);
+                workloadsDto = workloads.map(workload => new WorkloadDto(workload));
             } else {
                 if (_user.role === 5) {
                     workloads = await Workload.findAll({
@@ -112,12 +92,7 @@ export default {
                             educatorId: _user.Educator.id,
                         },
                         include: { model: Educator },
-                        order: [
-                            ['discipline', 'ASC'],
-                            ['workload', 'ASC'],
-                            ['specialty', 'ASC'],
-                            ['core', 'ASC'],
-                        ],
+                        order: orderRule,
                     });
                 } else if (_user.role === 2) {
                     // LECTURER HANDLER
@@ -125,9 +100,12 @@ export default {
                         where: {
                             educatorId: _user.Educator.id,
                         },
-                        include: [{
-                            model: Educator,
-                        }]
+                        include: [
+                            {
+                                model: Educator,
+                            },
+                        ],
+                        order: orderRule,
                     });
 
                     const disciplines = [];
@@ -137,31 +115,40 @@ export default {
                         }
                     }
 
-                    workloads = [...(await Workload.findAll({
-                        where: {
-                            discipline: disciplines,
-                            workload: { [Op.in]: ['Лабораторные', 'Практические'] },
-                        },
-                        include: { model: Educator },
-                        order: [
-                            ['discipline', 'ASC'],
-                            ['workload', 'ASC'],
-                            ['specialty', 'ASC'],
-                            ['core', 'ASC'],
-                        ],
-                    })), ...ownWorkloads];
+                    workloads = [
+                        ...(await Workload.findAll({
+                            where: {
+                                discipline: disciplines,
+                                workload: { [Op.in]: ['Лабораторные', 'Практические'] },
+                            },
+                            include: { model: Educator },
+                            order: orderRule,
+                        })),
+                        ...ownWorkloads,
+                    ];
                 } else if (_user.role === 3) {
                     workloads = await Workload.findAll({
                         where: {
                             department: _user.Educator.department,
                         },
                         include: { model: Educator },
-                        order: [
-                            ['discipline', 'ASC'],
-                            ['workload', 'ASC'],
-                            ['specialty', 'ASC'],
-                            ['core', 'ASC'],
-                        ],
+                        order: orderRule,
+                    });
+                } else if (_user.role === 6) {
+                    // UNIT_ADMIN HANDLER
+                    workloads = await Workload.findAll({
+                        where: {
+                            [Op.or]: [
+                                {
+                                    department: _user.allowedDepartments,
+                                },
+                                {
+                                    isOid: true,
+                                },
+                            ],
+                        },
+                        include: { model: Educator },
+                        order: orderRule,
                     });
                 } else {
                     workloads = await Workload.findAll({
@@ -170,17 +157,12 @@ export default {
                             isOid: false,
                         },
                         include: { model: Educator },
-                        order: [
-                            ['discipline', 'ASC'],
-                            ['workload', 'ASC'],
-                            ['specialty', 'ASC'],
-                            ['core', 'ASC'],
-                        ],
+                        order: orderRule,
                     });
                 }
-                const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
-                res.json(workloadsDto);
+                workloadsDto = workloads.map(workload => new WorkloadDto(workload));
             }
+            res.json(workloadsDto);
         } catch (error) {
             res.status(500).json({ error: 'Internal Server Error' });
         }
@@ -262,7 +244,6 @@ export default {
             // Удаляем изначальную нагрузку
             await workload.destroy();
         }
-
 
         await History.create({
             type: 1,

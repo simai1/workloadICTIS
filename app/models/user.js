@@ -1,4 +1,4 @@
-import { DataTypes, Model } from 'sequelize';
+import { DataTypes, Model, SMALLINT } from "sequelize";
 import EnumRoles from '../config/roles.js';
 import associateEducator from "../utils/associate-educator.js";
 
@@ -30,6 +30,10 @@ export default class User extends Model {
                     type: DataTypes.STRING,
                     allowNull: false,
                 },
+                allowedDepartments: {
+                    type: DataTypes.ARRAY(SMALLINT),
+                    defaultValue: [],
+                }
             },
             {
                 sequelize,
