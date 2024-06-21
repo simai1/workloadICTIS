@@ -283,9 +283,7 @@ function App() {
   function funGetDepartment() {
     GetDepartment().then((response) => {
       if (response && response.status === 200) {
-        // appData.metodRole[appData.myProfile?.role]?.some((el) => el === 42) ? settableDepartment([response?.data]) : settableDepartment([{ id: 14, name: "Все" }, ...response?.data]);
-         settableDepartment(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 42) ? [response?.data] : [{ id: 14, name: "Все" }, ...response?.data])
-        // setnameKaf("ОИД");
+         settableDepartment([{ id: 14, name: "Все" }, ...response?.data])
         console.log("Записал");
       }
     });
