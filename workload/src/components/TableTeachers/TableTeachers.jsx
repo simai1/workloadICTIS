@@ -78,11 +78,11 @@ function TableTeachers(props) {
   };
 
   function addHeadersTable(tableHeaders, educator) {
-    const filters = tableHeaders.map((el) => el.key);
+    const filters = tableHeaders?.map((el) => el.key);
     const updatedData = educator.map((data) => {
       const updatedRow = {};
       Object.keys(data).forEach((key) => {
-        if (filters.includes(key)) {
+        if (filters?.includes(key)) {
           updatedRow[key] = data[key];
         }
       });
@@ -172,7 +172,7 @@ function TableTeachers(props) {
                 })}
               </tr> */}
             <tr>
-              {updatedHeader.map((header, index) => (
+              {updatedHeader?.map((header, index) => (
                 <th
                   name={header.key}
                   onClick={() => clickTh(index, header.key)}
@@ -221,7 +221,7 @@ function TableTeachers(props) {
             </tr>
           </thead>
           <tbody>
-            {filteredData.map((row, index) => (
+            {filteredData?.map((row, index) => (
               <tr
                 key={index}
                 className={selectRows === row.id ? styles.SelectedTr : null}
@@ -230,7 +230,7 @@ function TableTeachers(props) {
                   clickTrRows(row.id, e.clientX, e.clientY);
                 }}
               >
-                {updatedHeader.map((key) => {
+                {updatedHeader?.map((key) => {
                   if (key.key === "name") {
                     return (
                       <td
