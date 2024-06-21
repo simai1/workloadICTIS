@@ -23,11 +23,11 @@ const getIds = modelsArr => {
 };
 
 const orderRule = [
-      ['discipline', 'ASC'],
-      ['workload', 'ASC'],
-      ['specialty', 'ASC'],
-      ['core', 'ASC'],
-  ];
+    ['discipline', 'ASC'],
+    ['workload', 'ASC'],
+    ['specialty', 'ASC'],
+    ['core', 'ASC'],
+];
 
 export default {
     // Получение нагрузки
@@ -81,7 +81,7 @@ export default {
                             department,
                         },
                         include: { model: Educator },
-                        order: orderRule
+                        order: orderRule,
                     });
                 }
                 workloadsDto = workloads.map(workload => new WorkloadDto(workload));
@@ -138,14 +138,7 @@ export default {
                     // UNIT_ADMIN HANDLER
                     workloads = await Workload.findAll({
                         where: {
-                            [Op.or]: [
-                                {
-                                    department: _user.allowedDepartments,
-                                },
-                                {
-                                    isOid: true,
-                                },
-                            ],
+                            department: _user.allowedDepartments,
                         },
                         include: { model: Educator },
                         order: orderRule,

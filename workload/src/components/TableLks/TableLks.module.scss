@@ -82,6 +82,7 @@
     font-size: 14px;
     table-layout: fixed;
     border-spacing: 0;
+    width: auto;
     .gettdInner {
       max-height: 300px;
       overflow-y: auto;
@@ -163,11 +164,11 @@
     }
     th[name="curriculumUnit"],
     td[name="curriculumUnit"] {
-      @include customTd(240px);
+      @include customTd(286px);
     }
     th[name="specialty"],
     td[name="specialty"] {
-      @include customTd(240px);
+      @include customTd(286px);
     }
     th[name="workload"],
     td[name="workload"] {

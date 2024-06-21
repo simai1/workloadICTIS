@@ -251,9 +251,9 @@ function TableTeachers(props) {
                         <div
                           style={{
                             backgroundColor: appData.WhyColor(
-                              row.position,
-                              row.totalHours,
-                              row.rate
+                              row?.position,
+                              row?.totalHours,
+                              appData.educator.find((el)=> el.id === row.id).rate
                             ),
                           }}
                           className={styles.tdHours}
