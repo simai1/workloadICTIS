@@ -5,6 +5,7 @@ export default class UserDto {
   id;
   name;
   role;
+  allowedDepartments;
   educator;
 
   constructor(model) {
@@ -12,6 +13,7 @@ export default class UserDto {
     this.id = model.id;
     this.name = model.name;
     this.role = rolesMap[model.role];
+    this.allowedDepartments = model.allowedDepartments;
     this.educator = model.Educator ? new EducatorDto(model.Educator) : null;
   }
 }

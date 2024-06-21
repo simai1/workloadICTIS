@@ -6,6 +6,7 @@ const roles = {
     DEPARTMENT_HEAD: 3,
     DIRECTORATE: 4,
     EDUCATOR: 5,
+    UNIT_ADMIN: 6,
 };
 
 export default roles;
