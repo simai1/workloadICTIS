@@ -42,7 +42,7 @@ function Profile(props) {
           <span className={styles.title}>{roles[appData.myProfile?.role]}</span>
           <span className={styles.inner}>{appData.myProfile?.login}</span>
           <div className={styles.exid}>
-            <a href="http://localhost:3002/auth/logout">Выйти</a>
+            <a href="https://workload.sfedu.ru/auth/logout">Выйти</a>
             <img src={svgExit} alt="->"></img>
           </div>
         </div>

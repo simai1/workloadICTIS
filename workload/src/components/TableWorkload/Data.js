@@ -33,21 +33,22 @@ export const headersEducator = [
 
   { key: "totalHours", label: "Всего часов" },
   { key: "totalOidHours", label: "Общеинститутские часы" },
+
+  { key: "instituteAutumnWorkload", label: "1 (осень)" },
+  { key: "instituteSpringWorkload", label: "2 (весна)" },
+  { key: "instituteManagementWorkload", label: "Руководство" },
   { key: "totalKafedralHours", label: "Кафедральные часы" },
 
-  { key: "instituteAutumnWorkload", label: "Институтская 1 (осень)" },
-  { key: "instituteSpringWorkload", label: "Институтская 2 (весна)" },
-  { key: "instituteManagementWorkload", label: "Институтская Руководство" },
-
-  { key: "kafedralAutumnWorkload", label: "Кафедральная 1 (осень)" },
-  { key: "kafedralSpringWorkload", label: "Кафедральная 2 (весна)" },
-  { key: "kafedralAdditionalWorkload", label: "Кафедральная Доп. нагрузка" },
+  { key: "kafedralAutumnWorkload", label: "1 (осень)" },
+  { key: "kafedralSpringWorkload", label: "2 (весна)" },
+  { key: "kafedralAdditionalWorkload", label: "Доп. нагрузка" },
 ];
 
 export const tableHeadersLks = [
+  { key: "id", label: "№" },
   { key: "workload", label: "Нагрузка" },
   { key: "department", label: "Кафедра" },
-  { key: "type", label: "Тип" },
+  // { key: "type", label: "Тип" },
   { key: "curriculumUnit", label: "Подразделение учебного плана" },
   {
     key: "specialty",

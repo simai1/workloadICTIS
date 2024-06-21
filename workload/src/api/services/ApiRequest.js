@@ -1,7 +1,7 @@
 //? Здесь все запросы к апи, присвоение этих данных состояниями в AssingApiData
 
 import axios from "axios";
-const server = "http://localhost:3002";
+const server = "https://workload.sfedu.ru";
 // const server = process.env.REACT_APP_API_URL;
 const http = axios.create({
   withCredentials: true,
@@ -48,6 +48,18 @@ export const apiGetUser = async () => {
 export const EducatorLK = async (data) => {
   try {
     const response = await http.get(`${server}/educator/${data}`);
+    console.log("response_EducatorLK", response);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};
+
+//! получаем данных личного кабинета преподавателя
+export const EducatorKard = async (data) => {
+  try {
+    const response = await http.get(`${server}/educator/lk/${data}`);
     console.log("response_EducatorLK", response);
     return response.data;
   } catch (error) {
