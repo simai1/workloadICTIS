@@ -77,11 +77,11 @@ const ContextMenu = (props) => {
     if (menuShow === "educator") {
       EducatorLK(id).then((dataReq) => {
         const { newData, prevState } = upDateEducator(
-          basicTabData.workloadDataFix,
-          tabPar.selectedTr[0],
-          dataReq.name
+          basicTabData?.workloadDataFix,
+          tabPar?.selectedTr[0],
+          dataReq?.name
         );
-        const edicatorName = { edicatorName: dataReq.name };
+        const edicatorName = { edicatorName: dataReq?.name };
         basicTabData.setWorkloadDataFix(newData);
         basicTabData.setFiltredData(newData);
         const workloadId = data.workloadId;
