@@ -58,10 +58,13 @@ function HomePage() {
     setEducatorIdforLk("");
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 28)) {
       basicTabData.funUpdateTable("0");
-    } else {
+      basicTabData.setnameKaf("ОИД");
+    } if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 42)){
+      basicTabData.funUpdateTable(basicTabData.tableDepartment[0].id);
+      basicTabData.setnameKaf(basicTabData.tableDepartment[0].name)
+    }else {
       basicTabData.funUpdateTable("14");
     }
-    basicTabData.setnameKaf("ОИД");
     setKafedralIsOpen(false);
     tabPar.setSelectedFilter("Все дисциплины");
   };

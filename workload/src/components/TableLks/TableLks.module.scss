@@ -75,14 +75,13 @@
   }
 
   table {
-    width: auto;
+    width: 100%;
     background-color: var(--bgraund);
     position: relative;
     border-collapse: collapse;
     font-size: 14px;
     table-layout: fixed;
     border-spacing: 0;
-    width: auto;
     .gettdInner {
       max-height: 300px;
       overflow-y: auto;

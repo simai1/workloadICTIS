@@ -55,7 +55,7 @@ function App() {
     ],
     UNIT_ADMIN: [
       1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
-      34, 35, 36, 38, 16, 40,
+      34, 35, 36, 38, 16, 40, 42
     ],
     EDUCATOR: [15, 24, 41],
   };
@@ -114,7 +114,7 @@ function App() {
   const [actionUpdTabTeach, setActionUpdTabTeach] = useState(false); // при изменении обновляется таблицы преподавателей
   const [tableDepartment, settableDepartment] = useState([]);
   const [selectISOid, setselectISOid] = useState(true);
-  const [nameKaf, setnameKaf] = useState("ОИД");
+  const [nameKaf, setnameKaf] = useState(null);
   const [historyChanges, setHistoryChanges] = useState([]);
   const [searchTerm, setSearchTerm] = useState(""); //поиск по таблице
 
@@ -229,6 +229,7 @@ function App() {
     setPerenesenAction,
   };
 
+  
   //! функция обновления комментаривев
   function funUpdateAllComments() {
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 37)) {
@@ -282,8 +283,9 @@ function App() {
   function funGetDepartment() {
     GetDepartment().then((response) => {
       if (response && response.status === 200) {
-        settableDepartment([{ id: 14, name: "Все" }, ...response?.data]);
-        setnameKaf("ОИД");
+        // appData.metodRole[appData.myProfile?.role]?.some((el) => el === 42) ? settableDepartment([response?.data]) : settableDepartment([{ id: 14, name: "Все" }, ...response?.data]);
+         settableDepartment(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 42) ? [response?.data] : [{ id: 14, name: "Все" }, ...response?.data])
+        // setnameKaf("ОИД");
         console.log("Записал");
       }
     });
@@ -443,7 +445,9 @@ function App() {
 
   //! функция обновления всех данных
   function updateAlldata() {
-    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 28)) {
+    if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 42)){
+      funUpdateTable(tableDepartment[0]?.id)
+    }else if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 28)) {
       selectISOid
         ? funUpdateTable(0)
         : funUpdateTable(tableDepartment.find((el) => el.name === nameKaf)?.id);
@@ -476,9 +480,11 @@ function App() {
   useEffect(() => {
     if (myProfile) {
       console.log("myProfile", myProfile);
+      console.log('tableDepartment', tableDepartment)
+      appData.metodRole[appData.myProfile?.role]?.some((el) => el === 42) ? setnameKaf(tableDepartment[0]?.name) : setnameKaf("ОИД") 
       updateAlldata();
     }
-  }, [myProfile, tableDepartment]); // [myProfile, tableDepartment]
+  }, [tableDepartment, myProfile]); // [myProfile, tableDepartment]
 
   function funFilteredFilterSelected(splitData = [...workloadDataFix]) {
     return funFilterSelected(
