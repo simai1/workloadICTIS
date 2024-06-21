@@ -154,6 +154,10 @@
     td[name="kafedralAdditionalWorkload"] {
       @include customTd(150px);
     }
+    th[name="instituteManagementWorkload"],
+    td[name="instituteManagementWorkload"] {
+      @include customTd(150px);
+    }
 
     th {
       background-color: var(--gray-color);

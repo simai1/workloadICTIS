@@ -148,12 +148,74 @@ function TableTeachers(props) {
     setPositionMenu({ x, y });
   };
 
+  const keysInst = [
+    "instituteManagementWorkload",
+    "instituteSpringWorkload",
+    "instituteAutumnWorkload",
+  ];
+  const keysKaf = [
+    "kafedralAutumnWorkload",
+    "kafedralSpringWorkload",
+    "kafedralAdditionalWorkload",
+  ];
+
   const funSpanRow = (header) => {
+    if (!updatedHeader.some((el) => el.key === "instituteManagementWorkload")) {
+      if (header.key === "instituteSpringWorkload") {
+        return "Институтская нагрузка";
+      }
+    }
+    if (
+      !updatedHeader.some((el) => el.key === "instituteManagementWorkload") &&
+      !updatedHeader.some((el) => el.key === "instituteSpringWorkload")
+    ) {
+      if (header.key === "instituteAutumnWorkload") {
+        return "Институтская нагрузка";
+      }
+    }
+
+    if (!updatedHeader.some((el) => el.key === "kafedralAdditionalWorkload")) {
+      if (header.key === "kafedralSpringWorkload") {
+        return "Кафедральная нагрузка";
+      }
+    }
+    if (
+      !updatedHeader.some((el) => el.key === "kafedralAdditionalWorkload") &&
+      !updatedHeader.some((el) => el.key === "kafedralSpringWorkload")
+    ) {
+      if (header.key === "kafedralAutumnWorkload") {
+        return "Кафедральная нагрузка";
+      }
+    }
+
     if (header.key === "instituteManagementWorkload") {
       return "Институтская нагрузка";
     } else if (header.key === "kafedralAdditionalWorkload") {
       return "Кафедральная нагрузка";
     } else return "";
+  };
+
+  const funGetStyle = (action) => {
+    let mass = [];
+    console.log("updatedHeader", updatedHeader);
+    if (action) {
+      mass = updatedHeader.filter((el) => keysInst.some((e) => e === el.key));
+    } else {
+      mass = updatedHeader.filter((el) => keysKaf.some((e) => e === el.key));
+    }
+    console.log("mass", mass);
+
+    const style = {
+      position: "absolute",
+      height: "20px",
+      top: "10px",
+      width: `${mass.length * 100}px`,
+      left: mass.length === 3 ? "-200px" : mass.length === 2 ? "-90px" : "10px",
+      pointerEvents: "none",
+      fontSize:
+        mass.length === 3 ? "18px" : mass.length === 2 ? "16px" : "12px",
+    };
+    return style;
   };
 
   return (
@@ -181,15 +243,11 @@ function TableTeachers(props) {
                   key={header.key}
                 >
                   <div
-                    style={{
-                      position: "absolute",
-                      height: "20px",
-                      top: "20px",
-                      width: "300px",
-                      left: "-212px",
-                      pointerEvents: "none",
-                      fontSize: "18px",
-                    }}
+                    style={
+                      funSpanRow(header) === "Институтская нагрузка"
+                        ? funGetStyle(true)
+                        : funGetStyle(false)
+                    }
                   >
                     {funSpanRow(header)}
                   </div>
@@ -253,7 +311,8 @@ function TableTeachers(props) {
                             backgroundColor: appData.WhyColor(
                               row?.position,
                               row?.totalHours,
-                              appData.educator.find((el)=> el.id === row.id).rate
+                              appData.educator.find((el) => el.id === row.id)
+                                .rate
                             ),
                           }}
                           className={styles.tdHours}
