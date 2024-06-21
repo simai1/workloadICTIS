@@ -15,32 +15,32 @@ router
         asyncRoute(eduController.getOne)
     )
     .patch(
-        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST])),
+        asyncRoute(checkRole([role.UNIT_ADMIN, role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST])),
         asyncRoute(eduController.update)
     )
     .delete(
-        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST])),
+        asyncRoute(checkRole([role.UNIT_ADMIN, role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST])),
         asyncRoute(eduController.deleteEducator)
     );
 router
     .route('/')
     .get(
-        asyncRoute(checkRole([role.DIRECTORATE, role.DEPARTMENT_HEAD, role.METHODIST])),
+        asyncRoute(checkRole([role.UNIT_ADMIN, role.DIRECTORATE, role.DEPARTMENT_HEAD, role.METHODIST])),
         asyncRoute(eduController.getAll)
     )
     .post(
-        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST])),
+        asyncRoute(checkRole([role.UNIT_ADMIN, role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST])),
         asyncRoute(eduController.create)
     );
 router.route('/lk/:educatorId')
   .get(
-    asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST])),
+    asyncRoute(checkRole([role.UNIT_ADMIN, role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST])),
     asyncRoute(eduController.getOneLK)
   )
 router
     .route('/get/positions')
     .get(
-        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST])),
+        asyncRoute(checkRole([role.UNIT_ADMIN, role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST])),
         asyncRoute(eduController.getPositions)
     );
 router.route('/get/educatorsByDepartment').get(asyncRoute(eduController.getEducatorsByDepartment));
