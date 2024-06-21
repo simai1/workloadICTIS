@@ -9,6 +9,7 @@ import { SamplePoints } from "./SamplePoints/SamplePoints";
 import { ContextFunc } from "./ContextFunc/ContextFunc";
 import { PopUpEditTeacher } from "./PopUpEditTeacher/PopUpEditTeacher";
 import { horsTeacher } from "./dataHoursForTeacher/HoursTicher";
+import { FilteredSample } from "./SamplePoints/Function";
 
 function TableTeachers(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]);
@@ -19,7 +20,7 @@ function TableTeachers(props) {
   const [sampleData, setSampleData] = useState([]);
   const [selectRows, setSelectRow] = useState(null);
   const [vizibleCont, setVizibleCont] = useState(false);
-  const tableHeaders = headersEducator;
+  // const tableHeaders = headersEducator;
   const [positionMenu, setPositionMenu] = useState({ x: 0, y: 0 });
 
   //! достаем из sessionStorage заголовок для редактирования полей
@@ -48,7 +49,10 @@ function TableTeachers(props) {
         console.log("teatcher ", res);
         if (res && res.status === 200) {
           appData.setEducator(res.data);
-          setFilteredData(res.data);
+          //! филтрация по samplePoints
+          const fdfix = FilteredSample(res.data, checkPar.isChecked);
+          setFilteredData([...fdfix]);
+          // setFilteredData(res.data);
           setUpdatedData(res.data);
           // setUpdatedHeader(tableHeaders);
         }
@@ -59,17 +63,26 @@ function TableTeachers(props) {
         console.log("teatcher ", res);
         if (res && res.status === 200) {
           appData.setEducator(res.data);
-          setFilteredData(res.data);
+          const fdfix = FilteredSample(res.data, checkPar.isChecked);
+          setFilteredData([...fdfix]);
+          // setFilteredData(res.data);
           setUpdatedData(res.data);
           // setUpdatedHeader(tableHeaders);
         }
       });
     }
   };
+
   //! заносим данные о преподавателях в состояние
-  React.useEffect(() => {
+  useEffect(() => {
     updateTable();
   }, [basicTabData.actionUpdTabTeach]);
+
+  useEffect(() => {
+    //! филтрация по samplePoints
+    const fdfix = FilteredSample(appData.educator, checkPar.isChecked);
+    setFilteredData([...fdfix]);
+  }, [appData.educator, updatedData, props.searchTerm]);
 
   const handleNameClick = (id) => {
     props.setEducatorIdforLk(id);
@@ -77,6 +90,7 @@ function TableTeachers(props) {
     basicTabData.setSearchTerm("");
   };
 
+  //! функция фильтрации по редактированию полей
   function addHeadersTable(tableHeaders, educator) {
     const filters = tableHeaders?.map((el) => el.key);
     const updatedData = educator.map((data) => {
@@ -123,7 +137,10 @@ function TableTeachers(props) {
           });
       });
     }
-    setFilteredData(fd);
+    //! филтрация по samplePoints
+    const fdfix = FilteredSample(fd, checkPar.isChecked);
+    setFilteredData([...fdfix]);
+    // setFilteredData(fd);
   }, [updatedData, props.searchTerm]);
 
   const clickTrRows = (id, x, y) => {
@@ -156,21 +173,6 @@ function TableTeachers(props) {
       <div className={styles.TableTeachers__inner}>
         <table className={styles.table}>
           <thead>
-            {/* <tr>
-                {updatedHeader.map((header, index) => {
-                  if (
-                    header.key !== "instituteSpringWorkload" &&
-                    header.key !== "instituteManagementWorkload" &&
-                    header.key !== "kafedralSpringWorkload" &&
-                    header.key !== "kafedralAdditionalWorkload"
-                  )
-                    return (
-                      <th colSpan={funSpanRow(header) !== "" ? 3 : 1}>
-                        {funSpanRow(header)}
-                      </th>
-                    );
-                })}
-              </tr> */}
             <tr>
               {updatedHeader?.map((header, index) => (
                 <th
