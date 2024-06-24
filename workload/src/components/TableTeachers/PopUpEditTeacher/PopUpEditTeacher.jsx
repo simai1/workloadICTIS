@@ -5,7 +5,7 @@ import Button from "../../../ui/Button/Button";
 import List from "../../../ui/List/List";
 import Input from "../../../ui/Input/Input";
 import styles from "./PopUpEditTeacher.module.scss";
-import { EditTeacher } from "../../../api/services/ApiRequest";
+import { EditTeacher, GetUsibleDepartment } from "../../../api/services/ApiRequest";
 
 export function PopUpEditTeacher(props) {
   const { appData, basicTabData } = React.useContext(DataContext);
@@ -31,20 +31,12 @@ export function PopUpEditTeacher(props) {
     { id: 11, name: "Заведующий кафедрой" }
   ];
 
-  const dataKaf = [
-    { id: 1, name: "БИТ" },
-    { id: 2, name: "ИИТиС" },
-    { id: 3, name: "ВТ" },
-    { id: 4, name: "ИАСБ" },
-    { id: 5, name: "ИБТКС" },
-    { id: 6, name: "ИМС" },
-    { id: 7, name: "МОП ЭВМ" },
-    { id: 8, name: "ПиБЖ" },
-    { id: 9, name: "САИТ" },
-    { id: 10, name: "САПР" },
-    { id: 11, name: "СиПУ" },
-    { id: 12, name: "ФМОИО" },
-  ];
+  const [dataKaf, setDataKaf] = useState([]);
+  useEffect(()=>{
+    GetUsibleDepartment().then((resp)=>{
+      setDataKaf(resp.data)
+    })
+  },[])
 
   const handleInputChange = (name, value) => {
     if (name === "rate") {

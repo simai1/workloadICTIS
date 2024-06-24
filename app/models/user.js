@@ -1,5 +1,6 @@
 import { DataTypes, Model, SMALLINT } from "sequelize";
 import EnumRoles from '../config/roles.js';
+import EnumInstitutionalAffiliation from '../config/institutional-affiliation.js';
 import associateEducator from "../utils/associate-educator.js";
 
 export default class User extends Model {
@@ -33,6 +34,13 @@ export default class User extends Model {
                 allowedDepartments: {
                     type: DataTypes.ARRAY(SMALLINT),
                     defaultValue: [],
+                },
+                institutionalAffiliation: {
+                    type: DataTypes.SMALLINT,
+                    allowNull: true,
+                    validate: {
+                        isIn: [Object.values(EnumInstitutionalAffiliation)],
+                    },
                 }
             },
             {

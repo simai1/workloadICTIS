@@ -58,6 +58,14 @@ function App() {
       34, 35, 36, 38, 16, 40, 42,
     ],
     EDUCATOR: [15, 24, 41],
+    DEPUTY_DIRECTORATE: [
+      1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
+      34, 35, 36, 38, 16, 40,
+    ],
+    DEPUTY_DEPARTMENT_HEAD: [
+      2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 22, 23, 25, 26, 27, 30, 31, 32,
+      33, 34, 36, 16, 39, 40,
+    ],
   };
   // appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)
 
@@ -448,7 +456,8 @@ function App() {
       appData.metodRole[appData.myProfile?.role]?.some((el) => el === 28)
     ) {
       selectISOid
-        ? funUpdateTable(0)
+        // funUpdateTable(0)
+        ? funUpdateTable(tableDepartment[0]?.id)
         : funUpdateTable(tableDepartment.find((el) => el.name === nameKaf)?.id);
     } else {
       if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 32)) {
@@ -478,11 +487,11 @@ function App() {
   //! получаем данные нагрузок с бд
   useEffect(() => {
     if (myProfile) {
-      console.log("myProfile", myProfile);
-      console.log("tableDepartment", tableDepartment);
-      appData.metodRole[appData.myProfile?.role]?.some((el) => el === 42)
-        ? setnameKaf(tableDepartment[0]?.name)
-        : setnameKaf("ОИД");
+      // console.log("myProfile", myProfile);
+      // console.log("tableDepartment", tableDepartment);
+      // appData.metodRole[appData.myProfile?.role]?.some((el) => el === 42)
+        setnameKaf(tableDepartment[0]?.name)
+        // : setnameKaf("ОИД");
       updateAlldata();
     }
   }, [tableDepartment, myProfile]); // [myProfile, tableDepartment]

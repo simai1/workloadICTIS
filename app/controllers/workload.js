@@ -126,7 +126,7 @@ export default {
                         })),
                         ...ownWorkloads,
                     ];
-                } else if (_user.role === 3) {
+                } else if (_user.role === 3 || _user.role === 8) {
                     workloads = await Workload.findAll({
                         where: {
                             department: _user.Educator.department,
@@ -139,6 +139,23 @@ export default {
                     workloads = await Workload.findAll({
                         where: {
                             department: _user.allowedDepartments,
+                        },
+                        include: { model: Educator },
+                        order: orderRule,
+                    });
+                } else if(_user.role === 4 || _user.role === 7){
+                    if(!_user.institutionalAffiliation) throw new Error('Нет привязки (institutionalAffiliation) к институту у директора');
+                    const allowedDepartments = [];
+
+                    const start = _user.institutionalAffiliation === 1? 0 : _user.institutionalAffiliation === 2? 13 : 17;
+                    const end = _user.institutionalAffiliation === 1? 12 : _user.institutionalAffiliation === 2? 16 : 24;
+                
+                    for (let i = start; i <= end; i++) {
+                        allowedDepartments.push(i);
+                    }
+                    workloads = await Workload.findAll({
+                        where: {
+                            department: allowedDepartments,
                         },
                         include: { model: Educator },
                         order: orderRule,
@@ -157,7 +174,7 @@ export default {
             }
             res.json(workloadsDto);
         } catch (error) {
-            res.status(500).json({ error: 'Internal Server Error' });
+            res.status(500).json({error: error.message});
         }
     },
     async getAllDepartment(req, res) {
@@ -482,6 +499,7 @@ export default {
         const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
         res.json(workloadsDto);
     },
+
     async getUsableDepartments(req, res) {
         const userId = req.user;
         const checkUser = await User.findByPk(userId);
@@ -489,7 +507,7 @@ export default {
         const role = checkUser.role;
         const usableDepartments = [];
 
-        if (role === 2 || role === 3 || role === 5) {
+        if (role === 2 || role === 3 || role === 5 || role === 8) {
             const educator = await Educator.findOne({ where: { userId } });
             const department = educator.department;
             const workload = await Workload.findOne({ where: { department } });
@@ -529,6 +547,58 @@ export default {
                             blocked: false,
                         });
                     }
+                }
+            }
+        } else if(role === 4 || role === 7){
+            let departments;
+            if(checkUser.institutionalAffiliation === 1){
+                departments = await Workload.findAll({
+                    attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('department')), 'department']],
+                    where: {
+                        department: {
+                            [Sequelize.Op.between]: [0, 12]
+                        }
+                    },
+                    order: [['department', 'ASC']],
+                });
+            } else if (checkUser.institutionalAffiliation === 2) {
+                departments = await Workload.findAll({
+                    attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('department')), 'department']],
+                    where: {
+                        department: {
+                            [Sequelize.Op.between]: [13, 16]
+                        }
+                    },
+                    order: [['department', 'ASC']],
+                });
+            } else if (checkUser.institutionalAffiliation === 3) {
+                departments = await Workload.findAll({
+                    attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('department')), 'department']],
+                    where: {
+                        department: {
+                            [Sequelize.Op.between]: [17, 24]
+                        }
+                    },
+                    order: [['department', 'ASC']],
+                });
+            } else {
+                throw new Error('Такого института не добавленно');
+            }
+            for (const usableDepartment of departments) {
+                const department = mapDepartments[usableDepartment.department];
+                const workload = await Workload.findOne({ where: { department: usableDepartment.department } });
+                if (workload.isBlocked === true) {
+                    usableDepartments.push({
+                        id: usableDepartment.department,
+                        name: department,
+                        blocked: true,
+                    });
+                } else {
+                    usableDepartments.push({
+                        id: usableDepartment.department,
+                        name: department,
+                        blocked: false,
+                    });
                 }
             }
         } else {
@@ -594,5 +664,23 @@ export default {
             await Workload.update({ isBlocked: false }, { where: { department } });
         }
         res.json({ status: 'OK' });
+    },
+
+    async getDepartmentsForDirectorate(req, res) {
+        const _user = await User.findByPk(req.user);
+        if(!_user.institutionalAffiliation) throw new Error('Нет привязки (institutionalAffiliation) к институту у директора');
+
+        let filteredDepartments;
+        if(_user.institutionalAffiliation === 1){
+            filteredDepartments = Object.entries(departments).slice(0, 13).map(([name, id]) => ({ name, id }));
+        } else if (_user.institutionalAffiliation === 2) {
+            filteredDepartments = Object.entries(departments).slice(13, 17).map(([name, id]) => ({ name, id }));
+        } else if (_user.institutionalAffiliation === 3) {
+            filteredDepartments = Object.entries(departments).slice(17, 25).map(([name, id]) => ({ name, id }));
+        } else {
+            throw new Error('Такого института не добавленно');
+        }
+         
+        res.json(filteredDepartments);
     },
 };

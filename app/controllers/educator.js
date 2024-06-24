@@ -12,18 +12,61 @@ import departments from '../config/departments.js';
 import WorkloadProfileDto from '../dtos/workload-profile-dto.js';
 
 export default {
-    async getAll(params, res) {
-        const educators = await Educator.findAll({
-            include: [
-                {
-                    model: SummaryWorkload,
+    async getAll(req, res) {
+        const _user = await User.findByPk(req.user);
+        let educators;
+        if(_user.role === 4 || _user.role === 7){
+            if(!_user.institutionalAffiliation) throw new Error('Нет привязки (institutionalAffiliation) к институту у директора');
+            const allowedDepartments = [];
+
+            const start = _user.institutionalAffiliation === 1? 0 : _user.institutionalAffiliation === 2? 13 : 17;
+            const end = _user.institutionalAffiliation === 1? 12 : _user.institutionalAffiliation === 2? 16 : 24;
+        
+            for (let i = start; i <= end; i++) {
+                allowedDepartments.push(i);
+            }
+            educators = await Educator.findAll({
+                where:{
+                    department: allowedDepartments,
                 },
-            ],
-            order: [
-                ['department', 'ASC'],
-                ['name', 'ASC'],
-            ],
-        });
+                include: [
+                    {
+                        model: SummaryWorkload,
+                    },
+                ],
+                order: [
+                    ['department', 'ASC'],
+                    ['name', 'ASC'],
+                ],
+            });
+        } else if(_user.role === 6){
+            educators = await Educator.findAll({
+                where:{
+                    department: _user.allowedDepartments,
+                },
+                include: [
+                    {
+                        model: SummaryWorkload,
+                    },
+                ],
+                order: [
+                    ['department', 'ASC'],
+                    ['name', 'ASC'],
+                ],
+            });
+        } else {
+            educators = await Educator.findAll({
+                include: [
+                    {
+                        model: SummaryWorkload,
+                    },
+                ],
+                order: [
+                    ['department', 'ASC'],
+                    ['name', 'ASC'],
+                ],
+            });
+        }
         const educatorDtos = [];
         for (const educator of educators) {
             const educatorDto = new EducatorListDto(educator);
