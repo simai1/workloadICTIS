@@ -15,9 +15,6 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
   const jsoh = JSON.parse(sessionStorage.getItem(ssname));
   const ssUpdatedHeader = jsoh && jsoh !== null ? jsoh : originalHeader;
 
-  console.log("jsoh", jsoh);
-  console.log("originalHeader", originalHeader);
-
   const [isAllChecked, setIsAllChecked] = useState(
     originalHeader?.length === ssUpdatedHeader?.length ? true : false
   );
@@ -32,14 +29,12 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
       : []
   );
 
-  console.log("isChecked", isChecked);
   useEffect(() => {
     const ssuh = JSON.parse(sessionStorage.getItem(ssname));
     const ssuhfix = ssuh?.map((el) => el.key);
     const oh = originalHeader.map((item) => item.key);
     if (ssuh && ssuh !== null) {
       const ohfix = oh.filter((el) => !ssuhfix?.some((e) => e === el));
-      console.log("isChecked", isChecked, "oh", oh, "ohfix", ohfix);
       setChecked(ohfix);
       setIsAllChecked(
         originalHeader?.length === ssUpdatedHeader?.length ? true : false
@@ -49,7 +44,6 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
 
   useEffect(() => {
     setSearchResults(originalHeader.slice(3));
-    console.log("originalHeader", originalHeader.slice(3));
   }, [basicTabData.tableHeaders, selectedComponent]);
 
   //! закрытие модального окна при нажатии вне него

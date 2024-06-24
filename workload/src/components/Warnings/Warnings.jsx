@@ -86,14 +86,16 @@ function Warnings(props) {
             </div>
             <p>Предупреждения</p>
           </div>
-          <div className={styles.seach}>
-            <Input
-              type="text"
-              placeholder={"Поиск..."}
-              value={inpValue}
-              funOnChange={funOnChange}
-            />
-          </div>
+          {appData.allWarningMessage?.length > 0 && (
+            <div className={styles.seach}>
+              <Input
+                type="text"
+                placeholder={"Поиск..."}
+                value={inpValue}
+                funOnChange={funOnChange}
+              />
+            </div>
+          )}
           <div className={styles.WarningsList}>
             <ul>
               {appData.allWarningMessage?.length > 0 ? (

@@ -7,10 +7,12 @@ function Profile(props) {
   const roles = {
     METHODIST: "Методист",
     LECTURER: "Лектор",
-    DEPARTMENT_HEAD: "Администратор от кафедры",
-    DIRECTORATE: "Администратор",
+    DEPARTMENT_HEAD: "Заведующий кафедрой",
+    DIRECTORATE: "Директор",
     EDUCATOR: "Преподаватель",
     UNIT_ADMIN: "Администратор подразделения",
+    DEPUTY_DIRECTORATE: "Заместитель директора",
+    DEPUTY_DEPARTMENT_HEAD: "Заместитель заведующего кафедрой",
   };
 
   //! закрытие модального окна при нажати вне него
@@ -41,11 +43,12 @@ function Profile(props) {
       {props.onenModalWind && (
         <div className={styles.modal_window}>
           <div className={styles.triangle}></div>
-          <span className={styles.title}>{appData.myProfile.educator.position}</span>
+          <span className={styles.title}>{roles[appData.myProfile?.role]}</span>
           <span className={styles.inner}>{appData.myProfile?.login}</span>
           <div className={styles.exid}>
-            <a href="https://workload.sfedu.ru/auth/logout">Выйти</a>
-            <img src={svgExit} alt="->"></img>
+            <a href="https://workload.sfedu.ru/auth/logout">
+              Выйти <img src={svgExit} alt="->"></img>
+            </a>
           </div>
         </div>
       )}

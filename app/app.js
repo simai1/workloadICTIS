@@ -48,7 +48,7 @@ const io = new Server(server, {
     try {
         await dbUtils.initializeDbModels();
         if (process.env.NODE_ENV === 'development') {
-            // await testUtils.fillWorkload();
+            await testUtils.fillWorkload();
             await testUtils.fillEducators();
         }
     } catch (e) {

@@ -3,7 +3,7 @@
 
 .TableTeachers {
   padding-left: 64px;
-  margin-right: 53px;
+  margin-right: 64px;
   position: relative;
   top: -60px;
   z-index: 220 !important;
@@ -75,8 +75,18 @@
 
     thead {
       height: 58px;
+      background-color: var(--gray-color);
+
       tr {
-        background-color: var(--gray-color);
+        &::after {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100px;
+          background-color: var(--gray-color);
+        }
       }
       th {
         position: sticky;
@@ -84,6 +94,7 @@
         z-index: 10;
         cursor: pointer;
         height: 100px;
+        background-color: var(--gray-color);
       }
     }
     th[name="instituteAutumnWorkload"] {
@@ -252,5 +263,16 @@
     left: 235px;
     background-color: var(--gray-color);
     z-index: 1000;
+    &::after {
+      content: "";
+      position: absolute;
+      background-color: var(--td-bg);
+      box-shadow: 5px 0px 15px #b3b0b0;
+      opacity: 0.5;
+      width: 2px;
+      height: 100%;
+      right: 0;
+      top: 0;
+    }
   }
 }

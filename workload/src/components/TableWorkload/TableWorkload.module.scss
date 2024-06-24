@@ -67,7 +67,7 @@ $heightCell: 150px;
   height: 76vh;
   overflow: auto;
   padding-left: 64px;
-  margin-right: 52px;
+  margin-right: 64px;
   background-color: #fff;
   &::after {
     content: "";
@@ -150,7 +150,7 @@ $heightCell: 150px;
         }
 
         svg:hover * {
-          fill: #3b28cc;
+          fill: var(--blue-color);
         }
       }
     }
@@ -222,6 +222,19 @@ $heightCell: 150px;
       @include customTd(120px);
     }
     td[name="workload"] {
+      &::after {
+        content: "";
+        position: absolute;
+        background-color: var(--td-bg);
+        box-shadow: 5px 0px 15px #b3b0b0;
+        opacity: 0.5;
+        width: 2px;
+        height: 100%;
+        right: 0;
+        top: 0;
+      }
+    }
+    th[name="workload"] {
       &::after {
         content: "";
         position: absolute;
@@ -653,6 +666,7 @@ $heightCell: 150px;
             flex-direction: row;
             align-items: center;
             width: 40px;
+            justify-content: end;
             // justify-content: space-between;
             cursor: pointer;
             .svg * {
@@ -660,6 +674,7 @@ $heightCell: 150px;
             }
             .btn_rigth_svg {
               margin-left: 5px;
+              padding-top: 8px;
             }
           }
         }
@@ -699,5 +714,3 @@ $heightCell: 150px;
     }
   }
 }
-
-

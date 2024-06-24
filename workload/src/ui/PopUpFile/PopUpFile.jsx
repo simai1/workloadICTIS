@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from "./PopUpFile.module.scss";
 import Button from "../Button/Button";
 import DataContext from "../../context";
-import { SubmitFileXLSX } from "../../api/services/ApiRequest";
+import { GetUsibleDepartment, SubmitFileXLSX } from "../../api/services/ApiRequest";
 import arrow from "./../../img/arrow_down.svg";
 
 export function PopUpFile(props) {
@@ -10,22 +10,28 @@ export function PopUpFile(props) {
   const [valueCafedra, setvalueCafedra] = useState("");
   const [openListFlag, setopenListFlag] = useState(false);
   const [fileData, setfileData] = useState(null);
-  const cafData = [
-    { name: "ОИД", id: 0 },
-    { name: "БИТ", id: 1 },
-    { name: "ИИТиС", id: 2 },
-    { name: "ВТ", id: 3 },
-    { name: "ИАСБ", id: 4 },
-    { name: "ИБТКС", id: 5 },
-    { name: "ИМС", id: 6 },
-    { name: "МОП ЭВМ", id: 7 },
-    { name: "ПиБЖ", id: 8 },
-    { name: "САИТ", id: 9 },
-    { name: "САПР", id: 10 },
-    { name: "СиПУ", id: 11 },
-    { name: "ФМОИО", id: 12 },
-  ];
-  const allowedDepartmentsNames = cafData.filter(department => appData.myProfile.allowedDepartments.includes(department.id)).map(department => department.name);
+  const [cafData, setCafData] = useState([]);
+  useEffect(()=>{
+    GetUsibleDepartment().then((resp)=>{
+      setCafData(resp.data)
+    })
+  },[])
+  // const cafData = [
+  //   { name: "ОИД", id: 0 },
+  //   { name: "БИТ", id: 1 },
+  //   { name: "ИИТиС", id: 2 },
+  //   { name: "ВТ", id: 3 },
+  //   { name: "ИАСБ", id: 4 },
+  //   { name: "ИБТКС", id: 5 },
+  //   { name: "ИМС", id: 6 },
+  //   { name: "МОП ЭВМ", id: 7 },
+  //   { name: "ПиБЖ", id: 8 },
+  //   { name: "САИТ", id: 9 },
+  //   { name: "САПР", id: 10 },
+  //   { name: "СиПУ", id: 11 },
+  //   { name: "ФМОИО", id: 12 },
+  // ];
+  // const allowedDepartmentsNames = cafData.filter(department => appData.myProfile.allowedDepartments.includes(department.id)).map(department => department.name);
   const fileInputRef = useRef(null);
 
   const closeMenuPopFile = () => {
@@ -141,10 +147,7 @@ export function PopUpFile(props) {
               <div className={styles.listInner}>
                 {cafData?.map((item) => (
                  <p key={item.id} onClick={() => setCaf(item.name)}>
-                  {allowedDepartmentsNames.includes(item.name) && item.name}
-                 {/* {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 43) ? 
-                   (allowedDepartmentsNames.includes(item.name) ? item.name : null) 
-                   : item.name} */}
+                 {item.name}
                </p>
                
                 ))}

@@ -125,7 +125,7 @@ function Table(props) {
 
   return (
     <div>
-      <table className={styles.table} ref={props.tableRef}>
+      <table id={"table-id"} className={styles.table} ref={props.tableRef}>
         <thead>
           <tr key={"tr1"}>
             <InputCheckbox

@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./PopUpCreateEmploy.module.scss";
 import DataContext from "../../context";
 import Input from "../Input/Input";
 import Button from "../Button/Button";
 import PopUpContainer from "../PopUpContainer/PopUpContainer";
 import List from "../List/List";
-import { CreateEducator } from "../../api/services/ApiRequest";
+import { CreateEducator, GetUsibleDepartment } from "../../api/services/ApiRequest";
 
 export function PopUpCreateEmploy(props) {
   const { appData, basicTabData } = React.useContext(DataContext);
@@ -35,23 +35,27 @@ export function PopUpCreateEmploy(props) {
     { id: 9, name: "Старший преподаватель" },
     { id: 10, name: "Преподаватель" },
     { id: 11, name: "Заведующий кафедрой" },
-    { id: 12, name: "Зам. директора института" },
-    { id: 13, name: "Зам. заведующего кафедры" },
   ];
-  const dataKaf = [
-    { id: 1, name: "БИТ" },
-    { id: 2, name: "ИИТиС" },
-    { id: 3, name: "ВТ" },
-    { id: 4, name: "ИАСБ" },
-    { id: 5, name: "ИБТКС" },
-    { id: 6, name: "ИМС" },
-    { id: 7, name: "МОП ЭВМ" },
-    { id: 8, name: "ПиБЖ" },
-    { id: 9, name: "САИТ" },
-    { id: 10, name: "САПР" },
-    { id: 11, name: "СиПУ" },
-    { id: 12, name: "ФМОИО" },
-  ];
+  const [dataKaf, setDataKaf] = useState([]);
+  useEffect(()=>{
+    GetUsibleDepartment().then((resp)=>{
+      setDataKaf(resp.data)
+    })
+  },[])
+  // const dataKaf = [
+  //   { id: 1, name: "БИТ" },
+  //   { id: 2, name: "ИИТиС" },
+  //   { id: 3, name: "ВТ" },
+  //   { id: 4, name: "ИАСБ" },
+  //   { id: 5, name: "ИБТКС" },
+  //   { id: 6, name: "ИМС" },
+  //   { id: 7, name: "МОП ЭВМ" },
+  //   { id: 8, name: "ПиБЖ" },
+  //   { id: 9, name: "САИТ" },
+  //   { id: 10, name: "САПР" },
+  //   { id: 11, name: "СиПУ" },
+  //   { id: 12, name: "ФМОИО" },
+  // ];
 
   const handleInputChange = (name, value) => {
     if (name === "email") {

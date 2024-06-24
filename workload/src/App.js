@@ -42,7 +42,7 @@ function App() {
   //! в файле RoleMetods можно посмотреть назание метода и их id
   const metodRole = {
     METHODIST: [
-      1, 3, 4, 8, 9, 10, 14, 17, 20, 21, 25, 26, 28, 29, 31, 34, 35, 36, 16, 40
+      1, 3, 4, 8, 9, 10, 14, 17, 20, 21, 25, 26, 28, 29, 31, 34, 35, 36, 16, 40,
     ],
     LECTURER: [2, 15, 17, 17.1, 18, 20, 22, 24, 34, 37, 41],
     DEPARTMENT_HEAD: [
@@ -58,6 +58,14 @@ function App() {
       34, 35, 36, 38, 16, 40, 42,
     ],
     EDUCATOR: [15, 24, 41],
+    DEPUTY_DIRECTORATE: [
+      1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
+      34, 35, 36, 38, 16, 40,
+    ],
+    DEPUTY_DEPARTMENT_HEAD: [
+      2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 22, 23, 25, 26, 27, 30, 31, 32,
+      33, 34, 36, 16, 39, 40,
+    ],
   };
   // appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)
 
@@ -102,6 +110,10 @@ function App() {
     setMyProfile,
     WhyColor,
   };
+
+  useEffect(() => {
+    console.log("myProfile", myProfile);
+  }, [myProfile]);
 
   //! параметры таблицы
   const [tableHeaders, setTableHeaders] = useState(headers);
@@ -229,7 +241,6 @@ function App() {
     setPerenesenAction,
   };
 
-  
   //! функция обновления комментаривев
   function funUpdateAllComments() {
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 37)) {
@@ -283,7 +294,7 @@ function App() {
   function funGetDepartment() {
     GetDepartment().then((response) => {
       if (response && response.status === 200) {
-         settableDepartment([{ id: 14, name: "Все" }, ...response?.data])
+        settableDepartment([{ id: 14, name: "Все" }, ...response?.data]);
         console.log("Записал");
       }
     });
@@ -443,11 +454,14 @@ function App() {
 
   //! функция обновления всех данных
   function updateAlldata() {
-    if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 42)){
-      funUpdateTable(tableDepartment[0]?.id)
-    }else if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 28)) {
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 42)) {
+      funUpdateTable(tableDepartment[0]?.id);
+    } else if (
+      appData.metodRole[appData.myProfile?.role]?.some((el) => el === 28)
+    ) {
       selectISOid
-        ? funUpdateTable(0)
+        ? // funUpdateTable(0)
+          funUpdateTable(tableDepartment[0]?.id)
         : funUpdateTable(tableDepartment.find((el) => el.name === nameKaf)?.id);
     } else {
       if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 32)) {
@@ -477,9 +491,11 @@ function App() {
   //! получаем данные нагрузок с бд
   useEffect(() => {
     if (myProfile) {
-      console.log("myProfile", myProfile);
-      console.log('tableDepartment', tableDepartment)
-      appData.metodRole[appData.myProfile?.role]?.some((el) => el === 42) ? setnameKaf(tableDepartment[0]?.name) : setnameKaf("ОИД") 
+      // console.log("myProfile", myProfile);
+      // console.log("tableDepartment", tableDepartment);
+      // appData.metodRole[appData.myProfile?.role]?.some((el) => el === 42)
+      setnameKaf(tableDepartment[0]?.name);
+      // : setnameKaf("ОИД");
       updateAlldata();
     }
   }, [tableDepartment, myProfile]); // [myProfile, tableDepartment]

@@ -65,9 +65,15 @@ function ListKaf({
     appData.setSelectedComponent("History");
   };
 
-  useEffect(() => {
-    console.log("openLists", openLists);
-  }, [openLists]);
+  //! функция определения показывать ли общеинститутские и кафедральные слово
+  const funGetAction = () => {
+    if (
+      appData.myProfile.institutionalAffiliation === 1 ||
+      appData.myProfile?.role === "METHODIST"
+    ) {
+      return true;
+    } else return false;
+  };
 
   return (
     <div ref={refDiv} className={styles.List}>
@@ -82,11 +88,11 @@ function ListKaf({
           <input
             readOnly
             style={{
-              backgroundColor: !activeList ? "#3b28cc" : "#fff",
+              backgroundColor: !activeList ? "#0040E5" : "#fff",
               color: !activeList ? "#fff" : "#000",
             }}
             onClick={() => setactiveList(!activeList)}
-            value={basicTabData.nameKaf}
+            value={basicTabData.nameKaf ? basicTabData.nameKaf : ""}
             placeholder={defaultValue}
             className={styles.inputList}
           />
@@ -115,9 +121,12 @@ function ListKaf({
         </div>
         {activeList && basicTabData.tableDepartment.length !== 1 && (
           <div className={styles.ListData}>
-            {!appData.metodRole[appData.myProfile?.role]?.some((el) => el === 42) && <p className={styles.NameForList}>Общеинститутские</p>}
-            {/* {  <p className={styles.NameForListSecond} onClick={() => addKafedra("ОИД")}>ОИД</p>} */}
-
+            {!appData.metodRole[appData.myProfile?.role]?.some(
+              (el) => el === 42
+            ) &&
+              funGetAction() && (
+                <p className={styles.NameForList}>Общеинститутские</p>
+              )}
             <div key={"ОИД"} className={styles.ListDatas}>
               {dataList[1].name === "ОИД" && (
                 <p
@@ -161,8 +170,9 @@ function ListKaf({
                 </div>
               )}
             </div>
-
-            <p className={styles.NameForList}>Кафедральные</p>
+            {funGetAction() && (
+              <p className={styles.NameForList}>Кафедральные</p>
+            )}
             {dataList.map((item, index) => (
               <div key={index} className={styles.ListDatas}>
                 {item.name !== "ОИД" && (
@@ -185,7 +195,7 @@ function ListKaf({
                   >
                     {item.name}
                   </p>
-                )}{" "}
+                )}
                 {item.blocked && openLists === index && (
                   <div className={styles.ListVRot}>
                     <p
