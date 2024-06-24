@@ -14,5 +14,11 @@ router
         asyncRoute(checkRole([role.UNIT_ADMIN, role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST, role.EDUCATOR, role.LECTURER, role.DEPUTY_DIRECTORATE, role.DEPUTY_DEPARTMENT_HEAD])),
         asyncRoute(roleController.changeRole)
     );
+router
+    .route('/changeInstitutionalAffiliation')
+    .post(
+        asyncRoute(checkRole([role.DIRECTORATE, role.DEPUTY_DIRECTORATE])),
+        asyncRoute(roleController.changeInstitutionalAffiliation)
+    )
 
 export default router;

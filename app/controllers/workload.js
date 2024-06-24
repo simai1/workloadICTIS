@@ -143,6 +143,23 @@ export default {
                         include: { model: Educator },
                         order: orderRule,
                     });
+                } else if(_user.role === 4 || _user.role === 7){
+                    if(!_user.institutionalAffiliation) throw new Error('Нет привязки (institutionalAffiliation) к институту у директора');
+                    const allowedDepartments = [];
+
+                    const start = _user.institutionalAffiliation === 1? 0 : _user.institutionalAffiliation === 2? 13 : 17;
+                    const end = _user.institutionalAffiliation === 1? 12 : _user.institutionalAffiliation === 2? 16 : 24;
+                
+                    for (let i = start; i <= end; i++) {
+                        allowedDepartments.push(i);
+                    }
+                    workloads = await Workload.findAll({
+                        where: {
+                            department: allowedDepartments,
+                        },
+                        include: { model: Educator },
+                        order: orderRule,
+                    });
                 } else {
                     workloads = await Workload.findAll({
                         where: {
@@ -157,7 +174,7 @@ export default {
             }
             res.json(workloadsDto);
         } catch (error) {
-            res.status(500).json({ error: 'Internal Server Error' });
+            res.status(500).json({error: error.message});
         }
     },
     async getAllDepartment(req, res) {
@@ -478,6 +495,7 @@ export default {
         const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
         res.json(workloadsDto);
     },
+
     async getUsableDepartments(req, res) {
         const userId = req.user;
         const checkUser = await User.findByPk(userId);
@@ -590,5 +608,23 @@ export default {
             await Workload.update({ isBlocked: false }, { where: { department } });
         }
         res.json({ status: 'OK' });
+    },
+
+    async getDepartmentsForDirectorate(req, res) {
+        const _user = await User.findByPk(req.user);
+        if(!_user.institutionalAffiliation) throw new Error('Нет привязки (institutionalAffiliation) к институту у директора');
+        console.log(departments)
+        let filteredDepartments;
+        if(_user.institutionalAffiliation === 1){
+            filteredDepartments = Object.fromEntries(Object.entries(departments).slice(0, 13));
+        } else if(_user.institutionalAffiliation === 2){
+            filteredDepartments = Object.fromEntries(Object.entries(departments).slice(13, 17));
+        } else if(_user.institutionalAffiliation === 3){
+            filteredDepartments = Object.fromEntries(Object.entries(departments).slice(17, 25));
+        } else{
+            throw new Error('Такого института не добавленно');
+        }
+         
+        res.json(filteredDepartments);
     },
 };
