@@ -20,7 +20,10 @@ export default {
             for (const offer of offers) {
                 const educator = await Educator.findByPk(offer.educatorId, { attributes: { exclude: ['id'] } });
                 const proposer = await Educator.findByPk(offer.proposerId, { attributes: { exclude: ['id'] } });
-
+                if (!educator || !proposer){
+                    await offer.destroy();
+                    continue;
+                }
                 // Создаем DTO для предложения
                 const offerDto = new OfferDto(offer);
                 // Добавляем информацию о преподавателе и инициаторе к объекту предложения
@@ -54,7 +57,7 @@ export default {
                 include: { model: Educator },
                 attributes: { exclude: ['EducatorId'] },
                 educator: _educator.id,
-                
+
             });
             // Создание нового массива предложений с добавлением информации о преподавателе и инициаторе
             const offersWithDetails = [];

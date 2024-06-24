@@ -7,6 +7,9 @@ export default class EducatorListDto {
     position;
     department;
     rate;
+    maxHours;
+    recommendedMaxHours;
+    minHours;
     kafedralAutumnWorkload;
     kafedralSpringWorkload;
     kafedralAdditionalWorkload;
@@ -23,6 +26,9 @@ export default class EducatorListDto {
         this.position = positionsMap[model.position];
         this.department = departmentsMap[model.department];
         this.rate = model.rate;
+        this.maxHours = model.maxHours;
+        this.recommendedMaxHours = model.recommendedMaxHours;
+        this.minHours = model.minHours;
         this.totalHours = Math.round(model.SummaryWorkload.totalHours * 100) / 100;
         this.kafedralAutumnWorkload = Math.round(model.SummaryWorkload.kafedralAutumnWorkload * 100) / 100;
         this.kafedralSpringWorkload = Math.round(model.SummaryWorkload.kafedralSpringWorkload * 100) / 100;
