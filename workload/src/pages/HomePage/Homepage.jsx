@@ -57,10 +57,19 @@ function HomePage() {
   const handleButtonClick = () => {
     setEducatorIdforLk("");
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 28)) {
-      basicTabData.funUpdateTable(basicTabData.tableDepartment.find((el) => el.name === basicTabData?.nameKaf)?.id);
+      basicTabData.funUpdateTable(
+        basicTabData.tableDepartment.find(
+          (el) => el.name === basicTabData?.nameKaf
+        )?.id
+      );
       // basicTabData.setnameKaf("ОИД");
-    } if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 42)){
-      basicTabData.funUpdateTable(basicTabData.tableDepartment.find((el) => el.name === basicTabData?.nameKaf)?.id);
+    }
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 42)) {
+      basicTabData.funUpdateTable(
+        basicTabData.tableDepartment.find(
+          (el) => el.name === basicTabData?.nameKaf
+        )?.id
+      );
     }
     setKafedralIsOpen(false);
     tabPar.setSelectedFilter("Все дисциплины");
@@ -79,9 +88,8 @@ function HomePage() {
 
   useEffect(() => {
     GetDepartment().then((response) => {
-        setdepartments([{ id: 14, name: "Все" }, ...response.data]);
-
-      });
+      setdepartments([{ id: 14, name: "Все" }, ...response.data]);
+    });
   }, [basicTabData.tableDepartment]);
 
   //! получаем и записываем данные usera
@@ -221,7 +229,8 @@ function HomePage() {
       appData.selectedComponent != "Teachers"
     ) {
       basicTabData.filtredData.every((el) =>
-         el.isBlocked === true ? (blocked = true) : (blocked = false))
+        el.isBlocked === true ? (blocked = true) : (blocked = false)
+      );
       return blocked;
     }
   };
@@ -354,7 +363,7 @@ function HomePage() {
                 Bg={
                   appData.selectedComponent === "Disciplines" ||
                   appData.selectedComponent === "History"
-                    ? "#3B28CC"
+                    ? "#0040E5"
                     : "#efedf3"
                 }
                 textColot={
@@ -377,7 +386,7 @@ function HomePage() {
                 <Button
                   Bg={
                     appData.selectedComponent === "Teachers"
-                      ? "#3B28CC"
+                      ? "#0040E5"
                       : "#efedf3"
                   }
                   textColot={
@@ -404,7 +413,7 @@ function HomePage() {
                     appData.setSelectedComponent("Teachers");
                     console.log("myProfilea", appData.myProfile.id);
                   }}
-                  Bg={educatorIdforLk.length != 0 ? "#3B28CC" : "#efedf3"}
+                  Bg={educatorIdforLk.length != 0 ? "#0040E5" : "#efedf3"}
                   textColot={
                     educatorIdforLk.length === 0 ? "#000000" : "#efedf3"
                   }

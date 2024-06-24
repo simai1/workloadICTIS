@@ -151,13 +151,12 @@ function TableTeachers(props) {
 
   const clickTrRows = (id, x, y) => {
     setSelectRow(id);
-    if(x + 200 > window.innerWidth){
-      x -= 140
+    if (x + 200 > window.innerWidth) {
+      x -= 140;
       setPositionMenu({ x, y });
-    }else{
+    } else {
       setPositionMenu({ x, y });
     }
-   
   };
 
   const keysInst = [
@@ -232,7 +231,7 @@ function TableTeachers(props) {
       {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 4) ? (
         <Button
           text="Создать преподавателя"
-          Bg="#3b28cc"
+          Bg="#0040E5"
           textColot="#fff"
           onClick={() => {
             appData.setcreateEdicatorPopUp(true);
@@ -333,9 +332,13 @@ function TableTeachers(props) {
                     );
                   } else {
                     return (
-                      <td key={key.key} name={key.key} className={styles.fixedTd}>
+                      <td
+                        key={key.key}
+                        name={key.key}
+                        className={styles.fixedTd}
+                      >
                         <div className={styles.tdInner}>
-                            {key.key === "id" ? index + 1 : row[key.key]}
+                          {key.key === "id" ? index + 1 : row[key.key]}
                         </div>
                       </td>
                     );
