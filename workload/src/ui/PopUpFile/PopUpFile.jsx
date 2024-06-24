@@ -25,6 +25,8 @@ export function PopUpFile(props) {
     { name: "СиПУ", id: 11 },
     { name: "ФМОИО", id: 12 },
   ];
+  const allowedDepartmentsNames = cafData.filter(department => appData.myProfile.allowedDepartments.includes(department.id)).map(department => department.name);
+
   const fileInputRef = useRef(null);
 
   const closeMenuPopFile = () => {
@@ -139,9 +141,13 @@ export function PopUpFile(props) {
             <div className={styles.list}>
               <div className={styles.listInner}>
                 {cafData?.map((item) => (
-                  <p key={item.id} onClick={() => setCaf(item.name)}>
-                    {item.name}
-                  </p>
+                 <p key={item.id} onClick={() => setCaf(item.name)}>
+                  {allowedDepartmentsNames.includes(item.name) && item.name}
+                 {/* {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 43) ? 
+                   (allowedDepartmentsNames.includes(item.name) ? item.name : null) 
+                   : item.name} */}
+               </p>
+               
                 ))}
               </div>
             </div>

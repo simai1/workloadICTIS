@@ -12,6 +12,7 @@ function List({
   value,
 }) {
   const { context, appData } = React.useContext(DataContext);
+  const allowedDepartmentsNames = dataList.filter(department => appData.myProfile.allowedDepartments.includes(department.id)).map(department => department.name);
 
   const [activeList, setactiveList] = useState(false);
   const [nameClient, setnameClient] = useState(null);
@@ -68,7 +69,7 @@ function List({
                 onClick={() => addClient(item)}
                 key={item.id}
               >
-                {item.name}
+                {allowedDepartmentsNames.includes(item.name) && item.name}
               </p>
             ))}
           </div>
