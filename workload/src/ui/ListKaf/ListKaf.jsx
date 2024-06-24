@@ -121,103 +121,110 @@ function ListKaf({
         </div>
         {activeList && basicTabData.tableDepartment.length !== 1 && (
           <div className={styles.ListData}>
-            {!appData.metodRole[appData.myProfile?.role]?.some(
-              (el) => el === 42
-            ) &&
-              funGetAction() && (
-                <p className={styles.NameForList}>Общеинститутские</p>
-              )}
-            <div key={"ОИД"} className={styles.ListDatas}>
-              {dataList[1].name === "ОИД" && (
-                <p
-                  className={styles.NameForListSecond}
-                  onClick={() => {
-                    if (dataList[1].blocked) {
-                      if (
-                        appData.metodRole[appData.myProfile?.role]?.some(
-                          (el) => el === 28
-                        )
-                      ) {
-                        setopenList(0);
-                      }
-                    } else {
-                      addKafedra(dataList[1]);
-                    }
-                  }}
-                  style={dataList[1].blocked ? { color: "#E81414" } : null}
-                >
-                  {dataList[1].name}
-                </p>
-              )}
-              {dataList[1].blocked && openLists === 0 && (
-                <div className={styles.ListVRot}>
-                  <p
-                    className={styles.NameForList}
-                    onClick={() => addKafedra(dataList[1])}
-                  >
-                    Нагрузка
-                  </p>
-                  {appData.metodRole[appData.myProfile?.role]?.some(
-                    (el) => el === 29
-                  ) && (
+            {dataList.length > 1 ? (
+              <>
+                {!appData.metodRole[appData.myProfile?.role]?.some(
+                  (el) => el === 42
+                ) &&
+                  funGetAction() &&
+                  dataList[1]?.name === "ОИД" && (
+                    <p className={styles.NameForList}>Общеинститутские</p>
+                  )}
+                <div key={"ОИД"} className={styles.ListDatas}>
+                  {dataList[1]?.name === "ОИД" && (
                     <p
-                      className={styles.NameForList}
-                      onClick={() => clickHistory(dataList[1])}
+                      className={styles.NameForListSecond}
+                      onClick={() => {
+                        if (dataList[1]?.blocked) {
+                          if (
+                            appData.metodRole[appData.myProfile?.role]?.some(
+                              (el) => el === 28
+                            )
+                          ) {
+                            setopenList(0);
+                          }
+                        } else {
+                          addKafedra(dataList[1]);
+                        }
+                      }}
+                      style={dataList[1]?.blocked ? { color: "#E81414" } : null}
                     >
-                      История
+                      {dataList[1]?.name}
                     </p>
                   )}
-                </div>
-              )}
-            </div>
-            {funGetAction() && (
-              <p className={styles.NameForList}>Кафедральные</p>
-            )}
-            {dataList.map((item, index) => (
-              <div key={index} className={styles.ListDatas}>
-                {item.name !== "ОИД" && (
-                  <p
-                    className={styles.NameForListSecond}
-                    onClick={() => {
-                      if (item.blocked) {
-                        if (
-                          appData.metodRole[appData.myProfile?.role]?.some(
-                            (el) => el === 28
-                          )
-                        ) {
-                          setopenList(index);
-                        }
-                      } else {
-                        addKafedra(item);
-                      }
-                    }}
-                    style={item.blocked ? { color: "#E81414" } : null}
-                  >
-                    {item.name}
-                  </p>
-                )}
-                {item.blocked && openLists === index && (
-                  <div className={styles.ListVRot}>
-                    <p
-                      className={styles.NameForList}
-                      onClick={() => addKafedra(item)}
-                    >
-                      Нагрузка
-                    </p>
-                    {appData.metodRole[appData.myProfile?.role]?.some(
-                      (el) => el === 29
-                    ) && (
+                  {dataList[1]?.blocked && openLists === 0 && (
+                    <div className={styles.ListVRot}>
                       <p
                         className={styles.NameForList}
-                        onClick={() => clickHistory(item)}
+                        onClick={() => addKafedra(dataList[1])}
                       >
-                        История
+                        Нагрузка
+                      </p>
+                      {appData.metodRole[appData.myProfile?.role]?.some(
+                        (el) => el === 29
+                      ) && (
+                        <p
+                          className={styles.NameForList}
+                          onClick={() => clickHistory(dataList[1])}
+                        >
+                          История
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
+                {funGetAction() && (
+                  <p className={styles.NameForList}>Кафедральные</p>
+                )}
+                {dataList.map((item, index) => (
+                  <div key={index} className={styles.ListDatas}>
+                    {item.name !== "ОИД" && (
+                      <p
+                        className={styles.NameForListSecond}
+                        onClick={() => {
+                          if (item.blocked) {
+                            if (
+                              appData.metodRole[appData.myProfile?.role]?.some(
+                                (el) => el === 28
+                              )
+                            ) {
+                              setopenList(index);
+                            }
+                          } else {
+                            addKafedra(item);
+                          }
+                        }}
+                        style={item.blocked ? { color: "#E81414" } : null}
+                      >
+                        {item.name}
                       </p>
                     )}
+                    {item.blocked && openLists === index && (
+                      <div className={styles.ListVRot}>
+                        <p
+                          className={styles.NameForList}
+                          onClick={() => addKafedra(item)}
+                        >
+                          Нагрузка
+                        </p>
+                        {appData.metodRole[appData.myProfile?.role]?.some(
+                          (el) => el === 29
+                        ) && (
+                          <p
+                            className={styles.NameForList}
+                            onClick={() => clickHistory(item)}
+                          >
+                            История
+                          </p>
+                        )}
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            ))}
+                ))}
+              </>
+            ) : (
+              <div>Нет данных</div>
+            )}
           </div>
         )}
       </div>
