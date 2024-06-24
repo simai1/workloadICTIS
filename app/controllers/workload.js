@@ -149,7 +149,7 @@ export default {
 
                     const start = _user.institutionalAffiliation === 1? 0 : _user.institutionalAffiliation === 2? 13 : 17;
                     const end = _user.institutionalAffiliation === 1? 12 : _user.institutionalAffiliation === 2? 16 : 24;
-                
+
                     for (let i = start; i <= end; i++) {
                         allowedDepartments.push(i);
                     }
@@ -680,7 +680,16 @@ export default {
         } else {
             throw new Error('Такого института не добавленно');
         }
-         
+        if (_user.role === 6){
+            const filteredDepartmentsNew = []
+            const allowed = _user.allowedDepartments;
+            for (const x of filteredDepartments){
+                if (allowed.includes(departments[x.name])){
+                    filteredDepartmentsNew.push(x);
+                }
+            }
+            res.json(filteredDepartmentsNew);
+        }
         res.json(filteredDepartments);
     },
 };
