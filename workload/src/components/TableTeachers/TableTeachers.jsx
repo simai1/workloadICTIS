@@ -104,7 +104,6 @@ function TableTeachers(props) {
     });
     setUpdatedHeader(tableHeaders);
     setUpdatedData(updatedData);
-    console.log("filters", filters);
   }
 
   //! фильтрация по редактированию полей
