@@ -54,7 +54,8 @@ export function PopUpCreateEmploy(props) {
 
   const handleInputChange = (name, value) => {
     if (name === "email") {
-      setIsEmailValid(value.endsWith("@sfedu.ru"));
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      setIsEmailValid(emailRegex.test(value));
     }
     if (name === "rate") {
       const rateValue = parseFloat(value.replace(",", "."));
@@ -117,7 +118,7 @@ export function PopUpCreateEmploy(props) {
                 top: "-20px",
               }}
             >
-              Почта должна быть в домене sfedu.ru
+              Почта должна валидной!
             </div>
           )}
           <List
