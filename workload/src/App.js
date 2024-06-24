@@ -46,8 +46,8 @@ function App() {
     ],
     LECTURER: [2, 15, 17, 17.1, 18, 20, 22, 24, 34, 37, 41],
     DEPARTMENT_HEAD: [
-      2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 22, 23, 25, 26, 27, 30, 31, 32,
-      33, 34, 36, 16, 39, 40,
+      2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 20, 22, 23, 25, 26, 27, 30, 31,
+      32, 33, 34, 36, 16, 39, 40,
     ],
     DIRECTORATE: [
       1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
@@ -63,8 +63,8 @@ function App() {
       34, 35, 36, 38, 16, 40,
     ],
     DEPUTY_DEPARTMENT_HEAD: [
-      2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 22, 23, 25, 26, 27, 30, 31, 32,
-      33, 34, 36, 16, 39, 40,
+      2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 20, 22, 23, 25, 26, 27, 30, 31,
+      32, 33, 34, 36, 16, 39, 40,
     ],
   };
   // appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)
@@ -261,14 +261,18 @@ function App() {
   //! функция обновления предложений преподавателей
   function funUpdateOffers() {
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 17.1)) {
-      getOffersLecturer().then((data) => {
-        console.log("предложения", data);
-        setAllOffersData(data);
+      getOffersLecturer().then((req) => {
+        if (req && req.status === 200) {
+          console.log("предложения", req.data);
+          setAllOffersData(req.data);
+        }
       });
     } else {
-      getOffers().then((data) => {
-        console.log("предложения", data);
-        setAllOffersData(data);
+      getOffers().then((req) => {
+        if (req && req.status === 200) {
+          console.log("предложения", req.data);
+          setAllOffersData(req.data);
+        }
       });
     }
   }

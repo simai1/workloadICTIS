@@ -169,7 +169,8 @@ export const getAllWarningMessage = async () => {
 export const getOffers = async () => {
   try {
     const response = await http.get(`${server}/offers`);
-    return response.data;
+    console.log("предложений", response);
+    return response;
   } catch (error) {
     console.error("Error:", error);
     //throw error;
@@ -180,7 +181,8 @@ export const getOffers = async () => {
 export const getOffersLecturer = async () => {
   try {
     const response = await http.get(`${server}/offers/getAllOffersByLecture`);
-    return response.data;
+    console.log("предложений", response);
+    return response;
   } catch (error) {
     console.error("Error:", error);
     //throw error;
@@ -524,9 +526,11 @@ export const EditTeacher = async (idTeacher, data) => {
   }
 };
 //! Получение списка кафедр доступного для изменения
-export const  GetUsibleDepartment = async () => {
+export const GetUsibleDepartment = async () => {
   try {
-    const response = await http.get(`${server}/workload/get/departmentsForDirectorate`);
+    const response = await http.get(
+      `${server}/workload/get/departmentsForDirectorate`
+    );
     return response;
   } catch (error) {
     console.error("Error:", error);
