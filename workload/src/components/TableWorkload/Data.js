@@ -56,7 +56,7 @@ export const tableHeadersLks = [
   },
   { key: "hours", label: "Часы" },
   { key: "audienceHours", label: "Аудиторные часы" },
-  { key: "hoursFirstPeriod", label: "Часы период 1" },
-  { key: "hoursSecondPeriod", label: "Часы период 2" },
-  { key: "hoursWithoutPeriod", label: "Часы период 3" },
+  { key: "hoursFirstPeriod", label: "1 (осень)" },
+  { key: "hoursSecondPeriod", label: "2 (весна)" },
+  { key: "hoursWithoutPeriod", label: "Доп. нагрузка" },
 ];
