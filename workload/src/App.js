@@ -376,7 +376,7 @@ function App() {
       if (param == 0) {
         url = "?isOid=true";
       }
-      if (param == "14") {
+      if (param == "all") {
         url = ``;
       } else if (param != 14 && param != 0) {
         url = `?department=${param}`;
@@ -459,7 +459,7 @@ function App() {
   //! функция обновления всех данных
   function updateAlldata() {
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 44)) {
-      funUpdateTable("14");
+      funUpdateTable("all");
     } else {
       if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 42)) {
         funUpdateTable(tableDepartment[0]?.id);
