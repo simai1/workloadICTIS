@@ -456,7 +456,8 @@ function App() {
       appData.metodRole[appData.myProfile?.role]?.some((el) => el === 28)
     ) {
       selectISOid
-        ? funUpdateTable(0)
+        // funUpdateTable(0)
+        ? funUpdateTable(tableDepartment[0]?.id)
         : funUpdateTable(tableDepartment.find((el) => el.name === nameKaf)?.id);
     } else {
       if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 32)) {
@@ -486,11 +487,11 @@ function App() {
   //! получаем данные нагрузок с бд
   useEffect(() => {
     if (myProfile) {
-      console.log("myProfile", myProfile);
-      console.log("tableDepartment", tableDepartment);
-      appData.metodRole[appData.myProfile?.role]?.some((el) => el === 42)
-        ? setnameKaf(tableDepartment[0]?.name)
-        : setnameKaf("ОИД");
+      // console.log("myProfile", myProfile);
+      // console.log("tableDepartment", tableDepartment);
+      // appData.metodRole[appData.myProfile?.role]?.some((el) => el === 42)
+        setnameKaf(tableDepartment[0]?.name)
+        // : setnameKaf("ОИД");
       updateAlldata();
     }
   }, [tableDepartment, myProfile]); // [myProfile, tableDepartment]
