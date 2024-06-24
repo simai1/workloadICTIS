@@ -215,7 +215,7 @@ export default {
             const remainder = studentsCount % n;
             // Создаем и сохраняем новые нагрузки в базу данных
             for (let i = 0; i < n; i++) {
-                const copyWorkload = { ...workload.get() };
+                const copyWorkload = { ...workload.get(), isMerged: false };
                 copyWorkload.isSplit = true;
                 copyWorkload.originalId = workload.id;
                 delete copyWorkload.id;
@@ -405,8 +405,12 @@ export default {
         };
 
         const createdWorkload = await Workload.create(mergeWorkload);
+
         // Удаляем записи которые учавствовали в совмещении
-        await Promise.allSettled(workloads.map(workload => workload.destroy()));
+        workloads.reduce((chain, workload) => {
+            return chain.then(() => workload.destroy());
+        }, Promise.resolve());
+
 
         await History.create({
             type: 2,
