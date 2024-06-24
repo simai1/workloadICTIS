@@ -22,7 +22,6 @@ export function PopUpEditTeacher(props) {
     { id: 1, name: "Ассистент" },
     { id: 2, name: "Ведущий научный сотрудник" },
     { id: 3, name: "Главный научный сотрудник" },
-    { id: 4, name: "Директор института" },
     { id: 5, name: "Доцент" },
     { id: 6, name: "Научный сотрудник" },
     { id: 7, name: "Профессор" },
@@ -30,6 +29,8 @@ export function PopUpEditTeacher(props) {
     { id: 9, name: "Старший преподаватель" },
     { id: 10, name: "Преподаватель" },
     { id: 11, name: "Заведующий кафедрой" },
+    { id: 12, name: "Зам. директора института" },
+    { id: 13, name: "Зам. заведующего кафедры" },
   ];
 
   const dataKaf = [

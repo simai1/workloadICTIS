@@ -41,7 +41,7 @@ function Profile(props) {
       {props.onenModalWind && (
         <div className={styles.modal_window}>
           <div className={styles.triangle}></div>
-          <span className={styles.title}>{roles[appData.myProfile?.role]}</span>
+          <span className={styles.title}>{appData.myProfile.educator.position}</span>
           <span className={styles.inner}>{appData.myProfile?.login}</span>
           <div className={styles.exid}>
             <a href="https://workload.sfedu.ru/auth/logout">Выйти</a>

@@ -26,7 +26,6 @@ export function PopUpFile(props) {
     { name: "ФМОИО", id: 12 },
   ];
   const allowedDepartmentsNames = cafData.filter(department => appData.myProfile.allowedDepartments.includes(department.id)).map(department => department.name);
-
   const fileInputRef = useRef(null);
 
   const closeMenuPopFile = () => {

@@ -151,7 +151,13 @@ function TableTeachers(props) {
 
   const clickTrRows = (id, x, y) => {
     setSelectRow(id);
-    setPositionMenu({ x, y });
+    if(x + 200 > window.innerWidth){
+      x -= 140
+      setPositionMenu({ x, y });
+    }else{
+      setPositionMenu({ x, y });
+    }
+   
   };
 
   const keysInst = [
@@ -244,6 +250,7 @@ function TableTeachers(props) {
                   name={header.key}
                   onClick={() => clickTh(index, header.key)}
                   key={header.key}
+                  className={styles.fixedTh}
                 >
                   <div
                     style={
@@ -326,7 +333,7 @@ function TableTeachers(props) {
                     );
                   } else {
                     return (
-                      <td key={key.key} name={key.key}>
+                      <td key={key.key} name={key.key} className={styles.fixedTd}>
                         {key.key === "id" ? index + 1 : row[key.key]}
                       </td>
                     );

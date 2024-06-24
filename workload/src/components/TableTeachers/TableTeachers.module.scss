@@ -187,7 +187,60 @@
   }
   .SelectedTr {
     td {
-      background-color: var(--gray-color);
+      background-color: var(--gray-color)!important;
     }
   }
-}
+  .fixedTd:first-child{
+    position: sticky;
+    left: 0px;
+    background-color: #ffffff;
+    box-sizing: border-box;
+    width: 55px;
+    min-width: 55px;
+    max-width: 55px;
+  }
+  .fixedTh:first-child{
+    position: sticky;
+    left: 0px;
+    background-color: var(--gray-color);
+    z-index: 1000;
+    width: 55px;
+    min-width: 55px;
+    max-width: 55px;
+    padding-left: 20px;
+  }
+  .tdName{
+    position: sticky;
+    left: 55px;
+    background-color: #ffffff;
+  }
+  .fixedTh:nth-child(2){
+    position: sticky;
+    left: 55px;
+    background-color: var(--gray-color);
+    z-index: 1000;
+  }
+  .fixedTd:nth-child(3){
+    position: sticky;
+    left: 235px;
+    background-color: #ffffff;
+    &::after {
+      content: "";
+      position: absolute;
+      background-color: var(--td-bg);
+      box-shadow: 5px 0px 15px #b3b0b0;
+      opacity: 0.5;
+      width: 2px;
+      height: 100%;
+      right: 0;
+      top: 0;
+    }
+  }
+  .fixedTh:nth-child(3){
+    position: sticky;
+    left: 235px;
+    background-color: var(--gray-color);
+    z-index: 1000;
+  }
+
+  }
