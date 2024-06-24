@@ -617,15 +617,15 @@ export default {
     async getDepartmentsForDirectorate(req, res) {
         const _user = await User.findByPk(req.user);
         if(!_user.institutionalAffiliation) throw new Error('Нет привязки (institutionalAffiliation) к институту у директора');
-        console.log(departments)
+
         let filteredDepartments;
         if(_user.institutionalAffiliation === 1){
-            filteredDepartments = Object.fromEntries(Object.entries(departments).slice(0, 13));
-        } else if(_user.institutionalAffiliation === 2){
-            filteredDepartments = Object.fromEntries(Object.entries(departments).slice(13, 17));
-        } else if(_user.institutionalAffiliation === 3){
-            filteredDepartments = Object.fromEntries(Object.entries(departments).slice(17, 25));
-        } else{
+            filteredDepartments = Object.entries(departments).slice(0, 13).map(([name, id]) => ({ name, id }));
+        } else if (_user.institutionalAffiliation === 2) {
+            filteredDepartments = Object.entries(departments).slice(13, 17).map(([name, id]) => ({ name, id }));
+        } else if (_user.institutionalAffiliation === 3) {
+            filteredDepartments = Object.entries(departments).slice(17, 25).map(([name, id]) => ({ name, id }));
+        } else {
             throw new Error('Такого института не добавленно');
         }
          
