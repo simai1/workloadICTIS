@@ -11,7 +11,7 @@ router.use(verify.general);
 router
     .route('/')
     .get(
-        asyncRoute(checkRole([role.UNIT_ADMIN, role.DEPARTMENT_HEAD, role.METHODIST, role.DIRECTORATE])),
+        asyncRoute(checkRole([role.UNIT_ADMIN, role.DEPARTMENT_HEAD, role.METHODIST, role.DIRECTORATE, role.DEPUTY_DIRECTORATE, role.DEPUTY_DEPARTMENT_HEAD])),
         asyncRoute(offersController.getAllOffers)
     );
 router
@@ -23,25 +23,25 @@ router
 router
     .route('/createOffer')
     .post(
-        asyncRoute(checkRole([role.UNIT_ADMIN, role.DEPARTMENT_HEAD, role.LECTURER])),
+        asyncRoute(checkRole([role.UNIT_ADMIN, role.DEPARTMENT_HEAD, role.LECTURER, role.DEPUTY_DEPARTMENT_HEAD])),
         asyncRoute(offersController.createOffer)
     );
 router
     .route('/introduceOrDecline/:offerId')
     .post(
-        asyncRoute(checkRole([role.UNIT_ADMIN, role.DEPARTMENT_HEAD, role.METHODIST])),
+        asyncRoute(checkRole([role.UNIT_ADMIN, role.DEPARTMENT_HEAD, role.METHODIST, role.DEPUTY_DEPARTMENT_HEAD])),
         asyncRoute(offersController.introducedOrDeclined)
     );
 router
     .route('/confirmOrReject/:offerId')
     .post(
-        asyncRoute(checkRole([role.UNIT_ADMIN, role.DIRECTORATE])),
+        asyncRoute(checkRole([role.UNIT_ADMIN, role.DIRECTORATE, role.DEPUTY_DIRECTORATE])),
         asyncRoute(offersController.confirmOrReject)
     );
 router
     .route('/delete/:offerId')
     .delete(
-        asyncRoute(checkRole([role.UNIT_ADMIN, role.DEPARTMENT_HEAD, role.DIRECTORATE])),
+        asyncRoute(checkRole([role.UNIT_ADMIN, role.DEPARTMENT_HEAD, role.DIRECTORATE, role.DEPUTY_DIRECTORATE, role.DEPUTY_DEPARTMENT_HEAD])),
         asyncRoute(offersController.deleteOffer)
     );
 export default router;
