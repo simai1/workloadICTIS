@@ -111,6 +111,10 @@ function App() {
     WhyColor,
   };
 
+  useEffect(() => {
+    console.log("myProfile", myProfile);
+  }, [myProfile]);
+
   //! параметры таблицы
   const [tableHeaders, setTableHeaders] = useState(headers);
   const [workloadData, setWorkloadData] = useState([]); // данные с бд нагрузок
@@ -456,8 +460,8 @@ function App() {
       appData.metodRole[appData.myProfile?.role]?.some((el) => el === 28)
     ) {
       selectISOid
-        // funUpdateTable(0)
-        ? funUpdateTable(tableDepartment[0]?.id)
+        ? // funUpdateTable(0)
+          funUpdateTable(tableDepartment[0]?.id)
         : funUpdateTable(tableDepartment.find((el) => el.name === nameKaf)?.id);
     } else {
       if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 32)) {
@@ -490,8 +494,8 @@ function App() {
       // console.log("myProfile", myProfile);
       // console.log("tableDepartment", tableDepartment);
       // appData.metodRole[appData.myProfile?.role]?.some((el) => el === 42)
-        setnameKaf(tableDepartment[0]?.name)
-        // : setnameKaf("ОИД");
+      setnameKaf(tableDepartment[0]?.name);
+      // : setnameKaf("ОИД");
       updateAlldata();
     }
   }, [tableDepartment, myProfile]); // [myProfile, tableDepartment]

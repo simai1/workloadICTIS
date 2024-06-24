@@ -35,7 +35,6 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
     const oh = originalHeader.map((item) => item.key);
     if (ssuh && ssuh !== null) {
       const ohfix = oh.filter((el) => !ssuhfix?.some((e) => e === el));
-      console.log("isChecked", isChecked, "oh", oh, "ohfix", ohfix);
       setChecked(ohfix);
       setIsAllChecked(
         originalHeader?.length === ssUpdatedHeader?.length ? true : false
@@ -45,7 +44,6 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
 
   useEffect(() => {
     setSearchResults(originalHeader.slice(3));
-    console.log("originalHeader", originalHeader.slice(3));
   }, [basicTabData.tableHeaders, selectedComponent]);
 
   //! закрытие модального окна при нажатии вне него
