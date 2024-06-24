@@ -2,7 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from "./PopUpFile.module.scss";
 import Button from "../Button/Button";
 import DataContext from "../../context";
-import { GetUsibleDepartment, SubmitFileXLSX } from "../../api/services/ApiRequest";
+import {
+  GetUsibleDepartment,
+  SubmitFileXLSX,
+} from "../../api/services/ApiRequest";
 import arrow from "./../../img/arrow_down.svg";
 
 export function PopUpFile(props) {
@@ -11,11 +14,11 @@ export function PopUpFile(props) {
   const [openListFlag, setopenListFlag] = useState(false);
   const [fileData, setfileData] = useState(null);
   const [cafData, setCafData] = useState([]);
-  useEffect(()=>{
-    GetUsibleDepartment().then((resp)=>{
-      setCafData(resp.data)
-    })
-  },[])
+  useEffect(() => {
+    GetUsibleDepartment().then((resp) => {
+      setCafData(resp.data);
+    });
+  }, []);
   // const cafData = [
   //   { name: "ОИД", id: 0 },
   //   { name: "БИТ", id: 1 },
@@ -50,7 +53,11 @@ export function PopUpFile(props) {
       appData.setLoaderAction(false);
       if (resp) {
         basicTabData.funGetDepartment();
-        basicTabData.funUpdateTable();
+        basicTabData.funUpdateTable(
+          basicTabData.tableDepartment.find(
+            (el) => el.name === basicTabData?.nameKaf
+          )?.id
+        );
         appData.setgodPopUp(true);
       }
     });
@@ -146,10 +153,9 @@ export function PopUpFile(props) {
             <div className={styles.list}>
               <div className={styles.listInner}>
                 {cafData?.map((item) => (
-                 <p key={item.id} onClick={() => setCaf(item.name)}>
-                 {item.name}
-               </p>
-               
+                  <p key={item.id} onClick={() => setCaf(item.name)}>
+                    {item.name}
+                  </p>
                 ))}
               </div>
             </div>
