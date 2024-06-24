@@ -24,12 +24,14 @@ import { PopUpCreateEmploy } from "../../ui/PopUpCreateEmploy/PopUpCreateEmploy"
 import {
   GetDepartment,
   WorkloadBlocked,
+  apiGetUser,
   getAllWarningMessage,
 } from "../../api/services/ApiRequest";
 import ConfirmSaving from "../../ui/ConfirmSaving/ConfirmSaving";
 import socketConnect from "../../api/services/socket";
 import PopUpGoodMessage from "../../ui/PopUpGoodMessage/PopUpGoodMessage";
 import TableHistory from "../../components/TableHistory/TableHistory";
+import ErrorHelper from "../../components/ErrorHelper/ErrorHelper";
 
 function HomePage() {
   const { appData, tabPar, visibleDataPar, basicTabData } =
@@ -43,7 +45,6 @@ function HomePage() {
   // const [appData.selectedComponent, appData.setSelectedComponent] = useState("Disciplines");
   const [tableMode, setTableMode] = useState("cathedrals"); //выбранный компонент
   const [educatorData, setEducatorData] = useState([]); // данные о преподавателе получаем в TableTeachers
-  const [searchTerm, setSearchTerm] = useState(""); //поиск по таблице
   const [onenModalWind, setOpenModalWind] = useState(false); // переменная закрытия модального окна профиля
   const refProfile = React.useRef(null); // ссылка на модальное окно профиля
   const [educatorIdforLk, setEducatorIdforLk] = useState(""); // id для вывода LK, если пустое то LK не отображается
@@ -52,17 +53,17 @@ function HomePage() {
   const [departments, setdepartments] = useState([]);
   const [kafedralIsOpen, setKafedralIsOpen] = useState(false);
   const [cafedral, setCafedral] = useState(false);
-  const [blockTable, setBlockTable ] = useState(false);
+  const [blockTable, setBlockTable] = useState(false);
   const handleButtonClick = () => {
     setEducatorIdforLk("");
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 28)) {
-      basicTabData.funUpdateTable("0");
-    } else {
-      basicTabData.funUpdateTable("14");
+      basicTabData.funUpdateTable(basicTabData.tableDepartment.find((el) => el.name === basicTabData?.nameKaf)?.id);
+      // basicTabData.setnameKaf("ОИД");
+    } if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 42)){
+      basicTabData.funUpdateTable(basicTabData.tableDepartment.find((el) => el.name === basicTabData?.nameKaf)?.id);
     }
-    basicTabData.setnameKaf("Все");
     setKafedralIsOpen(false);
-    tabPar.setSelectedFilter("Все Дисциплины");
+    tabPar.setSelectedFilter("Все дисциплины");
   };
 
   //! связь с сокетом
@@ -78,9 +79,17 @@ function HomePage() {
 
   useEffect(() => {
     GetDepartment().then((response) => {
-      setdepartments([{ id: 14, name: "Все" }, ...response.data]);
-    });
+        setdepartments([{ id: 14, name: "Все" }, ...response.data]);
+
+      });
   }, [basicTabData.tableDepartment]);
+
+  //! получаем и записываем данные usera
+  useEffect(() => {
+    apiGetUser().then((data) => {
+      appData.setMyProfile(data);
+    });
+  }, []);
 
   const handleComponentChange = (component) => {
     appData.setSelectedComponent(component);
@@ -100,10 +109,9 @@ function HomePage() {
   };
 
   const handleSearch = (event) => {
-    setSearchTerm(event.target.value);
+    basicTabData.setSearchTerm(event.target.value);
   };
 
-  
   useEffect(() => {
     basicTabData.funGetDepartment();
   }, []);
@@ -124,9 +132,11 @@ function HomePage() {
     if (action) {
       //! отправляем все запросы на обработку
       console.log("Сохранено", appData.bufferAction);
-      bufferRequestToApi(appData.bufferAction).then(() => {
-        appData.setBufferAction([0]);
-        basicTabData.updateAlldata();
+      bufferRequestToApi(appData.bufferAction).then((act) => {
+        if (act) {
+          appData.setBufferAction([0]);
+          basicTabData.updateAlldata();
+        }
       });
       tabPar.setSelectedTr([]);
       tabPar.setChangedData(tabPar.changedDataObj);
@@ -197,20 +207,32 @@ function HomePage() {
     table.scrollIntoView(true);
   };
 
-  //! ФУНКЦИЯ ПРОВЕРКИ НА БЛОКИРОВАННЫЕ 
-  const checkBlocked = () =>{
+  //! ФУНКЦИЯ ПРОВЕРКИ НА БЛОКИРОВАННЫЕ
+  const checkBlocked = () => {
     let blocked = false;
-    if(appData.selectedComponent === "History" || appData.selectedComponent === "Teachers"){
+    if (
+      appData.selectedComponent === "History" ||
+      appData.selectedComponent === "Teachers"
+    ) {
       return false;
     }
-    if(appData.selectedComponent != "History" || appData.selectedComponent != "Teachers") {
-      basicTabData.filtredData.map((el) =>el.isBlocked === true ? blocked = true : blocked = false)
+    if (
+      appData.selectedComponent != "History" ||
+      appData.selectedComponent != "Teachers"
+    ) {
+      basicTabData.filtredData.every((el) =>
+         el.isBlocked === true ? (blocked = true) : (blocked = false))
       return blocked;
     }
-  }
-  useEffect(()=>{
-    setBlockTable(checkBlocked)
-  }, [basicTabData.tableDepartment, basicTabData.filtredData, appData.selectedComponent,  tabPar.setSelectedFilter])
+  };
+  useEffect(() => {
+    setBlockTable(checkBlocked);
+  }, [
+    basicTabData.tableDepartment,
+    basicTabData.filtredData,
+    appData.selectedComponent,
+    tabPar.setSelectedFilter,
+  ]);
 
   return (
     <Layout>
@@ -218,8 +240,21 @@ function HomePage() {
         {confirmationSave && (
           <div className={styles.nosavedData}>
             <div className={styles.nosavedDataInner}>
-            <div style={{display: "flex", justifyContent: "center", textAlign: "center"}}>У вас есть несохраненные данные</div>
-            <button style={{marginTop: "25px", width: "150px"}}  onClick={() => setConfirmationSave(false)}>Закрыть</button>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  textAlign: "center",
+                }}
+              >
+                У вас есть несохраненные данные
+              </div>
+              <button
+                style={{ marginTop: "25px", width: "150px" }}
+                onClick={() => setConfirmationSave(false)}
+              >
+                Закрыть
+              </button>
             </div>
           </div>
         )}
@@ -269,9 +304,12 @@ function HomePage() {
 
                 {appData.metodRole[appData.myProfile?.role]?.some(
                   (el) => el === 27
-                ) && (basicTabData.nameKaf != "Все") && (!blockTable) && (appData.selectedComponent !== "History") &&(
+                ) &&
+                  basicTabData.nameKaf != "Все" &&
+                  !blockTable &&
+                  appData.selectedComponent !== "History" && (
                     <div
-                      style={{ marginRight: "20px" }}
+                      style={{ marginRight: "15px" }}
                       className={styles.btnMenuBox}
                       onClick={onExportClick}
                     >
@@ -286,14 +324,27 @@ function HomePage() {
                     </div>
                   )}
               </div>
-              <div className={styles.header_search}>
+              <div
+                className={styles.header_search}
+                style={
+                  basicTabData?.searchTerm
+                    ? { backgroundColor: "#fff", border: "none" }
+                    : null
+                }
+              >
                 <input
                   type="text"
-                  placeholder="Поиск"
+                  placeholder="Поиск..."
                   id="search"
                   name="search"
                   onChange={handleSearch}
+                  value={basicTabData?.searchTerm}
                   className={styles.hedaer_search_inner}
+                  style={
+                    basicTabData?.searchTerm
+                      ? { backgroundColor: "#fff" }
+                      : null
+                  }
                 />
                 <img src="./img/search.svg"></img>
               </div>
@@ -361,6 +412,7 @@ function HomePage() {
               )}
             </div>
             <div className={styles.header_left_component}>
+              <ErrorHelper />
               {appData.metodRole[appData.myProfile?.role]?.some(
                 (el) => el === 30
               ) && (
@@ -381,84 +433,96 @@ function HomePage() {
             </div>
           </div>
           {blockTable && (
-              <div className={styles.blockedTextTable}>
-                <div>
-                  <img src="./img/errorTreangle.svg" />
-                </div>
-                <div>
-                  <p>
-                    Таблица находится в состоянии "Блокировки", редактирование
-                    временно отключено!
-                  </p>
-                </div>
+            <div className={styles.blockedTextTable}>
+              <div>
+                <img src="./img/errorTreangle.svg" />
               </div>
-            )}
+              <div>
+                <p>
+                  Таблица находится в состоянии "Блокировки", редактирование
+                  временно отключено!
+                </p>
+              </div>
+            </div>
+          )}
 
-          <div className={styles.header_bottom}>
-            <div className={styles.header_bottom_button}>
-              {appData.metodRole[appData.myProfile?.role]?.some(
-                (el) => el === 28
-              ) &&
-                (appData.selectedComponent === "Disciplines" ||
-                  appData.selectedComponent === "History") && (
-                  <>
+          {educatorIdforLk === "" && (
+            <div className={styles.header_bottom}>
+              <div className={styles.header_bottom_button}>
+                {appData.metodRole[appData.myProfile?.role]?.some(
+                  (el) => el === 28
+                ) &&
+                  (appData.selectedComponent === "Disciplines" ||
+                    appData.selectedComponent === "History") && (
+                    <>
                       <ListKaf
                         dataList={departments}
                         setTableMode={setTableMode}
                       />
-                    {appData.selectedComponent === "History" && (
-                      <div className={styles.perenesen}>
-                        <button
-                          onClick={() => {
-                            tabPar.setPerenesenAction(!tabPar.perenesenAction);
-                          }}
-                        >
-                          {!tabPar.perenesenAction
-                            ? "Не перенесенные"
-                            : "Перенесенные"}
-                        </button>
-                      </div>
-                    )}
-                  </>
-                )}
+                      {appData.selectedComponent === "History" && (
+                        <div className={styles.perenesen}>
+                          <button
+                            onClick={() => {
+                              tabPar.setPerenesenAction(
+                                !tabPar.perenesenAction
+                              );
+                            }}
+                          >
+                            {!tabPar.perenesenAction
+                              ? "Не перенесенные"
+                              : "Перенесенные"}
+                          </button>
+                        </div>
+                      )}
+                    </>
+                  )}
 
-              {appData.selectedComponent === "Disciplines" &&
-                appData.selectedComponent !== "History" && <FiltredRows />}
-            </div>
-
-            <div className={styles.right_button}>
-              <div className={styles.EditInput}>
-                {educatorIdforLk === "" && (
-                  <EditInput
-                    selectedComponent={appData.selectedComponent}
-                    originalHeader={
-                      appData.selectedComponent === "Disciplines"
-                        ? workloadTableHeaders
-                        : educatorTableHeaders
-                    }
-                  />
-                )}
+                {appData.selectedComponent === "Disciplines" &&
+                  appData.selectedComponent !== "History" && <FiltredRows />}
               </div>
-              
-              {((appData.selectedComponent === "Disciplines" ||
-                appData.selectedComponent === "History")) &&(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 35)) && (
-                <div className={styles.import}>
-                  <button onClick={OpenPoPUpFile}>
-                    <p>Импорт файла</p>
-                    <img src="./img/import.svg" alt=">"></img>
-                  </button>
+
+              <div className={styles.right_button}>
+                <div className={styles.EditInput}>
+                  {educatorIdforLk === "" && (
+                    <EditInput
+                      selectedComponent={appData.selectedComponent}
+                      originalHeader={
+                        appData.selectedComponent === "Disciplines"
+                          ? workloadTableHeaders
+                          : educatorTableHeaders
+                      }
+                      ssname={
+                        appData.selectedComponent === "Disciplines"
+                          ? "headerWorkload"
+                          : "headerTeachers"
+                      }
+                    />
+                  )}
                 </div>
-              )}
+
+                {(appData.selectedComponent === "Disciplines" ||
+                  appData.selectedComponent === "History") &&
+                  appData.metodRole[appData.myProfile?.role]?.some(
+                    (el) => el === 35
+                  ) && (
+                    <div className={styles.import}>
+                      <button onClick={OpenPoPUpFile}>
+                        <p>Импорт файла</p>
+                        <img src="./img/import.svg" alt=">"></img>
+                      </button>
+                    </div>
+                  )}
+              </div>
             </div>
-          </div>
+          )}
         </div>
         <div className={styles.Block__tables}>
           {appData.selectedComponent === "Disciplines" ? (
             <TableWorkload
               tableMode={tableMode}
               tableHeaders={tableHeaders}
-              searchTerm={searchTerm}
-              setSearchTerm={setSearchTerm}
+              searchTerm={basicTabData.searchTerm}
+              setSearchTerm={basicTabData.setSearchTerm}
               refProfile={refProfile}
               setOpenModalWind={setOpenModalWind}
             />
@@ -469,8 +533,8 @@ function HomePage() {
               changeInput={changeInput}
               setTableHeaders={setTableHeaders}
               tableHeaders={tableHeaders}
-              searchTerm={searchTerm}
-              setSearchTerm={setSearchTerm}
+              searchTerm={basicTabData.searchTerm}
+              setSearchTerm={basicTabData.setSearchTerm}
               setEducatorData={setEducatorData}
             />
           ) : appData.selectedComponent === "Teachers" &&
@@ -480,15 +544,15 @@ function HomePage() {
               educatorIdforLk={educatorIdforLk}
               changeInput={changeInput}
               setTableHeaders={setTableHeaders}
-              searchTerm={searchTerm}
+              searchTerm={basicTabData.searchTerm}
               educatorData={educatorData}
             />
           ) : appData.selectedComponent === "History" ? (
             <TableHistory
               tableMode={tableMode}
               tableHeaders={tableHeaders}
-              searchTerm={searchTerm}
-              setSearchTerm={setSearchTerm}
+              searchTerm={basicTabData.searchTerm}
+              setSearchTerm={basicTabData.setSearchTerm}
               refProfile={refProfile}
               setOpenModalWind={setOpenModalWind}
             />

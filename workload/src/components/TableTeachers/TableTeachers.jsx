@@ -1,6 +1,6 @@
 import styles from "./TableTeachers.module.scss";
 import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+// import { useDispatch, useSelector } from "react-redux";
 import DataContext from "../../context";
 import { headersEducator } from "../TableWorkload/Data";
 import { Educator, apiEducatorDepartment } from "../../api/services/ApiRequest";
@@ -8,7 +8,8 @@ import Button from "../../ui/Button/Button";
 import { SamplePoints } from "./SamplePoints/SamplePoints";
 import { ContextFunc } from "./ContextFunc/ContextFunc";
 import { PopUpEditTeacher } from "./PopUpEditTeacher/PopUpEditTeacher";
-
+import { horsTeacher } from "./dataHoursForTeacher/HoursTicher";
+import { FilteredSample } from "./SamplePoints/Function";
 
 function TableTeachers(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]);
@@ -17,11 +18,20 @@ function TableTeachers(props) {
   const { appData, basicTabData, checkPar } = React.useContext(DataContext);
   const [sampleShow, setSampleShow] = useState(false);
   const [sampleData, setSampleData] = useState([]);
-  const [selectRows, setSelectRow] = useState(null)
-  const [vizibleCont, setVizibleCont] = useState(false)
-  const tableHeaders = headersEducator;
+  const [selectRows, setSelectRow] = useState(null);
+  const [vizibleCont, setVizibleCont] = useState(false);
+  // const tableHeaders = headersEducator;
   const [positionMenu, setPositionMenu] = useState({ x: 0, y: 0 });
 
+  //! достаем из sessionStorage заголовок для редактирования полей
+  useEffect(() => {
+    const ssUpdatedHeader = JSON.parse(
+      sessionStorage.getItem("headerTeachers")
+    );
+    if (ssUpdatedHeader) {
+      setUpdatedHeader(ssUpdatedHeader);
+    }
+  }, [sessionStorage.getItem("headerTeachers")]);
   useEffect(() => {
     props.changeInput();
   }, []);
@@ -33,15 +43,18 @@ function TableTeachers(props) {
     setSampleData([...modalData]);
   };
 
-  //! заносим данные о преподавателях в состояние
-  React.useEffect(() => {
+  const updateTable = () => {
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 2)) {
       apiEducatorDepartment().then((res) => {
+        console.log("teatcher ", res);
         if (res && res.status === 200) {
           appData.setEducator(res.data);
-          setFilteredData(res.data);
+          //! филтрация по samplePoints
+          const fdfix = FilteredSample(res.data, checkPar.isChecked);
+          setFilteredData([...fdfix]);
+          // setFilteredData(res.data);
           setUpdatedData(res.data);
-          setUpdatedHeader(tableHeaders);
+          // setUpdatedHeader(tableHeaders);
         }
       });
     }
@@ -50,100 +63,160 @@ function TableTeachers(props) {
         console.log("teatcher ", res);
         if (res && res.status === 200) {
           appData.setEducator(res.data);
-          setFilteredData(res.data);
+          const fdfix = FilteredSample(res.data, checkPar.isChecked);
+          setFilteredData([...fdfix]);
+          // setFilteredData(res.data);
           setUpdatedData(res.data);
-          setUpdatedHeader(tableHeaders);
+          // setUpdatedHeader(tableHeaders);
         }
       });
     }
-  }, [basicTabData.actionUpdTabTeach]);
-  const updateTable = ()=>{
-    Educator().then((res) => {
-      console.log("teatcher ", res);
-      if (res && res.status === 200) {
-        appData.setEducator(res.data);
-        setFilteredData(res.data);
-        setUpdatedData(res.data);
-        setUpdatedHeader(tableHeaders);
-      }
-    });
-  }
-  const handleNameClick = (index, id) => {
-    props.setEducatorIdforLk(id);
-    console.log("ideducator", id);
-    props.setEducatorData(appData.educator[index]);
   };
 
-  const dispatch = useDispatch();
-  const filters = useSelector((state) => state.filters);
+  //! заносим данные о преподавателях в состояние
+  useEffect(() => {
+    updateTable();
+  }, [basicTabData.actionUpdTabTeach]);
 
   useEffect(() => {
-    addHeadersTable(filters, tableHeaders, appData.educator);
-  }, [filters, dispatch]);
+    //! филтрация по samplePoints
+    const fdfix = FilteredSample(appData.educator, checkPar.isChecked);
+    setFilteredData([...fdfix]);
+  }, [appData.educator, updatedData, props.searchTerm]);
 
-  function addHeadersTable(filters, tableHeaders, educator) {
-    const updatedHeader = tableHeaders.filter((header) =>
-      filters.includes(header.key)
-    );
-    console.log("updatedHeader", updatedHeader)
+  const handleNameClick = (id) => {
+    props.setEducatorIdforLk(id);
+    props.setEducatorData(appData.educator.find((el) => el.id === id));
+    basicTabData.setSearchTerm("");
+  };
+
+  //! функция фильтрации по редактированию полей
+  function addHeadersTable(tableHeaders, educator) {
+    const filters = tableHeaders?.map((el) => el.key);
     const updatedData = educator.map((data) => {
       const updatedRow = {};
       Object.keys(data).forEach((key) => {
-        if (filters.includes(key)) {
+        if (filters?.includes(key)) {
           updatedRow[key] = data[key];
         }
       });
       return updatedRow;
     });
-    setUpdatedHeader(updatedHeader);
+    setUpdatedHeader(tableHeaders);
     setUpdatedData(updatedData);
+    console.log("filters", filters);
   }
 
-  React.useEffect(() => {
+  //! фильтрация по редактированию полей
+  useEffect(() => {
+    const ssUpdatedHeader = JSON.parse(
+      sessionStorage.getItem("headerTeachers")
+    );
+    console.log("basicTabData.tableHeaders", basicTabData.tableHeaders);
+    addHeadersTable(ssUpdatedHeader, appData.educator);
+  }, [basicTabData.tableHeaders, appData.educator]);
+
+  //! поиск
+  useEffect(() => {
     let fd;
     if (props.searchTerm === "") {
       fd = updatedData;
     } else {
       fd = updatedData.filter((row) => {
+        console.log(row);
         return Object.values(row)
           .splice(1)
-          .some((value) =>
-            value
-              .toString()
-              .toLowerCase()
-              .includes(props.searchTerm.toLowerCase())
-          );
+          .some((value) => {
+            if (value !== null) {
+              return value
+                .toString()
+                .toLowerCase()
+                .includes(props.searchTerm.toLowerCase());
+            }
+            return false;
+          });
       });
     }
-    setFilteredData(fd);
+    //! филтрация по samplePoints
+    const fdfix = FilteredSample(fd, checkPar.isChecked);
+    setFilteredData([...fdfix]);
+    // setFilteredData(fd);
   }, [updatedData, props.searchTerm]);
-
-  // Функция для определения цвета фона
-  function WhyColor(totalHours, stavka) {
-    let bg;
-    let OgranHours = 900;
-    let AllHours = OgranHours * stavka;
-
-    if (totalHours <= AllHours - 300) {
-      bg = "#19C20A"; // Зеленый цвет
-    } else if (
-      AllHours - 300 < totalHours &&
-      totalHours <= AllHours - 100
-    ) {
-      bg = "#FFD600"; // Желтый цвет
-    }
-    else{
-      bg = "#E81414"; // Красный цвет
-    }
-    return bg;
-  }
 
   const clickTrRows = (id, x, y) => {
     setSelectRow(id);
-    console.log("settId", id);
     setPositionMenu({ x, y });
   };
 
+  const keysInst = [
+    "instituteManagementWorkload",
+    "instituteSpringWorkload",
+    "instituteAutumnWorkload",
+  ];
+  const keysKaf = [
+    "kafedralAutumnWorkload",
+    "kafedralSpringWorkload",
+    "kafedralAdditionalWorkload",
+  ];
+
+  const funSpanRow = (header) => {
+    if (!updatedHeader.some((el) => el.key === "instituteManagementWorkload")) {
+      if (header.key === "instituteSpringWorkload") {
+        return "Институтская нагрузка";
+      }
+    }
+    if (
+      !updatedHeader.some((el) => el.key === "instituteManagementWorkload") &&
+      !updatedHeader.some((el) => el.key === "instituteSpringWorkload")
+    ) {
+      if (header.key === "instituteAutumnWorkload") {
+        return "Институтская нагрузка";
+      }
+    }
+
+    if (!updatedHeader.some((el) => el.key === "kafedralAdditionalWorkload")) {
+      if (header.key === "kafedralSpringWorkload") {
+        return "Кафедральная нагрузка";
+      }
+    }
+    if (
+      !updatedHeader.some((el) => el.key === "kafedralAdditionalWorkload") &&
+      !updatedHeader.some((el) => el.key === "kafedralSpringWorkload")
+    ) {
+      if (header.key === "kafedralAutumnWorkload") {
+        return "Кафедральная нагрузка";
+      }
+    }
+
+    if (header.key === "instituteManagementWorkload") {
+      return "Институтская нагрузка";
+    } else if (header.key === "kafedralAdditionalWorkload") {
+      return "Кафедральная нагрузка";
+    } else return "";
+  };
+
+  const funGetStyle = (action) => {
+    let mass = [];
+    console.log("updatedHeader", updatedHeader);
+    if (action) {
+      mass = updatedHeader.filter((el) => keysInst.some((e) => e === el.key));
+    } else {
+      mass = updatedHeader.filter((el) => keysKaf.some((e) => e === el.key));
+    }
+    console.log("mass", mass);
+
+    const style = {
+      position: "absolute",
+      height: "20px",
+      top: "10px",
+      width: `${mass.length * 100}px`,
+      left: mass.length === 3 ? "-200px" : mass.length === 2 ? "-90px" : "10px",
+      pointerEvents: "none",
+      fontSize:
+        mass.length === 3 ? "18px" : mass.length === 2 ? "16px" : "12px",
+    };
+    return style;
+  };
 
   return (
     <div className={styles.TableTeachers}>
@@ -163,12 +236,21 @@ function TableTeachers(props) {
         <table className={styles.table}>
           <thead>
             <tr>
-              {updatedHeader.map((header, index) => (
+              {updatedHeader?.map((header, index) => (
                 <th
                   name={header.key}
                   onClick={() => clickTh(index, header.key)}
                   key={header.key}
                 >
+                  <div
+                    style={
+                      funSpanRow(header) === "Институтская нагрузка"
+                        ? funGetStyle(true)
+                        : funGetStyle(false)
+                    }
+                  >
+                    {funSpanRow(header)}
+                  </div>
                   {sampleShow === index && (
                     <SamplePoints
                       setSampleShow={setSampleShow}
@@ -199,45 +281,51 @@ function TableTeachers(props) {
             </tr>
           </thead>
           <tbody>
-          {/* onClick={()=>{clickTrRows(row.id)}} */}
-            {filteredData.map((row, index) => (
-              <tr 
-                key={index} 
+            {filteredData?.map((row, index) => (
+              <tr
+                key={index}
                 className={selectRows === row.id ? styles.SelectedTr : null}
                 onContextMenu={(e) => {
-                  e.preventDefault(); // Предотвращаем стандартное контекстное меню
-                  clickTrRows(row.id, e.clientX, e.clientY); // Передаем координаты курсора
+                  e.preventDefault();
+                  clickTrRows(row.id, e.clientX, e.clientY);
                 }}
               >
-                {Object.keys(row).map((key) => {
-                  if (key === "name") {
+                {updatedHeader?.map((key) => {
+                  if (key.key === "name") {
                     return (
                       <td
-                        key={key}
-                        onClick={() => handleNameClick(index, row.id)}
+                        key={key.key}
+                        onClick={() => handleNameClick(row.id)}
                         className={styles.tdName}
-                        name={key}
+                        name={key.key}
                       >
-                        {row[key]}
+                        {row[key.key]}
                       </td>
                     );
                   }
-                  if (key === "totalHours") {
+                  if (key.key === "totalHours") {
                     return (
-                      <td key={key} name={key}>
+                      <td key={key.key} name={key.key}>
                         <div
                           style={{
-                            backgroundColor: WhyColor(row.totalHours, row.rate),
+                            backgroundColor: appData.WhyColor(
+                              row?.position,
+                              row?.totalHours,
+                              appData.educator.find((el) => el.id === row.id)
+                                .rate
+                            ),
                           }}
                           className={styles.tdHours}
                         >
-                          {row[key]}
+                          {row[key.key]}
                         </div>
                       </td>
                     );
                   } else {
                     return (
-                      <td key={key} name={key}>{key === "id" ? index + 1 : row[key]}</td>
+                      <td key={key.key} name={key.key}>
+                        {key.key === "id" ? index + 1 : row[key.key]}
+                      </td>
                     );
                   }
                 })}
@@ -246,8 +334,25 @@ function TableTeachers(props) {
           </tbody>
         </table>
       </div>
-      {selectRows&& <ContextFunc setVizibleCont={setVizibleCont} updateTable={updateTable} setSelectRow={setSelectRow} selectRows={selectRows} x={positionMenu.x} y={positionMenu.y}/>}
-      {vizibleCont && <PopUpEditTeacher  setVizibleCont={setVizibleCont} IdRows={selectRows} setSelectRow={setSelectRow} updateTable={updateTable} selectRows={filteredData.find((el)=>el.id === selectRows)}/>}
+      {selectRows && (
+        <ContextFunc
+          setVizibleCont={setVizibleCont}
+          updateTable={updateTable}
+          setSelectRow={setSelectRow}
+          selectRows={selectRows}
+          x={positionMenu.x}
+          y={positionMenu.y}
+        />
+      )}
+      {vizibleCont && (
+        <PopUpEditTeacher
+          setVizibleCont={setVizibleCont}
+          IdRows={selectRows}
+          setSelectRow={setSelectRow}
+          updateTable={updateTable}
+          selectRows={filteredData.find((el) => el.id === selectRows)}
+        />
+      )}
     </div>
   );
 }

@@ -32,9 +32,9 @@ function TableWorkload(props) {
 
   //! фильтрация по поиску
   useEffect(() => {
-    basicTabData.setFiltredData(
-      filteredWorkload(basicTabData.workloadDataFix, props.searchTerm)
-    );
+    const fd = filteredWorkload(basicTabData.workloadDataFix, props.searchTerm);
+    const fixfd = basicTabData.funFilteredFilterSelected(fd);
+    basicTabData.setFiltredData(fixfd);
   }, [props.searchTerm]);
 
   //! при нажатии правой кнопки мыши на таблицу открывает мню

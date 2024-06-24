@@ -3,10 +3,11 @@
 
 .TableTeachers {
   padding-left: 64px;
-  margin-right: 64px;
+  margin-right: 53px;
   position: relative;
   top: -60px;
   z-index: 220 !important;
+  height: 100px; // я вооще хер знает зчем тут это, но без этого нет скролла
   button {
     margin-bottom: 15px;
   }
@@ -17,7 +18,6 @@
     width: 310px;
     height: 45px;
     align-items: center;
-    border-radius: 8px;
     border: 1px solid var(--border-color);
     padding: 9px 0px 9px 16px;
     display: flex;
@@ -33,13 +33,9 @@
   }
 
   .TableTeachers__inner {
-    height: 76vh;
+    height: 74vh;
 
     overflow-x: scroll;
-    border-radius: 8px;
-    border-left: 1px solid var(--gray-color);
-    border-right: 1px solid var(--gray-color);
-    border-top: 1px solid var(--gray-color);
     position: relative;
     @include scrollTable(12px, 12px, #a6a6a6, 60px, 0);
     .TableTeachers {
@@ -47,23 +43,19 @@
     }
   }
   .TableTeachers__inner::-webkit-scrollbar {
-    background-color: #ffffff;
-    height: 5px;
-    margin-bottom: 8px;
-  }
-
-  .TableTeachers__inner::-webkit-scrollbar-thumb {
-    background-color: #cccccc;
-    border-radius: 8px;
-    width: 200px !important;
+    width: 12px;
   }
 
   .TableTeachers__inner::-webkit-scrollbar-track {
-    background-color: transparent;
-    border-left: 1px solid var(--gray-color);
-    border-right: 1px solid var(--gray-color);
-    border-bottom: 1px solid var(--gray-color);
-    border-radius: 0px 0px 8px 8px;
+    background: var(--bgraund);
+    border: none;
+    margin-top: 62px;
+  }
+
+  .TableTeachers__inner::-webkit-scrollbar-thumb {
+    background-color: #a6a6a6;
+    border-radius: 5px;
+    border: none;
   }
 
   table {
@@ -75,6 +67,7 @@
       display: flex;
       justify-content: center;
       cursor: pointer;
+
       img {
         padding: 0 6px;
       }
@@ -87,23 +80,90 @@
         top: 0;
         z-index: 10;
         cursor: pointer;
+        height: 100px;
       }
     }
+    th[name="instituteAutumnWorkload"] {
+      vertical-align: bottom;
+      .th_inner {
+        padding-bottom: 10px;
+      }
+    }
+    th[name="instituteSpringWorkload"] {
+      vertical-align: bottom;
+      .th_inner {
+        padding-bottom: 10px;
+      }
+    }
+    th[name="instituteManagementWorkload"] {
+      vertical-align: bottom;
+      .th_inner {
+        padding-bottom: 10px;
+      }
+    }
+
+    th[name="kafedralAutumnWorkload"] {
+      vertical-align: bottom;
+      .th_inner {
+        padding-bottom: 10px;
+      }
+    }
+    th[name="kafedralSpringWorkload"] {
+      vertical-align: bottom;
+      .th_inner {
+        padding-bottom: 10px;
+      }
+    }
+    th[name="kafedralAdditionalWorkload"] {
+      vertical-align: bottom;
+      .th_inner {
+        padding-bottom: 10px;
+      }
+    }
+
     th,
     td {
       padding: 12px 8px;
       text-align: center;
     }
+    th[name="name"],
+    td[name="name"] {
+      @include customTd(180px);
+    }
+    th[name="totalHours"],
+    td[name="totalHours"] {
+      @include customTd(150px);
+    }
+    th[name="instituteAutumnWorkload"],
+    td[name="instituteAutumnWorkload"] {
+      @include customTd(120px);
+    }
+    th[name="instituteSpringWorkload"],
+    td[name="instituteSpringWorkload"] {
+      @include customTd(120px);
+    }
+    th[name="kafedralAutumnWorkload"],
+    td[name="kafedralAutumnWorkload"] {
+      @include customTd(120px);
+    }
+    th[name="kafedralSpringWorkload"],
+    td[name="kafedralSpringWorkload"] {
+      @include customTd(120px);
+    }
+    th[name="kafedralAdditionalWorkload"],
+    td[name="kafedralAdditionalWorkload"] {
+      @include customTd(150px);
+    }
+    th[name="instituteManagementWorkload"],
+    td[name="instituteManagementWorkload"] {
+      @include customTd(150px);
+    }
+
     th {
       background-color: var(--gray-color);
       padding: 8px;
     }
-    th:first-child {
-      border-radius: 8px 0px 0px 0px;
-    }
-    th:last-child {
-      border-radius: 0px 8px 0px 0px;
-    }
+
     tr {
       background-color: var(--white-color);
       margin: 17px 0;
@@ -118,15 +178,15 @@
           box-shadow: inset 0 2px 0 0 #9fa1f4, inset 0 -2px 0 0 #9fa1f4;
         }
       }
-      .tdHours{
+      .tdHours {
         border-radius: 8px;
         padding: 3px;
         color: #ffffff;
       }
     }
   }
-  .SelectedTr{
-    td{
+  .SelectedTr {
+    td {
       background-color: var(--gray-color);
     }
   }

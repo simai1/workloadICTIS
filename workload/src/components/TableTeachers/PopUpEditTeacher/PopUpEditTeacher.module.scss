@@ -8,6 +8,7 @@
     display: flex;
     align-items: center;
     z-index: 100;
+   
     .mainPop__inner{
         background-color: #ffffff;
         box-shadow: 4px 4px 20px 0px #00000026;
@@ -34,5 +35,7 @@
         display: flex!important;
         justify-content: end!important;
         margin-bottom: 25px;
+       
    }
+   
 }

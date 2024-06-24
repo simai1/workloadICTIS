@@ -11,25 +11,28 @@ router.use(verify.general);
 router
     .route('/createComment')
     .post(
-        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.EDUCATOR, role.LECTURER, role.METHODIST])),
+        asyncRoute(checkRole([role.UNIT_ADMIN, role.DEPARTMENT_HEAD, role.DIRECTORATE, role.EDUCATOR, role.LECTURER, role.METHODIST])),
         asyncRoute(commentContorller.createComment)
     );
 router
     .route('/delete/:commentId')
     .delete(
-        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST])),
+        asyncRoute(checkRole([role.UNIT_ADMIN, role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST])),
         asyncRoute(commentContorller.deleteComment)
     );
 router
     .route('/getAllComment')
     .get(
-        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST])),
+        asyncRoute(checkRole([role.UNIT_ADMIN, role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST, role.LECTURER])),
         asyncRoute(commentContorller.getAllComments)
     );
 router
+    .route('/getOwnComments')
+    .get(asyncRoute(checkRole([role.LECTURER])), asyncRoute(commentContorller.getOwnComments));
+router
     .route('/deleteAllComments/:workloadId')
     .delete(
-        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST])),
+        asyncRoute(checkRole([role.UNIT_ADMIN, role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST])),
         asyncRoute(commentContorller.deleteAllComments)
     );
 

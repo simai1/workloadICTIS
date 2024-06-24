@@ -1,7 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import Table from "./Table";
 import styles from "./TableWorkload.module.scss";
-import { funHistoryFix } from "./Function";
+import {
+  filteredWorkload,
+  filteredWorkloadHistory,
+  funHistoryFix,
+} from "./Function";
 import DataContext from "../../context";
 import { apiCheckedUpdate, apiGetHistory } from "../../api/services/ApiRequest";
 
@@ -10,6 +14,7 @@ function TableHistory(props) {
   const [contextShow, setContetxShow] = useState(false);
   const [contextPosition, setContextPosition] = useState({ x: 0, y: 0 });
   const [historyData, sethistoryData] = useState([]);
+  const [orighistoryData, origsethistoryData] = useState([]);
 
   //! получаем данные с апи по истории
   useEffect(() => {
@@ -31,11 +36,16 @@ function TableHistory(props) {
   };
 
   //! фильтрация по поиску
-  // useEffect(() => {
-  //   basicTabData.setFiltredData(
-  //     filteredWorkload(basicTabData.historyChanges, props.searchTerm)
-  //   );
-  // }, [props.searchTerm]);
+  useEffect(() => {
+    console.log(
+      "orighistoryData",
+      orighistoryData,
+      "props.searchTerm",
+      props.searchTerm
+    );
+    const hd = filteredWorkloadHistory(orighistoryData, props.searchTerm);
+    sethistoryData(hd);
+  }, [props.searchTerm]);
 
   //! при нажатии правой кнопки мыши на таблицу открывает мню
   const handleContextMenu = (e) => {
@@ -59,6 +69,8 @@ function TableHistory(props) {
       const fixHistory = funHistoryFix(hd);
       console.log("fixHistory", fixHistory);
       sethistoryData(fixHistory);
+      origsethistoryData(fixHistory);
+
       visibleDataPar.setStartData(0);
     });
   }, [

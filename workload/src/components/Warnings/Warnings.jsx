@@ -6,10 +6,15 @@ import DataContext from "../../context";
 import { ReactComponent as SvgNotification } from "./../../img/notification.svg";
 import { Educator } from "../../api/services/ApiRequest";
 import { getAllWarnin } from "../../api/services/AssignApiData";
+import Input from "../../ui/UniversalInput/Input";
 function Warnings(props) {
   const { appData } = React.useContext(DataContext);
-
+  const [filteredData, setFilteredData] = useState([]);
   const [isListOpen, setListOpen] = useState(false);
+
+  useEffect(() => {
+    setFilteredData([...appData.allWarningMessage]);
+  }, [appData.allWarningMessage]);
 
   const toggleList = () => {
     setListOpen(!isListOpen);
@@ -20,14 +25,13 @@ function Warnings(props) {
     props.setSelectedComponent("Teachers"); // переходим к компоненту с преподавателями
     props.setEducatorIdforLk(id);
   };
-
   useEffect(() => {
     socketConnect().then((data) => {
       console.log("socketConnect", data);
       getAllWarnin(appData.setAllWarningMessage);
     });
     console.log("allWarningMessage", appData.allWarningMessage);
-  }, []);
+  }, [appData.allWarningMessage]);
 
   //! закрытие модального окна при нажатии вне него
   const refLO = useRef(null);
@@ -42,6 +46,27 @@ function Warnings(props) {
       document.removeEventListener("click", handler);
     };
   }, []);
+
+  //! орагнизация поиска
+  function funFiltered(data, text) {
+    const fd = [...data];
+    return fd.filter((row) => {
+      return Object.values({ ...row, educator: row.educator?.name }).some(
+        (value) =>
+          value !== null &&
+          value !== undefined &&
+          value.toString().toLowerCase().includes(text.toLowerCase())
+      );
+    });
+  }
+
+  const [inpValue, setInpValue] = useState("");
+  const funOnChange = (el) => {
+    setInpValue(el.target.value);
+    const fd = funFiltered(appData.allWarningMessage, el.target.value);
+    setFilteredData(fd);
+  };
+
   return (
     <div ref={refLO} className={styles.Warnings}>
       <div onClick={toggleList} className={styles.WarningsButton}>
@@ -54,17 +79,25 @@ function Warnings(props) {
         <div className={styles.WarningsOpen}>
           <div className={styles.triangle}></div>
           <div className={styles.WarningsButtonOpen}>
-            <p className={styles.circlesbuttonWarn}>
-              <span className={styles.span_length}>
+            <div className={styles.circlesbuttonWarn}>
+              <div className={styles.span_length}>
                 {appData.allWarningMessage?.length}
-              </span>
-            </p>
+              </div>
+            </div>
             <p>Предупреждения</p>
+          </div>
+          <div className={styles.seach}>
+            <Input
+              type="text"
+              placeholder={"Поиск..."}
+              value={inpValue}
+              funOnChange={funOnChange}
+            />
           </div>
           <div className={styles.WarningsList}>
             <ul>
               {appData.allWarningMessage?.length > 0 ? (
-                appData.allWarningMessage?.map((item, index) => {
+                filteredData?.map((item, index) => {
                   return (
                     <WarningMessage
                       item={item}

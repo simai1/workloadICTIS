@@ -17,8 +17,8 @@
   }
 
   .container:hover {
-    opacity: 75%;
-    transition: opacity 0.15s ease;
+    opacity: 60%;
+    transition: all 0.15s ease;
   }
 
   .modal_window {
@@ -27,13 +27,15 @@
     position: absolute;
     top: 65px;
     right: 0;
-    width: 210px;
+    min-width: 210px;
     height: 118px;
     background-color: #fff;
     z-index: 300;
     padding: 10px 16px;
     box-shadow: 4px 4px 20px 0px #00000026;
-
+    span {
+      white-space: nowrap;
+    }
     border-radius: 8px;
 
     .title {
@@ -66,7 +68,8 @@
   .triangle {
     position: absolute;
     top: -15px;
-    left: 174px;
+    // left: 174px;
+    right: 10px;
     width: 26px;
     height: 14px;
     border-left: 11px solid transparent;

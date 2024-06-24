@@ -13,22 +13,22 @@ import {
   Comment,
   GetDepartment,
   Workload,
-  apiGetUser,
-  apiGetWorkloadDepartment,
   getAllAttaches,
   getAllColors,
   getOffers,
   apiGetHistory,
+  CommentsLecktorer,
+  getOffersLecturer,
 } from "./api/services/ApiRequest";
 
 import {
   funFilterSelected,
   funFixEducator,
   funSortedFastened,
-  funSplitData,
 } from "./components/TableWorkload/Function";
 import { delChangeData } from "./ui/ContextMenu/Function";
 import { FilteredSample } from "./ui/SamplePoints/Function";
+import { horsTeacher } from "./components/TableTeachers/dataHoursForTeacher/HoursTicher";
 
 function App() {
   const [educator, setEducator] = useState([]); // преподаватели
@@ -42,18 +42,22 @@ function App() {
   //! в файле RoleMetods можно посмотреть назание метода и их id
   const metodRole = {
     METHODIST: [
-      1, 3, 4, 8, 9, 10, 13, 14, 17, 20, 21, 25, 26, 27, 28, 31, 34, 35, 36,
+      1, 3, 4, 8, 9, 10, 14, 17, 20, 21, 25, 26, 28, 29, 31, 34, 35, 36, 16, 40,
     ],
-    LECTURER: [2, 15, 18, 22, 24],
+    LECTURER: [2, 15, 17, 17.1, 18, 20, 22, 24, 34, 37, 41],
     DEPARTMENT_HEAD: [
-      2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 22, 25, 26, 27, 30, 31, 32, 33,
-      34, 36,
+      2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 22, 23, 25, 26, 27, 30, 31, 32,
+      33, 34, 36, 16, 39, 40,
     ],
     DIRECTORATE: [
       1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
-      34, 35, 36,
+      34, 35, 36, 38, 16, 40,
     ],
-    EDUCATOR: [15, 24],
+    UNIT_ADMIN: [
+      2, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
+      34, 35, 36, 38, 16, 40, 42
+    ],
+    EDUCATOR: [15, 24, 41],
   };
   // appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)
 
@@ -94,6 +98,9 @@ function App() {
     setSelectedComponent,
     loaderAction,
     setLoaderAction,
+    myProfile,
+    setMyProfile,
+    WhyColor,
   };
 
   //! параметры таблицы
@@ -107,10 +114,13 @@ function App() {
   const [actionUpdTabTeach, setActionUpdTabTeach] = useState(false); // при изменении обновляется таблицы преподавателей
   const [tableDepartment, settableDepartment] = useState([]);
   const [selectISOid, setselectISOid] = useState(true);
-  const [nameKaf, setnameKaf] = useState("ОИД");
+  const [nameKaf, setnameKaf] = useState(null);
   const [historyChanges, setHistoryChanges] = useState([]);
+  const [searchTerm, setSearchTerm] = useState(""); //поиск по таблице
 
   const basicTabData = {
+    searchTerm,
+    setSearchTerm,
     updateAlldata,
     tableHeaders,
     setTableHeaders,
@@ -130,6 +140,7 @@ function App() {
     funUpdateAllColors,
     setselectkafedra,
     funGetDepartment,
+    funFilteredFilterSelected,
     selectkafedra,
     actionUpdTabTeach,
     setActionUpdTabTeach,
@@ -146,7 +157,6 @@ function App() {
   const [coloredData, setColoredData] = useState([]); // выделенные цветом
   const [fastenedData, setFastenedData] = useState([]); // закрепленные строки (храним их id)
   const [selectedTable, setSelectedTable] = useState("Disciplines");
-  // const [dataIsOid, setDataIsOid] = useState(true); // состояние при котором открываются общеинститутские или кафедральные
   const [selectedFilter, setSelectedFilter] = useState("Все дисциплины"); // текст в FiltredRows
   const [selectedTr, setSelectedTr] = useState([]); //выбранные tr
   const [onCheckBoxAll, setOnCheckBoxAll] = useState(false); //выбранные tr
@@ -188,8 +198,6 @@ function App() {
   };
 
   const tabPar = {
-    // dataIsOid,
-    // setDataIsOid,
     selectedTable,
     setSelectedTable,
     selectedTr,
@@ -221,9 +229,17 @@ function App() {
     setPerenesenAction,
   };
 
+  
   //! функция обновления комментаривев
   function funUpdateAllComments() {
-    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 20)) {
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 37)) {
+      CommentsLecktorer().then((data) => {
+        console.log("comments", data);
+        setAllCommentsData(data);
+      });
+    } else if (
+      appData.metodRole[appData.myProfile?.role]?.some((el) => el === 20)
+    ) {
       Comment().then((data) => {
         console.log("comments", data);
         setAllCommentsData(data);
@@ -233,10 +249,17 @@ function App() {
 
   //! функция обновления предложений преподавателей
   function funUpdateOffers() {
-    getOffers().then((data) => {
-      console.log("предложения", data);
-      setAllOffersData(data);
-    });
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 17.1)) {
+      getOffersLecturer().then((data) => {
+        console.log("предложения", data);
+        setAllOffersData(data);
+      });
+    } else {
+      getOffers().then((data) => {
+        console.log("предложения", data);
+        setAllOffersData(data);
+      });
+    }
   }
 
   //! функция обновления истории
@@ -260,8 +283,7 @@ function App() {
   function funGetDepartment() {
     GetDepartment().then((response) => {
       if (response && response.status === 200) {
-        settableDepartment([{ id: 14, name: "Все" }, ...response?.data]);
-        setnameKaf("ОИД");
+         settableDepartment([{ id: 14, name: "Все" }, ...response?.data])
         console.log("Записал");
       }
     });
@@ -294,6 +316,33 @@ function App() {
     setWorkloadDataFix(fdfix);
     setFiltredData(fdfix);
   };
+
+  //! Функция для определения цвета фона
+  function WhyColor(position, totalHours, rate) {
+    let bg;
+    let phuthicalHours = 900;
+    let max = horsTeacher
+      ? horsTeacher.find((el) => el.name === position)?.max
+      : 0;
+    let min = horsTeacher
+      ? horsTeacher.find((el) => el.name === position)?.min
+      : 0;
+    let maxHours = max * rate;
+    let minHorse = min * rate;
+
+    if (totalHours === 0) {
+      bg = "#e2e0e5"; // серый цвет
+    } else if (totalHours > phuthicalHours || totalHours > maxHours) {
+      bg = "#E81414"; // Красный цвет
+    } else if (totalHours < minHorse) {
+      bg = "#FFD600"; // Желтый цвет
+    } else if (totalHours >= minHorse && totalHours <= maxHours) {
+      bg = "#19C20A"; // Зеленый цвет
+    } else if (totalHours > maxHours && totalHours <= phuthicalHours) {
+      bg = "#ffa600"; // оранжевый цвет
+    }
+    return bg;
+  }
 
   //! функция обновления таблицы
   function funUpdateTable(param = 0) {
@@ -394,7 +443,9 @@ function App() {
 
   //! функция обновления всех данных
   function updateAlldata() {
-    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 28)) {
+    if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 42)){
+      funUpdateTable(tableDepartment[0]?.id)
+    }else if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 28)) {
       selectISOid
         ? funUpdateTable(0)
         : funUpdateTable(tableDepartment.find((el) => el.name === nameKaf)?.id);
@@ -405,7 +456,11 @@ function App() {
         funUpdateTable(14);
       }
     }
-    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 20)) {
+    if (
+      appData.metodRole[appData.myProfile?.role]?.some(
+        (el) => el === 20 || el === 37
+      )
+    ) {
       // получаем все комментарии
       funUpdateAllComments();
     }
@@ -419,34 +474,33 @@ function App() {
     funUpdateAllColors();
   }
 
-  //! получаем и записываем данные usera
-  useEffect(() => {
-    apiGetUser().then((data) => {
-      setMyProfile(data);
-    });
-  }, []);
-
   //! получаем данные нагрузок с бд
   useEffect(() => {
     if (myProfile) {
       console.log("myProfile", myProfile);
+      console.log('tableDepartment', tableDepartment)
+      appData.metodRole[appData.myProfile?.role]?.some((el) => el === 42) ? setnameKaf(tableDepartment[0]?.name) : setnameKaf("ОИД") 
       updateAlldata();
     }
-  }, [myProfile, tableDepartment]); // [myProfile, tableDepartment]
+  }, [tableDepartment, myProfile]); // [myProfile, tableDepartment]
 
-  //! при переходе с кафедральных на общеинституские и обратно фильтруем основные
-  //! фильтруем по FiltredRows
-  useEffect(() => {
-    // const splitData = funSplitData(workloadDataFix, dataIsOid);
-    const splitData = [...workloadDataFix];
-
-    const filterSelected = funFilterSelected(
+  function funFilteredFilterSelected(splitData = [...workloadDataFix]) {
+    return funFilterSelected(
       splitData,
       selectedFilter,
       coloredData,
       changedData,
-      fastenedData
+      fastenedData,
+      allCommentsData,
+      allOffersData
     );
+  }
+  //! при переходе с кафедральных на общеинституские и обратно фильтруем основные
+  //! фильтруем по FiltredRows
+  useEffect(() => {
+    // const splitData = funSplitData(workloadDataFix, dataIsOid);
+    // console.log("workloadDataFix", splitData);
+    const filterSelected = funFilteredFilterSelected();
     if (filterSelected) {
       setFiltredData(funSortedFastened(filterSelected, fastenedData));
     }
@@ -478,9 +532,11 @@ function App() {
       if (event.ctrlKey && (event.key === "s" || event.key === "ы")) {
         event.preventDefault();
         console.log("Сохранено", bufferAction);
-        bufferRequestToApi(bufferAction).then(() => {
-          setBufferAction([0]);
-          updateAlldata();
+        bufferRequestToApi(bufferAction).then((action) => {
+          if (action) {
+            setBufferAction([0]);
+            updateAlldata();
+          }
         });
         setSelectedTr([]);
         setChangedData(changedDataObj);
