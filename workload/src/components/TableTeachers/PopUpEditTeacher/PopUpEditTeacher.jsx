@@ -5,7 +5,10 @@ import Button from "../../../ui/Button/Button";
 import List from "../../../ui/List/List";
 import Input from "../../../ui/Input/Input";
 import styles from "./PopUpEditTeacher.module.scss";
-import { EditTeacher, GetUsibleDepartment } from "../../../api/services/ApiRequest";
+import {
+  EditTeacher,
+  GetUsibleDepartment,
+} from "../../../api/services/ApiRequest";
 
 export function PopUpEditTeacher(props) {
   const { appData, basicTabData } = React.useContext(DataContext);
@@ -28,15 +31,15 @@ export function PopUpEditTeacher(props) {
     { id: 8, name: "Старший научный сотрудник" },
     { id: 9, name: "Старший преподаватель" },
     { id: 10, name: "Преподаватель" },
-    { id: 11, name: "Заведующий кафедрой" }
+    { id: 11, name: "Заведующий кафедрой" },
   ];
 
   const [dataKaf, setDataKaf] = useState([]);
-  useEffect(()=>{
-    GetUsibleDepartment().then((resp)=>{
-      setDataKaf(resp.data)
-    })
-  },[])
+  useEffect(() => {
+    GetUsibleDepartment().then((resp) => {
+      setDataKaf(resp.data);
+    });
+  }, []);
 
   const handleInputChange = (name, value) => {
     if (name === "rate") {
@@ -64,12 +67,12 @@ export function PopUpEditTeacher(props) {
     !Number(dataNewEdicator?.department)
       ? (depart = dataKaf.find(
           (el) => el.name === dataNewEdicator?.department
-        ).id)
+        )?.id)
       : (depart = dataNewEdicator?.department);
     !Number(dataNewEdicator?.position)
       ? (position = dataListPosition.find(
           (el) => el.name === dataNewEdicator?.position
-        ).id)
+        )?.id)
       : (position = dataNewEdicator?.position);
 
     const data = {
@@ -155,13 +158,33 @@ export function PopUpEditTeacher(props) {
               bottom: "-10px",
             }}
           >
-           <button
+            <button
               className={styles.buttonSave}
               onClick={handleClicks}
-              disabled={!isRateValid || !dataNewEdicator.name || !dataNewEdicator.position || !dataNewEdicator.rate || !dataNewEdicator.department}
+              disabled={
+                !isRateValid ||
+                !dataNewEdicator.name ||
+                !dataNewEdicator.position ||
+                !dataNewEdicator.rate ||
+                !dataNewEdicator.department
+              }
               style={{
-                backgroundColor: (!isRateValid || !dataNewEdicator.name || !dataNewEdicator.position || !dataNewEdicator.rate || !dataNewEdicator.department) ? "#b9b9ba" : "#3b28cc",
-                cursor: (!isRateValid || !dataNewEdicator.name || !dataNewEdicator.position || !dataNewEdicator.rate || !dataNewEdicator.department) ? "not-allowed" : "pointer",
+                backgroundColor:
+                  !isRateValid ||
+                  !dataNewEdicator.name ||
+                  !dataNewEdicator.position ||
+                  !dataNewEdicator.rate ||
+                  !dataNewEdicator.department
+                    ? "#b9b9ba"
+                    : "#3b28cc",
+                cursor:
+                  !isRateValid ||
+                  !dataNewEdicator.name ||
+                  !dataNewEdicator.position ||
+                  !dataNewEdicator.rate ||
+                  !dataNewEdicator.department
+                    ? "not-allowed"
+                    : "pointer",
                 color: "#fff",
                 borderRadius: "8px",
                 paddingLeft: "16px",
@@ -173,17 +196,16 @@ export function PopUpEditTeacher(props) {
                 opacity: 1,
               }}
               onMouseEnter={(e) => {
-                e.target.style.transition = "opacity 0.15s ease"; 
+                e.target.style.transition = "opacity 0.15s ease";
                 e.target.style.opacity = 0.7;
               }}
               onMouseLeave={(e) => {
-                e.target.style.transition = "opacity 0.15s ease"; 
-                e.target.style.opacity = 1; 
+                e.target.style.transition = "opacity 0.15s ease";
+                e.target.style.opacity = 1;
               }}
             >
               Сохранить
             </button>
-
           </div>
         </div>
       </PopUpContainer>
