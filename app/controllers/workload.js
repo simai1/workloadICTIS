@@ -126,7 +126,7 @@ export default {
                         })),
                         ...ownWorkloads,
                     ];
-                } else if (_user.role === 3) {
+                } else if (_user.role === 3 || _user.role === 8) {
                     workloads = await Workload.findAll({
                         where: {
                             department: _user.Educator.department,
@@ -485,7 +485,7 @@ export default {
         const role = checkUser.role;
         const usableDepartments = [];
 
-        if (role === 2 || role === 3 || role === 5) {
+        if (role === 2 || role === 3 || role === 5 || role === 8) {
             const educator = await Educator.findOne({ where: { userId } });
             const department = educator.department;
             const workload = await Workload.findOne({ where: { department } });
