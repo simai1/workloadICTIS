@@ -104,7 +104,7 @@ router
 router
   .route('/get/departmentsForDirectorate')
   .get(
-    asyncRoute(checkRole([role.DIRECTORATE, role.DEPUTY_DIRECTORATE])),
+    asyncRoute(checkRole([role.DIRECTORATE, role.DEPUTY_DIRECTORATE, role.DEPUTY_DEPARTMENT_HEAD])),
     asyncRoute(workloadController.getDepartmentsForDirectorate)
   );
 export default router;
