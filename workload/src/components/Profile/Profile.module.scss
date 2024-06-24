@@ -54,10 +54,14 @@
       display: flex;
       cursor: pointer;
       a {
+        display: flex;
         margin-right: 8px;
         text-decoration: none;
         outline: none;
         color: red;
+        img {
+          margin-left: 8px;
+        }
       }
     }
     .exid:hover {

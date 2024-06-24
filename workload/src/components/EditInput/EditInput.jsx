@@ -15,9 +15,6 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
   const jsoh = JSON.parse(sessionStorage.getItem(ssname));
   const ssUpdatedHeader = jsoh && jsoh !== null ? jsoh : originalHeader;
 
-  console.log("jsoh", jsoh);
-  console.log("originalHeader", originalHeader);
-
   const [isAllChecked, setIsAllChecked] = useState(
     originalHeader?.length === ssUpdatedHeader?.length ? true : false
   );
@@ -32,7 +29,6 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
       : []
   );
 
-  console.log("isChecked", isChecked);
   useEffect(() => {
     const ssuh = JSON.parse(sessionStorage.getItem(ssname));
     const ssuhfix = ssuh?.map((el) => el.key);

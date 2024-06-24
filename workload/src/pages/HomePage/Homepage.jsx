@@ -282,7 +282,7 @@ function HomePage() {
             <div className={styles.header_top_save_search}>
               <div className={styles.saveBuffre}>
                 {appData.metodRole[appData.myProfile?.role]?.some(
-                  (el) => el === 25
+                  (el) => el === 25 && appData.selectedComponent !== "Teachers"
                 ) && (
                   <div
                     className={styles.btnMenuBox}
