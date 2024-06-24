@@ -9,6 +9,6 @@ const router = Router();
 router.use(verify.general);
 
 router.route('/').get(asyncRoute(userController.getUser));
-router.route('/setDepartments').patch(asyncRoute(checkRole([role.DIRECTORATE])), asyncRoute(userController.setUnitAdminDepartments));
+router.route('/setDepartments').patch(asyncRoute(checkRole([role.DIRECTORATE, role.DEPUTY_DIRECTORATE])), asyncRoute(userController.setUnitAdminDepartments));
 
 export default router;

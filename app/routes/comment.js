@@ -11,19 +11,19 @@ router.use(verify.general);
 router
     .route('/createComment')
     .post(
-        asyncRoute(checkRole([role.UNIT_ADMIN, role.DEPARTMENT_HEAD, role.DIRECTORATE, role.EDUCATOR, role.LECTURER, role.METHODIST])),
+        asyncRoute(checkRole([role.UNIT_ADMIN, role.DEPARTMENT_HEAD, role.DIRECTORATE, role.EDUCATOR, role.LECTURER, role.METHODIST, role.DEPUTY_DIRECTORATE, role.DEPUTY_DEPARTMENT_HEAD])),
         asyncRoute(commentContorller.createComment)
     );
 router
     .route('/delete/:commentId')
     .delete(
-        asyncRoute(checkRole([role.UNIT_ADMIN, role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST])),
+        asyncRoute(checkRole([role.UNIT_ADMIN, role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST, role.DEPUTY_DIRECTORATE, role.DEPUTY_DEPARTMENT_HEAD])),
         asyncRoute(commentContorller.deleteComment)
     );
 router
     .route('/getAllComment')
     .get(
-        asyncRoute(checkRole([role.UNIT_ADMIN, role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST, role.LECTURER])),
+        asyncRoute(checkRole([role.UNIT_ADMIN, role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST, role.LECTURER, role.DEPUTY_DIRECTORATE, role.DEPUTY_DEPARTMENT_HEAD])),
         asyncRoute(commentContorller.getAllComments)
     );
 router
@@ -32,7 +32,7 @@ router
 router
     .route('/deleteAllComments/:workloadId')
     .delete(
-        asyncRoute(checkRole([role.UNIT_ADMIN, role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST])),
+        asyncRoute(checkRole([role.UNIT_ADMIN, role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST, role.DEPUTY_DIRECTORATE, role.DEPUTY_DEPARTMENT_HEAD])),
         asyncRoute(commentContorller.deleteAllComments)
     );
 
