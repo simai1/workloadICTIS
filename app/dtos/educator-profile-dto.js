@@ -10,6 +10,8 @@ export default class EducatorProfileDto {
   totalHours;
   workloads;
   maxHours;
+  recommendedMaxHours;
+  minHours;
   constructor(model) {
     this.id = model.id;
     this.name = model.name;
@@ -18,6 +20,8 @@ export default class EducatorProfileDto {
     this.rate = model.rate;
     this.totalHours = Math.round(model.SummaryWorkload.totalHours * 100) / 100;
     this.maxHours = model.maxHours;
+    this.recommendedMaxHours = model.recommendedMaxHours;
+    this.minHours = model.minHours;
     this.workloads = [];
   }
 }
