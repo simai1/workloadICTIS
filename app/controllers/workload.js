@@ -549,6 +549,58 @@ export default {
                     }
                 }
             }
+        } else if(role === 4 || role === 7){
+            let departments;
+            if(checkUser.institutionalAffiliation === 1){
+                departments = await Workload.findAll({
+                    attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('department')), 'department']],
+                    where: {
+                        department: {
+                            [Sequelize.Op.between]: [0, 12]
+                        }
+                    },
+                    order: [['department', 'ASC']],
+                });
+            } else if (checkUser.institutionalAffiliation === 2) {
+                departments = await Workload.findAll({
+                    attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('department')), 'department']],
+                    where: {
+                        department: {
+                            [Sequelize.Op.between]: [13, 16]
+                        }
+                    },
+                    order: [['department', 'ASC']],
+                });
+            } else if (checkUser.institutionalAffiliation === 3) {
+                departments = await Workload.findAll({
+                    attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('department')), 'department']],
+                    where: {
+                        department: {
+                            [Sequelize.Op.between]: [17, 24]
+                        }
+                    },
+                    order: [['department', 'ASC']],
+                });
+            } else {
+                throw new Error('Такого института не добавленно');
+            }
+            for (const usableDepartment of departments) {
+                const department = mapDepartments[usableDepartment.department];
+                const workload = await Workload.findOne({ where: { department: usableDepartment.department } });
+                if (workload.isBlocked === true) {
+                    usableDepartments.push({
+                        id: usableDepartment.department,
+                        name: department,
+                        blocked: true,
+                    });
+                } else {
+                    usableDepartments.push({
+                        id: usableDepartment.department,
+                        name: department,
+                        blocked: false,
+                    });
+                }
+            }
         } else {
             const departments = await Workload.findAll({
                 attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('department')), 'department']],
