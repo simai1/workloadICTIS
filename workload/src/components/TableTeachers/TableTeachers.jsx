@@ -8,7 +8,6 @@ import Button from "../../ui/Button/Button";
 import { SamplePoints } from "./SamplePoints/SamplePoints";
 import { ContextFunc } from "./ContextFunc/ContextFunc";
 import { PopUpEditTeacher } from "./PopUpEditTeacher/PopUpEditTeacher";
-import { horsTeacher } from "./dataHoursForTeacher/HoursTicher";
 import { FilteredSample } from "./SamplePoints/Function";
 
 function TableTeachers(props) {
@@ -20,7 +19,7 @@ function TableTeachers(props) {
   const [sampleData, setSampleData] = useState([]);
   const [selectRows, setSelectRow] = useState(null);
   const [vizibleCont, setVizibleCont] = useState(false);
-  // const tableHeaders = headersEducator;
+  const tableHeaders = headersEducator;
   const [positionMenu, setPositionMenu] = useState({ x: 0, y: 0 });
 
   //! достаем из sessionStorage заголовок для редактирования полей
@@ -28,7 +27,8 @@ function TableTeachers(props) {
     const ssUpdatedHeader = JSON.parse(
       sessionStorage.getItem("headerTeachers")
     );
-    if (ssUpdatedHeader) {
+    console.log("ssUpdatedHeader", ssUpdatedHeader);
+    if (ssUpdatedHeader && ssUpdatedHeader !== null) {
       setUpdatedHeader(ssUpdatedHeader);
     }
   }, [sessionStorage.getItem("headerTeachers")]);
@@ -54,7 +54,7 @@ function TableTeachers(props) {
           setFilteredData([...fdfix]);
           // setFilteredData(res.data);
           setUpdatedData(res.data);
-          // setUpdatedHeader(tableHeaders);
+          setUpdatedHeader(tableHeaders);
         }
       });
     }
@@ -67,7 +67,7 @@ function TableTeachers(props) {
           setFilteredData([...fdfix]);
           // setFilteredData(res.data);
           setUpdatedData(res.data);
-          // setUpdatedHeader(tableHeaders);
+          setUpdatedHeader(tableHeaders);
         }
       });
     }
@@ -112,8 +112,14 @@ function TableTeachers(props) {
     const ssUpdatedHeader = JSON.parse(
       sessionStorage.getItem("headerTeachers")
     );
+    let uh = null;
+    if (ssUpdatedHeader && ssUpdatedHeader !== null) {
+      uh = ssUpdatedHeader;
+    } else {
+      uh = tableHeaders;
+    }
     console.log("basicTabData.tableHeaders", basicTabData.tableHeaders);
-    addHeadersTable(ssUpdatedHeader, appData.educator);
+    addHeadersTable(uh, appData.educator);
   }, [basicTabData.tableHeaders, appData.educator]);
 
   //! поиск
@@ -203,14 +209,11 @@ function TableTeachers(props) {
 
   const funGetStyle = (action) => {
     let mass = [];
-    console.log("updatedHeader", updatedHeader);
     if (action) {
       mass = updatedHeader.filter((el) => keysInst.some((e) => e === el.key));
     } else {
       mass = updatedHeader.filter((el) => keysKaf.some((e) => e === el.key));
     }
-    console.log("mass", mass);
-
     const style = {
       position: "absolute",
       height: "20px",

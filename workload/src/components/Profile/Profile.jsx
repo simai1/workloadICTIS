@@ -10,7 +10,7 @@ function Profile(props) {
     DEPARTMENT_HEAD: "Администратор от кафедры",
     DIRECTORATE: "Администратор",
     EDUCATOR: "Преподаватель",
-    UNIT_ADMIN: "Администратор подразделения"
+    UNIT_ADMIN: "Администратор подразделения",
   };
 
   //! закрытие модального окна при нажати вне него
@@ -32,7 +32,7 @@ function Profile(props) {
   const clickModalWind = () => {
     props.setOpenModalWind(!props.onenModalWind);
   };
-  
+
   return (
     <div ref={props.refProfile} className={styles.Profile}>
       <div className={styles.container} onClick={clickModalWind}>
