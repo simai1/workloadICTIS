@@ -296,7 +296,11 @@ const ContextMenu = (props) => {
         tabPar.setFastenedData(mass);
         tabPar.setContextMenuShow(false);
         tabPar.setSelectedTr([]);
-        basicTabData.funUpdateTable();
+        basicTabData.funUpdateTable(
+          basicTabData.tableDepartment.find(
+            (el) => el.name === basicTabData?.nameKaf
+          )?.id
+        );
       });
     }
   };
