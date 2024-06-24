@@ -36,9 +36,6 @@ export default {
                 });
 
             } else if(_user.role ===  4 || _user.role === 7){
-                
-            }
-            else{
                 if(!_user.institutionalAffiliation) throw new Error('Нет привязки (institutionalAffiliation) к институту у директора');
                 const allowedDepartments = [];
 
@@ -61,11 +58,18 @@ export default {
                     attributes: { exclude: ['EducatorId'] }, // Исключаем EducatorId из результата
                 });
             }
-            const notificationDto = notifications.map(notification => new NotificationDto(notification));
+            else{
+                notifications = await Notification.findAll({
+                    include: { model: Educator,},
+                    attributes: { exclude: ['EducatorId'] }, // Исключаем EducatorId из результата
+                });
+            }
+            const notificationDto = Array.isArray(notifications)? notifications.map(notification => new NotificationDto(notification)) : [];
 
             res.json(notificationDto);
         } catch (error) {
-            res.status(500).json({ error: 'Internal Server Error' });
+            console.log(error)
+            res.status(500).json({ error: error });
         }
     },
 };
