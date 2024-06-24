@@ -51,7 +51,7 @@ function App() {
     ],
     DIRECTORATE: [
       1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
-      34, 35, 36, 38, 16, 40,
+      34, 35, 36, 38, 16, 40,44,
     ],
     UNIT_ADMIN: [
       2, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
@@ -360,7 +360,7 @@ function App() {
   }
 
   //! функция обновления таблицы
-  function funUpdateTable(param = 0) {
+  function funUpdateTable(param) {
     console.log("param", param);
     //param = tableDepartment[0]?.id
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
