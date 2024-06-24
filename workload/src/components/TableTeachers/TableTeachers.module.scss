@@ -252,5 +252,16 @@
     left: 235px;
     background-color: var(--gray-color);
     z-index: 1000;
+    &::after {
+      content: "";
+      position: absolute;
+      background-color: var(--td-bg);
+      box-shadow: 5px 0px 15px #b3b0b0;
+      opacity: 0.5;
+      width: 2px;
+      height: 100%;
+      right: 0;
+      top: 0;
+    }
   }
 }

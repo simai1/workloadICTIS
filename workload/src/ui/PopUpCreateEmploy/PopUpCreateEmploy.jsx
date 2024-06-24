@@ -35,8 +35,6 @@ export function PopUpCreateEmploy(props) {
     { id: 9, name: "Старший преподаватель" },
     { id: 10, name: "Преподаватель" },
     { id: 11, name: "Заведующий кафедрой" },
-    { id: 12, name: "Зам. директора института" },
-    { id: 13, name: "Зам. заведующего кафедры" },
   ];
   const dataKaf = [
     { id: 1, name: "БИТ" },
