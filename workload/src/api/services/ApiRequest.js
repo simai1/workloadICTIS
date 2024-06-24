@@ -523,3 +523,13 @@ export const EditTeacher = async (idTeacher, data) => {
     //throw error;
   }
 };
+//! Получение списка кафедр доступного для изменения
+export const  GetUsibleDepartment = async () => {
+  try {
+    const response = await http.get(`${server}/workload/get/departmentsForDirectorate`);
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};
