@@ -85,7 +85,11 @@ function TableLks(props) {
       } else if (typeof item === "string" && item.length > lenSlice) {
         return item.slice(0, lenSlice) + "...";
       } else {
-        return item;
+        if (typeof item === "number") {
+          return item.toFixed(2);
+        } else {
+          return item;
+        }
       }
     }
   };
