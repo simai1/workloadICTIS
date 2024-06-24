@@ -12,11 +12,11 @@ function socketConnect() {
       console.log("Получен ответ от сервера:", data);
     });
     socket.on("notificationCreated", (data) => {
-      console.log("notificationCreated", data);
+      // console.log("notificationCreated", data);
       resolve(data);
     });
     socket.on("disconnect", () => {
-      console.log("Socket disconnected");
+      // console.log("Socket disconnected");
     });
   });
 }
