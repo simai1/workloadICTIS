@@ -82,7 +82,7 @@ function ListKaf({
           <input
             readOnly
             style={{
-              backgroundColor: !activeList ? "#3b28cc" : "#fff",
+              backgroundColor: !activeList ? "#0040E5" : "#fff",
               color: !activeList ? "#fff" : "#000",
             }}
             onClick={() => setactiveList(!activeList)}
@@ -115,7 +115,9 @@ function ListKaf({
         </div>
         {activeList && basicTabData.tableDepartment.length !== 1 && (
           <div className={styles.ListData}>
-            {!appData.metodRole[appData.myProfile?.role]?.some((el) => el === 42) && <p className={styles.NameForList}>Общеинститутские</p>}
+            {!appData.metodRole[appData.myProfile?.role]?.some(
+              (el) => el === 42
+            ) && <p className={styles.NameForList}>Общеинститутские</p>}
             {/* {  <p className={styles.NameForListSecond} onClick={() => addKafedra("ОИД")}>ОИД</p>} */}
 
             <div key={"ОИД"} className={styles.ListDatas}>
