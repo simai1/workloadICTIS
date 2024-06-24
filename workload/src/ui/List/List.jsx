@@ -69,7 +69,7 @@ function List({
                 onClick={() => addClient(item)}
                 key={item.id}
               >
-                {allowedDepartmentsNames.includes(item.name) && item.name}
+                {name ==='department' ? (allowedDepartmentsNames.includes(item.name) && item.name) : item.name}
               </p>
             ))}
           </div>
