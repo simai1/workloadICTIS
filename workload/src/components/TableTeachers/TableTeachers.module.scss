@@ -75,6 +75,9 @@
 
     thead {
       height: 58px;
+      tr {
+        background-color: var(--gray-color);
+      }
       th {
         position: sticky;
         top: 0;
@@ -187,10 +190,10 @@
   }
   .SelectedTr {
     td {
-      background-color: var(--gray-color)!important;
+      background-color: var(--gray-color) !important;
     }
   }
-  .fixedTd:first-child{
+  .fixedTd:first-child {
     position: sticky;
     left: 0px;
     background-color: #ffffff;
@@ -199,7 +202,7 @@
     min-width: 55px;
     max-width: 55px;
   }
-  .fixedTh:first-child{
+  .fixedTh:first-child {
     position: sticky;
     left: 0px;
     background-color: var(--gray-color);
@@ -209,18 +212,18 @@
     max-width: 55px;
     padding-left: 20px;
   }
-  .tdName{
+  .tdName {
     position: sticky;
     left: 55px;
     background-color: #ffffff;
   }
-  .fixedTh:nth-child(2){
+  .fixedTh:nth-child(2) {
     position: sticky;
     left: 55px;
     background-color: var(--gray-color);
     z-index: 1000;
   }
-  .fixedTd:nth-child(3){
+  .fixedTd:nth-child(3) {
     position: sticky;
     left: 235px;
     background-color: #ffffff;
@@ -236,11 +239,10 @@
       top: 0;
     }
   }
-  .fixedTh:nth-child(3){
+  .fixedTh:nth-child(3) {
     position: sticky;
     left: 235px;
     background-color: var(--gray-color);
     z-index: 1000;
   }
-
-  }
+}
