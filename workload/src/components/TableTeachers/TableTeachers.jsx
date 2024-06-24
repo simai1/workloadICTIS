@@ -334,7 +334,9 @@ function TableTeachers(props) {
                   } else {
                     return (
                       <td key={key.key} name={key.key} className={styles.fixedTd}>
-                        {key.key === "id" ? index + 1 : row[key.key]}
+                        <div className={styles.tdInner}>
+                            {key.key === "id" ? index + 1 : row[key.key]}
+                        </div>
                       </td>
                     );
                   }

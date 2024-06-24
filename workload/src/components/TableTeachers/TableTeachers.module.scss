@@ -193,6 +193,14 @@
       background-color: var(--gray-color) !important;
     }
   }
+  td {
+    .tdInner:hover {
+      background-color: var(--td-bg) !important;
+      border-radius: 8px;
+      padding: 3px 0px;
+    }
+  }
+
   .fixedTd:first-child {
     position: sticky;
     left: 0px;
