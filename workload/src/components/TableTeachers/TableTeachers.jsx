@@ -31,6 +31,7 @@ function TableTeachers(props) {
     setAllChecked,
   };
 
+  //! достаем и локал стореджа состояние фитрации по заголовку
   useEffect(() => {
     const ssIsChecked = JSON.parse(sessionStorage.getItem("isCheckedTeachers"));
     console.log("ssIsChecked", ssIsChecked);

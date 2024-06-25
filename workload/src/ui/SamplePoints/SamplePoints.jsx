@@ -52,6 +52,7 @@ export function SamplePoints(props) {
       check.push({ value: item, itemKey: props.itemKey });
     });
     checkPar.setIsChecked(check);
+    sessionStorage.setItem("isCheckedWorkload", JSON.stringify([...check]));
     checkPar.setAllChecked(!checkPar.isAllChecked);
     // Фильтруем данные
     const fdfix = FilteredSample(
@@ -71,6 +72,8 @@ export function SamplePoints(props) {
       checked.push({ value: el, itemKey: props.itemKey });
     }
     checkPar.setIsChecked(checked);
+    sessionStorage.setItem("isCheckedWorkload", JSON.stringify([...checked]));
+
     // Фильтруем данные
     const fdfix = FilteredSample(basicTabData.workloadData, checked);
     basicTabData.setWorkloadDataFix(fdfix);
