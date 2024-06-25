@@ -51,7 +51,7 @@ function App() {
     ],
     DIRECTORATE: [
       1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
-      34, 35, 36, 38, 16, 40,44,
+      34, 35, 36, 38, 16, 40, 44,
     ],
     UNIT_ADMIN: [
       2, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
@@ -333,27 +333,24 @@ function App() {
   };
 
   //! Функция для определения цвета фона
-  function WhyColor(position, totalHours, rate) {
+  function WhyColor(position, educator) {
+    const totalHours = educator.totalHours;
+    console.log(educator);
     let bg;
     let phuthicalHours = 900;
-    let max = horsTeacher
-      ? horsTeacher.find((el) => el.name === position)?.max
-      : 0;
-    let min = horsTeacher
-      ? horsTeacher.find((el) => el.name === position)?.min
-      : 0;
-    let maxHours = max * rate;
-    let minHorse = min * rate;
+    let maxHours = educator.maxHours;
+    let minHorse = educator.minHours;
+    const recommendedMaxHours = educator.recommendedMaxHours;
 
     if (totalHours === 0) {
       bg = "#e2e0e5"; // серый цвет
-    } else if (totalHours > phuthicalHours || totalHours > maxHours) {
+    } else if (totalHours > maxHours) {
       bg = "#E81414"; // Красный цвет
     } else if (totalHours < minHorse) {
       bg = "#FFD600"; // Желтый цвет
-    } else if (totalHours >= minHorse && totalHours <= maxHours) {
+    } else if (totalHours >= minHorse && totalHours <= recommendedMaxHours) {
       bg = "#19C20A"; // Зеленый цвет
-    } else if (totalHours > maxHours && totalHours <= phuthicalHours) {
+    } else if (totalHours > recommendedMaxHours && totalHours <= maxHours) {
       bg = "#ffa600"; // оранжевый цвет
     }
     return bg;
