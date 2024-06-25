@@ -408,9 +408,6 @@ function App() {
               existingObj.hours = item.data.value;
             }
           }
-          // if( item.request === "splitWorkload"){
-          //   console.log('existingObj', existingObj)
-          // }
         } else {
           let o = {
             ...newData[newData.findIndex((el) => el.id === item.workloadId)],
@@ -556,7 +553,6 @@ function App() {
     const handleKeyDown = (event) => {
       if (event.ctrlKey && (event.key === "s" || event.key === "ы")) {
         event.preventDefault();
-        console.log("Сохранено", bufferAction);
         bufferRequestToApi(bufferAction).then((action) => {
           if (action) {
             setBufferAction([0]);
@@ -566,6 +562,7 @@ function App() {
         setSelectedTr([]);
         setChangedData(changedDataObj);
         console.log("выполнено и очищено", bufferAction);
+        setBufferAction([0]);
       }
     };
     // Назначьте обработчик события keydown при монтировании компонента

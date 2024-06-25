@@ -139,7 +139,6 @@ function HomePage() {
   const confirmClick = (action) => {
     if (action) {
       //! отправляем все запросы на обработку
-      console.log("Сохранено", appData.bufferAction);
       bufferRequestToApi(appData.bufferAction).then((act) => {
         if (act) {
           appData.setBufferAction([0]);
@@ -149,6 +148,7 @@ function HomePage() {
       tabPar.setSelectedTr([]);
       tabPar.setChangedData(tabPar.changedDataObj);
       console.log("выполнено и очищено", appData.bufferAction);
+      appData.setBufferAction([0]);
     } else {
       setPopupSaveAll(false);
     }
