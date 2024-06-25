@@ -46,7 +46,7 @@ body {
           &:hover {
             cursor: pointer;
             opacity: 0.6;
-            transition: all 0.15s ease;
+            transition: opacity 0.15s ease;
           }
 
           .hedaer_search_inner {
@@ -125,7 +125,7 @@ body {
         &:hover {
           cursor: pointer;
           opacity: 0.75;
-          transition: all 0.2s ease;
+          transition: opacity 0.2s ease;
         }
 
         input {
@@ -233,11 +233,11 @@ body {
         img {
           cursor: pointer;
           opacity: 0.6;
-          transition: all 0.15s ease;
+          transition: opacity 0.15s ease;
         }
         .text {
           opacity: 0.6;
-          transition: all 0.15s ease;
+          transition: opacity 0.15s ease;
         }
       }
     }
