@@ -97,12 +97,12 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
   const handleSearch = (el) => {
     const query = el.target.value;
     setSearchResults(
-      headers.filter((item) =>
+      originalHeader.filter((item) =>
         item.label.toLowerCase().includes(query.toLowerCase())
       )
     );
     if (query === "") {
-      setSearchResults(headers);
+      setSearchResults(originalHeader);
     }
   };
 
