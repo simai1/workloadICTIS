@@ -317,7 +317,6 @@ function TableTeachers(props) {
                         <div
                           style={{
                             backgroundColor: appData.WhyColor(
-                              row?.position,
                               appData.educator.find((el) => el.id === row.id)
                             ),
                           }}

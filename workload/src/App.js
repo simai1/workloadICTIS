@@ -333,14 +333,13 @@ function App() {
   };
 
   //! Функция для определения цвета фона
-  function WhyColor(position, educator) {
-    const totalHours = educator.totalHours;
-    console.log(educator);
+  function WhyColor(educator) {
+    const totalHours = educator?.totalHours;
     let bg;
-    let phuthicalHours = 900;
-    let maxHours = educator.maxHours;
-    let minHorse = educator.minHours;
-    const recommendedMaxHours = educator.recommendedMaxHours;
+    // let phuthicalHours = 900;
+    let maxHours = educator?.maxHours;
+    let minHorse = educator?.minHours;
+    const recommendedMaxHours = educator?.recommendedMaxHours;
 
     if (totalHours === 0) {
       bg = "#e2e0e5"; // серый цвет

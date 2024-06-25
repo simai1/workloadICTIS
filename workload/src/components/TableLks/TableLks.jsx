@@ -124,11 +124,7 @@ function TableLks(props) {
               style={
                 EducatorLkData
                   ? {
-                      backgroundColor: appData.WhyColor(
-                        EducatorLkData?.position,
-                        EducatorLkData?.totalHours,
-                        EducatorLkData?.rate
-                      ),
+                      backgroundColor: appData.WhyColor(EducatorLkData),
                     }
                   : null
               }
