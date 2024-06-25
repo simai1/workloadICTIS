@@ -9,17 +9,15 @@ router.route('/test').get(asyncRoute(authController.test));
 router.get(
     '/loginSfedu',
     passport.authenticate('azure_ad_oauth2', {
-        failureRedirect: '/',
+        failureRedirect: '/client',
         scope: ['profile'],
     }),
     (req, res) => {
-        console.log('1234');
         res.redirect('/');
     }
 );
 
-router.get('/login', passport.authenticate('azure_ad_oauth2'), (req, res) => {
-    // res.send('redirect URI')
+router.get('/login', passport.authenticate('azure_ad_oauth2', { failureRedirect: '/' }), (req, res) => {
     res.redirect(`${process.env.WEB_URL}/HomePage`);
 });
 
