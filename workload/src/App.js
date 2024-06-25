@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage/Homepage";
 import DataContext from "./context";
@@ -199,6 +199,7 @@ function App() {
   //! для виртуального скролла
   const [startData, setStartData] = useState(0); // индекс элемента с которого показывается таблица
   let visibleData = filtredData.length > 10 ? 10 : filtredData.length; // кооличество данных которые мы видим в таблице
+  const tableRefWorkload = useRef(null); //! ссылка на таблицу
 
   const heightTd = 150; // высота td
 
@@ -239,6 +240,7 @@ function App() {
     setSelectedFilter,
     perenesenAction,
     setPerenesenAction,
+    tableRefWorkload,
   };
 
   //! функция обновления комментаривев
@@ -532,13 +534,22 @@ function App() {
   }, [selectedFilter, workloadDataFix, selectedTable, fastenedData]);
 
   //! обновляем вертуальный скролл при переходе на другуюс таблицу
+  // useEffect(() => {
+  //   setStartData(0);
+  //   const table = document.querySelector("table");
+  //   if (table) {
+  //     table.scrollIntoView(true);
+  //   }
+  // }, [selectedFilter, selectedTable]);
+
+  //! обновляем вертуальный скролл при переходе на другуюс таблицу
   useEffect(() => {
+    console.log("tableRefWorkload", tableRefWorkload);
     setStartData(0);
-    const table = document.querySelector("table");
-    if (table) {
-      table.scrollIntoView(true);
+    if (tableRefWorkload.current) {
+      tableRefWorkload.current.scrollTo(0, 0);
     }
-  }, [selectedFilter, selectedTable]);
+  }, [selectedFilter, selectedTable, tableRefWorkload, nameKaf]);
 
   //! при изменении закрпеленных перемещаем их наверх и сортируем массив
   //? ЕСЛИ ЧТО РАСКОМЕНТИТЬ

@@ -65,6 +65,7 @@ function TableWorkload(props) {
       onContextMenu={handleContextMenu}
       className={styles.tabledisciplinesMain}
       onScroll={scrollTable}
+      ref={tabPar.tableRefWorkload}
     >
       {tabPar.contextMenuShow && tabPar.selectedTr.length != 0 && (
         <ContextMenu />
