@@ -2,7 +2,7 @@
 @import "./../../ui/UniversalInput/Input.module.scss";
 
 .ErrorHelper {
-  position: relative;
+  // position: relative;
   height: 45px;
   width: 45px;
   margin-right: 12px;
@@ -34,7 +34,7 @@
     background-color: var(--white-color);
     box-shadow: 4px 4px 20px 0px #00000026;
     border-radius: 8px;
-    width: 358px;
+    width: 100%;
     padding-bottom: 20px;
 
     p {

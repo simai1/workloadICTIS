@@ -98,4 +98,10 @@
       border-left: #dddddd 1px solid;
     }
   }
+  .inner_scroll {
+    max-height: 35vh;
+    overflow: auto;
+
+    @include scrollStyle(8px, 4px);
+  }
 }
