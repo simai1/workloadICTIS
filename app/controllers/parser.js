@@ -102,7 +102,7 @@ export default {
         const validPositions = [
             'Ассистент',
             'Доцент',
-            'Ведущий научный сотрдуник',
+            'Ведущий научный сотрудник',
             'Главный научный сотрудник',
             'Научный сотрудник',
             'Профессор',
@@ -112,6 +112,7 @@ export default {
             'Научный сотрудник',
             'Директор института',
         ];
+        console.log(sheetData.length)
         for (const row of sheetData.slice(1)) {
             try {
                 const newEducator = {};
@@ -124,13 +125,20 @@ export default {
                 if (!existEducator && validPositions.includes(newEducator.position) && newEducator.department) {
                     delete newEducator.undefined;
                     newEducator.position = positions[newEducator.position];
-                    const newRate = newEducator.rate.trim().split(' ');
+                    let newRate = newEducator.rate.trim().split(' ');
                     let numberPart = parseFloat(newRate[0].replace(',', '.'));
                     if (!Number(numberPart) || Number(numberPart)< 0.1) {
                         numberPart = 1;
                     }
-                    newEducator.rate = numberPart;
-                    await Educator.create(newEducator);
+                    newEducator.rate = numberPart
+                    const resEducator = await Educator.create({
+                        name: newEducator.name,
+                        email: newEducator.email,
+                        department: newEducator.department,
+                        position: newEducator.position,
+                        rate: newEducator.rate,
+                    });
+                    //console.log("resEducator", resEducator.dataValues)
                 }
             } catch (e) {
                 // Обработка ошибок

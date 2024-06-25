@@ -156,6 +156,8 @@ export default {
                     workloads = await Workload.findAll({
                         where: {
                             department: allowedDepartments,
+                            isOid: false,
+                            isBlocked: false,
                         },
                         include: { model: Educator },
                         order: orderRule,
@@ -668,10 +670,10 @@ export default {
 
     async getDepartmentsForDirectorate(req, res) {
         const _user = await User.findByPk(req.user);
-        if(!_user.institutionalAffiliation) throw new Error('Нет привязки (institutionalAffiliation) к институту у директора');
-
         let filteredDepartments;
         if(_user.role === 4 || _user.role === 7){
+            if(!_user.institutionalAffiliation) throw new Error('Нет привязки (institutionalAffiliation) к институту у директора');
+
             if(_user.institutionalAffiliation === 1){
                 filteredDepartments = Object.entries(departments).slice(0, 13).map(([name, id]) => ({ name, id }));
             } else if (_user.institutionalAffiliation === 2) {

@@ -268,22 +268,6 @@ export const workloads = [
 
 export const educators = [
     {
-        name: 'Алексеев Кирилл Николаевич',
-        department: 1,
-        email: 'alexeev@sfedu.ru',
-        position: 5,
-        typeOfEmployment: 1,
-        rate: 0.5,
-    },
-    {
-        name: 'Беспалов Дмитрий Анатольевич',
-        department: 1,
-        email: 'bespalov@sfedu.ru',
-        position: 5,
-        typeOfEmployment: 3,
-        rate: 1,
-    },
-    {
         name: 'Вакансия БИТ 0',
         department: 1,
         position: 5,
@@ -417,16 +401,8 @@ export const educators = [
     },
     {
         name: 'Хусаинов Наиль Шавкятович',
-        department: 20,
+        department: 7,
         email: 'khusainov@sfedu.ru',
-        position: 11,
-        typeOfEmployment: 3,
-        rate: 1,
-    },
-    {
-        name: 'Хусаинов Наиль Шавкятович',
-        department: 21,
-        email: 'khusainovv@sfedu.ru',
         position: 11,
         typeOfEmployment: 3,
         rate: 1,
