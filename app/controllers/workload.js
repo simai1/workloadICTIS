@@ -671,16 +671,17 @@ export default {
         if(!_user.institutionalAffiliation) throw new Error('Нет привязки (institutionalAffiliation) к институту у директора');
 
         let filteredDepartments;
-        if(_user.institutionalAffiliation === 1){
-            filteredDepartments = Object.entries(departments).slice(0, 13).map(([name, id]) => ({ name, id }));
-        } else if (_user.institutionalAffiliation === 2) {
-            filteredDepartments = Object.entries(departments).slice(13, 17).map(([name, id]) => ({ name, id }));
-        } else if (_user.institutionalAffiliation === 3) {
-            filteredDepartments = Object.entries(departments).slice(17, 25).map(([name, id]) => ({ name, id }));
-        } else {
-            throw new Error('Такого института не добавленно');
-        }
-        if (_user.role === 6){
+        if(_user.role === 4 || _user.role === 7){
+            if(_user.institutionalAffiliation === 1){
+                filteredDepartments = Object.entries(departments).slice(0, 13).map(([name, id]) => ({ name, id }));
+            } else if (_user.institutionalAffiliation === 2) {
+                filteredDepartments = Object.entries(departments).slice(13, 17).map(([name, id]) => ({ name, id }));
+            } else if (_user.institutionalAffiliation === 3) {
+                filteredDepartments = Object.entries(departments).slice(17, 25).map(([name, id]) => ({ name, id }));
+            } else {
+                throw new Error('Такого института не добавленно');
+            }
+        }else if (_user.role === 6){
             const filteredDepartmentsNew = []
             const allowed = _user.allowedDepartments;
             for (const x of filteredDepartments){
@@ -689,6 +690,9 @@ export default {
                 }
             }
             res.json(filteredDepartmentsNew);
+        } else if (_user.role === 1){
+            filteredDepartments = Object.entries(departments).map(([name, id]) => ({ name, id }));
+            console.log(filteredDepartments)
         }
         res.json(filteredDepartments);
     },
