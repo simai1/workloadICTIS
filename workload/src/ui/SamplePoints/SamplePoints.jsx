@@ -44,7 +44,6 @@ export function SamplePoints(props) {
       })
     ),
   ];
-
   //! при нажатии на Input All
   const onAllChecked = () => {
     const checked = checkPar.isAllChecked ? [...filteredData] : [];
@@ -72,7 +71,6 @@ export function SamplePoints(props) {
       checked.push({ value: el, itemKey: props.itemKey });
     }
     checkPar.setIsChecked(checked);
-    console.log("checked", checked);
     // Фильтруем данные
     const fdfix = FilteredSample(basicTabData.workloadData, checked);
     basicTabData.setWorkloadDataFix(fdfix);
@@ -111,7 +109,7 @@ export function SamplePoints(props) {
                     !checkPar.isChecked.some((item) => item.value === el)
                   }
                 />
-                <p>{props.index === 0 ? index + 1 : el}</p>
+                <p>{props.index === 0 ? index + 1 : el === "" ? "__" : el}</p>
               </div>
             );
           })}

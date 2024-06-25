@@ -63,12 +63,13 @@ $heightCell: 150px;
 }
 .tabledisciplinesMain {
   display: flex;
-  // width: 100%;
+  // width: 96.5vw;
   height: 76vh;
-  overflow: auto;
+  overflow: scroll;
   padding-left: 64px;
-  margin-right: 64px;
+  margin-right: 52px;
   background-color: #fff;
+  box-sizing: border-box;
   &::after {
     content: "";
     background-color: var(--bgraund);
@@ -81,7 +82,7 @@ $heightCell: 150px;
   &::before {
     content: "";
     background-color: var(--bgraund);
-    width: 64px;
+    width: 100px;
     height: 70px;
     position: absolute;
     top: 0;
