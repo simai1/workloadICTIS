@@ -399,12 +399,4 @@ export const educators = [
         typeOfEmployment: 3,
         rate: 1,
     },
-    {
-        name: 'Хусаинов Наиль Шавкятович',
-        department: 7,
-        email: 'khusainov@sfedu.ru',
-        position: 11,
-        typeOfEmployment: 3,
-        rate: 1,
-    },
 ];

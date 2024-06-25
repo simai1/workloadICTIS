@@ -47,6 +47,7 @@ export default {
                     const englishHeader = HeaderTranslation[header];
                     obj[englishHeader] = row[index];
                 });
+                obj.department = obj.department.trim();
                 obj.department = FullNameDepartments[obj.department];
                 obj.numberOfStudents = obj.numberOfStudents ? Number(obj.numberOfStudents.replace(',00', '')) : 0;
                 obj.hours = obj.hours ? parseFloat(obj.hours.replace(',', '.')) : 0.0;
