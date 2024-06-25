@@ -34,7 +34,8 @@
 
   .TableTeachers__inner {
     height: 74vh;
-    width: 92vw;
+    width: calc(100% + 14px);
+
     overflow-x: scroll;
     position: relative;
     @include scrollTable(12px, 12px, #a6a6a6, 60px, 0);
@@ -43,7 +44,7 @@
     }
   }
   .TableTeachers__inner::-webkit-scrollbar {
-    width: 16px;
+    width: 14px;
   }
 
   .TableTeachers__inner::-webkit-scrollbar-track {
