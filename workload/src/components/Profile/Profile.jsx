@@ -14,6 +14,18 @@ function Profile(props) {
     DEPUTY_DIRECTORATE: "Заместитель директора",
     DEPUTY_DEPARTMENT_HEAD: "Заместитель заведующего кафедрой",
   };
+  const institutName = {
+    1: "ИКТИБ",
+    2: "ИНЕП",
+    3: "ИРТСУ",
+  };
+
+  const getInstitut = () => {
+    const iname = institutName[appData.myProfile?.institutionalAffiliation];
+    if (appData.myProfile?.role === "DIRECTORATE" && iname) {
+      return iname;
+    }
+  };
 
   //! закрытие модального окна при нажати вне него
   useEffect(() => {
@@ -43,7 +55,9 @@ function Profile(props) {
       {props.onenModalWind && (
         <div className={styles.modal_window}>
           <div className={styles.triangle}></div>
-          <span className={styles.title}>{roles[appData.myProfile?.role]}</span>
+          <span className={styles.title}>
+            {roles[appData.myProfile?.role]} {getInstitut()}
+          </span>
           <span className={styles.inner}>{appData.myProfile?.login}</span>
           <div className={styles.exid}>
             <a href="https://workload.sfedu.ru/auth/logout">
