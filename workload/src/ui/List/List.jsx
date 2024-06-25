@@ -12,18 +12,21 @@ function List({
   value,
 }) {
   const { context, appData } = React.useContext(DataContext);
-  const allowedDepartmentsNames = dataList.filter(department => appData.myProfile.allowedDepartments.includes(department.id)).map(department => department.name);
+  const allowedDepartmentsNames = dataList
+    .filter((department) =>
+      appData.myProfile.allowedDepartments.includes(department.id)
+    )
+    .map((department) => department.name);
 
   const [activeList, setactiveList] = useState(false);
   const [nameClient, setnameClient] = useState(null);
 
-  useEffect(()=>{
-    if(value != "undefined"){
-      setnameClient(value)
+  useEffect(() => {
+    if (value != "undefined") {
+      setnameClient(value);
     }
-   
-  },[])
-  
+  }, []);
+
   const addClient = (el) => {
     console.log(el);
     setnameClient(el.name);
@@ -33,52 +36,53 @@ function List({
 
   return (
     <div className={styles.List}>
-      {
-        name === "department" && appData.metodRole[appData.myProfile?.role]?.some((el) => el === 39) ? <></> :
+      {name === "department" &&
+      appData.metodRole[appData.myProfile?.role]?.some((el) => el === 39) ? (
+        <></>
+      ) : (
         <div>
-        {Textlabel && (
-          <div>
-            <label>{Textlabel}</label>
-          </div>
-        )}
-        <div className={styles.ListCont}>
-          <input
-            readOnly
-            onClick={() => setactiveList(!activeList)}
-            value={nameClient || ""}
-            placeholder={defaultValue}
-            className={styles.inputList}
-          />
-          <span
-            onClick={() => setactiveList(!activeList)}
-            className={styles.arrowBot}
-          >
-            <img
-              style={{
-                transform: activeList ? "rotate(0deg)" : "rotate(-90deg)"
-            }}
-              src={arrow}
+          {Textlabel && (
+            <div>
+              <label>{Textlabel}</label>
+            </div>
+          )}
+          <div className={styles.ListCont}>
+            <input
+              readOnly
+              onClick={() => setactiveList(!activeList)}
+              value={nameClient || ""}
+              placeholder={defaultValue}
+              className={styles.inputList}
             />
-          </span>
-        </div>
-        { activeList &&
-            <div className={styles.ListData}>
-            {dataList.map((item) => (
-              <p
-                className={styles.NameForList}
-                onClick={() => addClient(item)}
-                key={item.id}
-              >
-              {item.name}
-              </p>
-            ))}
+            <span
+              onClick={() => setactiveList(!activeList)}
+              className={styles.arrowBot}
+            >
+              <img
+                style={{
+                  transform: activeList ? "rotate(0deg)" : "rotate(-90deg)",
+                }}
+                src={arrow}
+              />
+            </span>
           </div>
-        }
-        
-      </div>
-        
-      }
-     
+          {activeList && (
+            <div className={styles.ListData}>
+              <div className={styles.ListDataScroll}>
+                {dataList.map((item) => (
+                  <p
+                    className={styles.NameForList}
+                    onClick={() => addClient(item)}
+                    key={item.id}
+                  >
+                    {item.name}
+                  </p>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

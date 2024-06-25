@@ -544,7 +544,6 @@ function App() {
 
   //! обновляем вертуальный скролл при переходе на другуюс таблицу
   useEffect(() => {
-    console.log("tableRefWorkload", tableRefWorkload);
     setStartData(0);
     if (tableRefWorkload.current) {
       tableRefWorkload.current.scrollTo(0, 0);
