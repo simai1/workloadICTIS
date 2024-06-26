@@ -41,8 +41,8 @@ export const apiGetUser = async () => {
   } catch (error) {
     console.error("Error:", error, `${server}/workload`);
     //! если возникли проблемы с получение профиля пользователя перенаправляем на регистрацию
-    // window.location.href = "http://localhost:3002/auth/logout";
-    window.location.href = "https://workload.sfedu.ru/auth/logout";
+    window.location.href = "http://localhost:3002/auth/logout";
+    // window.location.href = "https://workload.sfedu.ru/auth/logout";
   }
 };
 
