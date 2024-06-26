@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./List.module.scss";
 import DataContext from "../../context";
 import arrow from "./../../img/arrow_down.svg";
@@ -34,6 +34,20 @@ function List({
     handleInputList(name, el.id);
   };
 
+  const listRef = useRef(null);
+  //! закрытие модального окна при нажати вне него
+  useEffect(() => {
+    const handler = (event) => {
+      if (listRef.current && !listRef.current.contains(event.target)) {
+        setactiveList(false);
+      }
+    };
+    document.addEventListener("click", handler, true);
+    return () => {
+      document.removeEventListener("click", handler);
+    };
+  }, []);
+
   return (
     <div className={styles.List}>
       {name === "department" &&
@@ -67,7 +81,7 @@ function List({
             </span>
           </div>
           {activeList && (
-            <div className={styles.ListData}>
+            <div ref={listRef} className={styles.ListData}>
               <div className={styles.ListDataScroll}>
                 {dataList.map((item) => (
                   <p

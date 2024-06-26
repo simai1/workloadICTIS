@@ -88,7 +88,7 @@ function HomePage() {
 
   useEffect(() => {
     GetDepartment().then((response) => {
-      setdepartments([{ id: 14, name: "Все" }, ...response.data]);
+      setdepartments([{ id: 99, name: "Все" }, ...response.data]);
     });
   }, [basicTabData.tableDepartment]);
 
@@ -210,9 +210,9 @@ function HomePage() {
 
   //! при нажатии на ракету
   const raketClick = () => {
-    // visibleDataPar.setStartData(0);
-    // const table = document.querySelector("table");
-    // table.scrollIntoView(true);
+    visibleDataPar.setStartData(0);
+    const table = document.querySelector("table");
+    table.scrollIntoView(true);
     visibleDataPar.setStartData(0);
     if (tabPar.tableRefWorkload.current) {
       tabPar.tableRefWorkload.current.scrollTo(0, 0);
@@ -246,6 +246,11 @@ function HomePage() {
     appData.selectedComponent,
     tabPar.setSelectedFilter,
   ]);
+
+  //! при переходе на другую таблицу то сбрасываем поиск
+  useEffect(() => {
+    basicTabData.setSearchTerm("");
+  }, [appData.selectedComponent]);
 
   return (
     <Layout>
@@ -299,27 +304,29 @@ function HomePage() {
                 )}
                 {appData.metodRole[appData.myProfile?.role]?.some(
                   (el) => el === 26
-                ) && (
-                  <div className={styles.btnMenuBox} onClick={onSaveClick}>
-                    <img
-                      className={styles.btnLeft}
-                      src="./img/saveButton.svg"
-                    />
-                    {popupSaveAll && (
-                      <ConfirmSaving
-                        title={"Вы уверены, что хотите сохранить изменения?"}
-                        confirmClick={confirmClick}
-                        setShow={setPopupSaveAll}
+                ) &&
+                  appData.selectedComponent === "Disciplines" && (
+                    <div className={styles.btnMenuBox} onClick={onSaveClick}>
+                      <img
+                        className={styles.btnLeft}
+                        src="./img/saveButton.svg"
                       />
-                    )}
-                  </div>
-                )}
+                      {popupSaveAll && (
+                        <ConfirmSaving
+                          title={"Вы уверены, что хотите сохранить изменения?"}
+                          confirmClick={confirmClick}
+                          setShow={setPopupSaveAll}
+                        />
+                      )}
+                    </div>
+                  )}
 
                 {appData.metodRole[appData.myProfile?.role]?.some(
                   (el) => el === 27
                 ) &&
                   basicTabData.nameKaf != "Все" &&
-                  !blockTable &&
+                  !blockTable && 
+                  ( appData.selectedComponent === "Disciplines") &&
                   appData.selectedComponent !== "History" && (
                     <div
                       style={{ marginRight: "15px" }}

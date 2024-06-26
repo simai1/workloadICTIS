@@ -107,7 +107,7 @@ export function PopUpEditTeacher(props) {
     <div className={styles.Mt}>
       <PopUpContainer
         setVizibleCont={props.setVizibleCont}
-        title={"Редактирование Преподавателя"}
+        title={"Редактирование преподавателя"}
       >
         <div className={styles.mainPop__inner}>
           <div className={styles.inputBlock}>

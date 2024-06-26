@@ -26,11 +26,12 @@ function ListKaf({
   const addKafedra = (el) => {
     if (el.name === "ОИД") {
       basicTabData.setselectISOid(true);
+    
     } else {
       basicTabData.setselectISOid(false);
     }
-    console.log("selectEl", el);
     basicTabData.funUpdateTable(el.id);
+    console.log("selectEl", el);
     basicTabData.setnameKaf(el.name);
     setactiveList(!activeList);
     setopenLists("");

@@ -37,7 +37,7 @@
     transform: rotate(-90deg);
   }
   .ListData {
-    height: 300px;
+    height: 250px;
     width: 300px;
     position: absolute;
     padding: 8px;
@@ -54,6 +54,10 @@
       overflow: auto;
       height: 100%;
       @include scrollStyle(4px, 4px);
+      p {
+        padding: 0px;
+        margin-bottom: 6px;
+      }
     }
 
     .NameForList {
@@ -61,6 +65,7 @@
       cursor: pointer;
       padding-top: 0;
       margin-top: 0;
+      margin-bottom: 5px;
       &:hover {
         color: rgb(59, 40, 204);
       }
