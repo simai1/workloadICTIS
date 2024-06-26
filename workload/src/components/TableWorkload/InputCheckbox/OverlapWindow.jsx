@@ -157,14 +157,24 @@ function OverlapWindow(props) {
       });
     } else if (props.getConfirmation.type === 3) {
       joinWorkloads(props.getConfirmation.data.data).then((res) => {
-        console.log(res);
-        appData.setBufferAction(
-          deleteItemBuffer(
-            [...appData.bufferAction],
-            props.itid,
-            "joinWorkload"
-          ).buffer
-        );
+        console.log(props.itid);
+
+        const ab = [...appData.bufferAction];
+        const abfix = ab
+          .filter((item) => {
+            if (
+              item.request === "joinWorkloads" &&
+              item.newState.id === props.itid
+            ) {
+              return null;
+            } else {
+              return item;
+            }
+          })
+          .filter((el) => el !== null);
+
+        appData.setBufferAction(abfix);
+
         let changed = { ...tabPar.changedData };
         changed.join = changed.join.filter((item) => item !== props.itid);
         console.log(changed);
