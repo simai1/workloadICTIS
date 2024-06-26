@@ -303,7 +303,7 @@ function App() {
   function funGetDepartment() {
     GetDepartment().then((response) => {
       if (response && response.status === 200) {
-        settableDepartment([{ id: 14, name: "Все" }, ...response?.data]);
+        settableDepartment([{ id: 99, name: "Все" }, ...response?.data]);
       }
     });
   }
@@ -376,9 +376,9 @@ function App() {
       if (param == 0) {
         url = "?isOid=true";
       }
-      if (param == "all") {
+      if (param == 99) {
         url = ``;
-      } else if (param != "all" && param != 0) {
+      } else if (param != 99 && param != 0) {
         url = `?department=${param}`;
       }
       console.log("url", url);
@@ -456,16 +456,16 @@ function App() {
   //! функция обновления всех данных
   function updateAlldata() {
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 44)) {
-      funUpdateTable("all");
+      funUpdateTable(99);
     } else {
       if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 42)) {
-        funUpdateTable(tableDepartment[0]?.id);
+        funUpdateTable(99);
       } else if (
         appData.metodRole[appData.myProfile?.role]?.some((el) => el === 28)
       ) {
         selectISOid
           ? // funUpdateTable(0)
-            funUpdateTable(tableDepartment[0]?.id)
+            funUpdateTable(99)
           : funUpdateTable(
               tableDepartment.find((el) => el.name === nameKaf)?.id
             );
@@ -475,7 +475,7 @@ function App() {
         ) {
           funUpdateTable(0);
         } else {
-          funUpdateTable("all");
+          funUpdateTable(99);
         }
       }
     }

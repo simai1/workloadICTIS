@@ -142,6 +142,7 @@ export function PopUpCreateEmploy(props) {
           <Input
             Textlabel="Ставка"
             placeholder="0.5"
+            type="number"
             name={"rate"}
             handleInputChange={handleInputChange}
             style={{ border: !isRateValid ? "1px solid red" : "none" }}
