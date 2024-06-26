@@ -80,7 +80,6 @@ export function PopUpEditTeacher(props) {
         )?.id)
       : (position = dataNewEdicator?.position);
 
-      console.log("dataNewEdicator?.department", dataNewEdicator?.department)
     const data = {
       name: dataNewEdicator?.name,
       position: position,
