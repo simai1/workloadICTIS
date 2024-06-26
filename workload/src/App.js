@@ -68,7 +68,7 @@ function App() {
     ],
     GIGA_ADMIN: [
       1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 29, 30,
-      31, 34, 35, 36, 38, 16, 40, 44, 45,
+      31, 34, 35, 36, 38, 16, 40, 44, 45, 46,
     ],
   };
   // appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)
@@ -77,7 +77,6 @@ function App() {
   const [bufferAction, setBufferAction] = useState([]);
   const [errorPopUp, seterrorPopUp] = useState(false); //popUp error visible
   const [godPopUp, setgodPopUp] = useState(false); //popUp good visible
-
   const [createEdicatorPopUp, setcreateEdicatorPopUp] = useState(false); //popUp error visible
   const [selectedComponent, setSelectedComponent] = useState("Disciplines");
   const [loaderAction, setLoaderAction] = useState(false);
@@ -305,7 +304,6 @@ function App() {
     GetDepartment().then((response) => {
       if (response && response.status === 200) {
         settableDepartment([{ id: 14, name: "Все" }, ...response?.data]);
-        console.log("Записал");
       }
     });
   }
@@ -380,7 +378,7 @@ function App() {
       }
       if (param == "all") {
         url = ``;
-      } else if (param != 14 && param != 0) {
+      } else if (param != "all" && param != 0) {
         url = `?department=${param}`;
       }
       console.log("url", url);
@@ -477,7 +475,7 @@ function App() {
         ) {
           funUpdateTable(0);
         } else {
-          funUpdateTable(14);
+          funUpdateTable("all");
         }
       }
     }

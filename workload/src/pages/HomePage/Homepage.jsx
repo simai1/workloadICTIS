@@ -299,7 +299,7 @@ function HomePage() {
                 )}
                 {appData.metodRole[appData.myProfile?.role]?.some(
                   (el) => el === 26
-                ) && (
+                ) && ( appData.selectedComponent === "Disciplines") && (
                   <div className={styles.btnMenuBox} onClick={onSaveClick}>
                     <img
                       className={styles.btnLeft}

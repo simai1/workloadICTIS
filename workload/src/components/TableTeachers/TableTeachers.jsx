@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 // import { useDispatch, useSelector } from "react-redux";
 import DataContext from "../../context";
 import { headersEducator } from "../TableWorkload/Data";
-import { Educator, apiEducatorDepartment } from "../../api/services/ApiRequest";
+import { Educator, GetAllUsers, apiEducatorDepartment } from "../../api/services/ApiRequest";
 import Button from "../../ui/Button/Button";
 import { SamplePoints } from "./SamplePoints/SamplePoints";
 import { ContextFunc } from "./ContextFunc/ContextFunc";
@@ -80,8 +80,21 @@ function TableTeachers(props) {
         }
       });
     }
-    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)) {
+    else if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)) {
       Educator().then((res) => {
+        console.log("teatcher ", res);
+        if (res && res.status === 200) {
+          appData.setEducator(res.data);
+          const fdfix = FilteredSample(res.data, isChecked);
+          setFilteredData([...fdfix]);
+          // setFilteredData(res.data);
+          setUpdatedData(res.data);
+          setUpdatedHeader(tableHeaders);
+        }
+      });
+    }
+    else if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 45)){
+      GetAllUsers.then((res) => {
         console.log("teatcher ", res);
         if (res && res.status === 200) {
           appData.setEducator(res.data);

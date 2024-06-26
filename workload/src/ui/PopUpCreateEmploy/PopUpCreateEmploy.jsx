@@ -5,7 +5,7 @@ import Input from "../Input/Input";
 import Button from "../Button/Button";
 import PopUpContainer from "../PopUpContainer/PopUpContainer";
 import List from "../List/List";
-import { CreateEducator, GetUsibleDepartment } from "../../api/services/ApiRequest";
+import { CreateEducator, GetAllDepartments, GetUsibleDepartment } from "../../api/services/ApiRequest";
 
 export function PopUpCreateEmploy(props) {
   const { appData, basicTabData } = React.useContext(DataContext);
@@ -38,9 +38,15 @@ export function PopUpCreateEmploy(props) {
   ];
   const [dataKaf, setDataKaf] = useState([]);
   useEffect(()=>{
-    GetUsibleDepartment().then((resp)=>{
-      setDataKaf(resp.data)
-    })
+    if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 46)){
+      GetAllDepartments().then((resp) => {
+        setDataKaf(resp.data);
+      });
+    }else{
+      GetUsibleDepartment().then((resp)=>{
+        setDataKaf(resp.data)
+      })
+    }
   },[])
   // const dataKaf = [
   //   { id: 1, name: "БИТ" },
