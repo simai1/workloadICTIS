@@ -32,6 +32,7 @@ function Input({
           placeholder={placeholder}
           value={value}
           type = {type ? type : "text"}
+          step = {type === "number" ? "0.1" : null}
         />
       </div>
     </div>
