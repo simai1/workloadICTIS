@@ -314,7 +314,7 @@ export default {
 
             res.json(workload);
         } catch (error) {
-            res.status(500).json({ error: error });
+            res.status(500).json({ error });
         }
     },
 
@@ -347,32 +347,39 @@ export default {
         res.json({ status: 'OK' });
     },
 
-    async unfacultyEducator({ body: { workloadId } }, res) {
-        if (!workloadId) throw new AppErrorMissing('workloadId');
-        const workload = await Workload.findByPk(workloadId);
-        if (!workload) throw new AppErrorInvalid('workload');
-        const educatorId = workload.educatorId;
-        await workload.update({ educatorId: null });
+    async unfacultyEducator({ body: { workloadIds } }, res) {
+        if (!workloadIds) throw new AppErrorMissing('workloadIds');
+        if (!Array.isArray(workloadIds)) throw new AppErrorInvalid('workloadIds');
+        const workloads = await Workload.findAll({ where: { id: workloadIds } });
+        if (!workloads) throw new AppErrorInvalid('workload');
+        const educatorIds = [];
+        workloads.map(workload => educatorIds.push(workload.educatorId));
+        await Workload.update({ educatorId: null }, {where: {id: workloadIds}});
 
-        const remainingWorkloads = await Workload.count({ where: { educatorId } });
-        console.log(remainingWorkloads);
+        let remainingWorkloads;
+        let summaryWorkload;
+        for (const educatorId of educatorIds){
+            remainingWorkloads = await Workload.count({ where: { educatorId } });
 
-        if (remainingWorkloads === 0) {
-            // Если нет нагрузок, удаляем предупреждение
-            await Notification.destroy({ where: { educatorId } }); // Предположим, что у вас есть метод для удаления summaryWorkload по educatorId
-        } else {
-            // Если остались нагрузки, все равно вызываем проверку часов
-            const summaryWorkload = await SummaryWorkload.findOne({ where: { educatorId } });
-            await checkHours(summaryWorkload); // Передаем summaryWorkload в функцию checkHours
+            if (remainingWorkloads === 0) {
+                // Если нет нагрузок, удаляем предупреждение
+                await Notification.destroy({ where: { educatorId } }); // Предположим, что у вас есть метод для удаления summaryWorkload по educatorId
+            } else {
+                // Если остались нагрузки, все равно вызываем проверку часов
+                summaryWorkload = await SummaryWorkload.findOne({ where: { educatorId } });
+                await checkHours(summaryWorkload); // Передаем summaryWorkload в функцию checkHours
+            }
         }
-
-        await History.create({
-            type: 3,
-            department: workload.department,
-            before: [workloadId],
-            after: [],
-        });
-
+        const historyData = [];
+        for (let i = 0; i < workloadIds.length; i++) {
+            historyData.push({
+                type: 3,
+                department: workloads[i].department,
+                before: [workloadIds[i]],
+                after: [],
+            });
+        }
+        await History.bulkCreate(historyData);
         res.json({ status: 'OK' });
     },
 
