@@ -116,7 +116,13 @@ ul::-webkit-scrollbar-track {
   background-color: #ffffff;
   border: none;
 }
-
+.textButton{
+  display: flex;
+  img{
+    position: relative;
+    left: -5px;
+  }
+}
 .customInput {
   position: absolute;
   margin-bottom: 10px;

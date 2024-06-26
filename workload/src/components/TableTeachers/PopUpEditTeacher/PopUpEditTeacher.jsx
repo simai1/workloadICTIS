@@ -37,11 +37,11 @@ export function PopUpEditTeacher(props) {
 
   const [dataKaf, setDataKaf] = useState([]);
   useEffect(() => {
-    if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 46)){
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 46)) {
       GetAllDepartments().then((resp) => {
         setDataKaf(resp.data);
       });
-    }else{
+    } else {
       GetUsibleDepartment().then((resp) => {
         setDataKaf(resp.data);
       });
@@ -70,11 +70,9 @@ export function PopUpEditTeacher(props) {
   const handleClicks = () => {
     let depart;
     let position;
-
+    console.log(dataNewEdicator);
     !Number(dataNewEdicator?.department)
-      ? (depart = dataKaf.find(
-          (el) => el.name === dataNewEdicator?.department
-        )?.id)
+      ? (depart = appData.myProfile?.educator?.departmentId)
       : (depart = dataNewEdicator?.department);
     !Number(dataNewEdicator?.position)
       ? (position = dataListPosition.find(
@@ -92,8 +90,6 @@ export function PopUpEditTeacher(props) {
       department: depart,
     };
 
-    console.log("IdRows", selectedRowsId);
-    console.log("dataNewEdicator", data);
     EditTeacher(selectedRowsId, data).then((resp) => {
       if (resp.status === 200) {
         props.updateTable();

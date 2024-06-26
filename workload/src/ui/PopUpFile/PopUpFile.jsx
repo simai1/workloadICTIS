@@ -16,12 +16,11 @@ export function PopUpFile(props) {
   const [fileData, setfileData] = useState(null);
   const [cafData, setCafData] = useState([]);
   useEffect(() => {
-    
-    if(appData.metodRole[appData.myProfile?.role]?.some((el) => el ===46)){
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 46)) {
       GetAllDepartments().then((resp) => {
         setCafData(resp.data);
       });
-    }else{
+    } else {
       GetUsibleDepartment().then((resp) => {
         setCafData(resp.data);
       });
@@ -98,10 +97,6 @@ export function PopUpFile(props) {
     setvalueCafedra(nameKaf);
     setopenListFlag(false);
   };
-
-  useEffect(() => {
-    console.log("file", appData.fileData?.name);
-  }, []);
 
   // Determine if the button should be disabled
   const isButtonDisabled = !fileData || !valueCafedra;

@@ -3,7 +3,11 @@ import React, { useState, useEffect } from "react";
 // import { useDispatch, useSelector } from "react-redux";
 import DataContext from "../../context";
 import { headersEducator } from "../TableWorkload/Data";
-import { Educator, GetAllUsers, apiEducatorDepartment } from "../../api/services/ApiRequest";
+import {
+  Educator,
+  GetAllUsers,
+  apiEducatorDepartment,
+} from "../../api/services/ApiRequest";
 import Button from "../../ui/Button/Button";
 import { SamplePoints } from "./SamplePoints/SamplePoints";
 import { ContextFunc } from "./ContextFunc/ContextFunc";
@@ -34,7 +38,6 @@ function TableTeachers(props) {
   //! достаем и локал стореджа состояние фитрации по заголовку
   useEffect(() => {
     const ssIsChecked = JSON.parse(sessionStorage.getItem("isCheckedTeachers"));
-    console.log("ssIsChecked", ssIsChecked);
     if (ssIsChecked && ssIsChecked !== null && ssIsChecked.length > 0) {
       setIsChecked(ssIsChecked);
       setAllChecked(false);
@@ -49,7 +52,6 @@ function TableTeachers(props) {
     const ssUpdatedHeader = JSON.parse(
       sessionStorage.getItem("headerTeachers")
     );
-    console.log("ssUpdatedHeader", ssUpdatedHeader);
     if (ssUpdatedHeader && ssUpdatedHeader !== null) {
       setUpdatedHeader(ssUpdatedHeader);
     }
@@ -68,7 +70,6 @@ function TableTeachers(props) {
   const updateTable = () => {
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 2)) {
       apiEducatorDepartment().then((res) => {
-        console.log("teatcher ", res);
         if (res && res.status === 200) {
           appData.setEducator(res.data);
           //! филтрация по samplePoints
@@ -79,10 +80,10 @@ function TableTeachers(props) {
           setUpdatedHeader(tableHeaders);
         }
       });
-    }
-    else if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)) {
+    } else if (
+      appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)
+    ) {
       Educator().then((res) => {
-        console.log("teatcher ", res);
         if (res && res.status === 200) {
           appData.setEducator(res.data);
           const fdfix = FilteredSample(res.data, isChecked);
@@ -92,10 +93,10 @@ function TableTeachers(props) {
           setUpdatedHeader(tableHeaders);
         }
       });
-    }
-    else if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 45)){
+    } else if (
+      appData.metodRole[appData.myProfile?.role]?.some((el) => el === 45)
+    ) {
       GetAllUsers.then((res) => {
-        console.log("teatcher ", res);
         if (res && res.status === 200) {
           appData.setEducator(res.data);
           const fdfix = FilteredSample(res.data, isChecked);
@@ -162,7 +163,6 @@ function TableTeachers(props) {
       fd = updatedData;
     } else {
       fd = updatedData.filter((row) => {
-        console.log(row);
         return Object.values(row)
           .splice(1)
           .some((value) => {

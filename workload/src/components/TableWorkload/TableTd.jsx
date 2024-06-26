@@ -53,7 +53,6 @@ function TableTd(props) {
   const onClickButton = () => {
     let parsedValue = parseFloat(textareaTd);
     let numberValue = isNaN(parsedValue) ? textareaTd : parsedValue;
-    console.log("textareaTd", textareaTd, numberValue, parsedValue);
 
     //! параметры запроса на изменение данных
     const data = {
@@ -69,7 +68,6 @@ function TableTd(props) {
         }
         return item;
       });
-      console.log("updatedArray", updatedArray);
 
       basicTabData.setWorkloadDataFix(updatedArray);
       basicTabData.setFiltredData(updatedArray);

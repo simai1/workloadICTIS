@@ -13,20 +13,10 @@ function TableLks(props) {
   const [filteredData, setFilteredData] = useState([]);
   const [tableHeaders, setTableHeaders] = useState(tableHeadersLks);
 
-  // useEffect(()=>{
-  //   console.log("EducatorLkData", EducatorLkData)
-  //   console.log("EducatorLkData?.position", EducatorLkData.position)
-  //   console.log("EducatorLkData?.totalHours", EducatorLkData.totalHours)
-  //   console.log("EducatorLkData?.rate", EducatorLkData.rate)
-  //   setColorHours(appData.WhyColor(EducatorLkData?.position, EducatorLkData?.totalHours, EducatorLkData?.rate))
-  // },[EducatorLkData,])
-
   //! получаем данные личного кабинета преподавателя
   useEffect(() => {
-    console.log(props.educatorIdforLk);
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 41)) {
       EducatorLK(props.educatorIdforLk).then((data) => {
-        console.log("EducatorKard ", [data]);
         setEducatorLkData(data);
         setTableData([data]);
         setTableHeaders(headersEducator);
@@ -34,7 +24,6 @@ function TableLks(props) {
     }
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 40)) {
       EducatorKard(props.educatorIdforLk).then((data) => {
-        console.log("EducatorKard ", data);
         setEducatorLkData(data);
         setTableData(data.workloads[0]);
         setTableHeaders(tableHeadersLks);
