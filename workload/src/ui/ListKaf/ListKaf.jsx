@@ -68,7 +68,7 @@ function ListKaf({
   //! функция определения показывать ли общеинститутские и кафедральные слово
   const funGetAction = () => {
     if (
-      appData.myProfile.institutionalAffiliation === 1 ||
+      appData.myProfile.institutionalAffiliation === "ИКТИБ" ||
       appData.myProfile?.role === "METHODIST"
     ) {
       return true;

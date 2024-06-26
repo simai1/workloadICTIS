@@ -14,17 +14,10 @@ function Profile(props) {
     DEPUTY_DIRECTORATE: "Заместитель директора",
     DEPUTY_DEPARTMENT_HEAD: "Заместитель заведующего кафедрой",
   };
-  const institutName = {
-    1: "ИКТИБ",
-    2: "ИНЕП",
-    3: "ИРТСУ",
-  };
 
   const getInstitut = () => {
-    const iname = institutName[appData.myProfile?.institutionalAffiliation];
-    if (appData.myProfile?.role === "DIRECTORATE" && iname) {
-      return iname;
-    }
+    const iname = appData.myProfile?.institutionalAffiliation;
+    return iname;
   };
 
   //! закрытие модального окна при нажати вне него
