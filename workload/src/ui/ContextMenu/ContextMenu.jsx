@@ -33,6 +33,7 @@ const ContextMenu = (props) => {
   const handleContextMenu = (e) => {
     e.preventDefault();
   };
+  console.log("bufferAction", appData.bufferAction);
 
   //! нажатие на разделить
   const handleMouseClickPop = () => {
@@ -104,12 +105,10 @@ const ContextMenu = (props) => {
 
   const selectedEducator = (id) => {
     setMenuShow("");
-
     const data = {
-      workloadId: tabPar.selectedTr,
+      workloadIds: tabPar.selectedTr,
       educatorId: id,
     };
-
     console.log(data);
     if (menuShow === "educator") {
       EducatorLK(id).then((dataReq) => {
@@ -121,7 +120,7 @@ const ContextMenu = (props) => {
         const edicatorName = { edicatorName: dataReq?.name };
         basicTabData.setWorkloadDataFix(newData);
         basicTabData.setFiltredData(newData);
-        const workloadId = data.workloadId;
+        const workloadId = data.workloadIds;
         appData.setBufferAction([
           {
             request: "addEducatorWorkload",
@@ -133,7 +132,6 @@ const ContextMenu = (props) => {
           ...appData.bufferAction,
         ]);
         //! занесем id измененнных данных в состояние
-
         tabPar.setChangedData(
           addСhangedData(tabPar.changedData, "educator", tabPar.selectedTr)
         );
