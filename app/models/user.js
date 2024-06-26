@@ -1,7 +1,7 @@
-import { DataTypes, Model, SMALLINT } from "sequelize";
+import { DataTypes, Model, SMALLINT } from 'sequelize';
 import EnumRoles from '../config/roles.js';
 import EnumInstitutionalAffiliation from '../config/institutional-affiliations.js';
-import associateEducator from "../utils/associate-educator.js";
+import associateEducator from '../utils/associate-educator.js';
 
 export default class User extends Model {
     static initialize(sequelize) {
@@ -37,11 +37,12 @@ export default class User extends Model {
                 },
                 institutionalAffiliation: {
                     type: DataTypes.SMALLINT,
-                    allowNull: true,
+                    allowNull: false,
+                    defaultValue: 1,
                     validate: {
                         isIn: [Object.values(EnumInstitutionalAffiliation)],
                     },
-                }
+                },
             },
             {
                 sequelize,
@@ -51,9 +52,9 @@ export default class User extends Model {
                 paranoid: true,
             }
         );
-      User.afterCreate(async user => {
-        await associateEducator(user);
-      });
+        User.afterCreate(async user => {
+            await associateEducator(user);
+        });
     }
 }
 
