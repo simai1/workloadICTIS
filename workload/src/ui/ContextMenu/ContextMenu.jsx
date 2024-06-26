@@ -17,6 +17,7 @@ import {
   splitWorkloadCount,
   upDateEducator,
   addСhangedData,
+  upDateEducators,
 } from "./Function";
 import CommentsMenu from "./CommentsMenu";
 import PopupOffer from "./PopupOffer";
@@ -59,21 +60,62 @@ const ContextMenu = (props) => {
   };
 
   //! Выбор преподавателя
+  // const selectedEducator = (id) => {
+  //   // appData.metodRole[appData.myProfile?.role]?.some((el) => el === 9) &&
+  //   //   tabPar.setContextMenuShow(!tabPar.contextMenuShow);
+  //   setMenuShow("");
+
+  //   const data = {
+  //     workloadId: tabPar.selectedTr[0],
+  //     educatorId: id,
+  //   };
+
+  //   if (menuShow === "educator") {
+  //     EducatorLK(id).then((dataReq) => {
+  //       const { newData, prevState } = upDateEducator(
+  //         basicTabData?.workloadDataFix,
+  //         tabPar?.selectedTr[0],
+  //         dataReq?.name
+  //       );
+  //       const edicatorName = { edicatorName: dataReq?.name };
+  //       basicTabData.setWorkloadDataFix(newData);
+  //       basicTabData.setFiltredData(newData);
+  //       const workloadId = data.workloadId;
+  //       appData.setBufferAction([
+  //         {
+  //           request: "addEducatorWorkload",
+  //           data,
+  //           prevState,
+  //           edicatorName,
+  //           workloadId,
+  //         },
+  //         ...appData.bufferAction,
+  //       ]);
+  //       //! занесем id измененнных данных в состояние
+
+  //       tabPar.setChangedData(
+  //         addСhangedData(tabPar.changedData, "educator", [tabPar.selectedTr[0]])
+  //       );
+  //     });
+  //   } else if (menuShow === "propose") {
+  //     setPopupOffer(id);
+  //   }
+  // };
+
   const selectedEducator = (id) => {
-    // appData.metodRole[appData.myProfile?.role]?.some((el) => el === 9) &&
-    //   tabPar.setContextMenuShow(!tabPar.contextMenuShow);
     setMenuShow("");
 
     const data = {
-      workloadId: tabPar.selectedTr[0],
+      workloadId: tabPar.selectedTr,
       educatorId: id,
     };
 
+    console.log(data);
     if (menuShow === "educator") {
       EducatorLK(id).then((dataReq) => {
-        const { newData, prevState } = upDateEducator(
+        const { newData, prevState } = upDateEducators(
           basicTabData?.workloadDataFix,
-          tabPar?.selectedTr[0],
+          tabPar?.selectedTr,
           dataReq?.name
         );
         const edicatorName = { edicatorName: dataReq?.name };
@@ -91,8 +133,9 @@ const ContextMenu = (props) => {
           ...appData.bufferAction,
         ]);
         //! занесем id измененнных данных в состояние
+
         tabPar.setChangedData(
-          addСhangedData(tabPar.changedData, "educator", [tabPar.selectedTr[0]])
+          addСhangedData(tabPar.changedData, "educator", tabPar.selectedTr)
         );
       });
     } else if (menuShow === "propose") {

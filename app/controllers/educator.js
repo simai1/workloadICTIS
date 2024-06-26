@@ -190,11 +190,9 @@ export default {
     async deleteEducator({ params: { educatorId }, user }, res) {
         if (!educatorId) throw new AppErrorMissing('educatorId');
 
-        const thisEducator = await Educator.findOne({ where: { userId: user } });
-
-        if (educatorId === thisEducator.id) throw AppErrorForbiddenAction();
-
         const educator = await Educator.findByPk(educatorId);
+
+        if(educator.userId === user ) throw AppErrorForbiddenAction();
 
         if (!educator) {
             return res.status(404).json('Educator not found');

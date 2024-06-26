@@ -93,19 +93,19 @@ function TableTeachers(props) {
           setUpdatedHeader(tableHeaders);
         }
       });
-    } else if (
-      appData.metodRole[appData.myProfile?.role]?.some((el) => el === 45)
-    ) {
-      GetAllUsers.then((res) => {
-        if (res && res.status === 200) {
-          appData.setEducator(res.data);
-          const fdfix = FilteredSample(res.data, isChecked);
-          setFilteredData([...fdfix]);
-          // setFilteredData(res.data);
-          setUpdatedData(res.data);
-          setUpdatedHeader(tableHeaders);
-        }
-      });
+    // else if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 45)){
+    //   GetAllUse.then((res) => {
+    //     console.log("teatcher ", res);
+    //     if (res && res.status === 200) {
+    //       appData.setEducator(res.data);
+    //       const fdfix = FilteredSample(res.data, isChecked);
+    //       setFilteredData([...fdfix]);
+    //       // setFilteredData(res.data);
+    //       setUpdatedData(res.data);
+    //       setUpdatedHeader(tableHeaders);
+    //     }
+    //   });
+    // }
     }
   };
 
