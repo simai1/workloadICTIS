@@ -26,23 +26,7 @@ export function PopUpFile(props) {
       });
     }
   }, []);
-  // const cafData = [
-  //   { name: "ОИД", id: 0 },
-  //   { name: "БИТ", id: 1 },
-  //   { name: "ИИТиС", id: 2 },
-  //   { name: "ВТ", id: 3 },
-  //   { name: "ИАСБ", id: 4 },
-  //   { name: "ИБТКС", id: 5 },
-  //   { name: "ИМС", id: 6 },
-  //   { name: "МОП ЭВМ", id: 7 },
-  //   { name: "ПиБЖ", id: 8 },
-  //   { name: "САИТ", id: 9 },
-  //   { name: "САПР", id: 10 },
-  //   { name: "СиПУ", id: 11 },
-  //   { name: "ФМОИО", id: 12 },
-  // ];
-  // const allowedDepartmentsNames = cafData.filter(department => appData.myProfile.allowedDepartments.includes(department.id)).map(department => department.name);
-  const fileInputRef = useRef(null);
+ const fileInputRef = useRef(null);
 
   const closeMenuPopFile = () => {
     appData.setFileData(null);

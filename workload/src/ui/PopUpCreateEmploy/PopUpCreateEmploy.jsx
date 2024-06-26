@@ -48,11 +48,18 @@ export function PopUpCreateEmploy(props) {
   useEffect(() => {
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 46)) {
       GetAllDepartments().then((resp) => {
-        setDataKaf(resp.data);
+        let newData = resp.data.filter(obj => obj.name !== "ОИД");
+        setDataKaf(newData);
       });
     } else {
       GetUsibleDepartment().then((resp) => {
-        setDataKaf(resp.data);
+        
+        if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 47)){
+          let newData = resp.data.filter(obj => obj.name !== "ОИД");
+          setDataKaf(newData);
+        }else{
+          setDataKaf(resp.data);
+        }
       });
     }
   }, []);
