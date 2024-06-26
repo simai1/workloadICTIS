@@ -143,12 +143,16 @@ export default {
                         include: { model: Educator },
                         order: orderRule,
                     });
-                } else if(_user.role === 4 || _user.role === 7){
-                    if(!_user.institutionalAffiliation) throw new Error('Нет привязки (institutionalAffiliation) к институту у директора');
+                } else if (_user.role === 4 || _user.role === 7) {
+                    if (!_user.institutionalAffiliation) {
+                        throw new Error('Нет привязки (institutionalAffiliation) к институту у директора');
+                    }
                     const allowedDepartments = [];
 
-                    const start = _user.institutionalAffiliation === 1? 0 : _user.institutionalAffiliation === 2? 13 : 17;
-                    const end = _user.institutionalAffiliation === 1? 12 : _user.institutionalAffiliation === 2? 16 : 24;
+                    const start =
+                        _user.institutionalAffiliation === 1 ? 0 : _user.institutionalAffiliation === 2 ? 13 : 17;
+                    const end =
+                        _user.institutionalAffiliation === 1 ? 12 : _user.institutionalAffiliation === 2 ? 16 : 24;
 
                     for (let i = start; i <= end; i++) {
                         allowedDepartments.push(i);
@@ -176,11 +180,14 @@ export default {
             }
             res.json(workloadsDto);
         } catch (error) {
-            res.status(500).json({error: error.message});
+            res.status(500).json({ error: error.message });
         }
     },
     async getAllDepartment(req, res) {
-        const departmentsObj = Object.entries(departments).map(([name, id]) => ({ name, id }));
+        const departmentsObj = Object.entries(departments).map(([name, id]) => ({
+            name,
+            id,
+        }));
         res.json(departmentsObj);
     },
 
@@ -235,7 +242,10 @@ export default {
             const remainder = studentsCount % n;
             // Создаем и сохраняем новые нагрузки в базу данных
             for (let i = 0; i < n; i++) {
-                const copyWorkload = { ...workload.get(), isMerged: false };
+                const copyWorkload = {
+                    ...workload.get(),
+                    isMerged: false,
+                };
                 copyWorkload.isSplit = true;
                 copyWorkload.originalId = workload.id;
                 delete copyWorkload.id;
@@ -308,31 +318,31 @@ export default {
         }
     },
 
-    async facultyEducator({ body: { educatorIds, workloadIds } }, res) {
-        if (!educatorIds) throw new AppErrorMissing('educatorIds');
+    async facultyEducator({ body: { educatorId, workloadIds } }, res) {
+        if (!educatorId) throw new AppErrorMissing('educatorIds');
         if (!workloadIds) throw new AppErrorMissing('workloadIds');
-        if (!Array.isArray(educatorIds)) throw new AppErrorInvalid('educatorIds');
         if (!Array.isArray(workloadIds)) throw new AppErrorInvalid('workloadIds');
-        if (educatorIds.length !== workloadIds.length) throw new AppErrorInvalid('workloadIds length !== educatorIds length');
 
-        const checkWorkloads = await Workload.findAll({ where: {id: workloadIds} });
+        const checkWorkloads = await Workload.findAll({ where: { id: workloadIds } });
         if (checkWorkloads.some(workload => !workload)) throw new AppErrorNotExist('workload');
 
-        for (let i = 0; i < educatorIds.length; i++){
-            await Workload.update(
-              { educatorId: educatorIds[i] },
-              {
-                  where: { id: workloadIds[i] },
-                  individualHooks: true,
-              }
-            );
-            await History.create({
+        await Workload.update(
+            { educatorId },
+            {
+                where: { id: workloadIds },
+                individualHooks: true,
+            }
+        );
+        const historyData = [];
+        for (let i = 0; i < workloadIds.length; i++) {
+            historyData.push({
                 type: 3,
                 department: checkWorkloads[i].department,
                 before: [],
                 after: [workloadIds[i]],
             });
         }
+        await History.bulkCreate(historyData);
 
         res.json({ status: 'OK' });
     },
@@ -436,7 +446,6 @@ export default {
             return chain.then(() => workload.destroy());
         }, Promise.resolve());
 
-
         await History.create({
             type: 2,
             department: workloads[0].department,
@@ -532,17 +541,17 @@ export default {
                     blocked: false,
                 });
             }
-        } else if(role === 6) {
+        } else if (role === 6) {
             const allowedDepartments = checkUser.allowedDepartments;
             const departments = await Workload.findAll({
                 attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('department')), 'department']],
                 order: [['department', 'ASC']],
             });
             for (const usableDepartment of departments) {
-                if(allowedDepartments.includes(usableDepartment.department)){
+                if (allowedDepartments.includes(usableDepartment.department)) {
                     const department = mapDepartments[usableDepartment.department];
                     const workload = await Workload.findOne({ where: { department: usableDepartment.department } });
-                    if (workload.isBlocked === true ) {
+                    if (workload.isBlocked === true) {
                         usableDepartments.push({
                             id: usableDepartment.department,
                             name: department,
@@ -557,15 +566,15 @@ export default {
                     }
                 }
             }
-        } else if(role === 4 || role === 7){
+        } else if (role === 4 || role === 7) {
             let departments;
-            if(checkUser.institutionalAffiliation === 1){
+            if (checkUser.institutionalAffiliation === 1) {
                 departments = await Workload.findAll({
                     attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('department')), 'department']],
                     where: {
                         department: {
-                            [Sequelize.Op.between]: [0, 12]
-                        }
+                            [Sequelize.Op.between]: [0, 12],
+                        },
                     },
                     order: [['department', 'ASC']],
                 });
@@ -574,8 +583,8 @@ export default {
                     attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('department')), 'department']],
                     where: {
                         department: {
-                            [Sequelize.Op.between]: [13, 16]
-                        }
+                            [Sequelize.Op.between]: [13, 16],
+                        },
                     },
                     order: [['department', 'ASC']],
                 });
@@ -584,8 +593,8 @@ export default {
                     attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('department')), 'department']],
                     where: {
                         department: {
-                            [Sequelize.Op.between]: [17, 24]
-                        }
+                            [Sequelize.Op.between]: [17, 24],
+                        },
                     },
                     order: [['department', 'ASC']],
                 });
@@ -677,30 +686,50 @@ export default {
     async getDepartmentsForDirectorate(req, res) {
         const _user = await User.findByPk(req.user);
         let filteredDepartments;
-        if(_user.role === 4 || _user.role === 7){
-            if(!_user.institutionalAffiliation) throw new Error('Нет привязки (institutionalAffiliation) к институту у директора');
+        if (_user.role === 4 || _user.role === 7) {
+            if (!_user.institutionalAffiliation) {
+                throw new Error('Нет привязки (institutionalAffiliation) к институту у директора');
+            }
 
-            if(_user.institutionalAffiliation === 1){
-                filteredDepartments = Object.entries(departments).slice(0, 13).map(([name, id]) => ({ name, id }));
+            if (_user.institutionalAffiliation === 1) {
+                filteredDepartments = Object.entries(departments)
+                    .slice(0, 13)
+                    .map(([name, id]) => ({
+                        name,
+                        id,
+                    }));
             } else if (_user.institutionalAffiliation === 2) {
-                filteredDepartments = Object.entries(departments).slice(13, 17).map(([name, id]) => ({ name, id }));
+                filteredDepartments = Object.entries(departments)
+                    .slice(13, 17)
+                    .map(([name, id]) => ({
+                        name,
+                        id,
+                    }));
             } else if (_user.institutionalAffiliation === 3) {
-                filteredDepartments = Object.entries(departments).slice(17, 25).map(([name, id]) => ({ name, id }));
+                filteredDepartments = Object.entries(departments)
+                    .slice(17, 25)
+                    .map(([name, id]) => ({
+                        name,
+                        id,
+                    }));
             } else {
                 throw new Error('Такого института не добавленно');
             }
-        }else if (_user.role === 6){
-            const filteredDepartmentsNew = []
+        } else if (_user.role === 6) {
+            const filteredDepartmentsNew = [];
             const allowed = _user.allowedDepartments;
-            for (const x of filteredDepartments){
-                if (allowed.includes(departments[x.name])){
+            for (const x of filteredDepartments) {
+                if (allowed.includes(departments[x.name])) {
                     filteredDepartmentsNew.push(x);
                 }
             }
             res.json(filteredDepartmentsNew);
-        } else if (_user.role === 1){
-            filteredDepartments = Object.entries(departments).map(([name, id]) => ({ name, id }));
-            console.log(filteredDepartments)
+        } else if (_user.role === 1) {
+            filteredDepartments = Object.entries(departments).map(([name, id]) => ({
+                name,
+                id,
+            }));
+            console.log(filteredDepartments);
         }
         res.json(filteredDepartments);
     },
