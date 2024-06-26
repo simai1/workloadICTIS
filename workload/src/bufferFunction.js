@@ -90,8 +90,11 @@ export async function returnPrevState(buffer, data) {
     buffer[0].request === "addEducatorWorkload"
   ) {
     const newUpdatedData = data.map((item) => {
-      if (item.id === buffer[0].data.workloadId) {
-        return { ...item, educator: prev };
+      if (buffer[0].data.workloadIds.some((e) => e === item.id)) {
+        return {
+          ...item,
+          educator: prev.find((el) => el.workloadId === item.id).state,
+        };
       }
       return item;
     });
