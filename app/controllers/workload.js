@@ -308,26 +308,31 @@ export default {
         }
     },
 
-    async facultyEducator({ body: { educatorId, workloadId } }, res) {
-        if (!educatorId) throw new AppErrorMissing('educatorId');
-        if (!workloadId) throw new AppErrorMissing('workloadId');
-        const checkWorkload = await Workload.findByPk(workloadId);
-        if (!checkWorkload) throw new AppErrorNotExist('workload');
+    async facultyEducator({ body: { educatorIds, workloadIds } }, res) {
+        if (!educatorIds) throw new AppErrorMissing('educatorIds');
+        if (!workloadIds) throw new AppErrorMissing('workloadIds');
+        if (!Array.isArray(educatorIds)) throw new AppErrorInvalid('educatorIds');
+        if (!Array.isArray(workloadIds)) throw new AppErrorInvalid('workloadIds');
+        if (educatorIds.length !== workloadIds.length) throw new AppErrorInvalid('workloadIds length !== educatorIds length');
 
-        await Workload.update(
-            { educatorId },
-            {
-                where: { id: workloadId },
-                individualHooks: true,
-            }
-        );
+        const checkWorkloads = await Workload.findAll({ where: {id: workloadIds} });
+        if (checkWorkloads.some(workload => !workload)) throw new AppErrorNotExist('workload');
 
-        await History.create({
-            type: 3,
-            department: checkWorkload.department,
-            before: [],
-            after: [workloadId],
-        });
+        for (let i = 0; i < educatorIds.length; i++){
+            await Workload.update(
+              { educatorId: educatorIds[i] },
+              {
+                  where: { id: workloadIds[i] },
+                  individualHooks: true,
+              }
+            );
+            await History.create({
+                type: 3,
+                department: checkWorkloads[i].department,
+                before: [],
+                after: [workloadIds[i]],
+            });
+        }
 
         res.json({ status: 'OK' });
     },
