@@ -13,6 +13,7 @@ router
     .get(
         asyncRoute(
             checkRole([
+                role.GIGA_ADMIN,
                 role.UNIT_ADMIN,
                 role.LECTURER,
                 role.EDUCATOR,
@@ -28,6 +29,7 @@ router
     .patch(
         asyncRoute(
             checkRole([
+                role.GIGA_ADMIN,
                 role.UNIT_ADMIN,
                 role.DEPARTMENT_HEAD,
                 role.DIRECTORATE,
@@ -41,6 +43,7 @@ router
     .delete(
         asyncRoute(
             checkRole([
+                role.GIGA_ADMIN,
                 role.UNIT_ADMIN,
                 role.DEPARTMENT_HEAD,
                 role.DIRECTORATE,
@@ -56,6 +59,7 @@ router
     .get(
         asyncRoute(
             checkRole([
+                role.GIGA_ADMIN,
                 role.UNIT_ADMIN,
                 role.DIRECTORATE,
                 role.DEPARTMENT_HEAD,
@@ -69,6 +73,7 @@ router
     .post(
         asyncRoute(
             checkRole([
+                role.GIGA_ADMIN,
                 role.UNIT_ADMIN,
                 role.DEPARTMENT_HEAD,
                 role.DIRECTORATE,
@@ -84,6 +89,7 @@ router
     .get(
         asyncRoute(
             checkRole([
+                role.GIGA_ADMIN,
                 role.UNIT_ADMIN,
                 role.DEPARTMENT_HEAD,
                 role.DIRECTORATE,
@@ -99,6 +105,7 @@ router
     .get(
         asyncRoute(
             checkRole([
+                role.GIGA_ADMIN,
                 role.UNIT_ADMIN,
                 role.DEPARTMENT_HEAD,
                 role.DIRECTORATE,
