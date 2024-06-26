@@ -12,6 +12,7 @@ export default {
         const user = await User.findByPk(req.user, { include: Educator });
         if (!user) throw new AppErrorNotExist('user');
         const userDto = new UserDto(user);
+        userDto.educator.departmentId = user.Educator.department;
         res.json(userDto);
     },
 

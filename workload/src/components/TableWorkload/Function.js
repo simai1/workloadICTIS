@@ -96,7 +96,7 @@ export function funFilterSelected(
   allOffersData
 ) {
   const origData = [...data];
-  if (selectedFilter === "Выделенные" && colored.length > 0) {
+  if (selectedFilter === "Выделенные") {
     let fd = [];
     fd = origData.filter((item) =>
       colored.some((el) => el.workloadId === item.id)
@@ -131,7 +131,6 @@ export function funFilterSelected(
 }
 
 export function getTextForNotData(selectedFilter) {
-  console.log("selectedFilter", selectedFilter);
   if (selectedFilter === "Измененные") {
     return "Нет измененных данных";
   } else if (selectedFilter === "Закрепленные") {
@@ -165,13 +164,10 @@ export function funfastenedDataSort(data, fastenedData) {
 
 //! функция удаления обьекта по id при нажатии на применить удаление
 export function deleteItemBuffer(buff, itemId, type) {
-  console.log("fundata", buff, itemId, type);
-
   let itemData = null;
   let newBuffer = buff
     .map((item) => {
       if (item.request === type) {
-        console.log("item.request true", type, "id");
         let p = { ...item };
         itemData = p;
         p.data.ids = p.data.ids.filter((id) => id !== itemId.slice(0, -1));
@@ -186,7 +182,6 @@ export function deleteItemBuffer(buff, itemId, type) {
       }
     })
     .filter(Boolean);
-  console.log("newBuffer", newBuffer);
   return { buffer: newBuffer, item: itemData };
 }
 

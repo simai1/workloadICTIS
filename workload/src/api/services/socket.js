@@ -9,7 +9,7 @@ function socketConnect() {
 
   return new Promise((resolve) => {
     socket.on("connect", (data) => {
-      console.log("Получен ответ от сервера:", data);
+      // console.log("Получен ответ от сервера:", data);
     });
     socket.on("notificationCreated", (data) => {
       // console.log("notificationCreated", data);

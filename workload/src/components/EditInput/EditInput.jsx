@@ -109,14 +109,11 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
   //! при нажатии все
   function takeFunctionAll() {
     setIsAllChecked(!isAllChecked);
-    console.log("isChecked", isChecked);
     if (isChecked.length !== 0) {
-      console.log("1");
       setChecked([]);
       basicTabData.setTableHeaders([...originalHeader]);
       sessionStorage.setItem(ssname, JSON.stringify([...originalHeader]));
     } else {
-      console.log("2");
       setChecked([...originalHeader.slice(3)].map((el) => el.key));
       basicTabData.setTableHeaders([...originalHeader].slice(0, 3));
       sessionStorage.setItem(
@@ -126,26 +123,23 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
     }
   }
 
-  // useEffect(() => {
-  //   console.log("isChecked", isChecked);
-  // }, [isChecked]);
-
   return (
     <div ref={refLO} className={styles.EditInput}>
       {!isListOpen && (
         <button onClick={toggleList}>
           <p className={styles.textButton}>Редактирование полей</p>
-          {
-              (isChecked.length > 0 && !isListOpen)  ?  <img src="./img/filter.svg" alt="arrow"/> : <img src={arrow} alt="arrow"></img>
-              }
-          
+          {isChecked.length > 0 && !isListOpen ? (
+            <img src="./img/filterColumn.svg" alt="arrow" />
+          ) : (
+            <img src={arrow} alt="arrow"></img>
+          )}
         </button>
       )}
       {isListOpen && (
         <div className={`${styles.EditInputOpen} ${styles.fadein}`}>
           <button onClick={toggleList}>
             <p>Редактирование полей</p>
-           <img
+            <img
               src={arrow}
               alt="arrow"
               style={{
@@ -154,7 +148,6 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
                 position: "relative",
               }}
             />
-            
           </button>
           <input
             placeholder="Поиск"
@@ -177,26 +170,26 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
                 <p>Все</p>
               </li>
               {searchResults.map((row, index) => (
-                <>
-                {
-                  (row.label !== "№" && row.label !== "Дисциплина" &&
-                  row.label !== "Нагрузка" && row.label !== "Преподаватель" &&
-                  row.label !== "Должность") && 
-                <li key={index}>
-                  <input
-                    type="checkbox"
-                    onChange={() => takeFunction(index, row)}
-                    checked={!isChecked.includes(row.key)}
-                    className={styles.customInput}
-                    id={`search3-${index}`}
-                    name="search3"
-                  />
-                  
-                  <p>{row.label}</p>
-                </li>
-                }
-                </>
+                <div key={index + 1}>
+                  {row.label !== "№" &&
+                    row.label !== "Дисциплина" &&
+                    row.label !== "Нагрузка" &&
+                    row.label !== "Преподаватель" &&
+                    row.label !== "Должность" && (
+                      <li key={index}>
+                        <input
+                          type="checkbox"
+                          onChange={() => takeFunction(index, row)}
+                          checked={!isChecked.includes(row.key)}
+                          className={styles.customInput}
+                          id={`search3-${index}`}
+                          name="search3"
+                        />
 
+                        <p>{row.label}</p>
+                      </li>
+                    )}
+                </div>
               ))}
             </ul>
           </div>

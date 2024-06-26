@@ -250,14 +250,12 @@ function App() {
   function funUpdateAllComments() {
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 37)) {
       CommentsLecktorer().then((data) => {
-        console.log("comments", data);
         setAllCommentsData(data);
       });
     } else if (
       appData.metodRole[appData.myProfile?.role]?.some((el) => el === 20)
     ) {
       Comment().then((data) => {
-        console.log("comments", data);
         setAllCommentsData(data);
       });
     }
@@ -268,14 +266,12 @@ function App() {
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 17.1)) {
       getOffersLecturer().then((req) => {
         if (req && req.status === 200) {
-          console.log("предложения", req.data);
           setAllOffersData(req.data);
         }
       });
     } else {
       getOffers().then((req) => {
         if (req && req.status === 200) {
-          console.log("предложения", req.data);
           setAllOffersData(req.data);
         }
       });
@@ -285,7 +281,6 @@ function App() {
   //! функция обновления истории
   function funUpdateHistory() {
     apiGetHistory().then((req) => {
-      console.log("history", req);
       setHistoryChanges(req);
     });
   }
@@ -293,7 +288,6 @@ function App() {
   //! функция получения закрепленных строк
   function funUpdateFastenedData() {
     getAllAttaches().then((data) => {
-      console.log("закрепленные", data);
       if (data.length > 0) {
         setFastenedData(data);
       }
@@ -311,7 +305,6 @@ function App() {
   //! функция получения выделенных цветом строк
   function funUpdateAllColors() {
     getAllColors().then((data) => {
-      console.log("выделенные", data);
       if (data.length > 0) {
         setColoredData(data);
       }
@@ -361,12 +354,10 @@ function App() {
 
   //! функция обновления таблицы
   function funUpdateTable(param) {
-    console.log("param", param);
     //param = tableDepartment[0]?.id
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
       Workload("").then((data) => {
         if (data) {
-          console.log("work", data);
           funUpdTab(data);
         }
       });
@@ -381,7 +372,6 @@ function App() {
       } else if (param != 99 && param != 0) {
         url = `?department=${param}`;
       }
-      console.log("url", url);
       Workload(`${url}`).then((data) => {
         funUpdTab(data);
       });
@@ -501,11 +491,7 @@ function App() {
   //! получаем данные нагрузок с бд
   useEffect(() => {
     if (myProfile) {
-      // console.log("myProfile", myProfile);
-      // console.log("tableDepartment", tableDepartment);
-      // appData.metodRole[appData.myProfile?.role]?.some((el) => el === 42)
       setnameKaf(tableDepartment[0]?.name);
-      // : setnameKaf("ОИД");
       updateAlldata();
     }
   }, [tableDepartment, myProfile]); // [myProfile, tableDepartment]
@@ -524,8 +510,6 @@ function App() {
   //! при переходе с кафедральных на общеинституские и обратно фильтруем основные
   //! фильтруем по FiltredRows
   useEffect(() => {
-    // const splitData = funSplitData(workloadDataFix, dataIsOid);
-    // console.log("workloadDataFix", splitData);
     const filterSelected = funFilteredFilterSelected();
     if (filterSelected) {
       setFiltredData(funSortedFastened(filterSelected, fastenedData));
@@ -551,14 +535,6 @@ function App() {
       tableRefWorkload.current.scrollTo(0, 0);
     }
   }, [selectedFilter, selectedTable, tableRefWorkload, nameKaf]);
-
-  //! при изменении закрпеленных перемещаем их наверх и сортируем массив
-  //? ЕСЛИ ЧТО РАСКОМЕНТИТЬ
-  // useEffect(() => {
-  //   const fd = funSortedFastened(filtredData, fastenedData);
-  //   console.log("fd", fd);
-  //   setFiltredData(fd);
-  // }, [fastenedData, filtredData]);
 
   //! следим за нажатием ctrl + s для сохранения изменений
   useEffect(() => {
@@ -588,7 +564,6 @@ function App() {
 
   //! функция отмены последенего действия с буффера
   function backBuffer() {
-    console.log("отеменено последнее действие", bufferAction);
     //! отмена последнего действия
     if (bufferAction.length > 0) {
       if (

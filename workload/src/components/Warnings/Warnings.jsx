@@ -27,10 +27,8 @@ function Warnings(props) {
   };
   useEffect(() => {
     socketConnect().then((data) => {
-      console.log("socketConnect", data);
       getAllWarnin(appData.setAllWarningMessage);
     });
-    console.log("allWarningMessage", appData.allWarningMessage);
   }, [appData.allWarningMessage]);
 
   //! закрытие модального окна при нажатии вне него

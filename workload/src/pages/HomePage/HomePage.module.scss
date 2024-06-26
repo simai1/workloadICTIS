@@ -207,11 +207,11 @@ body {
 
   .perenesen {
     button {
-      @include button(var(--blue-color), #fff, 10px, 16px);
+      @include button(var(--blue-color), #fff, 9px, 16px);
       font-size: 18px;
       border: none;
     }
-    margin-left: 10px;
+    margin-left: 0px;
   }
 
   .saveBuffre {

@@ -26,12 +26,10 @@ function ListKaf({
   const addKafedra = (el) => {
     if (el.name === "ОИД") {
       basicTabData.setselectISOid(true);
-    
     } else {
       basicTabData.setselectISOid(false);
     }
     basicTabData.funUpdateTable(el.id);
-    console.log("selectEl", el);
     basicTabData.setnameKaf(el.name);
     setactiveList(!activeList);
     setopenLists("");
@@ -43,7 +41,6 @@ function ListKaf({
   const refDiv = useRef(null);
   //! закрытие модального окна при нажати вне него
   useEffect(() => {
-    console.log("defaultValue", defaultValue);
     setopenLists("");
     const handler = (event) => {
       if (refDiv.current && !refDiv.current.contains(event.target)) {

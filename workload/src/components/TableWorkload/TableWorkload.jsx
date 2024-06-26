@@ -25,7 +25,6 @@ function TableWorkload(props) {
 
   //! закрепленные данные ставим в начало таблицы
   useEffect(() => {
-    // console.log(tabPar.fastenedData);
     basicTabData.setWorkloadDataFix(
       funfastenedDataSort(basicTabData.workloadDataFix, tabPar.fastenedData)
     );
@@ -50,7 +49,6 @@ function TableWorkload(props) {
   //! достаем и локал стореджа состояние фитрации по заголовку
   useEffect(() => {
     const ssIsChecked = JSON.parse(sessionStorage.getItem("isCheckedWorkload"));
-    console.log("ssIsChecked", ssIsChecked);
     if (ssIsChecked && ssIsChecked !== null && ssIsChecked.length > 0) {
       checkPar.setIsChecked(ssIsChecked);
       checkPar.setAllChecked(false);

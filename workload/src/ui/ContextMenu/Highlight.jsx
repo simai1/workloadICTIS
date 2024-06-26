@@ -43,7 +43,6 @@ export function Highlight() {
         color: colorNumber,
         colorIds: setWorkloadIds,
       };
-      console.log("setData", setData);
 
       if (workloadIds.length > 0) {
         apiAddColored(data).then(() => {

@@ -80,7 +80,6 @@ function HomePage() {
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 23)) {
       socketConnect();
       getAllWarningMessage().then((res) => {
-        console.log("Все предупреждения", res);
         appData.setAllWarningMessage(res);
       });
     }
@@ -105,7 +104,6 @@ function HomePage() {
     if (component === "Disciplines") {
       basicTabData.setTableHeaders(workloadTableHeaders);
     } else if (component === "Teachers") {
-      console.log(component);
       basicTabData.setTableHeaders(educatorTableHeaders);
     } else {
       basicTabData.setTableHeaders(educatorLkHeaders);
@@ -181,7 +179,6 @@ function HomePage() {
               }
             });
           } else {
-            console.log("tableDepartment", basicTabData.tableDepartment);
             const index = basicTabData.tableDepartment.find(
               (el) => el.name === basicTabData.nameKaf
             ).id;
@@ -247,6 +244,11 @@ function HomePage() {
     tabPar.setSelectedFilter,
   ]);
 
+  //! при переходе на другую таблицу то сбрасываем поиск
+  useEffect(() => {
+    basicTabData.setSearchTerm("");
+  }, [appData.selectedComponent]);
+
   return (
     <Layout>
       <div className={styles.HomePage}>
@@ -299,28 +301,29 @@ function HomePage() {
                 )}
                 {appData.metodRole[appData.myProfile?.role]?.some(
                   (el) => el === 26
-                ) && ( appData.selectedComponent === "Disciplines") && (
-                  <div className={styles.btnMenuBox} onClick={onSaveClick}>
-                    <img
-                      className={styles.btnLeft}
-                      src="./img/saveButton.svg"
-                    />
-                    {popupSaveAll && (
-                      <ConfirmSaving
-                        title={"Вы уверены, что хотите сохранить изменения?"}
-                        confirmClick={confirmClick}
-                        setShow={setPopupSaveAll}
+                ) &&
+                  appData.selectedComponent === "Disciplines" && (
+                    <div className={styles.btnMenuBox} onClick={onSaveClick}>
+                      <img
+                        className={styles.btnLeft}
+                        src="./img/saveButton.svg"
                       />
-                    )}
-                  </div>
-                )}
+                      {popupSaveAll && (
+                        <ConfirmSaving
+                          title={"Вы уверены, что хотите сохранить изменения?"}
+                          confirmClick={confirmClick}
+                          setShow={setPopupSaveAll}
+                        />
+                      )}
+                    </div>
+                  )}
 
                 {appData.metodRole[appData.myProfile?.role]?.some(
                   (el) => el === 27
                 ) &&
                   basicTabData.nameKaf != "Все" &&
-                  !blockTable && 
-                  ( appData.selectedComponent === "Disciplines") &&
+                  !blockTable &&
+                  appData.selectedComponent === "Disciplines" &&
                   appData.selectedComponent !== "History" && (
                     <div
                       style={{ marginRight: "15px" }}

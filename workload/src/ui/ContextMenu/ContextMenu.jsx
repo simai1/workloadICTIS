@@ -29,10 +29,6 @@ const ContextMenu = (props) => {
   const [popupComment, setPopupComment] = useState(false);
   const [popupCommentAction, setPopupCommentAction] = useState(null);
 
-  useEffect(() => {
-    console.log("bufferAction", appData.bufferAction);
-  }, []);
-
   const handleContextMenu = (e) => {
     e.preventDefault();
   };
@@ -59,7 +55,6 @@ const ContextMenu = (props) => {
 
   //! оставить комментарий
   const onAddComment = () => {
-    console.log("оставить комментарий");
     setMenuShow(menuShow === "commentsMenu" ? "" : "commentsMenu");
   };
 
@@ -102,7 +97,6 @@ const ContextMenu = (props) => {
       });
     } else if (menuShow === "propose") {
       setPopupOffer(id);
-      console.log("popup", id);
     }
   };
 
@@ -148,7 +142,6 @@ const ContextMenu = (props) => {
   //! разделение нагрузки на count
   const handleSplitWorkload = (cou) => {
     const count = Number(cou);
-    console.log("tabPar.selectedTr", tabPar.selectedTr);
     const dataSel = {
       ids: tabPar.selectedTr,
       n: count,
@@ -156,8 +149,6 @@ const ContextMenu = (props) => {
     const prev = basicTabData.workloadDataFix.filter((item) =>
       tabPar.selectedTr.some((el) => el === item.id)
     );
-
-    console.log("prev", prev);
 
     // Создаем новый массив для измененных данных
     let updatedData = [...basicTabData.workloadDataFix];
@@ -198,9 +189,7 @@ const ContextMenu = (props) => {
       tabPar.selectedTr
     );
     if (funData === null) {
-      // console.error("неправильно соеденяем данные");
       appData.seterrorPopUp(true);
-      console.log(appData.errorPopUp);
     } else {
       tabPar.setSelectedTr([]);
       basicTabData.setWorkloadDataFix(funData.newUpdatedData);
@@ -267,7 +256,6 @@ const ContextMenu = (props) => {
     const fastened = tabPar.selectedTr.filter(
       (item) => !tabPar.fastenedData.some((el) => el.workloadId === item)
     );
-    console.log(fastened);
     if (fastened.length > 0) {
       const data = {
         workloadIds: fastened,
