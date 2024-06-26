@@ -210,9 +210,9 @@ function HomePage() {
 
   //! при нажатии на ракету
   const raketClick = () => {
-    // visibleDataPar.setStartData(0);
-    // const table = document.querySelector("table");
-    // table.scrollIntoView(true);
+    visibleDataPar.setStartData(0);
+    const table = document.querySelector("table");
+    table.scrollIntoView(true);
     visibleDataPar.setStartData(0);
     if (tabPar.tableRefWorkload.current) {
       tabPar.tableRefWorkload.current.scrollTo(0, 0);
