@@ -13,6 +13,7 @@ function Profile(props) {
     UNIT_ADMIN: "Администратор подразделения",
     DEPUTY_DIRECTORATE: "Заместитель директора",
     DEPUTY_DEPARTMENT_HEAD: "Заместитель заведующего кафедрой",
+    GIGA_ADMIN: "БОГ"
   };
   const institutName = {
     1: "ИКТИБ",
