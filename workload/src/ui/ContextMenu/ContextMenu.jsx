@@ -351,7 +351,7 @@ const ContextMenu = (props) => {
       <div style={positStyle} className={styles.blockMenu}>
         {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 9) && (
           <MenuPop
-            btnText={"Добавить преподователя"}
+            btnText={"Добавить преподавателя"}
             func={addEducator}
             menuShow={menuShow === "educator"}
             img={true}
