@@ -6,6 +6,16 @@ export function upDateEducator(data, ItemSelectedTr, name) {
   return { newData: updatedData, prevState };
 }
 
+export function upDateEducators(data, ItemSelectedTr, name) {
+  const updatedData = data.map((obj) =>
+    ItemSelectedTr.some((e) => e === obj.id) ? { ...obj, educator: name } : obj
+  );
+  const prevState = data.find((obj) =>
+    ItemSelectedTr.some((e) => e === obj.id)
+  )?.educator;
+  return { newData: updatedData, prevState };
+}
+
 export function splitWorkloadCount(data, selectedTr, count) {
   const updatedData = [...data];
   const newIds = [];

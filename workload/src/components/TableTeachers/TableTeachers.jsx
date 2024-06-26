@@ -93,7 +93,6 @@ function TableTeachers(props) {
           setUpdatedHeader(tableHeaders);
         }
       });
-    }
     // else if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 45)){
     //   GetAllUse.then((res) => {
     //     console.log("teatcher ", res);
@@ -107,6 +106,7 @@ function TableTeachers(props) {
     //     }
     //   });
     // }
+    }
   };
 
   //! заносим данные о преподавателях в состояние
