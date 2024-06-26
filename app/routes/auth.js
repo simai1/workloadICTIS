@@ -2,6 +2,8 @@ import { Router } from 'express';
 import authController from '../controllers/auth.js';
 import { asyncRoute } from '../utils/errors.js';
 import passport from 'passport';
+import associateEducator from "../utils/associate-educator.js";
+import User from "../models/user.js";
 
 const router = Router();
 
@@ -12,7 +14,9 @@ router.get(
         failureRedirect: '/client',
         scope: ['profile'],
     }),
-    (req, res) => {
+    async (req, res) => {
+        const user = User.findByPk(req.user);
+        await associateEducator(user);
         res.redirect('/');
     }
 );
