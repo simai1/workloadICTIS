@@ -13,12 +13,14 @@ function Profile(props) {
     UNIT_ADMIN: "Администратор подразделения",
     DEPUTY_DIRECTORATE: "Заместитель директора",
     DEPUTY_DEPARTMENT_HEAD: "Заместитель заведующего кафедрой",
-    GIGA_ADMIN: "БОГ"
+    GIGA_ADMIN: "Администратор системы",
   };
 
   const getInstitut = () => {
     const iname = appData.myProfile?.institutionalAffiliation;
-    return iname;
+    if (appData.myProfile?.role === "DIRECTORATE") {
+      return iname;
+    }
   };
 
   //! закрытие модального окна при нажати вне него

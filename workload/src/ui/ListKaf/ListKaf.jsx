@@ -69,7 +69,8 @@ function ListKaf({
   const funGetAction = () => {
     if (
       appData.myProfile.institutionalAffiliation === "ИКТИБ" ||
-      appData.myProfile?.role === "METHODIST"
+      appData.myProfile?.role === "METHODIST" ||
+      appData.myProfile?.role === "GIGA_ADMIN"
     ) {
       return true;
     } else return false;
