@@ -34,6 +34,7 @@ function ErrorHelper(props) {
             Если у вас возникла ошибка, сообщите на почту:
             <a href="mailto:example@example.com">alis@sfedu.ru</a>
           </p>
+          {/* <p>Инструкция</p> */}
         </div>
       )}
     </div>

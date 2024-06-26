@@ -24,13 +24,18 @@ function ListKaf({
     }
   };
   const addKafedra = (el) => {
-    if (el.name === "ОИД") {
+    if (el.name === "Все"){
+      basicTabData.setselectISOid(false);
+      basicTabData.funUpdateTable("all");
+    }
+    else if (el.name === "ОИД") {
       basicTabData.setselectISOid(true);
+      basicTabData.funUpdateTable(el.id);
     } else {
       basicTabData.setselectISOid(false);
+      basicTabData.funUpdateTable(el.id);
     }
     console.log("selectEl", el);
-    basicTabData.funUpdateTable(el.id);
     basicTabData.setnameKaf(el.name);
     setactiveList(!activeList);
     setopenLists("");

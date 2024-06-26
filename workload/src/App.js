@@ -378,7 +378,7 @@ function App() {
       }
       if (param == "all") {
         url = ``;
-      } else if (param != 14 && param != 0) {
+      } else if (param != "all" && param != 0) {
         url = `?department=${param}`;
       }
       console.log("url", url);
@@ -475,7 +475,7 @@ function App() {
         ) {
           funUpdateTable(0);
         } else {
-          funUpdateTable(14);
+          funUpdateTable("all");
         }
       }
     }

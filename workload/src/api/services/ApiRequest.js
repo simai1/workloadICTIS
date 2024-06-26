@@ -545,7 +545,7 @@ export const GetUsibleDepartment = async () => {
 export const GetAllUsers = async () => {
   try {
     const response = await http.get(
-      `${server}/users/getAll`
+      `${server}/user/getAll`
     );
     return response;
   } catch (error) {
