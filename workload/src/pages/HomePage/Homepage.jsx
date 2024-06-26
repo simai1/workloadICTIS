@@ -247,6 +247,11 @@ function HomePage() {
     tabPar.setSelectedFilter,
   ]);
 
+  //! при переходе на другую таблицу то сбрасываем поиск
+  useEffect(() => {
+    basicTabData.setSearchTerm("");
+  }, [appData.selectedComponent]);
+
   return (
     <Layout>
       <div className={styles.HomePage}>
@@ -299,21 +304,22 @@ function HomePage() {
                 )}
                 {appData.metodRole[appData.myProfile?.role]?.some(
                   (el) => el === 26
-                ) && ( appData.selectedComponent === "Disciplines") && (
-                  <div className={styles.btnMenuBox} onClick={onSaveClick}>
-                    <img
-                      className={styles.btnLeft}
-                      src="./img/saveButton.svg"
-                    />
-                    {popupSaveAll && (
-                      <ConfirmSaving
-                        title={"Вы уверены, что хотите сохранить изменения?"}
-                        confirmClick={confirmClick}
-                        setShow={setPopupSaveAll}
+                ) &&
+                  appData.selectedComponent === "Disciplines" && (
+                    <div className={styles.btnMenuBox} onClick={onSaveClick}>
+                      <img
+                        className={styles.btnLeft}
+                        src="./img/saveButton.svg"
                       />
-                    )}
-                  </div>
-                )}
+                      {popupSaveAll && (
+                        <ConfirmSaving
+                          title={"Вы уверены, что хотите сохранить изменения?"}
+                          confirmClick={confirmClick}
+                          setShow={setPopupSaveAll}
+                        />
+                      )}
+                    </div>
+                  )}
 
                 {appData.metodRole[appData.myProfile?.role]?.some(
                   (el) => el === 27
