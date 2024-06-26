@@ -96,7 +96,7 @@ export function funFilterSelected(
   allOffersData
 ) {
   const origData = [...data];
-  if (selectedFilter === "Выделенные" && colored.length > 0) {
+  if (selectedFilter === "Выделенные") {
     let fd = [];
     fd = origData.filter((item) =>
       colored.some((el) => el.workloadId === item.id)
