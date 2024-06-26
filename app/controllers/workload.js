@@ -400,7 +400,7 @@ export default {
             await History.create({
                 type: 3,
                 department: workload.department,
-                before: [workloadId],
+                before: [workloadIds],
                 after: [],
             });
         }
