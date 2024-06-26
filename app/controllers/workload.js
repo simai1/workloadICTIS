@@ -180,7 +180,8 @@ export default {
         }
     },
     async getAllDepartment(req, res) {
-        res.json(departments);
+        const departmentsObj = Object.entries(departments).map(([name, id]) => ({ name, id }));
+        res.json(departmentsObj);
     },
 
     async getDepartment({ params: { department } }, res) {
