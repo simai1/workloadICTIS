@@ -129,7 +129,7 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
         <button onClick={toggleList}>
           <p className={styles.textButton}>Редактирование полей</p>
           {isChecked.length > 0 && !isListOpen ? (
-            <img src="./img/filter.svg" alt="arrow" />
+            <img src="./img/filterColumn.svg" alt="arrow" />
           ) : (
             <img src={arrow} alt="arrow"></img>
           )}
