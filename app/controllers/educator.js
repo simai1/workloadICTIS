@@ -217,6 +217,10 @@ export default {
                         model: SummaryWorkload,
                     },
                 ],
+                order: [
+                    ['department', 'ASC'],
+                    ['name', 'ASC'],
+                ],
             });
         } else {
             const department = educator.department;
@@ -227,6 +231,10 @@ export default {
                     {
                         model: SummaryWorkload,
                     },
+                ],
+                order: [
+                    ['department', 'ASC'],
+                    ['name', 'ASC'],
                 ],
             });
         }
