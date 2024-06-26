@@ -15,7 +15,6 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({
-    // multer settings
     storage,
 });
 

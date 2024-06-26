@@ -14,7 +14,25 @@ import fs from 'fs';
 export default {
     async parseWorkload(req, res) {
         const numberDepartment = req.params.numberDepartment;
+        console.log(req.file.path)
         const workbook = XLSX.readFile(req.file.path);
+        const sheetName = workbook.SheetNames[0];
+        const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {
+            header: 1,
+            defval: '',
+            blankrows: true,
+        });
+        const headers = sheetData[0];
+        const checkDepart = {};
+        const checkRow = sheetData[1];
+        headers.forEach((header, index) => {
+            const englishHeader = HeaderTranslation[header];
+            checkDepart[englishHeader] = checkRow[index];
+        });
+        checkDepart.department = checkDepart.department.trim();
+        checkDepart.department = FullNameDepartments[checkDepart.department];
+        if(checkDepart.department !== Number(numberDepartment))
+            throw new Error('Загруженная нагрузка не совпадает с кафедрой, которую вы отправили');
         
         const recordsToDelete = await Workload.findAll({
             where: {
@@ -31,14 +49,7 @@ export default {
             });
         }
 
-        const sheetName = workbook.SheetNames[0];
-        const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {
-            header: 1,
-            defval: '',
-            blankrows: true,
-        });
         const isOid = numberDepartment == 0;
-        const headers = sheetData[0];
         console.log('Total rows after slice:', sheetData.slice(1).length);
         for (const row of sheetData.slice(1, sheetData.length - 1)) {
             try {
