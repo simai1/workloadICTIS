@@ -347,32 +347,63 @@ export default {
         res.json({ status: 'OK' });
     },
 
-    async unfacultyEducator({ body: { workloadId } }, res) {
-        if (!workloadId) throw new AppErrorMissing('workloadId');
-        const workload = await Workload.findByPk(workloadId);
-        if (!workload) throw new AppErrorInvalid('workload');
-        const educatorId = workload.educatorId;
-        await workload.update({ educatorId: null });
+    // async unfacultyEducator({ body: { workloadId } }, res) {
+    //     if (!workloadId) throw new AppErrorMissing('workloadId');
+    //     const workload = await Workload.findByPk(workloadId);
+    //     if (!workload) throw new AppErrorInvalid('workload');
+    //     const educatorId = workload.educatorId;
+    //     await workload.update({ educatorId: null });
 
-        const remainingWorkloads = await Workload.count({ where: { educatorId } });
-        console.log(remainingWorkloads);
+    //     const remainingWorkloads = await Workload.count({ where: { educatorId } });
+    //     console.log(remainingWorkloads);
 
-        if (remainingWorkloads === 0) {
-            // Если нет нагрузок, удаляем предупреждение
-            await Notification.destroy({ where: { educatorId } }); // Предположим, что у вас есть метод для удаления summaryWorkload по educatorId
-        } else {
-            // Если остались нагрузки, все равно вызываем проверку часов
-            const summaryWorkload = await SummaryWorkload.findOne({ where: { educatorId } });
-            await checkHours(summaryWorkload); // Передаем summaryWorkload в функцию checkHours
+    //     if (remainingWorkloads === 0) {
+    //         // Если нет нагрузок, удаляем предупреждение
+    //         await Notification.destroy({ where: { educatorId } }); // Предположим, что у вас есть метод для удаления summaryWorkload по educatorId
+    //     } else {
+    //         // Если остались нагрузки, все равно вызываем проверку часов
+    //         const summaryWorkload = await SummaryWorkload.findOne({ where: { educatorId } });
+    //         await checkHours(summaryWorkload); // Передаем summaryWorkload в функцию checkHours
+    //     }
+
+    //     await History.create({
+    //         type: 3,
+    //         department: workload.department,
+    //         before: [workloadId],
+    //         after: [],
+    //     });
+
+    //     res.json({ status: 'OK' });
+    // },
+    async unfacultyEducator({ body: { workloadIds } }, res) {
+        if (!workloadIds) throw new AppErrorMissing('workloadId');
+        if (!Array.isArray(workloadIds)) throw new AppErrorInvalid('workloadIds');
+
+        const checkWorkloads = await Workload.findAll({ where: { id: workloadIds } });
+        if (checkWorkloads.some(workload => !workload)) throw new AppErrorNotExist('workload');
+        for (const workload of checkWorkloads) {
+            const educatorId = workload.educatorId;
+            await workload.update({ educatorId: null });
+
+            const remainingWorkloads = await Workload.count({ where: { educatorId } });
+            console.log(remainingWorkloads);
+
+            if (remainingWorkloads === 0) {
+                // Если нет нагрузок, удаляем предупреждение
+                await Notification.destroy({ where: { educatorId } }); // Предположим, что у вас есть метод для удаления summaryWorkload по educatorId
+            } else {
+                // Если остались нагрузки, все равно вызываем проверку часов
+                const summaryWorkload = await SummaryWorkload.findOne({ where: { educatorId } });
+                await checkHours(summaryWorkload); // Передаем summaryWorkload в функцию checkHours
+            }
+
+            await History.create({
+                type: 3,
+                department: workload.department,
+                before: [workloadId],
+                after: [],
+            });
         }
-
-        await History.create({
-            type: 3,
-            department: workload.department,
-            before: [workloadId],
-            after: [],
-        });
-
         res.json({ status: 'OK' });
     },
 
