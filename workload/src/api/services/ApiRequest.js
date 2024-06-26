@@ -542,7 +542,7 @@ export const GetUsibleDepartment = async () => {
 
 
 //! Получение всех пользователей для супер юзера
-export const GetAllUsers = async () => {
+export const GetAllUserss = async () => {
   try {
     const response = await http.get(
       `${server}/user/getAll`
