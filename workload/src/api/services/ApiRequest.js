@@ -539,3 +539,18 @@ export const GetUsibleDepartment = async () => {
     //throw error;
   }
 };
+
+
+//! Получение всех пользователей для супер юзера
+export const GetAllUsers = async () => {
+  try {
+    const response = await http.get(
+      `${server}/users/getAll`
+    );
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};
+
