@@ -135,14 +135,16 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
       {!isListOpen && (
         <button onClick={toggleList}>
           <p>Редактирование полей</p>
-          <img src={arrow} alt="arrow"></img>
+          {
+              isChecked.length > 0 ?  <img src="./img/filter.svg" alt="arrow"></img> : <img src={arrow} alt="arrow"></img>
+          }
         </button>
       )}
       {isListOpen && (
         <div className={`${styles.EditInputOpen} ${styles.fadein}`}>
           <button onClick={toggleList}>
             <p>Редактирование полей</p>
-            <img
+           <img
               src={arrow}
               alt="arrow"
               style={{
@@ -150,7 +152,8 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
                 left: "10px",
                 position: "relative",
               }}
-            ></img>
+            />
+            
           </button>
           <input
             placeholder="Поиск"
@@ -173,6 +176,11 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
                 <p>Все</p>
               </li>
               {searchResults.map((row, index) => (
+                <>
+                {
+                  (row.label !== "№" && row.label !== "Дисциплина" &&
+                  row.label !== "Нагрузка" && row.label !== "Преподаватель" &&
+                  row.label !== "Должность") && 
                 <li key={index}>
                   <input
                     type="checkbox"
@@ -182,8 +190,12 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
                     id={`search3-${index}`}
                     name="search3"
                   />
+                  
                   <p>{row.label}</p>
                 </li>
+                }
+                </>
+
               ))}
             </ul>
           </div>
