@@ -3,6 +3,7 @@ import styles from "./PopUpFile.module.scss";
 import Button from "../Button/Button";
 import DataContext from "../../context";
 import {
+  GetAllDepartments,
   GetUsibleDepartment,
   SubmitFileXLSX,
 } from "../../api/services/ApiRequest";
@@ -15,9 +16,16 @@ export function PopUpFile(props) {
   const [fileData, setfileData] = useState(null);
   const [cafData, setCafData] = useState([]);
   useEffect(() => {
-    GetUsibleDepartment().then((resp) => {
-      setCafData(resp.data);
-    });
+    
+    if(appData.metodRole[appData.myProfile?.role]?.some((el) => el ===46)){
+      GetAllDepartments().then((resp) => {
+        setCafData(resp.data);
+      });
+    }else{
+      GetUsibleDepartment().then((resp) => {
+        setCafData(resp.data);
+      });
+    }
   }, []);
   // const cafData = [
   //   { name: "ОИД", id: 0 },

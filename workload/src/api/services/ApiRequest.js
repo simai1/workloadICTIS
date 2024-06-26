@@ -554,3 +554,17 @@ export const GetAllUsers = async () => {
   }
 };
 
+//! Получение всех кафедр
+export const GetAllDepartments = async () => {
+  try {
+    const response = await http.get(
+      `${server}/workload/get/departments`
+    );
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};
+
+
