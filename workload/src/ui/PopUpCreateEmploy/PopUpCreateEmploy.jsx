@@ -97,11 +97,11 @@ export function PopUpCreateEmploy(props) {
       department: appData.metodRole[appData.myProfile?.role]?.some(
         (el) => el === 39
       )
-        ? dataKaf?.find((el) => el.name === dataNewEdicator.department).id
+        ? appData.myProfile?.educator?.departmentId
         : dataNewEdicator.department,
     };
     CreateEducator(data).then((resp) => {
-      if (resp.status === 200) {
+      if (resp?.status === 200) {
         appData.setcreateEdicatorPopUp(false);
         basicTabData.setActionUpdTabTeach(!basicTabData.actionUpdTabTeach);
         appData.setgodPopUp(true);

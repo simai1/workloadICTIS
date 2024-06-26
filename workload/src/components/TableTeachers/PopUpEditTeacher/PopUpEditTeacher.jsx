@@ -70,11 +70,9 @@ export function PopUpEditTeacher(props) {
   const handleClicks = () => {
     let depart;
     let position;
-
+    console.log(dataNewEdicator);
     !Number(dataNewEdicator?.department)
-      ? (depart = dataKaf.find(
-          (el) => el.name === dataNewEdicator?.department
-        )?.id)
+      ? (depart = appData.myProfile?.educator?.departmentId)
       : (depart = dataNewEdicator?.department);
     !Number(dataNewEdicator?.position)
       ? (position = dataListPosition.find(
