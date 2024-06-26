@@ -1,5 +1,5 @@
 import { map as rolesMap } from '../config/roles.js';
-import { map as institutionalAffiliationMap} from '../config/institutional-affiliation.js';
+import { map as institutionalAffiliationMap} from '../config/institutional-affiliations.js';
 import EducatorDto from "./educator-dto.js";
 export default class UserDto {
   login;
@@ -16,7 +16,7 @@ export default class UserDto {
     this.name = model.name;
     this.role = rolesMap[model.role];
     this.allowedDepartments = model.allowedDepartments;
-    this.institutionalAffiliation = model.institutionalAffiliation;
+    this.institutionalAffiliation = institutionalAffiliationMap[model.institutionalAffiliation];
     this.educator = model.Educator ? new EducatorDto(model.Educator) : null;
   }
 }

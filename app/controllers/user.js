@@ -4,7 +4,7 @@ import UserDto from "../dtos/user-dto.js";
 import Educator from "../models/educator.js";
 import departments from "../config/departments.js";
 import roles from "../config/roles.js";
-import {institutionalAffiliation as instAf} from "../config/institutional-affiliation.js";
+import institutionalAffiliations from "../config/institutional-affiliations.js";
 
 
 export default {
@@ -30,7 +30,7 @@ export default {
       if (!role && !allowedDepartments && !institutionalAffiliation) throw new AppErrorMissing('body');
       if (!Object.values(roles).includes(role)) throw new AppErrorInvalid('role');
       if (allowedDepartments.some(d => !Object.values(departments).includes(d))) throw new AppErrorInvalid('allowedDepartments');
-      if (!Object.values(instAf).includes(institutionalAffiliation)) throw new AppErrorInvalid('institutionalAffiliation');
+      if (!Object.values(institutionalAffiliations).includes(institutionalAffiliation)) throw new AppErrorInvalid('institutionalAffiliation');
       const user = User.update({role, allowedDepartments, institutionalAffiliation}, {where: { id: req.user }});
       const userDto = new UserDto(user);
       res.json(userDto);
