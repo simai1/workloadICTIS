@@ -11,13 +11,7 @@ function List({
   handleInputList,
   value,
 }) {
-  const { context, appData } = React.useContext(DataContext);
-  const allowedDepartmentsNames = dataList
-    .filter((department) =>
-      appData.myProfile.allowedDepartments.includes(department.id)
-    )
-    .map((department) => department.name);
-
+  const { appData } = React.useContext(DataContext);
   const [activeList, setactiveList] = useState(false);
   const [nameClient, setnameClient] = useState(null);
 
@@ -28,7 +22,6 @@ function List({
   }, []);
 
   const addClient = (el) => {
-    console.log(el);
     setnameClient(el.name);
     setactiveList(!activeList);
     handleInputList(name, el.id);

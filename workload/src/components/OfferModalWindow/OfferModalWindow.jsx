@@ -4,13 +4,11 @@ import DataContext from "../../context";
 import styles from "./OfferModalWindow.module.scss";
 import React, { useState } from "react";
 function OfferModalWindow(props) {
-  console.log(props.allOffersDataItem);
   const [itemIndex, setItemIndex] = useState(0); // изменять при листании
 
   const { appData } = React.useContext(DataContext);
 
   const onClickAcceptOffer = () => {
-    console.log("Принято", props.workloadId);
     //! буфер
     const data = { id: props.workloadId, status: "принято" };
     appData.setBufferAction([
@@ -23,7 +21,6 @@ function OfferModalWindow(props) {
     props.setModalWindowOffer({ id: props.modalWindowOffer.id, flag: false });
   };
   const onClickAcceptOfferRejected = () => {
-    console.log("Отклонено", props.workloadId);
     //! буфер
     const data = { id: props.workloadId, status: "отклонено" };
     appData.setBufferAction([

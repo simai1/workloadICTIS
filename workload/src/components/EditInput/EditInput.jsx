@@ -109,14 +109,11 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
   //! при нажатии все
   function takeFunctionAll() {
     setIsAllChecked(!isAllChecked);
-    console.log("isChecked", isChecked);
     if (isChecked.length !== 0) {
-      console.log("1");
       setChecked([]);
       basicTabData.setTableHeaders([...originalHeader]);
       sessionStorage.setItem(ssname, JSON.stringify([...originalHeader]));
     } else {
-      console.log("2");
       setChecked([...originalHeader.slice(3)].map((el) => el.key));
       basicTabData.setTableHeaders([...originalHeader].slice(0, 3));
       sessionStorage.setItem(
@@ -125,10 +122,6 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
       );
     }
   }
-
-  // useEffect(() => {
-  //   console.log("isChecked", isChecked);
-  // }, [isChecked]);
 
   return (
     <div ref={refLO} className={styles.EditInput}>
