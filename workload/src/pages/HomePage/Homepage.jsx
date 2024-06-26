@@ -88,7 +88,7 @@ function HomePage() {
 
   useEffect(() => {
     GetDepartment().then((response) => {
-      setdepartments([{ id: 14, name: "Все" }, ...response.data]);
+      setdepartments([{ id: 99, name: "Все" }, ...response.data]);
     });
   }, [basicTabData.tableDepartment]);
 
@@ -319,7 +319,8 @@ function HomePage() {
                   (el) => el === 27
                 ) &&
                   basicTabData.nameKaf != "Все" &&
-                  !blockTable &&
+                  !blockTable && 
+                  ( appData.selectedComponent === "Disciplines") &&
                   appData.selectedComponent !== "History" && (
                     <div
                       style={{ marginRight: "15px" }}
