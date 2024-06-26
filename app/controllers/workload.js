@@ -716,14 +716,12 @@ export default {
                 throw new Error('Такого института не добавленно');
             }
         } else if (_user.role === 6) {
-            const filteredDepartmentsNew = [];
+            const allDepartments = Object.entries(departments).map(([name, id]) => ({
+                name,
+                id,
+            }));
             const allowed = _user.allowedDepartments;
-            for (const x of filteredDepartments) {
-                if (allowed.includes(departments[x.name])) {
-                    filteredDepartmentsNew.push(x);
-                }
-            }
-            res.json(filteredDepartmentsNew);
+            filteredDepartments = allDepartments.filter(item => allowed.includes(item.id));
         } else if (_user.role === 1) {
             filteredDepartments = Object.entries(departments).map(([name, id]) => ({
                 name,
