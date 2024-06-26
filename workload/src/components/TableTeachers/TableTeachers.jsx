@@ -96,7 +96,8 @@ function TableTeachers(props) {
     } else if (
       appData.metodRole[appData.myProfile?.role]?.some((el) => el === 45)
     ) {
-      GetAllUsers.then((res) => {
+      GetAllUsers().then((res) => {
+        console.log(res);
         if (res && res.status === 200) {
           appData.setEducator(res.data);
           const fdfix = FilteredSample(res.data, isChecked);
