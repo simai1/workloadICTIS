@@ -2,7 +2,7 @@
 
 import axios from "axios";
 //const server = "https://workload.sfedu.ru";
-const server = "http://localhost:3002"
+const server = "http://localhost:3002";
 // const server = process.env.REACT_APP_API_URL;
 const http = axios.create({
   withCredentials: true,
@@ -42,7 +42,7 @@ export const apiGetUser = async () => {
     console.error("Error:", error, `${server}/workload`);
     //! если возникли проблемы с получение профиля пользователя перенаправляем на регистрацию
     // window.location.href = "http://localhost:3002/auth/logout";
-    window.location.href = "https://workload.sfedu.ru/auth/logout"
+    window.location.href = "https://workload.sfedu.ru/auth/logout";
   }
 };
 
@@ -171,7 +171,6 @@ export const getAllWarningMessage = async () => {
 export const getOffers = async () => {
   try {
     const response = await http.get(`${server}/offers`);
-    console.log("предложений", response);
     return response;
   } catch (error) {
     console.error("Error:", error);
@@ -478,7 +477,6 @@ export const GetRole = async () => {
 export const GetDepartment = async () => {
   try {
     const response = await http.get(`${server}/workload/get/usableDepartments`);
-    console.log("GetDepartment", response);
     return response;
   } catch (error) {
     console.error("Error:", error);
@@ -533,6 +531,28 @@ export const GetUsibleDepartment = async () => {
     const response = await http.get(
       `${server}/workload/get/departmentsForDirectorate`
     );
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};
+
+//! Получение всех пользователей для супер юзера
+export const GetAllUserss = async () => {
+  try {
+    const response = await http.get(`${server}/user/getAll`);
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};
+
+//! Получение всех кафедр
+export const GetAllDepartments = async () => {
+  try {
+    const response = await http.get(`${server}/workload/get/departments`);
     return response;
   } catch (error) {
     console.error("Error:", error);

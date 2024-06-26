@@ -14,7 +14,6 @@ function OverlapWindow(props) {
   const { tabPar, appData, basicTabData } = React.useContext(DataContext);
 
   const cancelChanges = () => {
-    console.log("отмена", props.getConfirmation.type);
     if (props.getConfirmation.type === 1) {
       appData.setBufferAction(
         deleteItemBuffer(
@@ -28,7 +27,6 @@ function OverlapWindow(props) {
       tabPar.setChangedData(changed);
     } else if (props.getConfirmation.type === 2) {
       const dat = { ...props.getConfirmation.data };
-      console.log("dat", dat);
       let buff = [...appData.bufferAction];
       let itemBuff = buff.find((el) => el.id === dat.id);
       let index = buff.findIndex((el) => el.id === dat.id);
@@ -55,7 +53,6 @@ function OverlapWindow(props) {
       buff[index] = buffDat;
       appData.setBufferAction([...buff]);
       let wdf = [...basicTabData.workloadDataFix];
-      console.log(wdf);
 
       let datMap = { ...dat };
       let f = true;
@@ -73,14 +70,11 @@ function OverlapWindow(props) {
       basicTabData.setWorkloadDataFix(wdfNew);
 
       let changed = { ...tabPar.changedData };
-      console.log("changed", changed.split);
       changed.split = changed.split.filter(
         (item) => !dat.newIds.some((el) => el === item)
       );
-      console.log("changed", changed.split);
       tabPar.setChangedData(changed);
     } else if (props.getConfirmation.type === 3) {
-      console.log(props.getConfirmation.data);
       const bd = props.getConfirmation.data;
       // удаляем нагрузку которую обьеденили
       const dataTable = [...basicTabData.workloadDataFix].filter(
@@ -94,7 +88,6 @@ function OverlapWindow(props) {
       newArray.splice(deletedIndex, 0, ...bd.prevState);
       basicTabData.setWorkloadDataFix(newArray);
       // убираем заблокированные элементы
-      console.log(tabPar.changedData);
       let cd = { ...tabPar.changedData };
       let cdJoin = [...cd.join];
       cdJoin = cdJoin.filter(
@@ -107,7 +100,6 @@ function OverlapWindow(props) {
   };
 
   const confirmChanges = () => {
-    console.log("подтвердить", props.getConfirmation.type);
     // удаляем нагрузку
     if (props.getConfirmation.type === 1) {
       deleteWorkload({ ids: [props.itid] }).then(() => {
@@ -143,12 +135,8 @@ function OverlapWindow(props) {
         changed.split = changed.split.filter(
           (item) => item.slice(0, -1) !== props.itid.slice(0, -1)
         );
-        console.log("changed", changed);
         tabPar.setChangedData(changed);
-        console.log(
-          "basicTabData.tableDepartment",
-          basicTabData.tableDepartment
-        );
+
         if (basicTabData.tableDepartment.length > 0) {
           basicTabData.funUpdateTable(
             basicTabData.tableDepartment.find(
@@ -159,7 +147,6 @@ function OverlapWindow(props) {
       });
     } else if (props.getConfirmation.type === 3) {
       joinWorkloads(props.getConfirmation.data.data).then((res) => {
-        console.log(res);
         appData.setBufferAction(
           deleteItemBuffer(
             [...appData.bufferAction],
@@ -169,7 +156,6 @@ function OverlapWindow(props) {
         );
         let changed = { ...tabPar.changedData };
         changed.join = changed.join.filter((item) => item !== props.itid);
-        console.log(changed);
         tabPar.setChangedData(changed);
         if (basicTabData.tableDepartment.length > 0) {
           basicTabData.funUpdateTable(

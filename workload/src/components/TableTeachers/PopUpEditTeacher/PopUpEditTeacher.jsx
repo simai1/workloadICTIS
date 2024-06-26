@@ -7,6 +7,7 @@ import Input from "../../../ui/Input/Input";
 import styles from "./PopUpEditTeacher.module.scss";
 import {
   EditTeacher,
+  GetAllDepartments,
   GetUsibleDepartment,
 } from "../../../api/services/ApiRequest";
 
@@ -36,9 +37,15 @@ export function PopUpEditTeacher(props) {
 
   const [dataKaf, setDataKaf] = useState([]);
   useEffect(() => {
-    GetUsibleDepartment().then((resp) => {
-      setDataKaf(resp.data);
-    });
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 46)) {
+      GetAllDepartments().then((resp) => {
+        setDataKaf(resp.data);
+      });
+    } else {
+      GetUsibleDepartment().then((resp) => {
+        setDataKaf(resp.data);
+      });
+    }
   }, []);
 
   const handleInputChange = (name, value) => {
@@ -63,12 +70,10 @@ export function PopUpEditTeacher(props) {
   const handleClicks = () => {
     let depart;
     let position;
-
-    !Number(dataNewEdicator?.department)
-      ? (depart = dataKaf.find(
-          (el) => el.name === dataNewEdicator?.department
-        )?.id)
-      : (depart = dataNewEdicator?.department);
+    console.log(dataNewEdicator);
+    !Number(dataNewEdicator?.department) && appData.metodRole[appData.myProfile?.role]?.some((el) => el === 39) 
+      ? (depart = appData.myProfile?.educator?.departmentId)
+      : (depart = dataKaf.find((el)=>el.name === dataNewEdicator?.department).id );
     !Number(dataNewEdicator?.position)
       ? (position = dataListPosition.find(
           (el) => el.name === dataNewEdicator?.position
@@ -85,8 +90,6 @@ export function PopUpEditTeacher(props) {
       department: depart,
     };
 
-    console.log("IdRows", selectedRowsId);
-    console.log("dataNewEdicator", data);
     EditTeacher(selectedRowsId, data).then((resp) => {
       if (resp.status === 200) {
         props.updateTable();
@@ -100,7 +103,7 @@ export function PopUpEditTeacher(props) {
     <div className={styles.Mt}>
       <PopUpContainer
         setVizibleCont={props.setVizibleCont}
-        title={"Редактирование Преподавателя"}
+        title={"Редактирование преподавателя"}
       >
         <div className={styles.mainPop__inner}>
           <div className={styles.inputBlock}>

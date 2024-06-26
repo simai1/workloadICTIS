@@ -6,7 +6,8 @@ import DataContext from "../../context";
 import ContextMenu from "../../ui/ContextMenu/ContextMenu";
 
 function TableWorkload(props) {
-  const { tabPar, visibleDataPar, basicTabData } = useContext(DataContext);
+  const { tabPar, visibleDataPar, basicTabData, checkPar } =
+    useContext(DataContext);
   //! при событии скролл таблицы изменим индекс первого показываемого tr
   const scrollTable = (e) => {
     const maxStartData =
@@ -24,7 +25,6 @@ function TableWorkload(props) {
 
   //! закрепленные данные ставим в начало таблицы
   useEffect(() => {
-    // console.log(tabPar.fastenedData);
     basicTabData.setWorkloadDataFix(
       funfastenedDataSort(basicTabData.workloadDataFix, tabPar.fastenedData)
     );
@@ -46,11 +46,24 @@ function TableWorkload(props) {
     tabPar.setContextMenuShow(!tabPar.contextMenuShow);
   };
 
+  //! достаем и локал стореджа состояние фитрации по заголовку
+  useEffect(() => {
+    const ssIsChecked = JSON.parse(sessionStorage.getItem("isCheckedWorkload"));
+    if (ssIsChecked && ssIsChecked !== null && ssIsChecked.length > 0) {
+      checkPar.setIsChecked(ssIsChecked);
+      checkPar.setAllChecked(false);
+    }
+    if (checkPar.isChecked.length !== 0) {
+      checkPar.setAllChecked(false);
+    }
+  }, []);
+
   return (
     <div
       onContextMenu={handleContextMenu}
       className={styles.tabledisciplinesMain}
       onScroll={scrollTable}
+      ref={tabPar.tableRefWorkload}
     >
       {tabPar.contextMenuShow && tabPar.selectedTr.length != 0 && (
         <ContextMenu />

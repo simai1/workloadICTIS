@@ -3,7 +3,11 @@ import React, { useState, useEffect } from "react";
 // import { useDispatch, useSelector } from "react-redux";
 import DataContext from "../../context";
 import { headersEducator } from "../TableWorkload/Data";
-import { Educator, apiEducatorDepartment } from "../../api/services/ApiRequest";
+import {
+  Educator,
+  GetAllUsers,
+  apiEducatorDepartment,
+} from "../../api/services/ApiRequest";
 import Button from "../../ui/Button/Button";
 import { SamplePoints } from "./SamplePoints/SamplePoints";
 import { ContextFunc } from "./ContextFunc/ContextFunc";
@@ -14,7 +18,7 @@ function TableTeachers(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]);
   const [updatedData, setUpdatedData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const { appData, basicTabData, checkPar } = React.useContext(DataContext);
+  const { appData, basicTabData } = React.useContext(DataContext);
   const [sampleShow, setSampleShow] = useState(false);
   const [sampleData, setSampleData] = useState([]);
   const [selectRows, setSelectRow] = useState(null);
@@ -22,12 +26,32 @@ function TableTeachers(props) {
   const tableHeaders = headersEducator;
   const [positionMenu, setPositionMenu] = useState({ x: 0, y: 0 });
 
+  const [isChecked, setIsChecked] = useState([]); // состояние инпутов в SamplePoints для преподавателей
+  const [isAllChecked, setAllChecked] = useState(true); // инпут все в SamplePoints для преподавателей
+  const checkData = {
+    isChecked,
+    setIsChecked,
+    isAllChecked,
+    setAllChecked,
+  };
+
+  //! достаем и локал стореджа состояние фитрации по заголовку
+  useEffect(() => {
+    const ssIsChecked = JSON.parse(sessionStorage.getItem("isCheckedTeachers"));
+    if (ssIsChecked && ssIsChecked !== null && ssIsChecked.length > 0) {
+      setIsChecked(ssIsChecked);
+      setAllChecked(false);
+    }
+    if (isChecked.length !== 0) {
+      setAllChecked(false);
+    }
+  }, []);
+
   //! достаем из sessionStorage заголовок для редактирования полей
   useEffect(() => {
     const ssUpdatedHeader = JSON.parse(
       sessionStorage.getItem("headerTeachers")
     );
-    console.log("ssUpdatedHeader", ssUpdatedHeader);
     if (ssUpdatedHeader && ssUpdatedHeader !== null) {
       setUpdatedHeader(ssUpdatedHeader);
     }
@@ -46,30 +70,42 @@ function TableTeachers(props) {
   const updateTable = () => {
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 2)) {
       apiEducatorDepartment().then((res) => {
-        console.log("teatcher ", res);
         if (res && res.status === 200) {
           appData.setEducator(res.data);
           //! филтрация по samplePoints
-          const fdfix = FilteredSample(res.data, checkPar.isChecked);
+          const fdfix = FilteredSample(res.data, isChecked);
           setFilteredData([...fdfix]);
           // setFilteredData(res.data);
           setUpdatedData(res.data);
           setUpdatedHeader(tableHeaders);
         }
       });
-    }
-    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)) {
+    } else if (
+      appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)
+    ) {
       Educator().then((res) => {
-        console.log("teatcher ", res);
         if (res && res.status === 200) {
           appData.setEducator(res.data);
-          const fdfix = FilteredSample(res.data, checkPar.isChecked);
+          const fdfix = FilteredSample(res.data, isChecked);
           setFilteredData([...fdfix]);
           // setFilteredData(res.data);
           setUpdatedData(res.data);
           setUpdatedHeader(tableHeaders);
         }
       });
+    // else if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 45)){
+    //   GetAllUse.then((res) => {
+    //     console.log("teatcher ", res);
+    //     if (res && res.status === 200) {
+    //       appData.setEducator(res.data);
+    //       const fdfix = FilteredSample(res.data, isChecked);
+    //       setFilteredData([...fdfix]);
+    //       // setFilteredData(res.data);
+    //       setUpdatedData(res.data);
+    //       setUpdatedHeader(tableHeaders);
+    //     }
+    //   });
+    // }
     }
   };
 
@@ -80,7 +116,7 @@ function TableTeachers(props) {
 
   useEffect(() => {
     //! филтрация по samplePoints
-    const fdfix = FilteredSample(appData.educator, checkPar.isChecked);
+    const fdfix = FilteredSample(appData.educator, isChecked);
     setFilteredData([...fdfix]);
   }, [appData.educator, updatedData, props.searchTerm]);
 
@@ -117,7 +153,6 @@ function TableTeachers(props) {
     } else {
       uh = tableHeaders;
     }
-    console.log("basicTabData.tableHeaders", basicTabData.tableHeaders);
     addHeadersTable(uh, appData.educator);
   }, [basicTabData.tableHeaders, appData.educator]);
 
@@ -128,7 +163,6 @@ function TableTeachers(props) {
       fd = updatedData;
     } else {
       fd = updatedData.filter((row) => {
-        console.log(row);
         return Object.values(row)
           .splice(1)
           .some((value) => {
@@ -143,7 +177,7 @@ function TableTeachers(props) {
       });
     }
     //! филтрация по samplePoints
-    const fdfix = FilteredSample(fd, checkPar.isChecked);
+    const fdfix = FilteredSample(fd, isChecked);
     setFilteredData([...fdfix]);
     // setFilteredData(fd);
   }, [updatedData, props.searchTerm]);
@@ -269,6 +303,7 @@ function TableTeachers(props) {
                       setUpdatedData={setUpdatedData}
                       updatedData={updatedData}
                       isSamplePointsData={sampleData}
+                      checkPar={checkData}
                     />
                   )}
 
@@ -276,9 +311,7 @@ function TableTeachers(props) {
                     {header.label}
                     <img
                       src={
-                        checkPar.isChecked.find(
-                          (item) => item.itemKey === header.key
-                        )
+                        isChecked.find((item) => item.itemKey === header.key)
                           ? "./img/filterColumn.svg"
                           : "./img/th_fight.svg"
                       }

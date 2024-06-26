@@ -127,7 +127,6 @@ export function funfastenedDataSort(data, fastenedData) {
 
 //! функция удаления обьекта по id при нажатии на применить удаление
 export function deleteItemBuffer(buff, itemId, type) {
-  console.log("fundata", buff, itemId, type);
   let itemData = null;
   let newBuffer = buff
     .map((item) => {
@@ -145,7 +144,6 @@ export function deleteItemBuffer(buff, itemId, type) {
       }
     })
     .filter(Boolean);
-  console.log("newBuffer", newBuffer);
   return { buffer: newBuffer, item: itemData };
 }
 
@@ -168,7 +166,6 @@ export function fundeleteItemBuffer(buff, itemId, type) {
       }
     })
     .filter(Boolean);
-  console.log("newBuffer", newBuffer);
   return { buffer: newBuffer, item: itemData };
 }
 
@@ -270,7 +267,6 @@ const funWorcloadFix = (item, el, action, len, length, keys) => {
 };
 
 export function funHistoryFix(history) {
-  console.log(history);
   let fixMass = [];
   let length = 0;
   let keys = [];
@@ -295,6 +291,5 @@ export function funHistoryFix(history) {
       });
     }
   });
-  console.log("fixMass", fixMass);
   return fixMass;
 }

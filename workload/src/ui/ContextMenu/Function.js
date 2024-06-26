@@ -6,6 +6,16 @@ export function upDateEducator(data, ItemSelectedTr, name) {
   return { newData: updatedData, prevState };
 }
 
+export function upDateEducators(data, ItemSelectedTr, name) {
+  const updatedData = data.map((obj) =>
+    ItemSelectedTr.some((e) => e === obj.id) ? { ...obj, educator: name } : obj
+  );
+  const prevState = data.find((obj) =>
+    ItemSelectedTr.some((e) => e === obj.id)
+  )?.educator;
+  return { newData: updatedData, prevState };
+}
+
 export function splitWorkloadCount(data, selectedTr, count) {
   const updatedData = [...data];
   const newIds = [];
@@ -29,7 +39,6 @@ export function splitWorkloadCount(data, selectedTr, count) {
         updatedData.splice(workloadIndex + i, 0, newWorkload);
         newIds.push(newWorkload.id);
         blocked.push(newWorkload.id);
-        console.log("blocked", blocked);
       }
     }
   }
@@ -84,11 +93,6 @@ export function combineData(data, selectedTr) {
 //! добавление данных
 export function addСhangedData(changedData, dataKey, ids) {
   const cd = { ...changedData };
-  console.log("cd", cd);
-  // const existingIds = new Set(cd[dataKey]);
-  // const uniqueIds = ids.filter((id) => !cd[dataKey]);
-  // const uniqueIds = ids.filter((id) => !cd[dataKey].has(id));
-
   cd[dataKey] = [...cd[dataKey], ...ids];
   return cd;
 }

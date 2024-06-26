@@ -29,7 +29,6 @@ function ListKaf({
     } else {
       basicTabData.setselectISOid(false);
     }
-    console.log("selectEl", el);
     basicTabData.funUpdateTable(el.id);
     basicTabData.setnameKaf(el.name);
     setactiveList(!activeList);
@@ -42,7 +41,6 @@ function ListKaf({
   const refDiv = useRef(null);
   //! закрытие модального окна при нажати вне него
   useEffect(() => {
-    console.log("defaultValue", defaultValue);
     setopenLists("");
     const handler = (event) => {
       if (refDiv.current && !refDiv.current.contains(event.target)) {
@@ -68,8 +66,9 @@ function ListKaf({
   //! функция определения показывать ли общеинститутские и кафедральные слово
   const funGetAction = () => {
     if (
-      appData.myProfile.institutionalAffiliation === 1 ||
-      appData.myProfile?.role === "METHODIST"
+      appData.myProfile.institutionalAffiliation === "ИКТИБ" ||
+      appData.myProfile?.role === "METHODIST" ||
+      appData.myProfile?.role === "GIGA_ADMIN"
     ) {
       return true;
     } else return false;

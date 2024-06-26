@@ -13,16 +13,12 @@ function Profile(props) {
     UNIT_ADMIN: "Администратор подразделения",
     DEPUTY_DIRECTORATE: "Заместитель директора",
     DEPUTY_DEPARTMENT_HEAD: "Заместитель заведующего кафедрой",
-  };
-  const institutName = {
-    1: "ИКТИБ",
-    2: "ИНЕП",
-    3: "ИРТСУ",
+    GIGA_ADMIN: "Администратор системы",
   };
 
   const getInstitut = () => {
-    const iname = institutName[appData.myProfile?.institutionalAffiliation];
-    if (appData.myProfile?.role === "DIRECTORATE" && iname) {
+    const iname = appData.myProfile?.institutionalAffiliation;
+    if (appData.myProfile?.role === "DIRECTORATE") {
       return iname;
     }
   };

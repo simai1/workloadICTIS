@@ -5,7 +5,11 @@ import Input from "../Input/Input";
 import Button from "../Button/Button";
 import PopUpContainer from "../PopUpContainer/PopUpContainer";
 import List from "../List/List";
-import { CreateEducator, GetUsibleDepartment } from "../../api/services/ApiRequest";
+import {
+  CreateEducator,
+  GetAllDepartments,
+  GetUsibleDepartment,
+} from "../../api/services/ApiRequest";
 
 export function PopUpCreateEmploy(props) {
   const { appData, basicTabData } = React.useContext(DataContext);
@@ -14,7 +18,11 @@ export function PopUpCreateEmploy(props) {
     email: "",
     position: "",
     rate: "",
-    department: appData.metodRole[appData.myProfile?.role]?.some((el) => el === 39) ? appData.myProfile.educator.department : "",
+    department: appData.metodRole[appData.myProfile?.role]?.some(
+      (el) => el === 39
+    )
+      ? appData.myProfile.educator.department
+      : "",
   });
   const [isEmailValid, setIsEmailValid] = useState(true);
   const [isRateValid, setIsRateValid] = useState(true);
@@ -37,11 +45,17 @@ export function PopUpCreateEmploy(props) {
     { id: 11, name: "Заведующий кафедрой" },
   ];
   const [dataKaf, setDataKaf] = useState([]);
-  useEffect(()=>{
-    GetUsibleDepartment().then((resp)=>{
-      setDataKaf(resp.data)
-    })
-  },[])
+  useEffect(() => {
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 46)) {
+      GetAllDepartments().then((resp) => {
+        setDataKaf(resp.data);
+      });
+    } else {
+      GetUsibleDepartment().then((resp) => {
+        setDataKaf(resp.data);
+      });
+    }
+  }, []);
   // const dataKaf = [
   //   { id: 1, name: "БИТ" },
   //   { id: 2, name: "ИИТиС" },
@@ -80,20 +94,22 @@ export function PopUpCreateEmploy(props) {
       email: dataNewEdicator.email,
       position: dataNewEdicator.position,
       rate: Number(dataNewEdicator.rate.replace(",", ".")),
-      department: appData.metodRole[appData.myProfile?.role]?.some((el) => el === 39) ? dataKaf.find((el)=>el.name === dataNewEdicator.department).id : dataNewEdicator.department
+      department: appData.metodRole[appData.myProfile?.role]?.some(
+        (el) => el === 39
+      )
+        ? appData.myProfile?.educator?.departmentId
+        : dataNewEdicator.department,
     };
-    console.log("data", data)
     CreateEducator(data).then((resp) => {
-      if(resp.status === 200){
+      if (resp?.status === 200) {
         appData.setcreateEdicatorPopUp(false);
         basicTabData.setActionUpdTabTeach(!basicTabData.actionUpdTabTeach);
-        appData.setgodPopUp(true)
-      }else{
+        appData.setgodPopUp(true);
+      } else {
         appData.setcreateEdicatorPopUp(false);
         appData.seterrorPopUp(true);
       }
     });
-  
   };
 
   return (
@@ -136,6 +152,7 @@ export function PopUpCreateEmploy(props) {
           <Input
             Textlabel="Ставка"
             placeholder="0.5"
+            type="number"
             name={"rate"}
             handleInputChange={handleInputChange}
             style={{ border: !isRateValid ? "1px solid red" : "none" }}
@@ -159,7 +176,13 @@ export function PopUpCreateEmploy(props) {
             defaultValue="Выберите кафедру"
             name={"department"}
             handleInputList={handleInputList}
-            value = {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 39) ? appData.myProfile.educator.department : null}
+            value={
+              appData.metodRole[appData.myProfile?.role]?.some(
+                (el) => el === 39
+              )
+                ? appData.myProfile.educator.department
+                : null
+            }
           />
         </div>
         <div
@@ -171,31 +194,60 @@ export function PopUpCreateEmploy(props) {
             bottom: "-10px",
           }}
         >
-            <button
+          <button
             className={styles.buttonSave}
             onClick={handleClicks}
-            disabled={!isRateValid || !isEmailValid || !dataNewEdicator.name || !dataNewEdicator.email || !dataNewEdicator.position || !dataNewEdicator.rate || !dataNewEdicator.department}
+            disabled={
+              !isRateValid ||
+              !isEmailValid ||
+              !dataNewEdicator.name ||
+              !dataNewEdicator.email ||
+              !dataNewEdicator.position ||
+              !dataNewEdicator.rate ||
+              !dataNewEdicator.department
+            }
             style={{
-              backgroundColor: (!isRateValid || !isEmailValid || !dataNewEdicator.name || !dataNewEdicator.email || !dataNewEdicator.position || !dataNewEdicator.rate || !dataNewEdicator.department) ? "#b9b9ba" : "#3b28cc",
-              cursor: (!isRateValid || !isEmailValid || !dataNewEdicator.name || !dataNewEdicator.email || !dataNewEdicator.position || !dataNewEdicator.rate || !dataNewEdicator.department) ? "not-allowed" : "pointer",
-                color:"#fff",
-                borderRadius:"8px",
-                paddingLeft: "16px",
-                paddingRight: "16px",
-                paddingTop: "10px",
-                paddingBlock: "10px",
-                width: "150px",
-                transition: "opacity 0.3s ease",
-                opacity: 1,
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.transition = "opacity 0.15s ease"; 
-                e.target.style.opacity = 0.7;
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transition = "opacity 0.15s ease"; 
-                e.target.style.opacity = 1; 
-              }}>Сохранить</button>
+              backgroundColor:
+                !isRateValid ||
+                !isEmailValid ||
+                !dataNewEdicator.name ||
+                !dataNewEdicator.email ||
+                !dataNewEdicator.position ||
+                !dataNewEdicator.rate ||
+                !dataNewEdicator.department
+                  ? "#b9b9ba"
+                  : "#3b28cc",
+              cursor:
+                !isRateValid ||
+                !isEmailValid ||
+                !dataNewEdicator.name ||
+                !dataNewEdicator.email ||
+                !dataNewEdicator.position ||
+                !dataNewEdicator.rate ||
+                !dataNewEdicator.department
+                  ? "not-allowed"
+                  : "pointer",
+              color: "#fff",
+              borderRadius: "8px",
+              paddingLeft: "16px",
+              paddingRight: "16px",
+              paddingTop: "10px",
+              paddingBlock: "10px",
+              width: "150px",
+              transition: "opacity 0.3s ease",
+              opacity: 1,
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.transition = "opacity 0.15s ease";
+              e.target.style.opacity = 0.7;
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transition = "opacity 0.15s ease";
+              e.target.style.opacity = 1;
+            }}
+          >
+            Сохранить
+          </button>
         </div>
       </div>
     </PopUpContainer>

@@ -17,7 +17,6 @@ function Offers(props) {
   };
   //! функция отклонить
   const reject = (offerData) => {
-    console.log(offerData);
     //! отклоняем дирекцией, сделалть зависимость от роли
     //! отклоняем от зк
     if (appData.myProfile?.role === "DEPARTMENT_HEAD") {
@@ -37,7 +36,6 @@ function Offers(props) {
   };
   //! функция применить
   const accept = (offerData) => {
-    console.log(offerData);
     //! принимаем от зк
     if (appData.myProfile?.role === "DEPARTMENT_HEAD") {
       const data = { id: offerData.offer.id, status: 2 };

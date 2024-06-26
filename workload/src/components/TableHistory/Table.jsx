@@ -41,7 +41,6 @@ function Table(props) {
       }
     });
     props.setContetxShow(!props.contextShow);
-    console.log(e);
     props.setContextPosition({ x: e.clientX, y: e.clientY - 200 });
   };
 

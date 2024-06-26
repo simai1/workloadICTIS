@@ -4,8 +4,9 @@
 .List {
   display: flex;
   justify-content: center;
-  z-index: 120;
-  label{
+  position: relative;
+
+  label {
     margin-left: 10px;
   }
   input {
@@ -20,6 +21,9 @@
   span {
     cursor: pointer;
   }
+  .inputList {
+    position: relative;
+  }
   .inputList::placeholder {
     color: #adadad;
   }
@@ -33,19 +37,35 @@
     transform: rotate(-90deg);
   }
   .ListData {
-    width: auto;
-    position: relative;
-    top: -30px;
-    padding-top: 10px;
-    padding-left: 10px;
-    border-radius: 0px 0px 8px 8px;
-    border-left: 1px solid #adadad;
+    height: 250px;
+    width: 300px;
+    position: absolute;
+    padding: 8px;
+    border-radius: 8px;
+    top: 0;
+    border: 1px solid #adadad;
     border-right: 1px solid #adadad;
     border-bottom: 1px solid #adadad;
-    // background-color: #fff;
+    z-index: 121;
+    background-color: #fff;
+    margin-top: 24px;
+
+    .ListDataScroll {
+      overflow: auto;
+      height: 100%;
+      @include scrollStyle(4px, 4px);
+      p {
+        padding: 0px;
+        margin-bottom: 6px;
+      }
+    }
+
     .NameForList {
       font-size: 18px;
       cursor: pointer;
+      padding-top: 0;
+      margin-top: 0;
+      margin-bottom: 5px;
       &:hover {
         color: rgb(59, 40, 204);
       }

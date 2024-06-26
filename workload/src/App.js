@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage/Homepage";
 import DataContext from "./context";
@@ -66,6 +66,10 @@ function App() {
       2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 20, 22, 23, 25, 26, 27, 30, 31,
       32, 33, 34, 36, 16, 39, 40,
     ],
+    GIGA_ADMIN:[
+      1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
+      34, 35, 36, 38, 16, 40, 44, 46
+    ]
   };
   // appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)
 
@@ -73,7 +77,6 @@ function App() {
   const [bufferAction, setBufferAction] = useState([]);
   const [errorPopUp, seterrorPopUp] = useState(false); //popUp error visible
   const [godPopUp, setgodPopUp] = useState(false); //popUp good visible
-
   const [createEdicatorPopUp, setcreateEdicatorPopUp] = useState(false); //popUp error visible
   const [selectedComponent, setSelectedComponent] = useState("Disciplines");
   const [loaderAction, setLoaderAction] = useState(false);
@@ -199,6 +202,7 @@ function App() {
   //! для виртуального скролла
   const [startData, setStartData] = useState(0); // индекс элемента с которого показывается таблица
   let visibleData = filtredData.length > 10 ? 10 : filtredData.length; // кооличество данных которые мы видим в таблице
+  const tableRefWorkload = useRef(null); //! ссылка на таблицу
 
   const heightTd = 150; // высота td
 
@@ -239,20 +243,19 @@ function App() {
     setSelectedFilter,
     perenesenAction,
     setPerenesenAction,
+    tableRefWorkload,
   };
 
   //! функция обновления комментаривев
   function funUpdateAllComments() {
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 37)) {
       CommentsLecktorer().then((data) => {
-        console.log("comments", data);
         setAllCommentsData(data);
       });
     } else if (
       appData.metodRole[appData.myProfile?.role]?.some((el) => el === 20)
     ) {
       Comment().then((data) => {
-        console.log("comments", data);
         setAllCommentsData(data);
       });
     }
@@ -263,14 +266,12 @@ function App() {
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 17.1)) {
       getOffersLecturer().then((req) => {
         if (req && req.status === 200) {
-          console.log("предложения", req.data);
           setAllOffersData(req.data);
         }
       });
     } else {
       getOffers().then((req) => {
         if (req && req.status === 200) {
-          console.log("предложения", req.data);
           setAllOffersData(req.data);
         }
       });
@@ -280,7 +281,6 @@ function App() {
   //! функция обновления истории
   function funUpdateHistory() {
     apiGetHistory().then((req) => {
-      console.log("history", req);
       setHistoryChanges(req);
     });
   }
@@ -288,7 +288,6 @@ function App() {
   //! функция получения закрепленных строк
   function funUpdateFastenedData() {
     getAllAttaches().then((data) => {
-      console.log("закрепленные", data);
       if (data.length > 0) {
         setFastenedData(data);
       }
@@ -298,8 +297,7 @@ function App() {
   function funGetDepartment() {
     GetDepartment().then((response) => {
       if (response && response.status === 200) {
-        settableDepartment([{ id: 14, name: "Все" }, ...response?.data]);
-        console.log("Записал");
+        settableDepartment([{ id: 99, name: "Все" }, ...response?.data]);
       }
     });
   }
@@ -307,7 +305,6 @@ function App() {
   //! функция получения выделенных цветом строк
   function funUpdateAllColors() {
     getAllColors().then((data) => {
-      console.log("выделенные", data);
       if (data.length > 0) {
         setColoredData(data);
       }
@@ -357,12 +354,10 @@ function App() {
 
   //! функция обновления таблицы
   function funUpdateTable(param) {
-    console.log("param", param);
     //param = tableDepartment[0]?.id
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
       Workload("").then((data) => {
         if (data) {
-          console.log("work", data);
           funUpdTab(data);
         }
       });
@@ -372,12 +367,11 @@ function App() {
       if (param == 0) {
         url = "?isOid=true";
       }
-      if (param == "all") {
+      if (param == 99) {
         url = ``;
-      } else if (param != 14 && param != 0) {
+      } else if (param != 99 && param != 0) {
         url = `?department=${param}`;
       }
-      console.log("url", url);
       Workload(`${url}`).then((data) => {
         funUpdTab(data);
       });
@@ -452,16 +446,16 @@ function App() {
   //! функция обновления всех данных
   function updateAlldata() {
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 44)) {
-      funUpdateTable("all");
+      funUpdateTable(99);
     } else {
       if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 42)) {
-        funUpdateTable(tableDepartment[0]?.id);
+        funUpdateTable(99);
       } else if (
         appData.metodRole[appData.myProfile?.role]?.some((el) => el === 28)
       ) {
         selectISOid
           ? // funUpdateTable(0)
-            funUpdateTable(tableDepartment[0]?.id)
+            funUpdateTable(99)
           : funUpdateTable(
               tableDepartment.find((el) => el.name === nameKaf)?.id
             );
@@ -471,7 +465,7 @@ function App() {
         ) {
           funUpdateTable(0);
         } else {
-          funUpdateTable(14);
+          funUpdateTable(99);
         }
       }
     }
@@ -497,11 +491,7 @@ function App() {
   //! получаем данные нагрузок с бд
   useEffect(() => {
     if (myProfile) {
-      // console.log("myProfile", myProfile);
-      // console.log("tableDepartment", tableDepartment);
-      // appData.metodRole[appData.myProfile?.role]?.some((el) => el === 42)
       setnameKaf(tableDepartment[0]?.name);
-      // : setnameKaf("ОИД");
       updateAlldata();
     }
   }, [tableDepartment, myProfile]); // [myProfile, tableDepartment]
@@ -520,8 +510,6 @@ function App() {
   //! при переходе с кафедральных на общеинституские и обратно фильтруем основные
   //! фильтруем по FiltredRows
   useEffect(() => {
-    // const splitData = funSplitData(workloadDataFix, dataIsOid);
-    // console.log("workloadDataFix", splitData);
     const filterSelected = funFilteredFilterSelected();
     if (filterSelected) {
       setFiltredData(funSortedFastened(filterSelected, fastenedData));
@@ -532,21 +520,21 @@ function App() {
   }, [selectedFilter, workloadDataFix, selectedTable, fastenedData]);
 
   //! обновляем вертуальный скролл при переходе на другуюс таблицу
+  // useEffect(() => {
+  //   setStartData(0);
+  //   const table = document.querySelector("table");
+  //   if (table) {
+  //     table.scrollIntoView(true);
+  //   }
+  // }, [selectedFilter, selectedTable]);
+
+  //! обновляем вертуальный скролл при переходе на другуюс таблицу
   useEffect(() => {
     setStartData(0);
-    const table = document.querySelector("table");
-    if (table) {
-      table.scrollIntoView(true);
+    if (tableRefWorkload.current) {
+      tableRefWorkload.current.scrollTo(0, 0);
     }
-  }, [selectedFilter, selectedTable]);
-
-  //! при изменении закрпеленных перемещаем их наверх и сортируем массив
-  //? ЕСЛИ ЧТО РАСКОМЕНТИТЬ
-  // useEffect(() => {
-  //   const fd = funSortedFastened(filtredData, fastenedData);
-  //   console.log("fd", fd);
-  //   setFiltredData(fd);
-  // }, [fastenedData, filtredData]);
+  }, [selectedFilter, selectedTable, tableRefWorkload, nameKaf]);
 
   //! следим за нажатием ctrl + s для сохранения изменений
   useEffect(() => {
@@ -576,7 +564,6 @@ function App() {
 
   //! функция отмены последенего действия с буффера
   function backBuffer() {
-    console.log("отеменено последнее действие", bufferAction);
     //! отмена последнего действия
     if (bufferAction.length > 0) {
       if (

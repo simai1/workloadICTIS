@@ -14,10 +14,8 @@ import {
 
 //! обработка всех запрсов с буффера
 export async function bufferRequestToApi(buffer) {
-  console.log("buffer", buffer);
   let count = 0;
   for (let i = buffer.length - 1; i >= 0; i--) {
-    console.log(buffer[i].request);
     // добаление преподавателя
     if (buffer[i].request === "addEducatorWorkload") {
       await addEducatorWorkload(buffer[i].data);
@@ -82,7 +80,6 @@ export async function bufferRequestToApi(buffer) {
 /////////////////////////////////////////////////
 //! возвращение предыдущего стостояния таблицы
 export async function returnPrevState(buffer, data) {
-  console.log("пред сост буфера", buffer);
   let prev = buffer[0].prevState;
   if (buffer[0].prevState === null) {
     prev = 0;
@@ -116,7 +113,6 @@ export async function returnPrevState(buffer, data) {
 
 export function fixDataBuff(data, bufferAction) {
   let newData = [...data];
-  console.log("bufferAction", bufferAction);
   //! проходим по элементам буфера
   bufferAction.map((bufferItem) => {
     //! если запрос на разделение
