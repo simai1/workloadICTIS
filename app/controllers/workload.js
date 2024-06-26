@@ -347,32 +347,63 @@ export default {
         res.json({ status: 'OK' });
     },
 
-    async unfacultyEducator({ body: { workloadId } }, res) {
-        if (!workloadId) throw new AppErrorMissing('workloadId');
-        const workload = await Workload.findByPk(workloadId);
-        if (!workload) throw new AppErrorInvalid('workload');
-        const educatorId = workload.educatorId;
-        await workload.update({ educatorId: null });
+    // async unfacultyEducator({ body: { workloadId } }, res) {
+    //     if (!workloadId) throw new AppErrorMissing('workloadId');
+    //     const workload = await Workload.findByPk(workloadId);
+    //     if (!workload) throw new AppErrorInvalid('workload');
+    //     const educatorId = workload.educatorId;
+    //     await workload.update({ educatorId: null });
 
-        const remainingWorkloads = await Workload.count({ where: { educatorId } });
-        console.log(remainingWorkloads);
+    //     const remainingWorkloads = await Workload.count({ where: { educatorId } });
+    //     console.log(remainingWorkloads);
 
-        if (remainingWorkloads === 0) {
-            // Если нет нагрузок, удаляем предупреждение
-            await Notification.destroy({ where: { educatorId } }); // Предположим, что у вас есть метод для удаления summaryWorkload по educatorId
-        } else {
-            // Если остались нагрузки, все равно вызываем проверку часов
-            const summaryWorkload = await SummaryWorkload.findOne({ where: { educatorId } });
-            await checkHours(summaryWorkload); // Передаем summaryWorkload в функцию checkHours
+    //     if (remainingWorkloads === 0) {
+    //         // Если нет нагрузок, удаляем предупреждение
+    //         await Notification.destroy({ where: { educatorId } }); // Предположим, что у вас есть метод для удаления summaryWorkload по educatorId
+    //     } else {
+    //         // Если остались нагрузки, все равно вызываем проверку часов
+    //         const summaryWorkload = await SummaryWorkload.findOne({ where: { educatorId } });
+    //         await checkHours(summaryWorkload); // Передаем summaryWorkload в функцию checkHours
+    //     }
+
+    //     await History.create({
+    //         type: 3,
+    //         department: workload.department,
+    //         before: [workloadId],
+    //         after: [],
+    //     });
+
+    //     res.json({ status: 'OK' });
+    // },
+    async unfacultyEducator({ body: { workloadIds } }, res) {
+        if (!workloadIds) throw new AppErrorMissing('workloadId');
+        if (!Array.isArray(workloadIds)) throw new AppErrorInvalid('workloadIds');
+
+        const checkWorkloads = await Workload.findAll({ where: { id: workloadIds } });
+        if (checkWorkloads.some(workload => !workload)) throw new AppErrorNotExist('workload');
+        for (const workload of checkWorkloads) {
+            const educatorId = workload.educatorId;
+            await workload.update({ educatorId: null });
+
+            const remainingWorkloads = await Workload.count({ where: { educatorId } });
+            console.log(remainingWorkloads);
+
+            if (remainingWorkloads === 0) {
+                // Если нет нагрузок, удаляем предупреждение
+                await Notification.destroy({ where: { educatorId } }); // Предположим, что у вас есть метод для удаления summaryWorkload по educatorId
+            } else {
+                // Если остались нагрузки, все равно вызываем проверку часов
+                const summaryWorkload = await SummaryWorkload.findOne({ where: { educatorId } });
+                await checkHours(summaryWorkload); // Передаем summaryWorkload в функцию checkHours
+            }
+
+            await History.create({
+                type: 3,
+                department: workload.department,
+                before: [workloadId],
+                after: [],
+            });
         }
-
-        await History.create({
-            type: 3,
-            department: workload.department,
-            before: [workloadId],
-            after: [],
-        });
-
         res.json({ status: 'OK' });
     },
 
@@ -716,14 +747,12 @@ export default {
                 throw new Error('Такого института не добавленно');
             }
         } else if (_user.role === 6) {
-            const filteredDepartmentsNew = [];
+            const allDepartments = Object.entries(departments).map(([name, id]) => ({
+                name,
+                id,
+            }));
             const allowed = _user.allowedDepartments;
-            for (const x of filteredDepartments) {
-                if (allowed.includes(departments[x.name])) {
-                    filteredDepartmentsNew.push(x);
-                }
-            }
-            res.json(filteredDepartmentsNew);
+            filteredDepartments = allDepartments.filter(item => allowed.includes(item.id));
         } else if (_user.role === 1) {
             filteredDepartments = Object.entries(departments).map(([name, id]) => ({
                 name,
