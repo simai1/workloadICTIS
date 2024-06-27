@@ -29,6 +29,7 @@ import {
 import { delChangeData } from "./ui/ContextMenu/Function";
 import { FilteredSample } from "./ui/SamplePoints/Function";
 import { horsTeacher } from "./components/TableTeachers/dataHoursForTeacher/HoursTicher";
+import AdminMenu from "./pages/AdminMenu/AdminMenu";
 
 function App() {
   const [educator, setEducator] = useState([]); // преподаватели
@@ -70,6 +71,10 @@ function App() {
     GIGA_ADMIN: [
       1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 29, 30,
       31, 34, 35, 36, 38, 16, 40, 44, 46,
+    ],
+    GOD: [
+      1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 29, 30,
+      31, 34, 35, 36, 38, 16, 40, 44, 45, 46,
     ],
   };
   // appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)
@@ -697,6 +702,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Authorization />}></Route>
             <Route path="/HomePage" element={<HomePage />}></Route>
+            <Route path="/Admin" element={<AdminMenu />}></Route>
           </Routes>
         </div>
       </BrowserRouter>

@@ -14,6 +14,7 @@ function Profile(props) {
     DEPUTY_DIRECTORATE: "Заместитель директора",
     DEPUTY_DEPARTMENT_HEAD: "Заместитель заведующего кафедрой",
     GIGA_ADMIN: "Администратор системы",
+    GOD: "БОГ",
   };
 
   const getInstitut = () => {

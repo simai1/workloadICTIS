@@ -32,6 +32,7 @@ import socketConnect from "../../api/services/socket";
 import PopUpGoodMessage from "../../ui/PopUpGoodMessage/PopUpGoodMessage";
 import TableHistory from "../../components/TableHistory/TableHistory";
 import ErrorHelper from "../../components/ErrorHelper/ErrorHelper";
+import { Link } from "react-router-dom";
 
 function HomePage() {
   const { appData, tabPar, visibleDataPar, basicTabData } =
@@ -410,6 +411,11 @@ function HomePage() {
                   }}
                   text="Преподаватели"
                 />
+              )}
+              {appData.myProfile?.role === "GOD" && (
+                <Link to="../Admin">
+                  <Button text="Админ панель" />
+                </Link>
               )}
               {appData.metodRole[appData.myProfile?.role]?.some(
                 (el) => el === 24
