@@ -7,7 +7,7 @@ import DataContext from "../../context";
 // import { headers as hed } from "../TableDisciplines/Data";
 
 function EditInput({ selectedComponent, originalHeader, ssname }) {
-  const { basicTabData } = React.useContext(DataContext);
+  const { basicTabData, appData } = React.useContext(DataContext);
 
   const headers = [...basicTabData.tableHeaders];
   const [searchResults, setSearchResults] = useState(headers);
@@ -102,7 +102,12 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
       )
     );
     if (query === "") {
-      setSearchResults(originalHeader);
+      console.log(
+        originalHeader
+          .map((item, index) => index > 2 && item)
+          .filter((el) => el != null && el !== undefined && el !== "")
+      );
+      setSearchResults(originalHeader.filter((_, index) => index > 2));
     }
   };
 
@@ -171,24 +176,17 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
               </li>
               {searchResults.map((row, index) => (
                 <div key={index + 1}>
-                  {row.label !== "№" &&
-                    row.label !== "Дисциплина" &&
-                    row.label !== "Нагрузка" &&
-                    row.label !== "Преподаватель" &&
-                    row.label !== "Должность" && (
-                      <li key={index}>
-                        <input
-                          type="checkbox"
-                          onChange={() => takeFunction(index, row)}
-                          checked={!isChecked.includes(row.key)}
-                          className={styles.customInput}
-                          id={`search3-${index}`}
-                          name="search3"
-                        />
-
-                        <p>{row.label}</p>
-                      </li>
-                    )}
+                  <li key={index}>
+                    <input
+                      type="checkbox"
+                      onChange={() => takeFunction(index, row)}
+                      checked={!isChecked.includes(row.key)}
+                      className={styles.customInput}
+                      id={`search3-${index}`}
+                      name="search3"
+                    />
+                    <p>{row.label}</p>
+                  </li>
                 </div>
               ))}
             </ul>
