@@ -13,6 +13,7 @@ router
     .get(
         asyncRoute(
             checkRole([
+                role.GOD,
                 role.GIGA_ADMIN,
                 role.UNIT_ADMIN,
                 role.DEPARTMENT_HEAD,
@@ -27,7 +28,7 @@ router
 router
     .route('/getAllOffersByLecture')
     .get(
-        asyncRoute(checkRole([role.GIGA_ADMIN, role.UNIT_ADMIN, role.LECTURER])),
+        asyncRoute(checkRole([role.GOD, role.GIGA_ADMIN, role.UNIT_ADMIN, role.LECTURER])),
         asyncRoute(offersController.getAllOffersByLecture)
     );
 router
@@ -35,6 +36,7 @@ router
     .post(
         asyncRoute(
             checkRole([
+                role.GOD,
                 role.GIGA_ADMIN,
                 role.UNIT_ADMIN,
                 role.DEPARTMENT_HEAD,
@@ -49,6 +51,7 @@ router
     .post(
         asyncRoute(
             checkRole([
+                role.GOD,
                 role.GIGA_ADMIN,
                 role.UNIT_ADMIN,
                 role.DEPARTMENT_HEAD,
@@ -61,7 +64,7 @@ router
 router
     .route('/confirmOrReject/:offerId')
     .post(
-        asyncRoute(checkRole([role.GIGA_ADMIN, role.UNIT_ADMIN, role.DIRECTORATE, role.DEPUTY_DIRECTORATE])),
+        asyncRoute(checkRole([role.GOD, role.GIGA_ADMIN, role.UNIT_ADMIN, role.DIRECTORATE, role.DEPUTY_DIRECTORATE])),
         asyncRoute(offersController.confirmOrReject)
     );
 router
@@ -69,6 +72,7 @@ router
     .delete(
         asyncRoute(
             checkRole([
+                role.GOD,
                 role.GIGA_ADMIN,
                 role.UNIT_ADMIN,
                 role.DEPARTMENT_HEAD,

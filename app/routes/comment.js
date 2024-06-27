@@ -13,6 +13,7 @@ router
     .post(
         asyncRoute(
             checkRole([
+                role.GOD,
                 role.GIGA_ADMIN,
                 role.UNIT_ADMIN,
                 role.DEPARTMENT_HEAD,
@@ -31,6 +32,7 @@ router
     .delete(
         asyncRoute(
             checkRole([
+                role.GOD,
                 role.GIGA_ADMIN,
                 role.UNIT_ADMIN,
                 role.DEPARTMENT_HEAD,
@@ -47,6 +49,7 @@ router
     .get(
         asyncRoute(
             checkRole([
+                role.GOD,
                 role.GIGA_ADMIN,
                 role.UNIT_ADMIN,
                 role.DEPARTMENT_HEAD,
@@ -67,6 +70,7 @@ router
     .delete(
         asyncRoute(
             checkRole([
+                role.GOD,
                 role.GIGA_ADMIN,
                 role.UNIT_ADMIN,
                 role.DEPARTMENT_HEAD,

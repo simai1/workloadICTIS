@@ -12,11 +12,13 @@ router.route('/').get(asyncRoute(userController.getUser));
 router
     .route('/setDepartments')
     .patch(
-        asyncRoute(checkRole([role.GIGA_ADMIN, role.DIRECTORATE, role.DEPUTY_DIRECTORATE])),
+        asyncRoute(checkRole([role.GOD, role.GIGA_ADMIN, role.DIRECTORATE, role.DEPUTY_DIRECTORATE])),
         asyncRoute(userController.setUnitAdminDepartments)
     );
 
-router.route('/getAll').get(asyncRoute(checkRole([role.GIGA_ADMIN])), asyncRoute(userController.getAll));
-router.route('/:id/update').put(asyncRoute(checkRole([role.GIGA_ADMIN])), asyncRoute(userController.updateUser));
+router.route('/getAll').get(asyncRoute(checkRole([role.GOD, role.GIGA_ADMIN])), asyncRoute(userController.getAll));
+router
+    .route('/:id/update')
+    .put(asyncRoute(checkRole([role.GOD, role.GIGA_ADMIN])), asyncRoute(userController.updateUser));
 
 export default router;

@@ -13,6 +13,7 @@ router
     .get(
         asyncRoute(
             checkRole([
+                role.GOD,
                 role.GIGA_ADMIN,
                 role.UNIT_ADMIN,
                 role.DEPARTMENT_HEAD,
