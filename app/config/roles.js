@@ -10,6 +10,7 @@ const roles = {
     DEPUTY_DIRECTORATE: 7,
     DEPUTY_DEPARTMENT_HEAD: 8,
     GIGA_ADMIN: 9,
+    GOD: 10
 };
 
 export default roles;
