@@ -299,4 +299,19 @@ router
         ),
         asyncRoute(workloadController.getDepartmentsForDirectorate)
     );
+router
+    .route('/checkHourseByAllEducators')
+    .get(
+        asyncRoute(
+            checkRole([
+                role.GOD,
+                role.GIGA_ADMIN,
+                role.UNIT_ADMIN,
+                role.DIRECTORATE,
+                role.METHODIST,
+                role.DEPUTY_DIRECTORATE,
+            ])
+        ),
+        asyncRoute(workloadController.checkHourseByAllEducators)
+    )
 export default router;
