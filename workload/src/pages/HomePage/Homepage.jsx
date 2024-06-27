@@ -161,9 +161,7 @@ function HomePage() {
         if (
           appData.metodRole[appData.myProfile?.role]?.some((el) => el === 33)
         ) {
-          const id = basicTabData.tableDepartment.find(
-            (el) => el.name === appData.myProfile.educator.department
-          ).id;
+          const id = appData.myProfile.educator.departmentId
           WorkloadBlocked(id).then((resp) => {
             if (resp.status == 200) {
               basicTabData.funUpdateTable(0);
@@ -171,26 +169,14 @@ function HomePage() {
             }
           });
         } else {
-          if (basicTabData.selectISOid) {
-            WorkloadBlocked(0).then((resp) => {
+          const idTable = basicTabData?.tableDepartment.find((el)=>el.name === basicTabData?.nameKaf).id
+          WorkloadBlocked(idTable).then((resp) => {
               if (resp.status == 200) {
-                basicTabData.funUpdateTable("0");
+                basicTabData.funUpdateTable(idTable);
                 appData.setgodPopUp(true);
                 basicTabData.funGetDepartment();
               }
             });
-          } else {
-            const index = basicTabData.tableDepartment.find(
-              (el) => el.name === basicTabData.nameKaf
-            ).id;
-            WorkloadBlocked(index).then((resp) => {
-              if (resp.status == 200) {
-                basicTabData.funUpdateTable(index);
-                appData.setgodPopUp(true);
-                basicTabData.funGetDepartment();
-              }
-            });
-          }
         }
       } else {
         setPopupExport(false);
