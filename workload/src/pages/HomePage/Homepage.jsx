@@ -33,6 +33,7 @@ import PopUpGoodMessage from "../../ui/PopUpGoodMessage/PopUpGoodMessage";
 import TableHistory from "../../components/TableHistory/TableHistory";
 import ErrorHelper from "../../components/ErrorHelper/ErrorHelper";
 import { Link } from "react-router-dom";
+import UnlockDepartment from "../../ui/UnlockDepartment/UnlockDepartment";
 
 function HomePage() {
   const { appData, tabPar, visibleDataPar, basicTabData } =
@@ -50,6 +51,7 @@ function HomePage() {
   const refProfile = React.useRef(null); // ссылка на модальное окно профиля
   const [educatorIdforLk, setEducatorIdforLk] = useState(""); // id для вывода LK, если пустое то LK не отображается
   const [popupSaveAll, setPopupSaveAll] = useState(false); // открыть/закрыть попап подтверждения сохранения
+  const [popupUnblockTable, setPopupUnblockTable] = useState(false);
   const [popupExport, setPopupExport] = useState(false); // открыть/закрыть попап подтверждения блокировки таблицы
   const [departments, setdepartments] = useState([]);
   const [kafedralIsOpen, setKafedralIsOpen] = useState(false);
@@ -128,6 +130,10 @@ function HomePage() {
     setPopupSaveAll(!popupSaveAll);
     popupExport == true && setPopupExport(false);
   };
+   //! открыть попап
+  const onUnblockClick = () => {
+    setPopupUnblockTable(!popupUnblockTable)
+  }
   //! открыть попап
   const onExportClick = () => {
     setPopupExport(!popupExport);
@@ -164,7 +170,7 @@ function HomePage() {
           const id = appData.myProfile.educator.departmentId
           WorkloadBlocked(id).then((resp) => {
             if (resp.status == 200) {
-              basicTabData.funUpdateTable(0);
+              basicTabData.funUpdateTable(99);
               appData.setgodPopUp(true);
             }
           });
@@ -304,14 +310,49 @@ function HomePage() {
                       )}
                     </div>
                   )}
+                  {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 48) && 
+                      appData.selectedComponent === "Disciplines" &&
+                      basicTabData.nameKaf != "Все" &&
+                      blockTable &&
+                  
+                    <div className={styles.btnMenuBox} onClick={onUnblockClick}>
+                      <img
+                        className={styles.btnLeft}
+                        src="./img/unblock.svg"
+                      />
+                      {popupUnblockTable && (
+                        <UnlockDepartment
+                          title={"Вы уверены, что хотите разблокировать таблицу?"}
+                          denyClick={onUnblockClick}
+                        />
+                      )}
+                    </div>
+                  }
+                  {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 49) && 
+                      appData.selectedComponent === "Disciplines" &&
+                      blockTable &&
+                    <div className={styles.btnMenuBox} onClick={onUnblockClick}>
+                      <img
+                        className={styles.btnLeft}
+                        src="./img/unblock.svg"
+                      />
+                      {popupUnblockTable && (
+                        <UnlockDepartment
+                          title={"Попросить разблокировать таблицу?"}
+                          denyClick={onUnblockClick}
+                        />
+                      )}
+                    </div>
+                     
+                  }
 
-                {appData.metodRole[appData.myProfile?.role]?.some(
+                {(appData.metodRole[appData.myProfile?.role]?.some(
                   (el) => el === 27
-                ) &&
+                )  &&
                   basicTabData.nameKaf != "Все" &&
                   !blockTable &&
                   appData.selectedComponent === "Disciplines" &&
-                  appData.selectedComponent !== "History" && (
+                  appData.selectedComponent !== "History") || (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 33) && !blockTable) && (
                     <div
                       style={{ marginRight: "15px" }}
                       className={styles.btnMenuBox}
