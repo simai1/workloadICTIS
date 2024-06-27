@@ -1,0 +1,78 @@
+// @import "./../../styles/mixins.scss";
+@mixin Button(
+  $paddingTB: 10px,
+  $paddingLR: 20px,
+  $bgColor: #007bff,
+  $textColor: #fff,
+  $borderradius: 8px,
+  $width: 40px
+) {
+  background-color: $bgColor;
+  padding: $paddingTB $paddingLR;
+  display: flex;
+  justify-content: center;
+  outline: none;
+  color: $textColor;
+  border-radius: $borderradius;
+  border: none;
+  width: $width;
+  &:hover {
+    opacity: 0.8;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+}
+
+@mixin PopupBack($z-index: 1) {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #0000007c;
+  z-index: $z-index;
+}
+
+@mixin PopupBox() {
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  border-radius: 17px;
+  padding: 18px 20px;
+  z-index: 2;
+}
+
+.Popup {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 200;
+  .PopupBody {
+    display: flex;
+    .left {
+      width: 200px;
+      margin-right: 20px;
+      padding-bottom: 10px;
+    }
+    .rigth {
+      width: 200px;
+    }
+  }
+  .PopupBack {
+    @include PopupBack;
+  }
+  .PopupBox {
+    @include PopupBox;
+    .buttonBox {
+      display: flex;
+      justify-content: end;
+      button {
+        margin-top: 40px;
+        @include Button($width: 120px);
+      }
+    }
+  }
+}
