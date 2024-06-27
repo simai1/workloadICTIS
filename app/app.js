@@ -89,6 +89,49 @@ app.use('/color', colorRoute);
 app.use('/attaches', attachesRoute);
 app.use('/history', historyRoute);
 
+app.get('/', (req, res) => {
+    res.send(`
+        <html>
+            <head>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        background-color: #f0f0f0;
+                        color: #333;
+                    }
+                    table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-top: 50px;
+                    }
+                    th, td {
+                        border: 1px solid #ddd;
+                        padding: 8px;
+                        text-align: left;
+                    }
+                    th {
+                        background-color: #4CAF50;
+                        color: white;
+                        text-align: center; /* Центрирование текста */
+                    }
+                    th:hover {
+                        cursor: pointer;
+                        background-color: #45a049; /* Изменяемый фон при наведении */
+                    }
+                </style>
+            </head>
+            <body>
+                <h1 style="text-align: center;">Добро пожаловать в распределение нагрузки ЮФУ!</h1>
+                <table>
+                    <tr>
+                        <th onclick="location.href='http://localhost:3000/client';">Чтобы зайти на сайт нажмите сюда.</th>
+                    </tr>
+                </table>
+            </body>
+        </html>
+    `);
+});
+
 io.on('connection', socket => {
     console.log(`socket ${socket.id} connected`);
 
