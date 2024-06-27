@@ -13,6 +13,7 @@ router
     .post(
         asyncRoute(
             checkRole([
+                role.GOD,
                 role.GIGA_ADMIN,
                 role.UNIT_ADMIN,
                 role.DEPARTMENT_HEAD,
@@ -29,7 +30,7 @@ router
 router
     .route('/changeInstitutionalAffiliation')
     .post(
-        asyncRoute(checkRole([role.GIGA_ADMIN, role.DIRECTORATE, role.DEPUTY_DIRECTORATE])),
+        asyncRoute(checkRole([role.GOD, role.GIGA_ADMIN, role.DIRECTORATE, role.DEPUTY_DIRECTORATE])),
         asyncRoute(roleController.changeInstitutionalAffiliation)
     );
 
