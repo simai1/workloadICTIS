@@ -1,7 +1,7 @@
 import socketIO from "socket.io-client";
 
 function socketConnect() {
-  //const socketUrl = "https://workload.sfedu.ru";
+  // const socketUrl = "https://workload.sfedu.ru";
   const socketUrl = "http://localhost:3002";
   // const socket = socketIO.connect(socketUrl);
 

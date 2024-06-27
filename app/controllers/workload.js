@@ -354,13 +354,21 @@ export default {
         if (!workloads) throw new AppErrorInvalid('workload');
         const educatorIds = [];
         workloads.map(workload => educatorIds.push(workload.educatorId));
-        await Workload.update({ educatorId: null }, {where: {id: workloadIds}});
+        // await Workload.update({ educatorId: null }, {where: {id: workloadIds}});
+        for (const workload of workloadIds) {
+            await Workload.update({educatorId: null}, {
+                where: {
+                    id: workload,
+                },
+                individualHooks: true,
+            });
+        }
 
         let remainingWorkloads;
         let summaryWorkload;
         for (const educatorId of educatorIds){
             remainingWorkloads = await Workload.count({ where: { educatorId } });
-
+            console.log(remainingWorkloads)
             if (remainingWorkloads === 0) {
                 // Если нет нагрузок, удаляем предупреждение
                 await Notification.destroy({ where: { educatorId } }); // Предположим, что у вас есть метод для удаления summaryWorkload по educatorId
