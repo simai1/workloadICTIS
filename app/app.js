@@ -13,6 +13,7 @@ import 'dotenv/config';
 
 import dbUtils from './utils/db.js';
 import testUtils from './utils/test-data.js';
+import cronService from './services/cron.js';
 
 import commentRoute from './routes/comment.js';
 import authRoute from './routes/auth.js';
@@ -76,6 +77,12 @@ app.use(cors({
     exposedHeaders: ['*'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+
+cronService.checkHours.start();
+// cronService.reminderPractice.start();
+// cronService.checkActivity.start();
+
 app.use('/comment', commentRoute);
 app.use('/notification', notificationRoute);
 app.use('/educator', eduRoute);
