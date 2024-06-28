@@ -269,13 +269,12 @@ router
     .patch(
         asyncRoute(
             checkRole([
+                role.METHODIST,
                 role.GOD,
                 role.GIGA_ADMIN,
                 role.UNIT_ADMIN,
-                role.DEPARTMENT_HEAD,
                 role.DIRECTORATE,
                 role.DEPUTY_DIRECTORATE,
-                role.DEPUTY_DEPARTMENT_HEAD,
             ])
         ),
         asyncRoute(workloadController.unblockWorkload)
@@ -298,5 +297,20 @@ router
             ])
         ),
         asyncRoute(workloadController.getDepartmentsForDirectorate)
+    );
+router
+    .route('/checkHourseByAllEducators')
+    .get(
+        asyncRoute(
+            checkRole([
+                role.GOD,
+                role.GIGA_ADMIN,
+                role.UNIT_ADMIN,
+                role.DIRECTORATE,
+                role.METHODIST,
+                role.DEPUTY_DIRECTORATE,
+            ])
+        ),
+        asyncRoute(workloadController.checkHoursByAllEducators)
     );
 export default router;

@@ -13,6 +13,7 @@ import 'dotenv/config';
 
 import dbUtils from './utils/db.js';
 import testUtils from './utils/test-data.js';
+import cronService from './services/cron.js';
 
 import commentRoute from './routes/comment.js';
 import authRoute from './routes/auth.js';
@@ -76,6 +77,12 @@ app.use(cors({
     exposedHeaders: ['*'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+
+cronService.checkHours.start();
+// cronService.reminderPractice.start();
+// cronService.checkActivity.start();
+
 app.use('/comment', commentRoute);
 app.use('/notification', notificationRoute);
 app.use('/educator', eduRoute);
@@ -88,6 +95,49 @@ app.use('/role', roleRoute);
 app.use('/color', colorRoute);
 app.use('/attaches', attachesRoute);
 app.use('/history', historyRoute);
+
+app.get('/', (req, res) => {
+    res.send(`
+        <html>
+            <head>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        background-color: #f0f0f0;
+                        color: #333;
+                    }
+                    table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-top: 50px;
+                    }
+                    th, td {
+                        border: 1px solid #ddd;
+                        padding: 8px;
+                        text-align: left;
+                    }
+                    th {
+                        background-color: #4CAF50;
+                        color: white;
+                        text-align: center; /* Центрирование текста */
+                    }
+                    th:hover {
+                        cursor: pointer;
+                        background-color: #45a049; /* Изменяемый фон при наведении */
+                    }
+                </style>
+            </head>
+            <body>
+                <h1 style="text-align: center;">Добро пожаловать в распределение нагрузки ЮФУ!</h1>
+                <table>
+                    <tr>
+                        <th onclick="location.href='http://localhost:3000/client';">Чтобы зайти на сайт нажмите сюда.</th>
+                    </tr>
+                </table>
+            </body>
+        </html>
+    `);
+});
 
 io.on('connection', socket => {
     console.log(`socket ${socket.id} connected`);

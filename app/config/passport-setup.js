@@ -22,6 +22,7 @@ passport.use(
     new AzureAdOAuth2Strategy(
         {
             callbackURL: 'http://localhost:3002/auth/login',
+            //callbackURL: 'https://workload.sfedu.ru/auth/login',
             clientID: process.env.SFEDU_ID,
             clientSecret: process.env.SFEDU_SECRET,
         },

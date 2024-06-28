@@ -9,6 +9,7 @@ import HeaderTranslation from '../config/header_translation.js';
 import HeaderTranslationEducators from '../config/header_translation_educators.js';
 import positions from '../config/position.js';
 import recommendHours from '../config/recommend-hours.js';
+import workloadController from '../controllers/workload.js';
 import fs from 'fs';
 
 export default {
@@ -90,7 +91,8 @@ export default {
                 console.log(e);
             }
         }
-
+        await workloadController.checkHoursEducators();
+        
         try {
             fs.unlinkSync(req.file.path); // Синхронное удаление файла
             console.log('Файл успешно удален.');
@@ -135,6 +137,7 @@ export default {
                 });
                 const existEducator = await Educator.findOne({ where: { email: newEducator.email } });
                 newEducator.department = FullNameDepartments[newEducator.department];
+                console.log(newEducator)
                 if (!existEducator && validPositions.includes(newEducator.position) && newEducator.department) {
                     delete newEducator.undefined;
                     newEducator.position = positions[newEducator.position];
@@ -144,6 +147,7 @@ export default {
                         numberPart = 1;
                     }
                     newEducator.rate = numberPart
+                    console.log(newEducator)
                     const resEducator = await Educator.create({
                         name: newEducator.name,
                         email: newEducator.email,
@@ -151,7 +155,7 @@ export default {
                         position: newEducator.position,
                         rate: newEducator.rate,
                     });
-                    //console.log("resEducator", resEducator.dataValues)
+                    console.log("resEducator", resEducator.dataValues)
                 }
             } catch (e) {
                 // Обработка ошибок

@@ -23,6 +23,7 @@ import ListKaf from "../../ui/ListKaf/ListKaf";
 import { PopUpCreateEmploy } from "../../ui/PopUpCreateEmploy/PopUpCreateEmploy";
 import {
   GetDepartment,
+  Workload,
   WorkloadBlocked,
   apiGetUser,
   getAllWarningMessage,
@@ -33,7 +34,9 @@ import PopUpGoodMessage from "../../ui/PopUpGoodMessage/PopUpGoodMessage";
 import TableHistory from "../../components/TableHistory/TableHistory";
 import ErrorHelper from "../../components/ErrorHelper/ErrorHelper";
 import { Link } from "react-router-dom";
-import SplitByHoursPopup from "../../components/SplitByHoursPopup/SplitByHoursPopup";
+import UnlockDepartment from "../../ui/UnlockDepartment/UnlockDepartment";
+import { saveAs } from "file-saver";
+import * as XLSX from "xlsx";
 
 function HomePage() {
   const { appData, tabPar, visibleDataPar, basicTabData } =
@@ -51,6 +54,7 @@ function HomePage() {
   const refProfile = React.useRef(null); // ссылка на модальное окно профиля
   const [educatorIdforLk, setEducatorIdforLk] = useState(""); // id для вывода LK, если пустое то LK не отображается
   const [popupSaveAll, setPopupSaveAll] = useState(false); // открыть/закрыть попап подтверждения сохранения
+  const [popupUnblockTable, setPopupUnblockTable] = useState(false);
   const [popupExport, setPopupExport] = useState(false); // открыть/закрыть попап подтверждения блокировки таблицы
   const [departments, setdepartments] = useState([]);
   const [kafedralIsOpen, setKafedralIsOpen] = useState(false);
@@ -130,6 +134,10 @@ function HomePage() {
     popupExport == true && setPopupExport(false);
   };
   //! открыть попап
+  const onUnblockClick = () => {
+    setPopupUnblockTable(!popupUnblockTable);
+  };
+  //! открыть попап
   const onExportClick = () => {
     setPopupExport(!popupExport);
     popupSaveAll == true && setPopupSaveAll(false);
@@ -162,36 +170,24 @@ function HomePage() {
         if (
           appData.metodRole[appData.myProfile?.role]?.some((el) => el === 33)
         ) {
-          const id = basicTabData.tableDepartment.find(
-            (el) => el.name === appData.myProfile.educator.department
-          ).id;
+          const id = appData.myProfile.educator.departmentId;
           WorkloadBlocked(id).then((resp) => {
             if (resp.status == 200) {
-              basicTabData.funUpdateTable(0);
+              basicTabData.funUpdateTable(99);
               appData.setgodPopUp(true);
             }
           });
         } else {
-          if (basicTabData.selectISOid) {
-            WorkloadBlocked(0).then((resp) => {
-              if (resp.status == 200) {
-                basicTabData.funUpdateTable("0");
-                appData.setgodPopUp(true);
-                basicTabData.funGetDepartment();
-              }
-            });
-          } else {
-            const index = basicTabData.tableDepartment.find(
-              (el) => el.name === basicTabData.nameKaf
-            ).id;
-            WorkloadBlocked(index).then((resp) => {
-              if (resp.status == 200) {
-                basicTabData.funUpdateTable(index);
-                appData.setgodPopUp(true);
-                basicTabData.funGetDepartment();
-              }
-            });
-          }
+          const idTable = basicTabData?.tableDepartment.find(
+            (el) => el.name === basicTabData?.nameKaf
+          ).id;
+          WorkloadBlocked(idTable).then((resp) => {
+            if (resp.status == 200) {
+              basicTabData.funUpdateTable(idTable);
+              appData.setgodPopUp(true);
+              basicTabData.funGetDepartment();
+            }
+          });
         }
       } else {
         setPopupExport(false);
@@ -237,6 +233,97 @@ function HomePage() {
       return blocked;
     }
   };
+  //!Функция экспорта файла
+  const exportFile = () => {
+    let idTableUnlock = 0;
+    let url = ``;
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 51)) {
+      idTableUnlock = appData.myProfile.educator.departmentId;
+    } else {
+      idTableUnlock = basicTabData?.tableDepartment.find(
+        (el) => el.name === basicTabData?.nameKaf
+      ).id;
+    }
+
+    if (basicTabData.nameKaf === "Все") {
+      url = ``;
+    } else if (basicTabData.nameKaf === "ОИД") {
+      url = "?isOid=true";
+    } else {
+      url = `?department=${idTableUnlock}`;
+    }
+    Workload(url).then((resp) => {
+      console.log("workloadExport", resp);
+      generateAndDownloadExcel(resp);
+    });
+  };
+
+  //!Функция генерации файла для скачивания
+  const generateAndDownloadExcel = (data) => {
+    const transformedData = data.map(
+      ({ id, isBlocked, isMerged, isOid, isSplit, educator, ...item }) => ({
+        Кафедра: item?.department,
+        Дисциплина: item?.discipline,
+        Нагрузка: item?.workload,
+        Группы: item?.groups,
+        Блок: item?.block,
+        Семестр: item?.semester,
+        Период: item?.period,
+        Учебный_план: item?.curriculum,
+        Подразделение_учебного_плана: item?.curriculumUnit,
+        Форма_обучения: item?.formOfEducation,
+        Уровень_подготовки: item?.levelOfTraining,
+        Специальность: item?.specialty,
+        Профиль: item?.core,
+        Количество_студентов: item?.numberOfStudents,
+        Часы: item?.hours,
+        Аудиторные_часы: item?.audienceHours,
+        Часы_рейтинг_контроль: item?.ratingControlHours,
+        Преподаватель: educator?.name,
+      })
+    );
+    const worksheet = XLSX.utils.json_to_sheet(transformedData);
+
+    // Установка ширины столбцов
+    const columnWidths = transformedData.reduce((widths, row) => {
+      Object.keys(row).forEach((key, index) => {
+        const value = row[key] ? row[key].toString() : "";
+        widths[index] = Math.max(widths[index] || 10, value.length);
+      });
+      return widths;
+    }, []);
+
+    worksheet["!cols"] = columnWidths.map((width) => ({ wch: width }));
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+
+    const currentDate = new Date();
+    const options = {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+      timeZone: "Europe/Moscow",
+    };
+    const formattedDate = currentDate
+      .toLocaleString("ru-RU", options)
+      .replace(/(\d+)\.(\d+)\.(\d+), (\d+):(\d+)/, "$3.$2.$1_$4:$5");
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+    const excelData = new Blob([excelBuffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    saveAs(
+      excelData,
+      `Бэкап_Табл_${basicTabData?.nameKaf}_${formattedDate}.xlsx`
+    );
+  };
+
   useEffect(() => {
     setBlockTable(checkBlocked);
   }, [
@@ -304,7 +391,8 @@ function HomePage() {
                 {appData.metodRole[appData.myProfile?.role]?.some(
                   (el) => el === 26
                 ) &&
-                  appData.selectedComponent === "Disciplines" && (
+                  appData.selectedComponent === "Disciplines" &&
+                  !blockTable && (
                     <div className={styles.btnMenuBox} onClick={onSaveClick}>
                       <img
                         className={styles.btnLeft}
@@ -319,29 +407,63 @@ function HomePage() {
                       )}
                     </div>
                   )}
-
                 {appData.metodRole[appData.myProfile?.role]?.some(
-                  (el) => el === 27
+                  (el) => el === 48
                 ) &&
-                  basicTabData.nameKaf != "Все" &&
-                  !blockTable &&
                   appData.selectedComponent === "Disciplines" &&
-                  appData.selectedComponent !== "History" && (
-                    <div
-                      style={{ marginRight: "15px" }}
-                      className={styles.btnMenuBox}
-                      onClick={onExportClick}
-                    >
-                      <img className={styles.btnLeft} src="./img/export.svg" />
-                      {popupExport && (
-                        <ConfirmSaving
-                          title={"Вы уверены, что хотите отправить таблицу?"}
-                          confirmClick={exportClick}
-                          setShow={setPopupExport}
+                  basicTabData.nameKaf != "Все" &&
+                  blockTable && (
+                    <div className={styles.btnMenuBox} onClick={onUnblockClick}>
+                      <img className={styles.btnLeft} src="./img/unblock.svg" />
+                      {popupUnblockTable && (
+                        <UnlockDepartment
+                          title={`Вы уверены, что хотите разблокировать таблицу ${basicTabData.nameKaf} ?`}
+                          denyClick={onUnblockClick}
                         />
                       )}
                     </div>
                   )}
+                {appData.metodRole[appData.myProfile?.role]?.some(
+                  (el) => el === 49
+                ) &&
+                  appData.selectedComponent === "Disciplines" &&
+                  blockTable && (
+                    <div className={styles.btnMenuBox} onClick={onUnblockClick}>
+                      <img className={styles.btnLeft} src="./img/unblock.svg" />
+                      {popupUnblockTable && (
+                        <UnlockDepartment
+                          title={"Попросить разблокировать таблицу?"}
+                          denyClick={onUnblockClick}
+                        />
+                      )}
+                    </div>
+                  )}
+
+                {((appData.metodRole[appData.myProfile?.role]?.some(
+                  (el) => el === 27
+                ) &&
+                  basicTabData.nameKaf !== "Все" &&
+                  !blockTable &&
+                  appData.selectedComponent === "Disciplines") ||
+                  (appData.metodRole[appData.myProfile?.role]?.some(
+                    (el) => el === 33
+                  ) &&
+                    !blockTable)) && (
+                  <div
+                    style={{ marginRight: "15px" }}
+                    className={styles.btnMenuBox}
+                    onClick={onExportClick}
+                  >
+                    <img className={styles.btnLeft} src="./img/export.svg" />
+                    {popupExport && (
+                      <ConfirmSaving
+                        title={"Вы уверены, что хотите отправить таблицу?"}
+                        confirmClick={exportClick}
+                        setShow={setPopupExport}
+                      />
+                    )}
+                  </div>
+                )}
               </div>
               <div
                 className={styles.header_search}
@@ -524,8 +646,7 @@ function HomePage() {
                   )}
                 </div>
 
-                {(appData.selectedComponent === "Disciplines" ||
-                  appData.selectedComponent === "History") &&
+                {appData.selectedComponent === "Disciplines" &&
                   appData.metodRole[appData.myProfile?.role]?.some(
                     (el) => el === 35
                   ) && (
@@ -536,10 +657,27 @@ function HomePage() {
                       </button>
                     </div>
                   )}
+
+                {appData.metodRole[appData.myProfile?.role]?.some(
+                  (el) => el === 50
+                ) &&
+                  appData.selectedComponent === "Disciplines" && (
+                    <div className={styles.import}>
+                      <button onClick={exportFile}>
+                        <img
+                          src="./img/import.svg"
+                          alt=">"
+                          className={styles.export__img}
+                        ></img>
+                        <p>Экспорт таблицы</p>
+                      </button>
+                    </div>
+                  )}
               </div>
             </div>
           )}
         </div>
+
         <div className={styles.Block__tables}>
           {appData.selectedComponent === "Disciplines" ? (
             <TableWorkload

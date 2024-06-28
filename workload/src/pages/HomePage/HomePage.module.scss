@@ -119,6 +119,9 @@ body {
         color: var(--blue-color);
         justify-content: space-between;
         position: relative;
+        .export__img{
+          margin-right: 5px;
+        }
         input::placeholder {
           color: var(--blue-color);
         }
@@ -149,15 +152,19 @@ body {
           width: 176px;
           height: 42px;
           display: flex;
-          cursor: pointer;
           border: none;
           border-radius: 6px;
           align-items: center;
           justify-content: center;
+          &:hover{
+            cursor: pointer;
+          }
           p {
             color: var(--blue-color);
             font-size: 16px;
-            margin-right: 8px;
+            &:first-child{
+              margin-right: 8px;
+            }
           }
         }
       }
@@ -245,6 +252,9 @@ body {
       margin-right: 15px;
     }
     .btnMenuBox:nth-child(2) {
+      margin-right: 15px;
+    }
+    .btnMenuBox:nth-child(3) {
       margin-right: 15px;
     }
   }

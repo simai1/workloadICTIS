@@ -44,37 +44,37 @@ function App() {
   const metodRole = {
     METHODIST: [
       1, 3, 4, 8, 9, 10, 14, 17, 20, 21, 25, 26, 28, 29, 31, 34, 35, 36, 16, 40,
-      47,
+      47, 48, 50,
     ],
     LECTURER: [2, 15, 17, 17.1, 18, 20, 22, 24, 34, 37, 41],
     DEPARTMENT_HEAD: [
       2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 20, 22, 23, 25, 26, 27, 30, 31,
-      32, 33, 34, 36, 16, 39, 40,
+      32, 33, 34, 36, 16, 39, 40, 50, 51,
     ],
     DIRECTORATE: [
       1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
-      34, 35, 36, 38, 16, 40, 44, 47,
+      34, 35, 36, 38, 16, 40, 44, 47, 48, 50,
     ],
     UNIT_ADMIN: [
       2, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
-      34, 35, 36, 38, 16, 40, 42,
+      34, 35, 36, 38, 16, 40, 42, 48, 50,
     ],
     EDUCATOR: [15, 24, 41],
     DEPUTY_DIRECTORATE: [
       1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
-      34, 35, 36, 38, 16, 40, 44, 47,
+      34, 35, 36, 38, 16, 40, 44, 47, 48, 50,
     ],
     DEPUTY_DEPARTMENT_HEAD: [
       2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 20, 22, 23, 25, 26, 27, 30, 31,
-      32, 33, 34, 36, 16, 39, 40,
+      32, 33, 34, 36, 16, 39, 40, 50, 51,
     ],
     GIGA_ADMIN: [
       1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 29, 30,
-      31, 34, 35, 36, 38, 16, 40, 44, 46,
+      31, 34, 35, 36, 38, 16, 40, 44, 46, 48, 50,
     ],
     GOD: [
       1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 18, 20, 21, 22, 23, 25, 26, 27, 28,
-      29, 30, 31, 34, 35, 36, 38, 16, 40, 44, 45, 46,
+      29, 30, 31, 34, 35, 36, 38, 16, 40, 44, 45, 46, 48, 50,
     ],
   };
   // appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)
@@ -410,7 +410,15 @@ function App() {
       const newData = [...data];
       let obj = [];
       bufferAction.map((item) => {
-        let existingObj = obj.find((el) => el.id === item.workloadId);
+        let existingObj = null;
+        if (Array.isArray(item.workloadId)) {
+          existingObj = obj.find((el) =>
+            item.workloadId.some((e) => e === el.id)
+          );
+        } else {
+          existingObj = obj.find((el) => item.workloadId === el.id);
+        }
+
         if (existingObj) {
           if (item.request === "addEducatorWorkload") {
             existingObj.educator = item.edicatorName.edicatorName;
@@ -424,21 +432,28 @@ function App() {
             }
           }
         } else {
-          let o = {
-            ...newData[newData.findIndex((el) => el.id === item.workloadId)],
-          };
           if (item.request === "addEducatorWorkload") {
-            o.educator = item.edicatorName.edicatorName;
+            let ob = newData.filter((el) =>
+              item.workloadId?.some((e) => e === el.id)
+            );
+            ob = ob.map((el) => {
+              return { ...el, educator: item.edicatorName.edicatorName };
+            });
+            obj.push(...ob);
           }
           if (item.request === "workloadUpdata") {
+            let o = {
+              ...newData[newData.findIndex((el) => item.workloadId === el.id)],
+            };
             if (item.data.key === "numberOfStudents") {
               o.numberOfStudents = item.data.value;
             }
             if (item.data.key === "hours") {
               o.hours = item.data.value;
             }
+            obj.push(o);
           }
-          obj.push(o);
+          console.log(obj);
         }
       });
       return data.map((item) => {
