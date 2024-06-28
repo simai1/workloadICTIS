@@ -200,7 +200,6 @@ export const funGetConfirmation = (itemId, changedData, bufferAction) => {
         el.newIds.some((e) => e === itemId)
     )[0];
     let data = { ...buff };
-
     if (data.data) {
       data.data = { ...data.data, ids: [itemId.slice(0, -1)] };
       data.newIds = data.newIds.filter(
@@ -217,7 +216,7 @@ export const funGetConfirmation = (itemId, changedData, bufferAction) => {
           blocked: true,
           height: `${150 * length}px`,
           top: `${-150 * index}px`,
-          type: 2,
+          type: buff.request === "splitByHours" ? 4 : 2,
           data: data,
         };
       } else {

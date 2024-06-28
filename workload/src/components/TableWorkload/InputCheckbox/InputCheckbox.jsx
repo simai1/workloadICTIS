@@ -55,7 +55,12 @@ function InputCheckbox(props) {
           {
             //! определяем разделенная ли нагрузка
             props.workload?.isSplit === true && (
-              <div className={styles.isSplit}>Разделенная</div>
+              <div className={styles.isSplit}>
+                <span>Разделенная</span>
+                {props.workload?.isSplitArrow === true && (
+                  <img src="img/Arrow.svg" alt=">" />
+                )}
+              </div>
             )
           }
           {

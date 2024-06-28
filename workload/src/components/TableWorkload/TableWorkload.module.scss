@@ -406,6 +406,11 @@ $heightCell: 150px;
       padding-left: 10px;
       box-sizing: border-box;
       color: red;
+      display: flex;
+      flex-direction: row;
+      span {
+        padding-right: 10px;
+      }
     }
 
     input {

@@ -33,6 +33,7 @@ import PopUpGoodMessage from "../../ui/PopUpGoodMessage/PopUpGoodMessage";
 import TableHistory from "../../components/TableHistory/TableHistory";
 import ErrorHelper from "../../components/ErrorHelper/ErrorHelper";
 import { Link } from "react-router-dom";
+import SplitByHoursPopup from "../../components/SplitByHoursPopup/SplitByHoursPopup";
 
 function HomePage() {
   const { appData, tabPar, visibleDataPar, basicTabData } =
@@ -605,6 +606,7 @@ function HomePage() {
       {appData.createEdicatorPopUp && <PopUpCreateEmploy />}
       {appData.errorPopUp && <PopUpError />}
       {appData.godPopUp && <PopUpGoodMessage />}
+      {tabPar.popupShareShow && <SplitByHoursPopup />}
     </Layout>
   );
 }
