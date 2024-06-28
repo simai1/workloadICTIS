@@ -327,13 +327,10 @@ export default {
         const checkWorkloads = await Workload.findAll({ where: { id: workloadIds } });
         if (checkWorkloads.some(workload => !workload)) throw new AppErrorNotExist('workload');
 
-        await Workload.update(
-            { educatorId },
-            {
-                where: { id: workloadIds },
-                individualHooks: true,
-            }
-        );
+        checkWorkloads.reduce((chain, workload) => {
+            return chain.then(() => workload.update({ educatorId } ));
+        }, Promise.resolve());
+
         const historyData = [];
         for (let i = 0; i < workloadIds.length; i++) {
             historyData.push({
@@ -356,17 +353,10 @@ export default {
         const educatorIds = [];
         workloads.map(workload => educatorIds.push(workload.educatorId));
         // await Workload.update({ educatorId: null }, {where: {id: workloadIds}});
-        for (const workload of workloadIds) {
-            await Workload.update(
-                { educatorId: null },
-                {
-                    where: {
-                        id: workload,
-                    },
-                    individualHooks: true,
-                }
-            );
-        }
+
+        workloads.reduce((chain, workload) => {
+            return chain.then(() => workload.update({ educatorId: null } ));
+        }, Promise.resolve());
 
         let remainingWorkloads;
         let summaryWorkload;
