@@ -9,6 +9,7 @@ import HeaderTranslation from '../config/header_translation.js';
 import HeaderTranslationEducators from '../config/header_translation_educators.js';
 import positions from '../config/position.js';
 import recommendHours from '../config/recommend-hours.js';
+import workloadController from '../controllers/workload.js';
 import fs from 'fs';
 
 export default {
@@ -90,7 +91,8 @@ export default {
                 console.log(e);
             }
         }
-
+        await workloadController.checkHoursEducators();
+        
         try {
             fs.unlinkSync(req.file.path); // Синхронное удаление файла
             console.log('Файл успешно удален.');
