@@ -57,7 +57,20 @@ export default {
         summaryWorkload.totalHours = hours.totalHours;
         await summaryWorkload.save();
         await checkHours(summaryWorkload);
-      }
+      } else {
+        summaryWorkload.kafedralAutumnWorkload = 0;
+        summaryWorkload.kafedralSpringWorkload = 0;
+        summaryWorkload.kafedralAdditionalWorkload = 0;
+        summaryWorkload.instituteAutumnWorkload = 0;
+        summaryWorkload.instituteSpringWorkload = 0;
+        summaryWorkload.instituteManagementWorkload = 0;
+        summaryWorkload.totalKafedralHours = 0;
+        summaryWorkload.totalOidHours = 0;
+        summaryWorkload.totalHours = 0;
+        const summaryWorkload = await SummaryWorkload.findOne({ where: { educatorId: educator.id } });
+        await summaryWorkload.save();
+        await checkHours(summaryWorkload);
+    }
     }
     console.log('[CRON] End checkHours');
   })
