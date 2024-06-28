@@ -356,19 +356,22 @@ export default {
         workloads.map(workload => educatorIds.push(workload.educatorId));
         // await Workload.update({ educatorId: null }, {where: {id: workloadIds}});
         for (const workload of workloadIds) {
-            await Workload.update({educatorId: null}, {
-                where: {
-                    id: workload,
-                },
-                individualHooks: true,
-            });
+            await Workload.update(
+                { educatorId: null },
+                {
+                    where: {
+                        id: workload,
+                    },
+                    individualHooks: true,
+                }
+            );
         }
 
         let remainingWorkloads;
         let summaryWorkload;
-        for (const educatorId of educatorIds){
+        for (const educatorId of educatorIds) {
             remainingWorkloads = await Workload.count({ where: { educatorId } });
-            console.log(remainingWorkloads)
+            console.log(remainingWorkloads);
             if (remainingWorkloads === 0) {
                 // Если нет нагрузок, удаляем предупреждение
                 await Notification.destroy({ where: { educatorId } }); // Предположим, что у вас есть метод для удаления summaryWorkload по educatorId
@@ -746,16 +749,15 @@ export default {
         }
         res.json(filteredDepartments);
     },
-    async checkHourseByAllEducators(req, res){
+    async checkHoursByAllEducators(req, res) {
         const educators = await Educator.findAll({
             include: { model: Workload },
         });
         const educatorsWithCleanedWorkloads = educators.map(educator => ({
             ...educator.dataValues,
-             Workloads: educator.Workloads.map(workload => workload.dataValues),
-         }));
-        // console.log(educatorsWithCleanedWorkloads)
-        for( const educator of educatorsWithCleanedWorkloads){
+            Workloads: educator.Workloads.map(workload => workload.dataValues),
+        }));
+        for (const educator of educatorsWithCleanedWorkloads) {
             if (educator.Workloads.length !== 0) {
                 const summaryWorkload = await SummaryWorkload.findOne({ where: { educatorId: educator.id } });
                 const hours = {
@@ -770,16 +772,20 @@ export default {
                     totalHours: 0,
                 };
                 const existWorkloads = educator.Workloads;
-                for(const workload of existWorkloads) {
+                for (const workload of existWorkloads) {
                     if (!workload.isOid && workload.period === 1) hours.kafedralAutumnWorkload += workload.hours;
                     if (!workload.isOid && workload.period === 2) hours.kafedralSpringWorkload += workload.hours;
                     if (!workload.isOid && !workload.period) hours.kafedralAdditionalWorkload += workload.hours;
                     if (workload.isOid && workload.period === 1) hours.instituteAutumnWorkload += workload.hours;
                     if (workload.isOid && workload.period === 2) hours.instituteSpringWorkload += workload.hours;
                     if (workload.isOid && !workload.period) hours.instituteManagementWorkload += workload.hours;
-                
-                    hours.totalKafedralHours = hours.kafedralAutumnWorkload + hours.kafedralSpringWorkload + hours.kafedralAdditionalWorkload;
-                    hours.totalOidHours = hours.instituteAutumnWorkload + hours.instituteSpringWorkload + hours.instituteManagementWorkload;
+
+                    hours.totalKafedralHours =
+                        hours.kafedralAutumnWorkload + hours.kafedralSpringWorkload + hours.kafedralAdditionalWorkload;
+                    hours.totalOidHours =
+                        hours.instituteAutumnWorkload +
+                        hours.instituteSpringWorkload +
+                        hours.instituteManagementWorkload;
                     hours.totalHours = hours.totalKafedralHours + hours.totalOidHours;
                 }
 
@@ -810,5 +816,5 @@ export default {
             }
         }
         res.json({ status: 'OK' });
-    }
+    },
 };

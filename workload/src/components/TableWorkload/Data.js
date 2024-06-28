@@ -47,6 +47,7 @@ export const headersEducator = [
 export const tableHeadersLks = [
   { key: "id", label: "№" },
   { key: "workload", label: "Нагрузка" },
+    // { key: "discipline", label: "Дисциплина" },
   { key: "department", label: "Кафедра" },
   // { key: "type", label: "Тип" },
   { key: "curriculumUnit", label: "Подразделение учебного плана" },
