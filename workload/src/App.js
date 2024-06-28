@@ -395,11 +395,15 @@ function App() {
       const newData = [...data];
       let obj = [];
       bufferAction.map((item) => {
-        console.log("item", item);
-        let existingObj = obj.find((el) =>
-          item.workloadId.some((e) => e === el.id)
-        );
-        console.log("existingObjNext", existingObj);
+        let existingObj = null;
+        if (Array.isArray(item.workloadId)) {
+          existingObj = obj.find((el) =>
+            item.workloadId.some((e) => e === el.id)
+          );
+        } else {
+          existingObj = obj.find((el) => item.workloadId === el.id);
+        }
+
         if (existingObj) {
           if (item.request === "addEducatorWorkload") {
             existingObj.educator = item.edicatorName.edicatorName;
@@ -413,24 +417,19 @@ function App() {
             }
           }
         } else {
-          let o = {
-            ...newData[
-              newData.findIndex((el) =>
-                item.workloadId.some((e) => e === el.id)
-              )
-            ],
-          };
-          let ob = newData.filter((el) =>
-            item.workloadId.some((e) => e === el.id)
-          );
           if (item.request === "addEducatorWorkload") {
-            // o.educator = item.edicatorName.edicatorName;
+            let ob = newData.filter((el) =>
+              item.workloadId?.some((e) => e === el.id)
+            );
             ob = ob.map((el) => {
               return { ...el, educator: item.edicatorName.edicatorName };
             });
             obj.push(...ob);
           }
           if (item.request === "workloadUpdata") {
+            let o = {
+              ...newData[newData.findIndex((el) => item.workloadId === el.id)],
+            };
             if (item.data.key === "numberOfStudents") {
               o.numberOfStudents = item.data.value;
             }
