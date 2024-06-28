@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
-import styles from "./ContextMenu.module.scss";
-import { Educator, apiEducatorDepartment } from "../../api/services/ApiRequest";
-import DataContext from "../../context";
+import styles from "./../ContextMenu.module.scss";
+import {
+  Educator,
+  apiEducatorDepartment,
+} from "../../../api/services/ApiRequest";
+import DataContext from "../../../context";
 
 export function EducatorMenu(props) {
   const [educator, setEductor] = useState([]); //преподы с бд

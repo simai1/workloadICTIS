@@ -1,6 +1,6 @@
 import React from "react";
-import styles from "./ContextMenu.module.scss";
-import DataContext from "../../context";
+import styles from "./../ContextMenu.module.scss";
+import DataContext from "../../../context";
 
 export function SubMenu(props) {
   const { tabPar } = React.useContext(DataContext);

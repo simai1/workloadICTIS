@@ -196,9 +196,11 @@ export const funGetConfirmation = (itemId, changedData, bufferAction) => {
     // получим нужную строку из буффера
     const buff = [...bufferAction].filter(
       (el) =>
-        el.request === "splitWorkload" && el.newIds.some((e) => e === itemId)
+        (el.request === "splitWorkload" || el.request === "splitByHours") &&
+        el.newIds.some((e) => e === itemId)
     )[0];
     let data = { ...buff };
+
     if (data.data) {
       data.data = { ...data.data, ids: [itemId.slice(0, -1)] };
       data.newIds = data.newIds.filter(

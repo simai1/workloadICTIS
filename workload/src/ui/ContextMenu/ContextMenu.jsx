@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./ContextMenu.module.scss";
-import { SubMenu } from "./SubMenu";
-import { EducatorMenu } from "./EducatorMenu";
+import { SubMenu } from "./Menu/SubMenu";
+import { EducatorMenu } from "./Menu/EducatorMenu";
 import DataContext from "../../context";
 import {
   EducatorLK,
@@ -10,17 +10,17 @@ import {
   createComment,
   createOffer,
 } from "../../api/services/ApiRequest";
-import { Highlight } from "./Highlight";
-import MenuPop from "./MenuPop";
+import { Highlight } from "./Menu/Highlight";
+import MenuPop from "./Menu/MenuPop";
 import {
   combineData,
   splitWorkloadCount,
-  upDateEducator,
   addСhangedData,
   upDateEducators,
 } from "./Function";
-import CommentsMenu from "./CommentsMenu";
-import PopupOffer from "./PopupOffer";
+import CommentsMenu from "./Menu/CommentsMenu";
+import PopupOffer from "./Menu/PopupOffer";
+import SplitByHoursMenu from "./Menu/SplitByHoursMenu";
 
 const ContextMenu = (props) => {
   const { appData, tabPar, basicTabData } = React.useContext(DataContext);
@@ -38,6 +38,10 @@ const ContextMenu = (props) => {
   //! нажатие на разделить
   const handleMouseClickPop = () => {
     setMenuShow(menuShow === "subMenu" ? "" : "subMenu");
+  };
+
+  const splitByHoursFun = () => {
+    setMenuShow(menuShow === "splitByHoursMenu" ? "" : "splitByHoursMenu");
   };
 
   //! нажатие на добавить преподавателя
@@ -60,49 +64,7 @@ const ContextMenu = (props) => {
     setMenuShow(menuShow === "commentsMenu" ? "" : "commentsMenu");
   };
 
-  //! Выбор преподавателя
-  // const selectedEducator = (id) => {
-  //   // appData.metodRole[appData.myProfile?.role]?.some((el) => el === 9) &&
-  //   //   tabPar.setContextMenuShow(!tabPar.contextMenuShow);
-  //   setMenuShow("");
-
-  //   const data = {
-  //     workloadId: tabPar.selectedTr[0],
-  //     educatorId: id,
-  //   };
-
-  //   if (menuShow === "educator") {
-  //     EducatorLK(id).then((dataReq) => {
-  //       const { newData, prevState } = upDateEducator(
-  //         basicTabData?.workloadDataFix,
-  //         tabPar?.selectedTr[0],
-  //         dataReq?.name
-  //       );
-  //       const edicatorName = { edicatorName: dataReq?.name };
-  //       basicTabData.setWorkloadDataFix(newData);
-  //       basicTabData.setFiltredData(newData);
-  //       const workloadId = data.workloadId;
-  //       appData.setBufferAction([
-  //         {
-  //           request: "addEducatorWorkload",
-  //           data,
-  //           prevState,
-  //           edicatorName,
-  //           workloadId,
-  //         },
-  //         ...appData.bufferAction,
-  //       ]);
-  //       //! занесем id измененнных данных в состояние
-
-  //       tabPar.setChangedData(
-  //         addСhangedData(tabPar.changedData, "educator", [tabPar.selectedTr[0]])
-  //       );
-  //     });
-  //   } else if (menuShow === "propose") {
-  //     setPopupOffer(id);
-  //   }
-  // };
-
+  //! функция выбора преподавателя
   const selectedEducator = (id) => {
     setMenuShow("");
     const data = {
@@ -190,7 +152,6 @@ const ContextMenu = (props) => {
     const prev = basicTabData.workloadDataFix.filter((item) =>
       tabPar.selectedTr.some((el) => el === item.id)
     );
-
     // Создаем новый массив для измененных данных
     let updatedData = [...basicTabData.workloadDataFix];
     const funData = splitWorkloadCount(updatedData, tabPar.selectedTr, count);
@@ -397,14 +358,8 @@ const ContextMenu = (props) => {
             img={false}
           />
         )}
-        {/* {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 31)&& */}
-
         <MenuPop btnText={"Закрепить"} func={pinaCell} img={false} />
-        {/* } */}
-        {/* {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 31)&& */}
         <MenuPop btnText={"Открепить"} func={unPinaCell} img={false} />
-        {/* } */}
-
         {appData.metodRole[appData.myProfile?.role]?.some(
           (el) =>
             el === 11 &&
@@ -416,6 +371,21 @@ const ContextMenu = (props) => {
             btnText={"Разделить"}
             func={handleMouseClickPop}
             menuShow={menuShow === "subMenu"}
+            img={true}
+          />
+        )}
+
+        {appData.metodRole[appData.myProfile?.role]?.some(
+          (el) =>
+            el === 11 &&
+            basicTabData.workloadDataFix
+              .filter((item) => tabPar.selectedTr.some((el) => el === item.id))
+              .every((it) => it.isSplit === false)
+        ) && (
+          <MenuPop
+            btnText={"Разделить по часам"}
+            func={splitByHoursFun}
+            menuShow={menuShow === "splitByHoursMenu"}
             img={true}
           />
         )}
@@ -485,6 +455,9 @@ const ContextMenu = (props) => {
           popupCommentAction={popupCommentAction}
           setPopupCommentAction={setPopupCommentAction}
         />
+      )}
+      {menuShow === "splitByHoursMenu" && (
+        <SplitByHoursMenu styles={styles} setMenuShow={setMenuShow} />
       )}
     </div>
   );
