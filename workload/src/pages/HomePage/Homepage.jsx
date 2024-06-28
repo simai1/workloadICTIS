@@ -235,10 +235,13 @@ function HomePage() {
   const exportFile = () =>{
     let idTableUnlock = 0;
     let url = ``;
+    let nameDepartment = "";
     if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 51)){
       idTableUnlock = appData.myProfile.educator.departmentId;
+      nameDepartment = appData.myProfile.educator.department;
     }else{
       idTableUnlock = basicTabData?.tableDepartment.find((el)=>el.name === basicTabData?.nameKaf).id
+      nameDepartment  = basicTabData?.nameKaf
     }
    
     if(basicTabData.nameKaf === "Все"){
@@ -251,12 +254,12 @@ function HomePage() {
     }
     Workload(url).then((resp)=>{
       console.log("workloadExport", resp)
-      generateAndDownloadExcel(resp)
+      generateAndDownloadExcel(resp, nameDepartment)
     })
   }
 
    //!Функция генерации файла для скачивания
-   const generateAndDownloadExcel = (data) => {
+   const generateAndDownloadExcel = (data, nameDepartment) => {
     const transformedData = data.map(({ id, isBlocked, isMerged, isOid, isSplit, educator, ...item }) => ({
       Кафедра: item?.department,
       Дисциплина: item?.discipline,
@@ -298,7 +301,7 @@ function HomePage() {
     const formattedDate = currentDate.toLocaleString('ru-RU', options).replace(/(\d+)\.(\d+)\.(\d+), (\d+):(\d+)/, '\$3.\$2.\$1_\$4:\$5');
     const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
     const excelData = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-    saveAs(excelData, `Бэкап_Табл_${basicTabData?.nameKaf}_${formattedDate}.xlsx`);
+    saveAs(excelData, `Экспорт_Таблицы_${nameDepartment}_${formattedDate}.xlsx`);
   };
   
   
@@ -432,7 +435,7 @@ function HomePage() {
                       <img className={styles.btnLeft} src="./img/export.svg" />
                       {popupExport && (
                         <ConfirmSaving
-                          title={"Вы уверены, что хотите отправить таблицу?"}
+                          title={`Вы уверены, что хотите отправить таблицу ${basicTabData.nameKaf}?`}
                           confirmClick={exportClick}
                           setShow={setPopupExport}
                         />
