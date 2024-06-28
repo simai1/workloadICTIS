@@ -395,7 +395,9 @@ function App() {
       const newData = [...data];
       let obj = [];
       bufferAction.map((item) => {
-        let existingObj = obj.find((el) => el.id === item.workloadId);
+        console.log("item", item)
+        let existingObj = obj.find((el) => item.workloadId.some((e)=>e === el.id));
+        console.log("existingObjNext", existingObj)
         if (existingObj) {
           if (item.request === "addEducatorWorkload") {
             existingObj.educator = item.edicatorName.edicatorName;
@@ -410,7 +412,7 @@ function App() {
           }
         } else {
           let o = {
-            ...newData[newData.findIndex((el) => el.id === item.workloadId)],
+            ...newData[newData.findIndex((el) => item.workloadId.some((e)=>e === el.id))],
           };
           if (item.request === "addEducatorWorkload") {
             o.educator = item.edicatorName.edicatorName;
