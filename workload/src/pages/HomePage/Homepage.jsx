@@ -371,7 +371,7 @@ function HomePage() {
                 {appData.metodRole[appData.myProfile?.role]?.some(
                   (el) => el === 26
                 ) &&
-                  appData.selectedComponent === "Disciplines" && (
+                  appData.selectedComponent === "Disciplines" && !blockTable &&(
                     <div className={styles.btnMenuBox} onClick={onSaveClick}>
                       <img
                         className={styles.btnLeft}
@@ -635,7 +635,7 @@ function HomePage() {
 
                   {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 50) && appData.selectedComponent === "Disciplines" &&
                     <div className={styles.import}>
-                        <button onClick={exportFile}>
+                        <button onClick={exportFile} >
                           <img src="./img/import.svg" alt=">" className={styles.export__img}></img>
                           <p>Экспорт таблицы</p>
                         </button>
