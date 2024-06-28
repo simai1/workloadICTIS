@@ -558,3 +558,17 @@ export const GetAllDepartments = async () => {
     //throw error;
   }
 };
+
+//! Разблокироование таблицы
+export const ApiUnblockTable = async (indexTable) => {
+  try {
+    const response = await http.patch(`${server}/workload/unblock/${indexTable}`);
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};
+
+
+//ИАСБ
