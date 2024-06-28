@@ -23,6 +23,7 @@ import ListKaf from "../../ui/ListKaf/ListKaf";
 import { PopUpCreateEmploy } from "../../ui/PopUpCreateEmploy/PopUpCreateEmploy";
 import {
   GetDepartment,
+  Workload,
   WorkloadBlocked,
   apiGetUser,
   getAllWarningMessage,
@@ -34,6 +35,8 @@ import TableHistory from "../../components/TableHistory/TableHistory";
 import ErrorHelper from "../../components/ErrorHelper/ErrorHelper";
 import { Link } from "react-router-dom";
 import UnlockDepartment from "../../ui/UnlockDepartment/UnlockDepartment";
+import { saveAs } from 'file-saver';
+import * as XLSX from 'xlsx';
 
 function HomePage() {
   const { appData, tabPar, visibleDataPar, basicTabData } =
@@ -228,6 +231,73 @@ function HomePage() {
       return blocked;
     }
   };
+  //!Функция экспорта файла
+  const exportFile = () =>{
+    const idTableUnlock = basicTabData?.tableDepartment.find((el)=>el.name === basicTabData?.nameKaf).id
+    let url = ``;
+    if(basicTabData.nameKaf === "Все"){
+      url = ``;
+    }else if(basicTabData.nameKaf === "ОИД"){
+      url = "?isOid=true";
+    }
+    else{
+      url = `?department=${idTableUnlock}`;
+    }
+    Workload(url).then((resp)=>{
+      console.log("workloadExport", resp)
+      generateAndDownloadExcel(resp)
+    })
+  }
+
+   //!Функция генерации файла для скачивания
+   const generateAndDownloadExcel = (data) => {
+    const transformedData = data.map(({ id, isBlocked, isMerged, isOid, isSplit, educator, ...item }) => ({
+      Кафедра: item?.department,
+      Дисциплина: item?.discipline,
+      Нагрузка: item?.workload,
+      Группы: item?.groups,
+      Блок: item?.block,
+      Семестр: item?.semester,
+      Период: item?.period,
+      Учебный_план: item?.curriculum,
+      Подразделение_учебного_плана: item?.curriculumUnit,
+      Форма_обучения: item?.formOfEducation,
+      Уровень_подготовки: item?.levelOfTraining,
+      Специальность: item?.specialty,
+      Профиль: item?.core,
+      Количество_студентов: item?.numberOfStudents,
+      Часы: item?.hours,
+      Аудиторные_часы: item?.audienceHours,
+      Часы_рейтинг_контроль: item?.ratingControlHours,
+      Преподаватель: educator?.name,
+    }));
+    const worksheet = XLSX.utils.json_to_sheet(transformedData);
+  
+    // Установка ширины столбцов
+    const columnWidths = transformedData.reduce((widths, row) => {
+      Object.keys(row).forEach((key, index) => {
+        const value = row[key] ? row[key].toString() : '';
+        widths[index] = Math.max(widths[index] || 10, value.length);
+      });
+      return widths;
+    }, []);
+  
+    worksheet['!cols'] = columnWidths.map(width => ({ wch: width }));
+  
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+  
+    const currentDate = new Date();
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Europe/Moscow' };
+    const formattedDate = currentDate.toLocaleString('ru-RU', options).replace(/(\d+)\.(\d+)\.(\d+), (\d+):(\d+)/, '\$3.\$2.\$1_\$4:\$5');
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const excelData = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    saveAs(excelData, `Бэкап_Табл_${basicTabData?.nameKaf}_${formattedDate}.xlsx`);
+  };
+  
+  
+  
+
   useEffect(() => {
     setBlockTable(checkBlocked);
   }, [
@@ -545,8 +615,7 @@ function HomePage() {
                   )}
                 </div>
 
-                {(appData.selectedComponent === "Disciplines" ||
-                  appData.selectedComponent === "History") &&
+                {appData.selectedComponent === "Disciplines" &&
                   appData.metodRole[appData.myProfile?.role]?.some(
                     (el) => el === 35
                   ) && (
@@ -557,10 +626,21 @@ function HomePage() {
                       </button>
                     </div>
                   )}
+
+                  {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 50) && appData.selectedComponent === "Disciplines" &&
+                    <div className={styles.import}>
+                        <button onClick={exportFile}>
+                          <p>Экспорт таблицы</p>
+                          <img src="./img/import.svg" alt=">"></img>
+                        </button>
+                      </div>
+                    }
               </div>
             </div>
           )}
+        
         </div>
+        
         <div className={styles.Block__tables}>
           {appData.selectedComponent === "Disciplines" ? (
             <TableWorkload

@@ -1,0 +1,16 @@
+const getDataWarehous = () => {
+    console.log("Вызвал функцию импорта файла");
+    GetDataWarehousExport().then((data) => {
+        generateAndDownloadExcel(data.data)
+    }).catch((error) => {
+        console.error("An error occurred while fetching data:", error);
+    });
+};
+const generateAndDownloadExcel = (data) => {
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const excelData = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    saveAs(excelData, 'your_filename.xlsx');
+};

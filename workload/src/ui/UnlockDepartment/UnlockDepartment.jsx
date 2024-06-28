@@ -16,18 +16,13 @@ const UnlockDepartment = (props) => {
               if(resp.status === 200){
                 props.denyClick()
                 basicTabData.funGetDepartment();
-                basicTabData.funUpdateTable(
-                    basicTabData.tableDepartment.find(
-                      (el) => el.name === basicTabData?.nameKaf
-                    )?.id
-                );
+                basicTabData.setnameKaf(basicTabData?.tableDepartment[0].name)
                 appData.setgodPopUp(true);
               }else{
                 appData.seterrorPopUp(true)
                 props.denyClick()
               }
             })
-          
         }else{  //! функция запроса на разблокирование таблицы
             const idTableUnlock = appData.myProfile.educator.departmentId
             console.log("idTableUnlock", idTableUnlock)
