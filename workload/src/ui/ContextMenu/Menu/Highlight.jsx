@@ -1,11 +1,11 @@
 import React from "react";
-import styles from "./ContextMenu.module.scss";
-import DataContext from "../../context";
+import styles from "./../ContextMenu.module.scss";
+import DataContext from "../../../context";
 import {
   apiAddColored,
   apiDelColors,
   apiUpdateColors,
-} from "../../api/services/ApiRequest";
+} from "../../../api/services/ApiRequest";
 
 export function Highlight() {
   const { tabPar, basicTabData } = React.useContext(DataContext);

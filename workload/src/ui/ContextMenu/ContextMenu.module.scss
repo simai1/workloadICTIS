@@ -60,6 +60,32 @@
     cursor: pointer;
   }
 
+  .SplitByHoursMenu {
+    width: 155px;
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 4px 4px 20px 0px #00000026;
+    input {
+      @include input-text(125px, 8px);
+    }
+    span {
+      color: red;
+      padding: 0;
+      margin: 0;
+      height: 24px;
+      padding-left: 5px;
+    }
+    .SplitByHoursMenuButtonBox {
+      display: flex;
+      justify-content: center;
+      button {
+        @include button(var(--blue-color), #fff, 8px, 12px);
+      }
+    }
+  }
   .EducatorMenu {
     display: flex;
     flex-direction: column;

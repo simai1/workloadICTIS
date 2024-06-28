@@ -96,6 +96,28 @@ function OverlapWindow(props) {
       cd.join = cdJoin;
       tabPar.setChangedData(cd);
       appData.setBufferAction((prevItems) => prevItems.slice(1));
+    } else if (props.getConfirmation.type === 4) {
+      const dat = { ...props.getConfirmation.data };
+      let updatedData = [...basicTabData.workloadDataFix];
+      updatedData = updatedData
+        .map((item) => {
+          const ind = dat.newIds.findIndex((e) => e === item.id);
+          if (ind === -1) {
+            return item;
+          } else if (ind === 0) {
+            return dat.prevState[0];
+          }
+        })
+        .filter((el) => el !== undefined);
+      console.log(updatedData);
+
+      basicTabData.setWorkloadDataFix(updatedData);
+
+      let changed = { ...tabPar.changedData };
+      changed.split = changed.split.filter(
+        (item) => !dat.newIds.some((el) => el === item)
+      );
+      tabPar.setChangedData(changed);
     }
   };
 
@@ -170,6 +192,8 @@ function OverlapWindow(props) {
           )?.id
         );
       });
+    } else if (props.getConfirmation.type === 4) {
+      console.log("жду бэк", props.getConfirmation);
     }
   };
 

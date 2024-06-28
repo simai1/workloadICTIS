@@ -352,6 +352,21 @@ export const workloadUpdata = async (data) => {
   }
 };
 
+//! запрос на изменени данных в админке
+export const apiAdminUpdata = async (data) => {
+  console.log("изменение данных нагрузки ", data);
+  try {
+    const response = await http.patch(`${server}/users/${data.id}/update`, {
+      [data.key]: data.value,
+    });
+    console.log("response ", response);
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};
+
 //! запрос на получение выделенных цветов
 export const getAllColors = async () => {
   try {

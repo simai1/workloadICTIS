@@ -73,8 +73,8 @@ function App() {
       31, 34, 35, 36, 38, 16, 40, 44, 46, 48, 50,
     ],
     GOD: [
-      1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 29, 30,
-      31, 34, 35, 36, 38, 16, 40, 44, 45, 46, 48, 50,
+      1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 18, 20, 21, 22, 23, 25, 26, 27, 28,
+      29, 30, 31, 34, 35, 36, 38, 16, 40, 44, 45, 46, 48, 50,
     ],
   };
   // appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)
@@ -218,6 +218,11 @@ function App() {
     visibleData,
     heightTd,
   };
+  const [popupShareShow, setPopupShareShow] = useState(false); //! открываем попап для расчета часов по формуле
+  const [tableDataHoursPopup, setTableDataHoursPopup] = useState(null); //! данные для таблицы редактирования ввноса часов
+  const [inpValueHoursPopup, setInpValueHoursPopup] = useState(2); //! переменная на сколько разделить по часам
+  const [buffDataHoursPopup, setBuffDataHoursPopup] = useState(null);
+  const [inputEditValue, setInputEditValue] = useState([]);
 
   const tabPar = {
     selectedTable,
@@ -250,6 +255,16 @@ function App() {
     perenesenAction,
     setPerenesenAction,
     tableRefWorkload,
+    popupShareShow,
+    setPopupShareShow,
+    tableDataHoursPopup,
+    setTableDataHoursPopup,
+    inpValueHoursPopup,
+    setInpValueHoursPopup,
+    buffDataHoursPopup,
+    setBuffDataHoursPopup,
+    inputEditValue,
+    setInputEditValue,
   };
 
   //! функция обновления комментаривев
@@ -562,12 +577,22 @@ function App() {
     const handleKeyDown = (event) => {
       if (event.ctrlKey && (event.key === "s" || event.key === "ы")) {
         event.preventDefault();
-        bufferRequestToApi(bufferAction).then((action) => {
-          if (action) {
-            setBufferAction([0]);
-            updateAlldata();
-          }
-        });
+        appData.setLoaderAction(true);
+
+        bufferRequestToApi(bufferAction)
+          .then((action) => {
+            console.log(action);
+            if (action) {
+              setBufferAction([0]);
+              updateAlldata();
+              appData.setLoaderAction(false);
+            }
+          })
+          .catch((error) => {
+            console.error("Error in bufferRequestToApi:", error);
+            appData.setLoaderAction(false);
+          });
+
         setSelectedTr([]);
         setChangedData(changedDataObj);
         console.log("выполнено и очищено", bufferAction);
@@ -628,7 +653,10 @@ function App() {
         cd.join = cdJoin;
         setChangedData(cd);
         setBufferAction((prevItems) => prevItems.slice(1));
-      } else if (bufferAction[0].request === "splitWorkload") {
+      } else if (
+        bufferAction[0].request === "splitWorkload" ||
+        bufferAction[0].request === "splitByHours"
+      ) {
         let datMap = { ...bufferAction[0] };
         const wdfNew = [...workloadDataFix]
           .map((item) => {
