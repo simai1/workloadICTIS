@@ -130,12 +130,12 @@ export default {
             for (const workloadDto of workloadsDto) {
                     if (
                         departments[workloadDto.department] === workload.department &&
-                        workloadDto.discipline === workload.discipline
+                        workloadDto.discipline === workload.discipline && workloadDto.workload === workload.workload
                     ) {
                         workloadDto.hoursFirstPeriod += workload.period === 1 ? workload.hours : 0;
                         workloadDto.hoursSecondPeriod += workload.period === 2 ? workload.hours : 0;
                         workloadDto.hoursWithoutPeriod += workload.period === null ? workload.hours : 0;
-                        //flag = false;
+                        flag = false;
                         console.log(workloadDto);
                         break;
                     }
