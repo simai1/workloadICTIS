@@ -392,7 +392,7 @@ function HomePage() {
                       />
                       {popupUnblockTable && (
                         <UnlockDepartment
-                          title={"Вы уверены, что хотите разблокировать таблицу?"}
+                          title={`Вы уверены, что хотите разблокировать таблицу ${basicTabData.nameKaf} ?`}
                           denyClick={onUnblockClick}
                         />
                       )}
@@ -630,8 +630,8 @@ function HomePage() {
                   {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 50) && appData.selectedComponent === "Disciplines" &&
                     <div className={styles.import}>
                         <button onClick={exportFile}>
+                          <img src="./img/import.svg" alt=">" className={styles.export__img}></img>
                           <p>Экспорт таблицы</p>
-                          <img src="./img/import.svg" alt=">"></img>
                         </button>
                       </div>
                     }
