@@ -20,6 +20,50 @@ export default {
             for (const offer of offers) {
                 const educator = await Educator.findByPk(offer.educatorId, { attributes: { exclude: ['id'] } });
                 const proposer = await Educator.findByPk(offer.proposerId, { attributes: { exclude: ['id'] } });
+                if (!educator || !proposer){
+                    await offer.destroy();
+                    continue;
+                }
+                // Создаем DTO для предложения
+                const offerDto = new OfferDto(offer);
+                // Добавляем информацию о преподавателе и инициаторе к объекту предложения
+                offerDto.educator = new EducatorDto(educator);
+                offerDto.proposer = new EducatorDto(proposer);
+
+                // Добавляем предложение с информацией о преподавателе и инициаторе в массив
+                offersWithDetails.push({
+                    message: 'Offer created successfully',
+                    offer: offerDto,
+                });
+            }
+
+            // Отправка массива предложений с информацией о преподавателе и инициаторе
+            res.json(offersWithDetails);
+        } catch (error) {
+            console.error('Error fetching offers:', error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    },
+
+    async getAllOffersByLecture(req, res) {
+        try {
+            const _educator = await Educator.findOne({
+                where: {
+                    userId: req.user,
+                },
+            })
+            // Получение всех предложений
+            const offers = await Offer.findAll({
+                include: { model: Educator },
+                attributes: { exclude: ['EducatorId'] },
+                educator: _educator.id,
+
+            });
+            // Создание нового массива предложений с добавлением информации о преподавателе и инициаторе
+            const offersWithDetails = [];
+            for (const offer of offers) {
+                const educator = await Educator.findByPk(offer.educatorId, { attributes: { exclude: ['id'] } });
+                const proposer = await Educator.findByPk(offer.proposerId, { attributes: { exclude: ['id'] } });
 
                 // Создаем DTO для предложения
                 const offerDto = new OfferDto(offer);

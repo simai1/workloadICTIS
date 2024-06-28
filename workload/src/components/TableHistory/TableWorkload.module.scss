@@ -54,6 +54,25 @@ $heightCell: 150px;
   padding-left: 64px;
   margin-right: 52px;
 
+  &::after {
+    content: "";
+    background-color: var(--bgraund);
+    width: 64px;
+    height: 100%;
+    position: absolute;
+    z-index: 1;
+    left: 0px;
+  }
+
+  .contextShow {
+    position: absolute;
+    z-index: 100;
+    @include boxShadow;
+    background-color: #fff;
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+
   .table {
     width: 100vw;
     border-collapse: collapse;
@@ -318,6 +337,19 @@ $heightCell: 150px;
         max-height: $heightCell;
         height: $heightCell;
       }
+
+      tr[name="bottomBorder"] {
+        // border-bottom: 4px solid #3b28cc;
+        &::after {
+          content: "";
+          position: absolute;
+          background-color: #b3b0b0;
+          width: 100%;
+          height: 2px;
+          left: 0;
+        }
+      }
+
       td {
         min-height: $heightCell;
         max-height: $heightCell;
@@ -454,7 +486,10 @@ $heightCell: 150px;
       top: 0px;
       background-color: var(--bgraund);
       width: 64px;
-      height: 100%;
+      height: 110%;
+    }
+    .bacground:last-of-type {
+      height: 300%;
     }
     .Offers {
       display: flex;

@@ -1,4 +1,4 @@
-import { AppErrorInvalid, AppErrorMissing, AppErrorNotExist } from "../utils/errors.js";
+import { AppErrorForbiddenAction, AppErrorInvalid, AppErrorMissing, AppErrorNotExist } from '../utils/errors.js';
 // eslint-disable-next-line import/no-duplicates
 import departments from '../config/departments.js';
 import Workload from '../models/workload.js';
@@ -6,55 +6,57 @@ import Educator from '../models/educator.js';
 import Notification from '../models/notifications.js';
 import User from '../models/user.js';
 // eslint-disable-next-line import/no-duplicates
-import {map as mapDepartments} from "../config/departments.js";
+import { map as mapDepartments } from '../config/departments.js';
 import WorkloadDto from '../dtos/workload-dto.js';
 import SummaryWorkload from '../models/summary-workload.js';
 import checkHours from '../utils/notification.js';
-import History from "../models/history.js";
+import History from '../models/history.js';
 import sendMail from '../services/email.js';
-import { Op, Sequelize } from "sequelize";
+import { Op, Sequelize } from 'sequelize';
 
-const getIds = (modelsArr) => {
+const getIds = modelsArr => {
     const arr = [];
-    for (const el of modelsArr){
+    for (const el of modelsArr) {
         arr.push(el.id);
     }
     return arr;
 };
 
+const orderRule = [
+    ['department', 'ASC'],
+    ['discipline', 'ASC'],
+    ['workload', 'ASC'],
+    ['specialty', 'ASC'],
+    ['core', 'ASC'],
+];
 
 export default {
     // Получение нагрузки
-    async getAllWorkload({query: {isOid, department}, user}, res) {
+    async getAllWorkload({ query: { isOid, department }, user }, res) {
         const _user = await User.findByPk(user, { include: Educator });
+        let workloadsDto;
         try {
             let workloads;
-            if (!(typeof isOid === "undefined")){
-                if (_user.role === 5 || _user.role === 2){
+            if (!(typeof isOid === 'undefined')) {
+                if (_user.role === 5 || _user.role === 2) {
                     workloads = await Workload.findAll({
-                        where: { isOid, educatorId: _user.Educator.id, isBlocked: false},
+                        where: {
+                            isOid,
+                            educatorId: _user.Educator.id,
+                        },
                         include: { model: Educator },
-                        order: [
-                            ['discipline', 'ASC'],
-                            ['workload', 'ASC'],
-                            ['updatedAt', 'ASC'],
-                        ],
+                        order: orderRule,
                     });
-                }  else {
+                } else {
                     workloads = await Workload.findAll({
                         where: { isOid },
                         include: { model: Educator },
-                        order: [
-                            ['updatedAt', 'ASC'],
-                            ['discipline', 'ASC'],
-                            ['workload', 'ASC'],
-                        ],
+                        order: orderRule,
                     });
                 }
-                const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
-                res.json(workloadsDto);
-            } else if (department){
-                if (_user.role === 5 || _user.role === 2){
+                workloadsDto = workloads.map(workload => new WorkloadDto(workload));
+            } else if (department) {
+                if (_user.role === 5) {
                     workloads = await Workload.findAll({
                         where: {
                             isOid: false,
@@ -62,11 +64,16 @@ export default {
                             educatorId: _user.Educator.id,
                         },
                         include: { model: Educator },
-                        order: [
-                            ['discipline', 'ASC'],
-                            ['workload', 'ASC'],
-                            ['updatedAt', 'ASC'],
-                        ],
+                        order: orderRule,
+                    });
+                } else if (_user.role === 2) {
+                    workloads = await Workload.findAll({
+                        where: {
+                            isOid: false,
+                            department,
+                        },
+                        include: { model: Educator },
+                        order: orderRule,
                     });
                 } else {
                     workloads = await Workload.findAll({
@@ -75,60 +82,114 @@ export default {
                             department,
                         },
                         include: { model: Educator },
-                        order: [
-                            ['discipline', 'ASC'],
-                            ['workload', 'ASC'],
-                            ['updatedAt', 'ASC'],
-                        ],
+                        order: orderRule,
                     });
                 }
-                const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
-                res.json(workloadsDto);
+                workloadsDto = workloads.map(workload => new WorkloadDto(workload));
             } else {
-                if (_user.role === 5 || _user.role === 2){
+                if (_user.role === 5) {
                     workloads = await Workload.findAll({
                         where: {
                             educatorId: _user.Educator.id,
-                            isBlocked: false
                         },
                         include: { model: Educator },
-                        order: [
-                            ['discipline', 'ASC'],
-                            ['workload', 'ASC'],
-                            ['updatedAt', 'ASC'],
-                        ],
+                        order: orderRule,
                     });
-                } else if (_user.role === 3) {
-                    workloads = await Workload.findAll({
-                        where: { department: _user.Educator.department, isBlocked: false},
-                        include: { model: Educator },
-                        order: [
-                            ['discipline', 'ASC'],
-                            ['workload', 'ASC']
+                } else if (_user.role === 2) {
+                    // LECTURER HANDLER
+                    const ownWorkloads = await Workload.findAll({
+                        where: {
+                            educatorId: _user.Educator.id,
+                        },
+                        include: [
+                            {
+                                model: Educator,
+                            },
                         ],
+                        order: orderRule,
+                    });
+
+                    const disciplines = [];
+                    for (const wrkld of ownWorkloads) {
+                        if (!Object.values(disciplines).includes(wrkld.discipline) && wrkld.workload === 'Лекционные') {
+                            disciplines.push(wrkld.discipline);
+                        }
+                    }
+
+                    workloads = [
+                        ...(await Workload.findAll({
+                            where: {
+                                discipline: disciplines,
+                                workload: { [Op.in]: ['Лабораторные', 'Практические'] },
+                            },
+                            include: { model: Educator },
+                            order: orderRule,
+                        })),
+                        ...ownWorkloads,
+                    ];
+                } else if (_user.role === 3 || _user.role === 8) {
+                    workloads = await Workload.findAll({
+                        where: {
+                            department: _user.Educator.department,
+                        },
+                        include: { model: Educator },
+                        order: orderRule,
+                    });
+                } else if (_user.role === 6) {
+                    // UNIT_ADMIN HANDLER
+                    workloads = await Workload.findAll({
+                        where: {
+                            department: _user.allowedDepartments,
+                        },
+                        include: { model: Educator },
+                        order: orderRule,
+                    });
+                } else if (_user.role === 4 || _user.role === 7) {
+                    if (!_user.institutionalAffiliation) {
+                        throw new Error('Нет привязки (institutionalAffiliation) к институту у директора');
+                    }
+                    const allowedDepartments = [];
+
+                    const start =
+                        _user.institutionalAffiliation === 1 ? 0 : _user.institutionalAffiliation === 2 ? 13 : 17;
+                    const end =
+                        _user.institutionalAffiliation === 1 ? 12 : _user.institutionalAffiliation === 2 ? 16 : 24;
+
+                    for (let i = start; i <= end; i++) {
+                        allowedDepartments.push(i);
+                    }
+                    workloads = await Workload.findAll({
+                        where: {
+                            department: allowedDepartments,
+                            isOid: false,
+                            isBlocked: false,
+                        },
+                        include: { model: Educator },
+                        order: orderRule,
                     });
                 } else {
                     workloads = await Workload.findAll({
                         where: {
-                            isBlocked: false
+                            isBlocked: false,
+                            isOid: false,
                         },
                         include: { model: Educator },
-                        order: [
-                            ['discipline', 'ASC'],
-                            ['workload', 'ASC'],
-                            ['updatedAt', 'ASC'],
-                        ],
+                        order: orderRule,
                     });
                 }
-                const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
-                res.json(workloadsDto);
+                workloadsDto = workloads.map(workload => new WorkloadDto(workload));
             }
+            res.json(workloadsDto);
         } catch (error) {
-            res.status(500).json({ error: 'Internal Server Error' });
+            res.status(500).json({ error: error.message });
         }
     },
     async getAllDepartment(req, res) {
-        res.json(departments);
+        const departmentsObj = Object.entries(departments).map(([name, id]) => ({
+            name,
+            id,
+        }));
+        res.json(departmentsObj);
     },
 
     async getDepartment({ params: { department } }, res) {
@@ -138,7 +199,7 @@ export default {
         const workloads = await Workload.findAll({
             where: { department },
             include: { model: Educator },
-            order: ["name", "ASC"],
+            order: ['name', 'ASC'],
         });
         // res.json(workloads);
         const workloadsDto = [];
@@ -149,7 +210,7 @@ export default {
         res.json(workloadsDto);
     },
 
-    async splitRow({ body: { ids, n } }, res) {
+    async splitRow({ body: { ids, n }, user }, res) {
         if (!ids || !Array.isArray(ids) || ids.length === 0) {
             throw new Error('Укажите идентификаторы нагрузок для разделения');
         }
@@ -163,6 +224,10 @@ export default {
         // Проверяем существование всех нагрузок
         const existingWorkloads = await Workload.findAll({ where: { id: ids } });
 
+        for (const workload of existingWorkloads) {
+            if (workload.isSplit) throw new AppErrorForbiddenAction();
+        }
+
         if (existingWorkloads.length !== ids.length) {
             const existingIds = existingWorkloads.map(workload => workload.id);
             const nonExistingIds = ids.filter(id => !existingIds.includes(id));
@@ -172,14 +237,16 @@ export default {
 
         // Разделяем нагрузки
         const newWorkloads = [];
-
         for (const workload of existingWorkloads) {
             const studentsCount = workload.numberOfStudents;
             const studentsPerGroup = Math.floor(studentsCount / n);
             const remainder = studentsCount % n;
             // Создаем и сохраняем новые нагрузки в базу данных
             for (let i = 0; i < n; i++) {
-                const copyWorkload = { ...workload.get() };
+                const copyWorkload = {
+                    ...workload.get(),
+                    isMerged: false,
+                };
                 copyWorkload.isSplit = true;
                 copyWorkload.originalId = workload.id;
                 delete copyWorkload.id;
@@ -204,9 +271,10 @@ export default {
 
         await History.create({
             type: 1,
+            department: existingWorkloads[0].department,
             before: getIds(existingWorkloads),
             after: getIds(newWorkloads),
-        })
+        });
 
         res.json(newWorkloads);
     },
@@ -225,10 +293,8 @@ export default {
                 include: { model: Educator },
             });
 
-            if (!id) throw new Error('Не указан ID');
-            if (!workload) {
-                throw new Error('Нет такой нагрузки');
-            }
+            if (!id) throw new AppErrorMissing('id');
+            if (!workload) throw new AppErrorNotExist('workload');
 
             if (!numberOfStudents) numberOfStudents = workload.numberOfStudents;
             if (!hours) hours = workload.hours;
@@ -240,64 +306,86 @@ export default {
                 comment,
             });
 
+            await History.create({
+                type: 3,
+                department: workload[0].department,
+                before: [],
+                after: [workload.id],
+            });
+
             res.json(workload);
         } catch (error) {
-            res.status(500).json({ error: 'Internal Server Error' });
+            res.status(500).json({ error });
         }
     },
 
-    async facultyEducator({ body: { educatorId, workloadId } }, res) {
-        if (!educatorId) throw new AppErrorMissing('educatorId');
-        if (!workloadId) throw new AppErrorMissing('workloadId');
-        const checkWorkload = await Workload.findByPk(workloadId);
-        if (!checkWorkload) throw new AppErrorNotExist('workload');
+    async facultyEducator({ body: { educatorId, workloadIds } }, res) {
+        if (!educatorId) throw new AppErrorMissing('educatorIds');
+        if (!workloadIds) throw new AppErrorMissing('workloadIds');
+        if (!Array.isArray(workloadIds)) throw new AppErrorInvalid('workloadIds');
 
-         await Workload.update(
-            { educatorId },
-            {
-                where: { id: workloadId },
-                individualHooks: true,
+        const checkWorkloads = await Workload.findAll({ where: { id: workloadIds } });
+        if (checkWorkloads.some(workload => !workload)) throw new AppErrorNotExist('workload');
+
+        checkWorkloads.reduce((chain, workload) => {
+            return chain.then(() => workload.update({ educatorId } ));
+        }, Promise.resolve());
+
+        const historyData = [];
+        for (let i = 0; i < workloadIds.length; i++) {
+            historyData.push({
+                type: 3,
+                department: checkWorkloads[i].department,
+                before: [],
+                after: [workloadIds[i]],
+            });
+        }
+        await History.bulkCreate(historyData);
+
+        res.json({ status: 'OK' });
+    },
+
+    async unfacultyEducator({ body: { workloadIds } }, res) {
+        if (!workloadIds) throw new AppErrorMissing('workloadIds');
+        if (!Array.isArray(workloadIds)) throw new AppErrorInvalid('workloadIds');
+        const workloads = await Workload.findAll({ where: { id: workloadIds } });
+        if (!workloads) throw new AppErrorInvalid('workload');
+        const educatorIds = [];
+        workloads.map(workload => educatorIds.push(workload.educatorId));
+        // await Workload.update({ educatorId: null }, {where: {id: workloadIds}});
+
+        workloads.reduce((chain, workload) => {
+            return chain.then(() => workload.update({ educatorId: null } ));
+        }, Promise.resolve());
+
+        let remainingWorkloads;
+        let summaryWorkload;
+        for (const educatorId of educatorIds) {
+            remainingWorkloads = await Workload.count({ where: { educatorId } });
+            console.log(remainingWorkloads);
+            if (remainingWorkloads === 0) {
+                // Если нет нагрузок, удаляем предупреждение
+                await Notification.destroy({ where: { educatorId } }); // Предположим, что у вас есть метод для удаления summaryWorkload по educatorId
+            } else {
+                // Если остались нагрузки, все равно вызываем проверку часов
+                summaryWorkload = await SummaryWorkload.findOne({ where: { educatorId } });
+                await checkHours(summaryWorkload); // Передаем summaryWorkload в функцию checkHours
             }
-        );
-
-        await History.create({
-            type: 3,
-            before: [],
-            after: [workloadId],
-        })
-
-        res.json({ status: 'OK' });
-    },
-
-    async unfacultyEducator({ body: { workloadId } }, res) {
-        if (!workloadId) throw new AppErrorMissing('workloadId');
-        const workload = await Workload.findByPk(workloadId);
-        if (!workload) throw new AppErrorInvalid('workload');
-        const educatorId = workload.educatorId;
-        await workload.update({ educatorId: null });
-
-        const remainingWorkloads = await Workload.count({ where: { educatorId } });
-        console.log(remainingWorkloads);
-
-        if (remainingWorkloads === 0) {
-            // Если нет нагрузок, удаляем предупреждение
-            await Notification.destroy({ where: { educatorId }}); // Предположим, что у вас есть метод для удаления summaryWorkload по educatorId
-        } else {
-            // Если остались нагрузки, все равно вызываем проверку часов
-            const summaryWorkload = await SummaryWorkload.findOne({ where: { educatorId } });
-            await checkHours(summaryWorkload); // Передаем summaryWorkload в функцию checkHours
         }
-
-        await History.create({
-            type: 3,
-            before: [workloadId],
-            after: [],
-        })
-
+        const historyData = [];
+        for (let i = 0; i < workloadIds.length; i++) {
+            historyData.push({
+                type: 3,
+                department: workloads[i].department,
+                before: [workloadIds[i]],
+                after: [],
+            });
+        }
+        await History.bulkCreate(historyData);
         res.json({ status: 'OK' });
     },
 
-    async mapRow({ body: { ids } }, res) {
+    async mapRow({ body: { ids }, user }, res) {
         const workloads = await Workload.findAll({ where: { id: ids } }, { include: { model: Educator } });
 
         if (!ids) {
@@ -349,6 +437,7 @@ export default {
             ratingControlHours: firstWorkload.get('ratingControlHours'),
             comment: firstWorkload.get('comment'),
             isSplit: false,
+            isMerged: true,
             originalId: null,
             isOid: firstWorkload.get('isOid'),
             kafedralAutumnWorkload: firstWorkload.get('kafedralAutumnWorkload'),
@@ -360,14 +449,18 @@ export default {
         };
 
         const createdWorkload = await Workload.create(mergeWorkload);
+
         // Удаляем записи которые учавствовали в совмещении
-        await Promise.allSettled(workloads.map(workload => workload.destroy()));
+        workloads.reduce((chain, workload) => {
+            return chain.then(() => workload.destroy());
+        }, Promise.resolve());
 
         await History.create({
             type: 2,
+            department: workloads[0].department,
             before: getIds(workloads),
             after: [createdWorkload.id],
-        })
+        });
 
         const responseData = {
             id: createdWorkload.id,
@@ -418,7 +511,10 @@ export default {
         const department = educator.department;
 
         const workloads = await Workload.findAll({
-            where: { department, isOid: false },
+            where: {
+                department,
+                isOid: false,
+            },
             order: [
                 ['discipline', 'ASC'],
                 ['workload', 'ASC'],
@@ -429,60 +525,128 @@ export default {
         const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
         res.json(workloadsDto);
     },
-    async getUsableDepartments(req, res){
+
+    async getUsableDepartments(req, res) {
         const userId = req.user;
         const checkUser = await User.findByPk(userId);
         if (!checkUser) throw new AppErrorNotExist('User');
         const role = checkUser.role;
         const usableDepartments = [];
 
-        // const queryResult = await sequelize.query('SELECT DISTINCT department FROM workloads WHERE department <> 13 ORDER BY department ASC;');
-        if(role === 2 || role === 3 ||  role === 5){
+        if (role === 2 || role === 3 || role === 5 || role === 8) {
             const educator = await Educator.findOne({ where: { userId } });
             const department = educator.department;
             const workload = await Workload.findOne({ where: { department } });
-            if (workload?.isBlocked === true){
+            if (workload?.isBlocked === true) {
                 usableDepartments.push({
                     id: department,
                     name: mapDepartments[department],
                     blocked: true,
-                })
+                });
             } else {
                 usableDepartments.push({
                     id: department,
                     name: mapDepartments[department],
                     blocked: false,
-                })
+                });
             }
-        } else {
+        } else if (role === 6) {
+            const allowedDepartments = checkUser.allowedDepartments;
             const departments = await Workload.findAll({
-                where: {
-                    department: {
-                        [Op.ne]: 0,
+                attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('department')), 'department']],
+                order: [['department', 'ASC']],
+            });
+            for (const usableDepartment of departments) {
+                if (allowedDepartments.includes(usableDepartment.department)) {
+                    const department = mapDepartments[usableDepartment.department];
+                    const workload = await Workload.findOne({ where: { department: usableDepartment.department } });
+                    if (workload.isBlocked === true) {
+                        usableDepartments.push({
+                            id: usableDepartment.department,
+                            name: department,
+                            blocked: true,
+                        });
+                    } else {
+                        usableDepartments.push({
+                            id: usableDepartment.department,
+                            name: department,
+                            blocked: false,
+                        });
                     }
-                },
-                attributes: [
-                    [Sequelize.fn('DISTINCT', Sequelize.col('department')) ,'department'],
-                ],
-                order: [
-                    ['department', 'ASC'],
-                ]
-            })
+                }
+            }
+        } else if (role === 4 || role === 7) {
+            let departments;
+            if (checkUser.institutionalAffiliation === 1) {
+                departments = await Workload.findAll({
+                    attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('department')), 'department']],
+                    where: {
+                        department: {
+                            [Sequelize.Op.between]: [0, 12],
+                        },
+                    },
+                    order: [['department', 'ASC']],
+                });
+            } else if (checkUser.institutionalAffiliation === 2) {
+                departments = await Workload.findAll({
+                    attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('department')), 'department']],
+                    where: {
+                        department: {
+                            [Sequelize.Op.between]: [13, 16],
+                        },
+                    },
+                    order: [['department', 'ASC']],
+                });
+            } else if (checkUser.institutionalAffiliation === 3) {
+                departments = await Workload.findAll({
+                    attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('department')), 'department']],
+                    where: {
+                        department: {
+                            [Sequelize.Op.between]: [17, 24],
+                        },
+                    },
+                    order: [['department', 'ASC']],
+                });
+            } else {
+                throw new Error('Такого института не добавленно');
+            }
             for (const usableDepartment of departments) {
                 const department = mapDepartments[usableDepartment.department];
                 const workload = await Workload.findOne({ where: { department: usableDepartment.department } });
-                if (workload.isBlocked === true){
+                if (workload.isBlocked === true) {
                     usableDepartments.push({
                         id: usableDepartment.department,
                         name: department,
                         blocked: true,
-                    })
+                    });
                 } else {
                     usableDepartments.push({
                         id: usableDepartment.department,
                         name: department,
                         blocked: false,
-                    })
+                    });
+                }
+            }
+        } else {
+            const departments = await Workload.findAll({
+                attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('department')), 'department']],
+                order: [['department', 'ASC']],
+            });
+            for (const usableDepartment of departments) {
+                const department = mapDepartments[usableDepartment.department];
+                const workload = await Workload.findOne({ where: { department: usableDepartment.department } });
+                if (workload.isBlocked === true) {
+                    usableDepartments.push({
+                        id: usableDepartment.department,
+                        name: department,
+                        blocked: true,
+                    });
+                } else {
+                    usableDepartments.push({
+                        id: usableDepartment.department,
+                        name: department,
+                        blocked: false,
+                    });
                 }
             }
         }
@@ -490,7 +654,7 @@ export default {
     },
     async changeColorWorkload(req, res) {},
 
-    async blockWorkload({ params: { department } }, res){
+    async blockWorkload({ params: { department } }, res) {
         if (!department) throw new AppErrorMissing('department');
         department = parseInt(department);
         if (department === 0) {
@@ -499,22 +663,22 @@ export default {
             await Workload.update({ isBlocked: true }, { where: { isOid: true } });
             try {
                 sendMail(process.env.EMAIL_RECIEVER, 'blocking', 'Общеинститутская нагрузка');
-            } catch (e){
-                console.log('Email bad creditionals')
+            } catch (e) {
+                console.log('Email bad creditionals');
             }
         } else {
             if (!Object.values(departments).includes(department)) throw new AppErrorInvalid('department');
             await Workload.update({ isBlocked: true }, { where: { department } });
             try {
                 sendMail(process.env.EMAIL_RECIEVER, 'blocking', `Нагрузка кафедры ${mapDepartments[department]}`);
-            } catch (e){
-                console.log('Email bad creditionals')
+            } catch (e) {
+                console.log('Email bad creditionals');
             }
         }
         res.json({ status: 'OK' });
     },
 
-    async unblockWorkload({ params: { department } }, res){
+    async unblockWorkload({ params: { department } }, res) {
         if (!department) throw new AppErrorMissing('department');
         department = parseInt(department);
         if (department === 0) {
@@ -527,4 +691,189 @@ export default {
         }
         res.json({ status: 'OK' });
     },
+
+    async getDepartmentsForDirectorate(req, res) {
+        const _user = await User.findByPk(req.user);
+        let filteredDepartments;
+        if (_user.role === 4 || _user.role === 7) {
+            if (!_user.institutionalAffiliation) {
+                throw new Error('Нет привязки (institutionalAffiliation) к институту у директора');
+            }
+
+            if (_user.institutionalAffiliation === 1) {
+                filteredDepartments = Object.entries(departments)
+                    .slice(0, 13)
+                    .map(([name, id]) => ({
+                        name,
+                        id,
+                    }));
+            } else if (_user.institutionalAffiliation === 2) {
+                filteredDepartments = Object.entries(departments)
+                    .slice(13, 17)
+                    .map(([name, id]) => ({
+                        name,
+                        id,
+                    }));
+            } else if (_user.institutionalAffiliation === 3) {
+                filteredDepartments = Object.entries(departments)
+                    .slice(17, 25)
+                    .map(([name, id]) => ({
+                        name,
+                        id,
+                    }));
+            } else {
+                throw new Error('Такого института не добавленно');
+            }
+        } else if (_user.role === 6) {
+            const allDepartments = Object.entries(departments).map(([name, id]) => ({
+                name,
+                id,
+            }));
+            const allowed = _user.allowedDepartments;
+            filteredDepartments = allDepartments.filter(item => allowed.includes(item.id));
+        } else if (_user.role === 1) {
+            filteredDepartments = Object.entries(departments).map(([name, id]) => ({
+                name,
+                id,
+            }));
+            console.log(filteredDepartments);
+        }
+        res.json(filteredDepartments);
+    },
+    async checkHoursByAllEducators(req, res) {
+        const educators = await Educator.findAll({
+            include: { model: Workload },
+        });
+        const educatorsWithCleanedWorkloads = educators.map(educator => ({
+            ...educator.dataValues,
+            Workloads: educator.Workloads.map(workload => workload.dataValues),
+        }));
+        for (const educator of educatorsWithCleanedWorkloads) {
+            const summaryWorkload = await SummaryWorkload.findOne({ where: { educatorId: educator.id } });
+            if (educator.Workloads.length !== 0) {
+                const hours = {
+                    kafedralAutumnWorkload: 0,
+                    kafedralSpringWorkload: 0,
+                    kafedralAdditionalWorkload: 0,
+                    instituteAutumnWorkload: 0,
+                    instituteSpringWorkload: 0,
+                    instituteManagementWorkload: 0,
+                    totalKafedralHours: 0,
+                    totalOidHours: 0,
+                    totalHours: 0,
+                };
+                const existWorkloads = educator.Workloads;
+                for (const workload of existWorkloads) {
+                    if (!workload.isOid && workload.period === 1) hours.kafedralAutumnWorkload += workload.hours;
+                    if (!workload.isOid && workload.period === 2) hours.kafedralSpringWorkload += workload.hours;
+                    if (!workload.isOid && !workload.period) hours.kafedralAdditionalWorkload += workload.hours;
+                    if (workload.isOid && workload.period === 1) hours.instituteAutumnWorkload += workload.hours;
+                    if (workload.isOid && workload.period === 2) hours.instituteSpringWorkload += workload.hours;
+                    if (workload.isOid && !workload.period) hours.instituteManagementWorkload += workload.hours;
+
+                    hours.totalKafedralHours =
+                        hours.kafedralAutumnWorkload + hours.kafedralSpringWorkload + hours.kafedralAdditionalWorkload;
+                    hours.totalOidHours =
+                        hours.instituteAutumnWorkload +
+                        hours.instituteSpringWorkload +
+                        hours.instituteManagementWorkload;
+                    hours.totalHours = hours.totalKafedralHours + hours.totalOidHours;
+                }
+
+                summaryWorkload.kafedralAutumnWorkload = hours.kafedralAutumnWorkload;
+                summaryWorkload.kafedralSpringWorkload = hours.kafedralSpringWorkload;
+                summaryWorkload.kafedralAdditionalWorkload = hours.kafedralAdditionalWorkload;
+                summaryWorkload.instituteAutumnWorkload = hours.instituteAutumnWorkload;
+                summaryWorkload.instituteSpringWorkload = hours.instituteSpringWorkload;
+                summaryWorkload.instituteManagementWorkload = hours.instituteManagementWorkload;
+                summaryWorkload.totalKafedralHours = hours.totalKafedralHours;
+                summaryWorkload.totalOidHours = hours.totalOidHours;
+                summaryWorkload.totalHours = hours.totalHours;
+                await summaryWorkload.save();
+                await checkHours(summaryWorkload);
+            } else {
+                summaryWorkload.kafedralAutumnWorkload = 0;
+                summaryWorkload.kafedralSpringWorkload = 0;
+                summaryWorkload.kafedralAdditionalWorkload = 0;
+                summaryWorkload.instituteAutumnWorkload = 0;
+                summaryWorkload.instituteSpringWorkload = 0;
+                summaryWorkload.instituteManagementWorkload = 0;
+                summaryWorkload.totalKafedralHours = 0;
+                summaryWorkload.totalOidHours = 0;
+                summaryWorkload.totalHours = 0;
+                await summaryWorkload.save();
+                await checkHours(summaryWorkload);
+            }
+        }
+        res.json({ status: 'OK' });
+    },
+    
+    async checkHoursEducators() {
+        const educators = await Educator.findAll({
+            include: { model: Workload },
+        });
+        console.log(educators.length)
+        const educatorsWithCleanedWorkloads = educators.map(educator => ({
+            ...educator.dataValues,
+            Workloads: educator.Workloads.map(workload => workload.dataValues),
+        }));
+        for (const educator of educatorsWithCleanedWorkloads) {
+            const summaryWorkload = await SummaryWorkload.findOne({ where: { educatorId: educator.id } });
+            if (educator.Workloads.length !== 0) {
+                const hours = {
+                    kafedralAutumnWorkload: 0,
+                    kafedralSpringWorkload: 0,
+                    kafedralAdditionalWorkload: 0,
+                    instituteAutumnWorkload: 0,
+                    instituteSpringWorkload: 0,
+                    instituteManagementWorkload: 0,
+                    totalKafedralHours: 0,
+                    totalOidHours: 0,
+                    totalHours: 0,
+                };
+                const existWorkloads = educator.Workloads;
+                for (const workload of existWorkloads) {
+                    if (!workload.isOid && workload.period === 1) hours.kafedralAutumnWorkload += workload.hours;
+                    if (!workload.isOid && workload.period === 2) hours.kafedralSpringWorkload += workload.hours;
+                    if (!workload.isOid && !workload.period) hours.kafedralAdditionalWorkload += workload.hours;
+                    if (workload.isOid && workload.period === 1) hours.instituteAutumnWorkload += workload.hours;
+                    if (workload.isOid && workload.period === 2) hours.instituteSpringWorkload += workload.hours;
+                    if (workload.isOid && !workload.period) hours.instituteManagementWorkload += workload.hours;
+
+                    hours.totalKafedralHours =
+                        hours.kafedralAutumnWorkload + hours.kafedralSpringWorkload + hours.kafedralAdditionalWorkload;
+                    hours.totalOidHours =
+                        hours.instituteAutumnWorkload +
+                        hours.instituteSpringWorkload +
+                        hours.instituteManagementWorkload;
+                    hours.totalHours = hours.totalKafedralHours + hours.totalOidHours;
+                }
+
+                summaryWorkload.kafedralAutumnWorkload = hours.kafedralAutumnWorkload;
+                summaryWorkload.kafedralSpringWorkload = hours.kafedralSpringWorkload;
+                summaryWorkload.kafedralAdditionalWorkload = hours.kafedralAdditionalWorkload;
+                summaryWorkload.instituteAutumnWorkload = hours.instituteAutumnWorkload;
+                summaryWorkload.instituteSpringWorkload = hours.instituteSpringWorkload;
+                summaryWorkload.instituteManagementWorkload = hours.instituteManagementWorkload;
+                summaryWorkload.totalKafedralHours = hours.totalKafedralHours;
+                summaryWorkload.totalOidHours = hours.totalOidHours;
+                summaryWorkload.totalHours = hours.totalHours;
+                await summaryWorkload.save();
+                await checkHours(summaryWorkload);
+            } else {
+                summaryWorkload.kafedralAutumnWorkload = 0;
+                summaryWorkload.kafedralSpringWorkload = 0;
+                summaryWorkload.kafedralAdditionalWorkload = 0;
+                summaryWorkload.instituteAutumnWorkload = 0;
+                summaryWorkload.instituteSpringWorkload = 0;
+                summaryWorkload.instituteManagementWorkload = 0;
+                summaryWorkload.totalKafedralHours = 0;
+                summaryWorkload.totalOidHours = 0;
+                summaryWorkload.totalHours = 0;
+                await summaryWorkload.save();
+                await checkHours(summaryWorkload);
+            }
+        }
+    },
+
 };

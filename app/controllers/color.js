@@ -10,7 +10,7 @@ export default {
         const educator = await Educator.findOne({ where: { userId } });
 
         if (!educator) res.json({});
-        const colors = await Color.findAll({ where: { educatorId: userId } });
+        const colors = await Color.findAll({ where: { educatorId: educator.id } });
 
         const colorsDto = colors.map(color => new ColorDto(color));
         res.json(colorsDto);
@@ -24,7 +24,7 @@ export default {
 
         const educator = await Educator.findOne({ where: { userId: user } });
 
-        const workloadColor = { color, educatorId: educator.userId };
+        const workloadColor = { color, educatorId: educator.id };
 
         const colors = [];
         for (const workloadId of workloadIds) {

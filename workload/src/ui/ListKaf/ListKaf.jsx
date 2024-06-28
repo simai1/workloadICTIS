@@ -24,22 +24,23 @@ function ListKaf({
     }
   };
   const addKafedra = (el) => {
-    console.log(el);
+    if (el.name === "ОИД") {
+      basicTabData.setselectISOid(true);
+    } else {
+      basicTabData.setselectISOid(false);
+    }
+    basicTabData.funUpdateTable(el.id);
     basicTabData.setnameKaf(el.name);
     setactiveList(!activeList);
-    basicTabData.setselectISOid(false);
-    tabPar.setDataIsOid(false);
-    setTableMode("cathedrals");
-    basicTabData.funUpdateTable(el.id);
-    tabPar.setSelectedFilter("Все Дисциплины");
     setopenLists("");
+    setTableMode("cathedrals");
+    tabPar.setSelectedFilter("Все Дисциплины");
     appData.setSelectedComponent("Disciplines");
   };
 
   const refDiv = useRef(null);
   //! закрытие модального окна при нажати вне него
   useEffect(() => {
-    console.log("defaultValue", defaultValue);
     setopenLists("");
     const handler = (event) => {
       if (refDiv.current && !refDiv.current.contains(event.target)) {
@@ -55,15 +56,22 @@ function ListKaf({
 
   //! функция при клике на история
   const clickHistory = (item) => {
-    apiGetHistory().then((req) => {
-      basicTabData.setHistoryChanges(req);
-      setactiveList(false);
-      setopenLists("");
-      
-    });
+    setactiveList(false);
+    setopenLists("");
     tabPar.setSelectedFilter("Все Дисциплины");
     basicTabData.setnameKaf(item.name);
     appData.setSelectedComponent("History");
+  };
+
+  //! функция определения показывать ли общеинститутские и кафедральные слово
+  const funGetAction = () => {
+    if (
+      appData.myProfile.institutionalAffiliation === "ИКТИБ" ||
+      appData.myProfile?.role === "METHODIST" ||
+      appData.myProfile?.role === "GIGA_ADMIN"
+    ) {
+      return true;
+    } else return false;
   };
 
   return (
@@ -79,11 +87,11 @@ function ListKaf({
           <input
             readOnly
             style={{
-              backgroundColor: !basicTabData.selectISOid ? "#3b28cc" : "#fff",
-              color: !basicTabData.selectISOid ? "#fff" : "#000",
+              backgroundColor: !activeList ? "#0040E5" : "#fff",
+              color: !activeList ? "#fff" : "#000",
             }}
             onClick={() => setactiveList(!activeList)}
-            value={basicTabData.nameKaf}
+            value={basicTabData.nameKaf ? basicTabData.nameKaf : ""}
             placeholder={defaultValue}
             className={styles.inputList}
           />
@@ -91,11 +99,11 @@ function ListKaf({
             onClick={() => setactiveList(!activeList)}
             className={styles.arrowBot}
           >
-            {!basicTabData.selectISOid && (
+            {!activeList && (
               <img
                 src={arrowWhite}
                 style={{
-                  transform: "rotate(-90deg)",
+                  transform: "rotate(0deg)",
                 }}
               />
             )}
@@ -103,53 +111,121 @@ function ListKaf({
               <img
                 src={arrowBlack}
                 style={{
-                  transform: "rotate(0deg)",
+                  transform: "rotate(-180deg)",
+                  paddingBottom: "4px",
                 }}
               />
             )}
           </span>
         </div>
-        {activeList && (
+        {activeList && basicTabData.tableDepartment.length !== 1 && (
           <div className={styles.ListData}>
-            {dataList.map((item, index) => (
-              <div>
-                <p
-                  className={styles.NameForList}
-                  onClick={
-                    ()=>{
-                      if(item.blocked){
-                        if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 28)){
-                          setopenList(index)
+            {dataList.length > 1 ? (
+              <>
+                {!appData.metodRole[appData.myProfile?.role]?.some(
+                  (el) => el === 42
+                ) &&
+                  funGetAction() &&
+                  dataList[1]?.name === "ОИД" && (
+                    <p className={styles.NameForList}>Общеинститутские</p>
+                  )}
+                <div key={"ОИД"} className={styles.ListDatas}>
+                  {dataList[1]?.name === "ОИД" && (
+                    <p
+                      className={styles.NameForListSecond}
+                      onClick={() => {
+                        if (dataList[1]?.blocked) {
+                          if (
+                            appData.metodRole[appData.myProfile?.role]?.some(
+                              (el) => el === 28
+                            )
+                          ) {
+                            setopenList(0);
+                          }
+                        } else {
+                          addKafedra(dataList[1]);
                         }
-                      }
-                      else{
-                        addKafedra(item)
-                      }
-                    }
-                  
-                  }
-                  style={item.blocked ? { color: "#E81414" } : null}
-                >
-                  {item.name}
-                </p>
-                {item.blocked && openLists === index && (
-                  <div className={styles.ListVRot}>
-                    <p
-                      className={styles.NameForList}
-                      onClick={() => addKafedra(item)}
+                      }}
+                      style={dataList[1]?.blocked ? { color: "#E81414" } : null}
                     >
-                      Нагрузка
+                      {dataList[1]?.name}
                     </p>
-                    <p
-                      className={styles.NameForList}
-                      onClick={() => clickHistory(item)}
-                    >
-                      История
-                    </p>
-                  </div>
+                  )}
+                  {dataList[1]?.blocked && openLists === 0 && (
+                    <div className={styles.ListVRot}>
+                      <p
+                        className={styles.NameForList}
+                        onClick={() => addKafedra(dataList[1])}
+                      >
+                        Нагрузка
+                      </p>
+                      {appData.metodRole[appData.myProfile?.role]?.some(
+                        (el) => el === 29
+                      ) && (
+                        <p
+                          className={styles.NameForList}
+                          onClick={() => clickHistory(dataList[1])}
+                        >
+                          История
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
+                {funGetAction() && (
+                  <p className={styles.NameForList}>Кафедральные</p>
                 )}
-              </div>
-            ))}
+                <div className={styles.inner_scroll}>
+                  {dataList.map((item, index) => (
+                    <div key={index} className={styles.ListDatas}>
+                      {item.name !== "ОИД" && (
+                        <p
+                          className={styles.NameForListSecond}
+                          onClick={() => {
+                            if (item.blocked) {
+                              if (
+                                appData.metodRole[
+                                  appData.myProfile?.role
+                                ]?.some((el) => el === 28)
+                              ) {
+                                setopenList(index);
+                              }
+                            } else {
+                              addKafedra(item);
+                            }
+                          }}
+                          style={item.blocked ? { color: "#E81414" } : null}
+                        >
+                          {item.name}
+                        </p>
+                      )}
+                      {item.blocked && openLists === index && (
+                        <div className={styles.ListVRot}>
+                          <p
+                            className={styles.NameForList}
+                            onClick={() => addKafedra(item)}
+                          >
+                            Нагрузка
+                          </p>
+                          {appData.metodRole[appData.myProfile?.role]?.some(
+                            (el) => el === 29
+                          ) && (
+                            <p
+                              className={styles.NameForList}
+                              onClick={() => clickHistory(item)}
+                            >
+                              История
+                            </p>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <div>Нет данных</div>
+            )}
           </div>
         )}
       </div>

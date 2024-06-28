@@ -1,0 +1,18 @@
+.MenuCont{
+    .MenuContInner{
+        padding: 8px;
+        border-radius: 8px;
+        background-color: var(--white-color);
+        box-shadow: 4px 4px 20px 0px #00000026;
+        .butttonMenuContext{
+            background-color: #fff;
+            border: none;
+            font-size: 16px;
+            height: 16px;
+            &:hover{
+                opacity: 0.6;
+                cursor: pointer;
+            }
+        }
+    }
+}

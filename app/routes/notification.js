@@ -11,7 +11,18 @@ router.use(verify.general);
 router
     .route('/')
     .get(
-        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.METHODIST, role.DIRECTORATE])),
+        asyncRoute(
+            checkRole([
+                role.GOD,
+                role.GIGA_ADMIN,
+                role.UNIT_ADMIN,
+                role.DEPARTMENT_HEAD,
+                role.METHODIST,
+                role.DIRECTORATE,
+                role.DEPUTY_DIRECTORATE,
+                role.DEPUTY_DEPARTMENT_HEAD,
+            ])
+        ),
         asyncRoute(notificationController.getAllNotifications)
     );
 

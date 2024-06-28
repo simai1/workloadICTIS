@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import EnumHistoryType from '../config/history-type.js';
+import departments from "../config/departments.js";
 export default class History extends Model {
   static initialize(sequelize) {
     History.init(
@@ -16,6 +17,17 @@ export default class History extends Model {
           validate: {
             isIn: [Object.values(EnumHistoryType)],
           },
+        },
+        department: {
+          type: DataTypes.SMALLINT,
+          allowNull: false,
+          validate: {
+            isIn: [Object.values(departments)],
+          },
+        },
+        checked: {
+          type: DataTypes.BOOLEAN,
+          defaultValue: false,
         },
         before: {
           type: DataTypes.ARRAY(DataTypes.UUID),

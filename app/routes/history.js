@@ -9,17 +9,83 @@ const router = Router();
 router.use(verify.general);
 
 router
-  .route('/getAll')
-  .get(
-    asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST, role.LECTURER, role.EDUCATOR])),
-    asyncRoute(historyController.getAll),
-  );
+    .route('/getAll')
+    .get(
+        asyncRoute(
+            checkRole([
+                role.GOD,
+                role.GIGA_ADMIN,
+                role.UNIT_ADMIN,
+                role.DEPARTMENT_HEAD,
+                role.DIRECTORATE,
+                role.METHODIST,
+                role.LECTURER,
+                role.EDUCATOR,
+                role.DEPUTY_DIRECTORATE,
+                role.DEPUTY_DEPARTMENT_HEAD,
+            ])
+        ),
+        asyncRoute(historyController.getAll)
+    );
 
 router
-  .route('/delete/:historyId')
-  .delete(
-    asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST, role.LECTURER, role.EDUCATOR])),
-    asyncRoute(historyController.delete),
-  )
+    .route('/check')
+    .patch(
+        asyncRoute(
+            checkRole([
+                role.GOD,
+                role.GIGA_ADMIN,
+                role.UNIT_ADMIN,
+                role.DEPARTMENT_HEAD,
+                role.DIRECTORATE,
+                role.METHODIST,
+                role.LECTURER,
+                role.EDUCATOR,
+                role.DEPUTY_DIRECTORATE,
+                role.DEPUTY_DEPARTMENT_HEAD,
+            ])
+        ),
+        asyncRoute(historyController.check)
+    );
+
+router
+    .route('/get/:department')
+    .get(
+        asyncRoute(
+            checkRole([
+                role.GOD,
+                role.GIGA_ADMIN,
+                role.UNIT_ADMIN,
+                role.DEPARTMENT_HEAD,
+                role.DIRECTORATE,
+                role.METHODIST,
+                role.LECTURER,
+                role.EDUCATOR,
+                role.DEPUTY_DIRECTORATE,
+                role.DEPUTY_DEPARTMENT_HEAD,
+            ])
+        ),
+        asyncRoute(historyController.getByDepartment)
+    );
+
+router
+    .route('/delete/:historyId')
+    .delete(
+        asyncRoute(
+            checkRole([
+                role.GOD,
+                role.GIGA_ADMIN,
+                role.UNIT_ADMIN,
+                role.DEPARTMENT_HEAD,
+                role.DIRECTORATE,
+                role.METHODIST,
+                role.LECTURER,
+                role.EDUCATOR,
+                role.DEPUTY_DIRECTORATE,
+                role.DEPUTY_DEPARTMENT_HEAD,
+            ])
+        ),
+        asyncRoute(historyController.delete)
+    );
 
 export default router;

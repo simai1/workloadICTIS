@@ -40,6 +40,21 @@ $heightCell: 150px;
     }
   }
 }
+.tabledisciplinesMain::-webkit-scrollbar {
+  width: 12px; /* ширина scrollbar */
+  height: 12px;
+}
+.tabledisciplinesMain::-webkit-scrollbar-track {
+  background: var(--bgraund); /* цвет дорожки */
+  margin-top: 70px;
+  margin-left: 64px;
+}
+.tabledisciplinesMain::-webkit-scrollbar-thumb,
+.tabledisciplinesMain::-webkit-scrollbar-thumb {
+  background-color: #a6a6a6;
+  border-radius: 5px;
+  border: 3px solid #a6a6a6;
+}
 .DataGrid {
   display: flex;
   width: 100%;
@@ -48,11 +63,32 @@ $heightCell: 150px;
 }
 .tabledisciplinesMain {
   display: flex;
-  // width: 100%;
+  // width: 96.5vw;
   height: 76vh;
-  overflow: auto;
+  overflow: scroll;
   padding-left: 64px;
   margin-right: 52px;
+  background-color: #fff;
+  box-sizing: border-box;
+  &::after {
+    content: "";
+    background-color: var(--bgraund);
+    width: 64px;
+    height: 100%;
+    position: absolute;
+    z-index: 1;
+    left: 0px;
+  }
+  &::before {
+    content: "";
+    background-color: var(--bgraund);
+    width: 64px;
+    height: 70px;
+    position: absolute;
+    top: 0;
+    right: 0px;
+    z-index: 1;
+  }
 
   .table {
     width: 100vw;
@@ -115,7 +151,7 @@ $heightCell: 150px;
         }
 
         svg:hover * {
-          fill: #3b28cc;
+          fill: var(--blue-color);
         }
       }
     }
@@ -199,6 +235,19 @@ $heightCell: 150px;
         top: 0;
       }
     }
+    th[name="workload"] {
+      &::after {
+        content: "";
+        position: absolute;
+        background-color: var(--td-bg);
+        box-shadow: 5px 0px 15px #b3b0b0;
+        opacity: 0.5;
+        width: 2px;
+        height: 100%;
+        right: 0;
+        top: 0;
+      }
+    }
 
     th[name="ratingControlHours"],
     td[name="ratingControlHours"] {
@@ -207,11 +256,9 @@ $heightCell: 150px;
 
     th,
     td {
-      // padding: 17px 20px;
       min-width: 160px;
       max-width: 160px;
       box-sizing: border-box;
-      // border: 1px solid #a6a6a6;
     }
 
     .trBlocked {
@@ -352,6 +399,15 @@ $heightCell: 150px;
 
   .InputCheckbox {
     padding-left: 0 !important;
+
+    .isSplit {
+      position: absolute;
+      bottom: 0;
+      padding-left: 10px;
+      box-sizing: border-box;
+      color: red;
+    }
+
     input {
       appearance: none;
       -webkit-appearance: none;
@@ -608,12 +664,18 @@ $heightCell: 150px;
           }
           .btn_rigth {
             display: flex;
+            flex-direction: row;
             align-items: center;
             width: 40px;
-            justify-content: space-between;
+            justify-content: end;
+            // justify-content: space-between;
             cursor: pointer;
             .svg * {
               fill: var(--blue-color);
+            }
+            .btn_rigth_svg {
+              margin-left: 5px;
+              padding-top: 8px;
             }
           }
         }
@@ -652,20 +714,4 @@ $heightCell: 150px;
       }
     }
   }
-}
-
-.tabledisciplinesMain::-webkit-scrollbar {
-  width: 12px; /* ширина scrollbar */
-  height: 12px;
-}
-.tabledisciplinesMain::-webkit-scrollbar-track {
-  background: var(--bgraund); /* цвет дорожки */
-  margin-top: 70px;
-  margin-left: 64px;
-}
-.tabledisciplinesMain::-webkit-scrollbar-thumb,
-.tabledisciplinesMain::-webkit-scrollbar-thumb {
-  background-color: #a6a6a6;
-  border-radius: 5px;
-  border: 3px solid #a6a6a6;
 }

@@ -17,6 +17,7 @@ import {
   splitWorkloadCount,
   upDateEducator,
   addСhangedData,
+  upDateEducators,
 } from "./Function";
 import CommentsMenu from "./CommentsMenu";
 import PopupOffer from "./PopupOffer";
@@ -29,13 +30,10 @@ const ContextMenu = (props) => {
   const [popupComment, setPopupComment] = useState(false);
   const [popupCommentAction, setPopupCommentAction] = useState(null);
 
-  useEffect(() => {
-    console.log("bufferAction", appData.bufferAction);
-  }, []);
-
   const handleContextMenu = (e) => {
     e.preventDefault();
   };
+  console.log("bufferAction", appData.bufferAction);
 
   //! нажатие на разделить
   const handleMouseClickPop = () => {
@@ -59,31 +57,70 @@ const ContextMenu = (props) => {
 
   //! оставить комментарий
   const onAddComment = () => {
-    console.log("оставить комментарий");
     setMenuShow(menuShow === "commentsMenu" ? "" : "commentsMenu");
   };
 
   //! Выбор преподавателя
-  const selectedEducator = (id) => {
-    tabPar.setContextMenuShow(!tabPar.contextMenuShow);
-    setMenuShow("");
+  // const selectedEducator = (id) => {
+  //   // appData.metodRole[appData.myProfile?.role]?.some((el) => el === 9) &&
+  //   //   tabPar.setContextMenuShow(!tabPar.contextMenuShow);
+  //   setMenuShow("");
 
+  //   const data = {
+  //     workloadId: tabPar.selectedTr[0],
+  //     educatorId: id,
+  //   };
+
+  //   if (menuShow === "educator") {
+  //     EducatorLK(id).then((dataReq) => {
+  //       const { newData, prevState } = upDateEducator(
+  //         basicTabData?.workloadDataFix,
+  //         tabPar?.selectedTr[0],
+  //         dataReq?.name
+  //       );
+  //       const edicatorName = { edicatorName: dataReq?.name };
+  //       basicTabData.setWorkloadDataFix(newData);
+  //       basicTabData.setFiltredData(newData);
+  //       const workloadId = data.workloadId;
+  //       appData.setBufferAction([
+  //         {
+  //           request: "addEducatorWorkload",
+  //           data,
+  //           prevState,
+  //           edicatorName,
+  //           workloadId,
+  //         },
+  //         ...appData.bufferAction,
+  //       ]);
+  //       //! занесем id измененнных данных в состояние
+
+  //       tabPar.setChangedData(
+  //         addСhangedData(tabPar.changedData, "educator", [tabPar.selectedTr[0]])
+  //       );
+  //     });
+  //   } else if (menuShow === "propose") {
+  //     setPopupOffer(id);
+  //   }
+  // };
+
+  const selectedEducator = (id) => {
+    setMenuShow("");
     const data = {
-      workloadId: tabPar.selectedTr[0],
+      workloadIds: tabPar.selectedTr,
       educatorId: id,
     };
-
+    console.log(data);
     if (menuShow === "educator") {
       EducatorLK(id).then((dataReq) => {
-        const { newData, prevState } = upDateEducator(
-          basicTabData.workloadDataFix,
-          tabPar.selectedTr[0],
-          dataReq.name
+        const { newData, prevState } = upDateEducators(
+          basicTabData?.workloadDataFix,
+          tabPar?.selectedTr,
+          dataReq?.name
         );
-        const edicatorName = { edicatorName: dataReq.name };
+        const edicatorName = { edicatorName: dataReq?.name };
         basicTabData.setWorkloadDataFix(newData);
         basicTabData.setFiltredData(newData);
-        const workloadId = data.workloadId;
+        const workloadId = data.workloadIds;
         appData.setBufferAction([
           {
             request: "addEducatorWorkload",
@@ -96,11 +133,10 @@ const ContextMenu = (props) => {
         ]);
         //! занесем id измененнных данных в состояние
         tabPar.setChangedData(
-          addСhangedData(tabPar.changedData, "educator", [tabPar.selectedTr[0]])
+          addСhangedData(tabPar.changedData, "educator", tabPar.selectedTr)
         );
       });
     } else if (menuShow === "propose") {
-      console.log("popup");
       setPopupOffer(id);
     }
   };
@@ -120,7 +156,10 @@ const ContextMenu = (props) => {
         createOffer(offer).then(() => {
           setPopupOffer(null);
           tabPar.setContextMenuShow(false);
-          basicTabData.funUpdateOffers();
+          appData.metodRole[appData.myProfile?.role]?.some((el) => el === 17) &&
+            basicTabData.funUpdateOffers();
+          appData.metodRole[appData.myProfile?.role]?.some((el) => el === 19) &&
+            basicTabData.funUpdateOffersLecturer();
         });
       });
     } else {
@@ -144,15 +183,14 @@ const ContextMenu = (props) => {
   //! разделение нагрузки на count
   const handleSplitWorkload = (cou) => {
     const count = Number(cou);
-    console.log("tabPar.selectedTr", tabPar.selectedTr);
     const dataSel = {
       ids: tabPar.selectedTr,
       n: count,
     };
-    console.log("dataContextMenu", dataSel);
     const prev = basicTabData.workloadDataFix.filter((item) =>
       tabPar.selectedTr.some((el) => el === item.id)
     );
+
     // Создаем новый массив для измененных данных
     let updatedData = [...basicTabData.workloadDataFix];
     const funData = splitWorkloadCount(updatedData, tabPar.selectedTr, count);
@@ -192,9 +230,7 @@ const ContextMenu = (props) => {
       tabPar.selectedTr
     );
     if (funData === null) {
-      // console.error("неправильно соеденяем данные");
       appData.seterrorPopUp(true);
-      console.log(appData.errorPopUp);
     } else {
       tabPar.setSelectedTr([]);
       basicTabData.setWorkloadDataFix(funData.newUpdatedData);
@@ -235,22 +271,24 @@ const ContextMenu = (props) => {
   //! удалить преподавателя у нагрузки
   const removeEducator = () => {
     setMenuShow("");
-    // const { selectedTr, workloadDataFix, setWorkloadDataFix } = tabPar;
-    const workloadId = tabPar.selectedTr[0];
-    const prevState = basicTabData.workloadDataFix.find(
-      (obj) => obj.id === workloadId
-    )?.educator;
+    const workloadIds = tabPar.selectedTr;
+    let prevState = [];
+    basicTabData.workloadDataFix.map((obj) => {
+      if (workloadIds.some((e) => e === obj.id)) {
+        prevState.push({ workloadId: obj.id, state: obj.educator });
+      }
+    });
     const newUpdatedData = basicTabData.workloadDataFix.map((obj) =>
-      obj.id === workloadId ? { ...obj, educator: null } : obj
+      workloadIds.some((e) => e === obj.id) ? { ...obj, educator: null } : obj
     );
     basicTabData.setWorkloadDataFix(newUpdatedData);
     //! заносим данные в буффер
     appData.setBufferAction([
-      { request: "removeEducatorinWorkload", data: { workloadId }, prevState },
+      { request: "removeEducatorinWorkload", data: { workloadIds }, prevState },
       ...appData.bufferAction,
     ]);
     tabPar.setChangedData(
-      addСhangedData(tabPar.changedData, "educator", [workloadId])
+      addСhangedData(tabPar.changedData, "educator", workloadIds)
     );
     tabPar.setContextMenuShow(false);
   };
@@ -261,7 +299,6 @@ const ContextMenu = (props) => {
     const fastened = tabPar.selectedTr.filter(
       (item) => !tabPar.fastenedData.some((el) => el.workloadId === item)
     );
-    console.log(fastened);
     if (fastened.length > 0) {
       const data = {
         workloadIds: fastened,
@@ -290,8 +327,11 @@ const ContextMenu = (props) => {
         tabPar.setFastenedData(mass);
         tabPar.setContextMenuShow(false);
         tabPar.setSelectedTr([]);
-        basicTabData.funUpdateTable()
-
+        basicTabData.funUpdateTable(
+          basicTabData.tableDepartment.find(
+            (el) => el.name === basicTabData?.nameKaf
+          )?.id
+        );
       });
     }
   };
@@ -342,30 +382,35 @@ const ContextMenu = (props) => {
       <div style={positStyle} className={styles.blockMenu}>
         {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 9) && (
           <MenuPop
-            btnText={"Добавить преподователя"}
+            btnText={"Добавить преподавателя"}
             func={addEducator}
             menuShow={menuShow === "educator"}
             img={true}
           />
         )}
-        {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 10) &&
-          tabPar.selectedTr.length === 1 && (
-            <MenuPop
-              btnText={"Удалить преподавателя"}
-              func={removeEducator}
-              img={false}
-            />
-          )}
-          {/* {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 31)&& */}
-          
-            <MenuPop btnText={"Закрепить"} func={pinaCell} img={false} />
-          {/* } */}
-          {/* {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 31)&& */}
-            <MenuPop btnText={"Открепить"} func={unPinaCell} img={false} />
-          {/* } */}
-       
         {appData.metodRole[appData.myProfile?.role]?.some(
-          (el) => el === 11
+          (el) => el === 10
+        ) && (
+          <MenuPop
+            btnText={"Удалить преподавателя"}
+            func={removeEducator}
+            img={false}
+          />
+        )}
+        {/* {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 31)&& */}
+
+        <MenuPop btnText={"Закрепить"} func={pinaCell} img={false} />
+        {/* } */}
+        {/* {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 31)&& */}
+        <MenuPop btnText={"Открепить"} func={unPinaCell} img={false} />
+        {/* } */}
+
+        {appData.metodRole[appData.myProfile?.role]?.some(
+          (el) =>
+            el === 11 &&
+            basicTabData.workloadDataFix
+              .filter((item) => tabPar.selectedTr.some((el) => el === item.id))
+              .every((it) => it.isSplit === false)
         ) && (
           <MenuPop
             btnText={"Разделить"}

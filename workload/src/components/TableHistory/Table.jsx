@@ -25,21 +25,23 @@ function Table(props) {
   };
 
   //! клик правой кнопкой мыши на tr
-  const clickTrContetx = (itemId) => {
+  const clickTrContetx = (e, itemId) => {
     tabPar.setSelectedTr((prev) => {
       const index = prev.indexOf(itemId);
       if (
         index === -1 &&
         tabPar.selectedTr.length === 0 &&
-        !tabPar.contextMenuShow
+        !props.contextShow
       ) {
         return [...prev, itemId];
-      } else if (tabPar.selectedTr.length === 1 && tabPar.contextMenuShow) {
+      } else if (tabPar.selectedTr.length === 1 && props.contextShow) {
         return [...prev.slice(0, index), ...prev.slice(index + 1)];
       } else {
         return [...prev];
       }
     });
+    props.setContetxShow(!props.contextShow);
+    props.setContextPosition({ x: e.clientX, y: e.clientY - 200 });
   };
 
   //! при клике на tr выделяем его
@@ -68,9 +70,9 @@ function Table(props) {
 
   const clickTrAll = () => {
     let ids = [];
-    if (basicTabData.props.historyData.length !== tabPar.selectedTr.length) {
-      basicTabData.props.historyData.map((item) => {
-        ids.push(item.id);
+    if (props.historyData.length !== tabPar.selectedTr.length) {
+      props.historyData.map((item) => {
+        ids.push(item.value.objid);
       });
       tabPar.setOnCheckBoxAll(true);
     } else {
@@ -82,23 +84,11 @@ function Table(props) {
 
   //определение каласса tr
   const getClassNameTr = (itemss) => {
-    const itemId = itemss.value.id;
+    const itemId = itemss.value.objid;
     let classText = null;
     classText = tabPar.selectedTr?.includes(itemId)
       ? `${styles.selectedTr}`
       : null;
-    // const item = tabPar.coloredData?.find((el) => el.workloadId === itemId);
-    // const colored = item ? `colored${item.color}` : null;
-    // classText = item ? `${classText} ${styles[colored]}` : classText;
-    // classText = tabPar.changedData.deleted?.find((el) => el === itemId)
-    //   ? `${classText} ${styles.trDeleted}`
-    //   : classText;
-    // classText =
-    //   tabPar.changedData.split?.find((el) => el === itemId) ||
-    //   tabPar.changedData.join?.find((el) => el === itemId) ||
-    //   itemss.value.isBlocked
-    //     ? `${classText} ${styles.trBlocked}`
-    //     : classText;
     if (borderState === itemss.id) {
       classText = `${classText} ${styles.border0}`;
     }
@@ -141,13 +131,16 @@ function Table(props) {
         {props.historyData.length === 0 && (
           <tbody className={styles.NotData}>
             <tr>
-              <td className={styles.tdfix}></td>
-              <td className={styles.tdfix2}>
-                {props.historyData.length === 0 && (
-                  <div className={styles.notdatadiv}>
-                    {getTextForNotData(tabPar.selectedFilter)}
-                  </div>
-                )}
+              <td
+                className={styles.tdfix}
+                style={{ pointerEvents: "none" }}
+              ></td>
+              <td className={styles.tdfix2} style={{ pointerEvents: "none" }}>
+                <div className={styles.notdatadiv}>
+                  {tabPar.perenesenAction
+                    ? "Нет данных"
+                    : "Нет перенесенных данных"}
+                </div>
               </td>
             </tr>
           </tbody>
@@ -171,20 +164,10 @@ function Table(props) {
                 onMouseLeave={() => getBorder("")}
                 // выделяем цветом если выбранно для контекстного меню
                 className={getClassNameTr(item)}
-                onClick={(e) => clickTr(e, item.value.id)}
-                onContextMenu={
-                  getConfirmation(item.value.id).blocked
-                    ? null
-                    : () => clickTrContetx(item.value.id)
-                }
+                onClick={(e) => clickTr(e, item.value.objid)}
+                onContextMenu={(e) => clickTrContetx(e, item.value.objid)}
                 key={item.value.id + number + "tr"}
-                style={
-                  item.length - 1 === item.number
-                    ? {
-                        borderBottom: "4px solid #3b28cc",
-                      }
-                    : null
-                }
+                name={item.number === 0 ? "bottomBorder" : null}
               >
                 <InputCheckbox
                   clickTr={() => {}}
@@ -193,7 +176,7 @@ function Table(props) {
                   number={number}
                   obj={item}
                   getConfirmation={getConfirmation(item.value.id)}
-                  checked={tabPar.selectedTr.includes(item.value.id)}
+                  checked={tabPar.selectedTr.includes(item.value.objid)}
                 />
                 {basicTabData.tableHeaders.map((itemKey) => (
                   <TableTd
@@ -206,6 +189,7 @@ function Table(props) {
                 ))}
               </tr>
             ))}
+
           <tr
             key={"tr3"}
             className={styles.trPlug}

@@ -29,6 +29,7 @@
     justify-content: flex-end;
 
     button:nth-child(1) {
+      border: 1px solid #000;
       @include button(#fff, #000, 10px, 25px);
       margin-right: 10px;
     }

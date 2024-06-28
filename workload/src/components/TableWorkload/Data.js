@@ -26,20 +26,30 @@ export const headers = [
 
 export const headersEducator = [
   { key: "id", label: "№" },
-  { key: "name", label: "Преподователь" },
+  { key: "name", label: "Преподаватель" },
   { key: "position", label: "Должность" },
   { key: "department", label: "Кафедра" },
   { key: "rate", label: "Ставка" },
-  { key: "totalHours", label: "Часы" },
-  { key: "hoursFirstPeriod", label: "Часы период 1" },
-  { key: "hoursSecondPeriod", label: "Часы период 2" },
-  { key: "hoursWithoutPeriod", label: "Часы без периода" },
+
+  { key: "totalHours", label: "Всего часов" },
+  { key: "totalOidHours", label: "Общеинститутские часы" },
+
+  { key: "instituteAutumnWorkload", label: "1 (осень)" },
+  { key: "instituteSpringWorkload", label: "2 (весна)" },
+  { key: "instituteManagementWorkload", label: "Руководство" },
+  { key: "totalKafedralHours", label: "Кафедральные часы" },
+
+  { key: "kafedralAutumnWorkload", label: "1 (осень)" },
+  { key: "kafedralSpringWorkload", label: "2 (весна)" },
+  { key: "kafedralAdditionalWorkload", label: "Доп. нагрузка" },
 ];
 
 export const tableHeadersLks = [
+  { key: "id", label: "№" },
   { key: "workload", label: "Нагрузка" },
+    // { key: "discipline", label: "Дисциплина" },
   { key: "department", label: "Кафедра" },
-  { key: "type", label: "Тип" },
+  // { key: "type", label: "Тип" },
   { key: "curriculumUnit", label: "Подразделение учебного плана" },
   {
     key: "specialty",
@@ -47,7 +57,7 @@ export const tableHeadersLks = [
   },
   { key: "hours", label: "Часы" },
   { key: "audienceHours", label: "Аудиторные часы" },
-  { key: "hoursFirstPeriod", label: "Часы период 1" },
-  { key: "hoursSecondPeriod", label: "Часы период 2" },
-  { key: "hoursWithoutPeriod", label: "Часы период 3" },
+  { key: "hoursFirstPeriod", label: "1 (осень)" },
+  { key: "hoursSecondPeriod", label: "2 (весна)" },
+  { key: "hoursWithoutPeriod", label: "Доп. нагрузка" },
 ];

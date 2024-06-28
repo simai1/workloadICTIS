@@ -1,0 +1,28 @@
+@mixin Input(
+  $width: 100px,
+  $border-radius: 8px,
+  $bgColor: #fff,
+  $paddingTB: 15px,
+  $paddingLR: 15px,
+  $color: #7e7e7e
+) {
+  width: $width;
+  outline: none;
+  background-color: #fff;
+  color: $color;
+  padding: $paddingTB $paddingLR;
+  border: 1px solid #adadad;
+  border-radius: $border-radius;
+  box-sizing: border-box;
+  &::placeholder {
+    color: #afbbbd;
+  }
+}
+
+// .Input {
+//   @include Input(90%, 6px, 8px, 8px);
+//   margin: 0 5%;
+//   box-sizing: border-box;
+//   margin-top: 10px;
+//   margin-bottom: 5px;
+// }

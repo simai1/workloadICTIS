@@ -9,6 +9,7 @@ function Input({
   name,
   settextSearchTableData,
   value,
+  type
 }) {
   const [textInput, settextInput] = useState("");
 
@@ -30,6 +31,8 @@ function Input({
           onChange={(e) => InputText(e)}
           placeholder={placeholder}
           value={value}
+          type = {type ? type : "text"}
+          step = {type === "number" ? "0.1" : null}
         />
       </div>
     </div>

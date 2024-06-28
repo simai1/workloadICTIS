@@ -18,6 +18,18 @@ export function filteredWorkload(data, text) {
     );
   });
 }
+//! фильтрация массива истории
+export function filteredWorkloadHistory(data, text) {
+  const fd = [...data];
+  return fd.filter((row) => {
+    return Object.values(row.value).some(
+      (value) =>
+        value !== null &&
+        value !== undefined &&
+        value.toString().toLowerCase().includes(text.toLowerCase())
+    );
+  });
+}
 
 //! функция поднятия закрпепленных наверх таблицы
 export function funSortedFastened(data, fastenedData) {
@@ -115,7 +127,6 @@ export function funfastenedDataSort(data, fastenedData) {
 
 //! функция удаления обьекта по id при нажатии на применить удаление
 export function deleteItemBuffer(buff, itemId, type) {
-  console.log("fundata", buff, itemId, type);
   let itemData = null;
   let newBuffer = buff
     .map((item) => {
@@ -133,7 +144,6 @@ export function deleteItemBuffer(buff, itemId, type) {
       }
     })
     .filter(Boolean);
-  console.log("newBuffer", newBuffer);
   return { buffer: newBuffer, item: itemData };
 }
 
@@ -156,7 +166,6 @@ export function fundeleteItemBuffer(buff, itemId, type) {
       }
     })
     .filter(Boolean);
-  console.log("newBuffer", newBuffer);
   return { buffer: newBuffer, item: itemData };
 }
 
@@ -251,20 +260,20 @@ const funWorcloadFix = (item, el, action, len, length, keys) => {
     keys: keys,
     value: {
       ...el,
+      objid: item.id,
       educator: el.educator ? el.educator.name : null,
     },
   };
 };
 
 export function funHistoryFix(history) {
-  console.log(history);
   let fixMass = [];
   let length = 0;
   let keys = [];
   history.map((item) => {
     length = item.after.length + item.before.length;
     keys = getChangedKeys(item.before, item.after);
-    if (item.after.length !== 0 && item.before.length !== 0) {
+    if (item.after.length !== 0 || item.before.length !== 0) {
       item.before.map((el, index) => {
         fixMass.push(funWorcloadFix(item, el, "after", index, length, keys));
       });
@@ -282,6 +291,5 @@ export function funHistoryFix(history) {
       });
     }
   });
-  console.log("fixMass", fixMass);
   return fixMass;
 }

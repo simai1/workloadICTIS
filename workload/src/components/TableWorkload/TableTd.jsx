@@ -53,7 +53,6 @@ function TableTd(props) {
   const onClickButton = () => {
     let parsedValue = parseFloat(textareaTd);
     let numberValue = isNaN(parsedValue) ? textareaTd : parsedValue;
-    console.log("textareaTd", textareaTd, numberValue, parsedValue);
 
     //! параметры запроса на изменение данных
     const data = {
@@ -69,7 +68,6 @@ function TableTd(props) {
         }
         return item;
       });
-      console.log("updatedArray", updatedArray);
 
       basicTabData.setWorkloadDataFix(updatedArray);
       basicTabData.setFiltredData(updatedArray);
@@ -93,7 +91,7 @@ function TableTd(props) {
   };
 
   const [showFullText, setShowFullText] = useState(false); // при наведении на td показывает весь текст ячейки
-  const lenSlice = props.itemKey.key === "groups" ? 50 : 100;
+  const lenSlice = props.itemKey.key === "groups" ? 50 : 70;
   //! фуункция котороя определяет какой формат текста выводить
   const gettdInnerText = () => {
     if (showFullText) {
@@ -143,7 +141,7 @@ function TableTd(props) {
       onMouseEnter={() => setShowFullText(true)}
       onMouseLeave={() => setShowFullText(false)}
       name={props.itemKey.key}
-      key={props.item.id + "_" + props.itemKey.key}
+      key={props.item.id + "_" + props.itemKey.key + "_" + props.ind}
       className={getClassNameTr()}
       style={
         showFullText && props.item[props.itemKey.key]?.length > lenSlice
@@ -155,7 +153,7 @@ function TableTd(props) {
       }
     >
       <div
-        key={props.item.id + "div" + props.itemKey.key}
+        key={props.item.id + "div" + props.itemKey.key + "_" + props.ind}
         className={getClassNameTdInner()}
         onDoubleClick={funDubleClick}
         style={
@@ -167,7 +165,7 @@ function TableTd(props) {
                 top: "10px",
                 padding: "4px",
                 boxShadow: "0px 3px 18px rgba(0, 0, 0, 0.15)",
-                zIndex: "200",
+                zIndex: "10",
               }
             : null
         }

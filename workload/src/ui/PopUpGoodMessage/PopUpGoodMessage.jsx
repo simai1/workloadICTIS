@@ -1,26 +1,27 @@
 import React from "react";
 import styles from "./PopUpGoodMessage.module.scss";
-import Button from "../Button/Button";
 import DataContext from "../../context";
 const PopUpGoodMessage = (props) => {
-    const { appData} = React.useContext(DataContext);
+  const { appData } = React.useContext(DataContext);
 
-    return (
-      <div className={styles.mainPopGood}>
-        <div className={styles.mainPop__inner}>
-          <p>Данные успешно изменены!</p>
-          <div className={styles.buttonBlock}>
-            <Button
-                onClick={() => appData.setgodPopUp(false)}
-                text="Закрыть"
-                Bg="#3b28cc"
-                textColot="#fff"
-            />
-          </div>
-       
+  return (
+    <div className={styles.mainPopGood}>
+      <div className={styles.mainPop__inner}>
+        <div className={styles.x}>
+          <img
+            src="./img/x.svg"
+            alt="x"
+            onClick={() => appData.setgodPopUp(false)}
+          />
         </div>
+
+        <div className={styles.mainPop__inner__inner}>
+          <img src="./img/goodOk.svg" />
+        </div>
+        <div className={styles.text}>Готово!</div>
       </div>
-    );
+    </div>
+  );
 };
 
 export default PopUpGoodMessage;
