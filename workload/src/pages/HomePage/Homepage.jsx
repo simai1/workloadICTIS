@@ -346,13 +346,8 @@ function HomePage() {
                      
                   }
 
-                {(appData.metodRole[appData.myProfile?.role]?.some(
-                  (el) => el === 27
-                )  &&
-                  basicTabData.nameKaf != "Все" &&
-                  !blockTable &&
-                  appData.selectedComponent === "Disciplines" &&
-                  appData.selectedComponent !== "History") || (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 33) && !blockTable) && (
+                {((appData.metodRole[appData.myProfile?.role]?.some((el) => el === 27)  && basicTabData.nameKaf !== "Все" && !blockTable && appData.selectedComponent === "Disciplines")
+                 || (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 33) && !blockTable)) && (
                     <div
                       style={{ marginRight: "15px" }}
                       className={styles.btnMenuBox}
