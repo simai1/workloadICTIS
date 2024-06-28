@@ -3,7 +3,7 @@ import templates from '../config/email-templates.js';
 
 const address = process.env.MAIL_USER;
 const smtp = createTransport({
-  host: 'outlook.office365.com',
+  host: 'rdcenter.ru',
   port: 587,
   secure: false,
   auth: { user: address, pass: process.env.MAIL_PASS },
