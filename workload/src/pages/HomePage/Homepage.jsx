@@ -233,8 +233,14 @@ function HomePage() {
   };
   //!Функция экспорта файла
   const exportFile = () =>{
-    const idTableUnlock = basicTabData?.tableDepartment.find((el)=>el.name === basicTabData?.nameKaf).id
+    let idTableUnlock = 0;
     let url = ``;
+    if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 51)){
+      idTableUnlock = appData.myProfile.educator.departmentId;
+    }else{
+      idTableUnlock = basicTabData?.tableDepartment.find((el)=>el.name === basicTabData?.nameKaf).id
+    }
+   
     if(basicTabData.nameKaf === "Все"){
       url = ``;
     }else if(basicTabData.nameKaf === "ОИД"){
