@@ -131,6 +131,7 @@ export function fixDataBuff(data, bufferAction) {
         }
       });
     }
+    
     //! если запрос на обьединение
     if (bufferItem.request === "joinWorkloads") {
       newData = newData.flatMap((item) => {
