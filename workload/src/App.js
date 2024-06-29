@@ -200,7 +200,7 @@ function App() {
   // храним id и ключь измененных td для подсвечивания
   const [changedData, setChangedData] = useState(changedDataObj);
   const [isChecked, setIsChecked] = useState([]); // состояние инпутов в SamplePoints
-  const [isAllChecked, setAllChecked] = useState(true); // инпут все в SamplePoints
+  const [isAllChecked, setAllChecked] = useState([]); // инпут все в SamplePoints
   const checkPar = {
     isChecked,
     setIsChecked,
