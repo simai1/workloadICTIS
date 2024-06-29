@@ -354,9 +354,9 @@ export const workloadUpdata = async (data) => {
 
 //! запрос на изменени данных в админке
 export const apiAdminUpdata = async (data) => {
-  console.log("изменение данных нагрузки ", data);
+  console.log("изменение данных админке ", data);
   try {
-    const response = await http.patch(`${server}/users/${data.id}/update`, {
+    const response = await http.put(`${server}/users/${data.id}/update`, {
       [data.key]: data.value,
     });
     console.log("response ", response);
@@ -577,13 +577,14 @@ export const GetAllDepartments = async () => {
 //! Разблокироование таблицы
 export const ApiUnblockTable = async (indexTable) => {
   try {
-    const response = await http.patch(`${server}/workload/unblock/${indexTable}`);
+    const response = await http.patch(
+      `${server}/workload/unblock/${indexTable}`
+    );
     return response;
   } catch (error) {
     console.error("Error:", error);
     //throw error;
   }
 };
-
 
 //ИАСБ

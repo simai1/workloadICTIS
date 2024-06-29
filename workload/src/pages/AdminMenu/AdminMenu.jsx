@@ -1,15 +1,20 @@
 import React, { useEffect, useState } from "react";
 import styles from "./AdminMenu.module.scss";
 import { GetAllUserss } from "../../api/services/ApiRequest";
-import { tableHeader } from "./AdminData";
 import Popup from "./Popup/Popup";
+import DataContext from "../../context";
+import ContextMenu from "./ContextMenu/ContextMenu";
+import Table from "./Table/Table";
 
 function AdminMenu() {
+  const { appData } = React.useContext(DataContext);
   const [tableData, setTableData] = useState([]);
   const [selectedTr, setSelectedTr] = useState("");
   const [contextShow, setContextShow] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [popup, setPopup] = useState(false);
+
+  //! при клике на поле в контекстном меню
   const closeClick = () => {
     setPopup(false);
   };
@@ -17,28 +22,30 @@ function AdminMenu() {
   //   apiAdminUpdata
 
   useEffect(() => {
-    GetAllUserss().then((req) => {
-      if (req?.status === 200) {
-        // console.log(req.data);
-        const data = req.data;
-        let fixData = [];
-        data.forEach((item) => {
-          const fixedItem = {};
-          Object.keys(item).map((key) => {
-            if (key === "educator") {
-              Object.keys(item.educator).forEach((k) => {
-                fixedItem[k] = item.educator[k];
-              });
-            } else {
-              fixedItem[key] = item[key];
-            }
+    if (appData.myProfile?.role === "GOD") {
+      GetAllUserss().then((req) => {
+        if (req?.status === 200) {
+          // console.log(req.data);
+          const data = req.data;
+          let fixData = [];
+          data.forEach((item) => {
+            const fixedItem = {};
+            Object.keys(item).map((key) => {
+              if (key === "educator") {
+                Object.keys(item.educator).forEach((k) => {
+                  fixedItem[k] = item.educator[k];
+                });
+              } else {
+                fixedItem[key] = item[key];
+              }
+            });
+            fixData.push(fixedItem);
           });
-          fixData.push(fixedItem);
-        });
-        console.log("fixData", fixData);
-        setTableData(fixData);
-      }
-    });
+          console.log("fixData", fixData);
+          setTableData(fixData);
+        }
+      });
+    }
   }, []);
 
   //! При клике на строку
@@ -54,7 +61,6 @@ function AdminMenu() {
     event.preventDefault();
     setContextShow(!contextShow);
     setPosition({ x: event.clientX, y: event.clientY });
-    console.log(contextShow);
   };
 
   const editClick = () => {
@@ -66,50 +72,26 @@ function AdminMenu() {
 
   return (
     <main className={styles.AdminMenu}>
-      {contextShow && (
-        <div
-          className={styles.context}
-          style={{
-            top: position?.y,
-            left: position?.x,
-          }}
-        >
-          <p onClick={editClick}>Редактировать</p>
-        </div>
-      )}
-      {popup && (
-        <Popup
-          data={tableData.find((el) => el.id === selectedTr)}
-          closeClick={closeClick}
-        />
-      )}
+      {appData.myProfile?.role === "GOD" && (
+        <>
+          {contextShow && (
+            <ContextMenu position={position} editClick={editClick} />
+          )}
+          {popup && (
+            <Popup
+              data={tableData.find((el) => el.id === selectedTr)}
+              closeClick={closeClick}
+            />
+          )}
 
-      <div className={styles.scrollTable}>
-        <table>
-          <thead>
-            <tr>
-              {tableHeader.map((item, index) => (
-                <th key={item.key + index}>{item.name}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody onContextMenu={(event) => lcmClick(event)}>
-            {tableData.map((item) => (
-              <tr
-                key={item.id}
-                onClick={() => trClick(item)}
-                className={selectedTr === item.id ? styles.selectedTr : null}
-              >
-                {tableHeader.map((keys, index) => (
-                  <td key={keys.key + index}>
-                    {item[keys.key].length === 0 ? "__" : item[keys.key]}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+          <Table
+            selectedTr={selectedTr}
+            tableData={tableData}
+            lcmClick={lcmClick}
+            trClick={trClick}
+          />
+        </>
+      )}
     </main>
   );
 }
