@@ -25,6 +25,10 @@ function TableTd(props) {
       props.itemKey.key === "audienceHours"
     ) {
       return onTextArea;
+    } else if (
+      appData.metodRole[appData.myProfile?.role]?.some((el) => el === 8.1)
+    ) {
+      return onTextArea;
     }
   };
 

@@ -43,9 +43,14 @@ export function splitWorkloadCount(data, selectedTr, count) {
         isMerged: false,
       };
       newState.push(origDat);
+      //! расчитаем рейтинг контроль
 
       let newValue = [];
       for (let i = 0; i < count; i++) {
+        const rch =
+          workload?.audienceHours *
+          (studentsPerGroup + (i < remainder ? 1 : 0)) *
+          0.01;
         const newWorkload = {
           ...workload,
           numberOfStudents: studentsPerGroup + (i < remainder ? 1 : 0),
@@ -53,6 +58,8 @@ export function splitWorkloadCount(data, selectedTr, count) {
           id: `${workload.id}${i + 1}`,
           isMerged: false,
           isSplit: true,
+          ratingControlHours: rch,
+          hours: (rch + workload?.audienceHours).toFixed(2),
         };
         newValue.push(newWorkload);
         newState.push(newWorkload);
@@ -102,6 +109,9 @@ export function combineData(data, selectedTr) {
         ...upData[index],
         groups,
         numberOfStudents: sumOfStudents,
+        isSplit: false,
+        isMerged: true,
+        educator: "___",
       };
       newState = updatedObject;
       const newUpdatedData = [
