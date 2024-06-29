@@ -461,31 +461,6 @@ function HomePage() {
                     <img className={styles.btnLeft} src="./img/export.svg" />
                     {popupExport && (
                       <ConfirmSaving
-                        title={`Вы уверены, что хотите отправить таблицу ${basicTabData.nameKaf}?`}
-                        confirmClick={exportClick}
-                        setShow={setPopupExport}
-                      />
-                    )}
-                  </div>
-                )}
-                {((appData.metodRole[appData.myProfile?.role]?.some(
-                  (el) => el === 27
-                ) &&
-                  basicTabData.nameKaf !== "Все" &&
-                  !blockTable &&
-                  appData.selectedComponent === "Disciplines") ||
-                  (appData.metodRole[appData.myProfile?.role]?.some(
-                    (el) => el === 33
-                  ) &&
-                    !blockTable)) && (
-                  <div
-                    style={{ marginRight: "15px" }}
-                    className={styles.btnMenuBox}
-                    onClick={onExportClick}
-                  >
-                    <img className={styles.btnLeft} src="./img/export.svg" />
-                    {popupExport && (
-                      <ConfirmSaving
                         title={"Вы уверены, что хотите отправить таблицу?"}
                         confirmClick={exportClick}
                         setShow={setPopupExport}
