@@ -147,17 +147,18 @@ function HomePage() {
   //! при нажатии на подтвердить сохранение изменений
   const confirmClick = (action) => {
     if (action) {
-      //! отправляем все запросы на обработку
-      bufferRequestToApi(appData.bufferAction).then((act) => {
-        if (act) {
-          appData.setBufferAction([0]);
-          basicTabData.updateAlldata();
-        }
-      });
-      tabPar.setSelectedTr([]);
-      tabPar.setChangedData(tabPar.changedDataObj);
-      console.log("выполнено и очищено", appData.bufferAction);
-      appData.setBufferAction([0]);
+      // //! отправляем все запросы на обработку
+      // bufferRequestToApi(appData.bufferAction).then((act) => {
+      //   if (act) {
+      //     appData.setBufferAction([0]);
+      //     basicTabData.updateAlldata();
+      //   }
+      // });
+      // tabPar.setSelectedTr([]);
+      // tabPar.setChangedData(tabPar.changedDataObj);
+      // console.log("выполнено и очищено", appData.bufferAction);
+      // appData.setBufferAction([0]);
+      appData.funSaveAllData();
     } else {
       setPopupSaveAll(false);
     }

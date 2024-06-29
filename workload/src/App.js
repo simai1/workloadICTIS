@@ -118,6 +118,7 @@ function App() {
     myProfile,
     setMyProfile,
     WhyColor,
+    funSaveAllData,
   };
 
   useEffect(() => {
@@ -194,6 +195,7 @@ function App() {
     hours: [],
     numberOfStudents: [],
     deleted: [],
+    audienceHours: [],
   };
   // храним id и ключь измененных td для подсвечивания
   const [changedData, setChangedData] = useState(changedDataObj);
@@ -433,6 +435,9 @@ function App() {
             if (item.data.key === "hours") {
               existingObj.hours = item.data.value;
             }
+            if (item.data.key === "audienceHours") {
+              existingObj.audienceHours = item.data.value;
+            }
           }
         } else {
           if (item.request === "addEducatorWorkload") {
@@ -462,6 +467,9 @@ function App() {
             }
             if (item.data.key === "hours") {
               o.hours = item.data.value;
+            }
+            if (item.data.key === "audienceHours") {
+              o.audienceHours = item.data.value;
             }
             obj.push(o);
           }
@@ -568,15 +576,6 @@ function App() {
   }, [selectedFilter, workloadDataFix, selectedTable, fastenedData]);
 
   //! обновляем вертуальный скролл при переходе на другуюс таблицу
-  // useEffect(() => {
-  //   setStartData(0);
-  //   const table = document.querySelector("table");
-  //   if (table) {
-  //     table.scrollIntoView(true);
-  //   }
-  // }, [selectedFilter, selectedTable]);
-
-  //! обновляем вертуальный скролл при переходе на другуюс таблицу
   useEffect(() => {
     setStartData(0);
     if (tableRefWorkload.current) {
@@ -584,31 +583,35 @@ function App() {
     }
   }, [selectedFilter, selectedTable, tableRefWorkload, nameKaf]);
 
+  //! функция сохранения данных
+  function funSaveAllData() {
+    appData.setLoaderAction(true);
+    bufferRequestToApi(bufferAction)
+      .then((action) => {
+        console.log(action);
+        if (action) {
+          setBufferAction([0]);
+          updateAlldata();
+          appData.setLoaderAction(false);
+        }
+      })
+      .catch((error) => {
+        console.error("Error in bufferRequestToApi:", error);
+        appData.setLoaderAction(false);
+      });
+
+    setSelectedTr([]);
+    setChangedData(changedDataObj);
+    console.log("выполнено и очищено", bufferAction);
+    setBufferAction([0]);
+  }
+
   //! следим за нажатием ctrl + s для сохранения изменений
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.ctrlKey && (event.key === "s" || event.key === "ы")) {
         event.preventDefault();
-        appData.setLoaderAction(true);
-
-        bufferRequestToApi(bufferAction)
-          .then((action) => {
-            console.log(action);
-            if (action) {
-              setBufferAction([0]);
-              updateAlldata();
-              appData.setLoaderAction(false);
-            }
-          })
-          .catch((error) => {
-            console.error("Error in bufferRequestToApi:", error);
-            appData.setLoaderAction(false);
-          });
-
-        setSelectedTr([]);
-        setChangedData(changedDataObj);
-        console.log("выполнено и очищено", bufferAction);
-        setBufferAction([0]);
+        funSaveAllData();
       }
     };
     // Назначьте обработчик события keydown при монтировании компонента
