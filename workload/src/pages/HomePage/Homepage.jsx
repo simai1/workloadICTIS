@@ -238,12 +238,15 @@ function HomePage() {
   const exportFile = () => {
     let idTableUnlock = 0;
     let url = ``;
+    let nameDepartment = "";
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 51)) {
       idTableUnlock = appData.myProfile.educator.departmentId;
+      nameDepartment = appData.myProfile.educator.department;
     } else {
       idTableUnlock = basicTabData?.tableDepartment.find(
         (el) => el.name === basicTabData?.nameKaf
       ).id;
+      nameDepartment = basicTabData?.nameKaf;
     }
 
     if (basicTabData.nameKaf === "Все") {
@@ -255,12 +258,12 @@ function HomePage() {
     }
     Workload(url).then((resp) => {
       console.log("workloadExport", resp);
-      generateAndDownloadExcel(resp);
+      generateAndDownloadExcel(resp, nameDepartment);
     });
   };
 
   //!Функция генерации файла для скачивания
-  const generateAndDownloadExcel = (data) => {
+  const generateAndDownloadExcel = (data, nameDepartment) => {
     const transformedData = data.map(
       ({ id, isBlocked, isMerged, isOid, isSplit, educator, ...item }) => ({
         Кафедра: item?.department,
@@ -321,7 +324,7 @@ function HomePage() {
     });
     saveAs(
       excelData,
-      `Бэкап_Табл_${basicTabData?.nameKaf}_${formattedDate}.xlsx`
+      `Экспорт_Таблицы_${nameDepartment}_${formattedDate}.xlsx`
     );
   };
 
@@ -440,6 +443,31 @@ function HomePage() {
                     </div>
                   )}
 
+                {((appData.metodRole[appData.myProfile?.role]?.some(
+                  (el) => el === 27
+                ) &&
+                  basicTabData.nameKaf !== "Все" &&
+                  !blockTable &&
+                  appData.selectedComponent === "Disciplines") ||
+                  (appData.metodRole[appData.myProfile?.role]?.some(
+                    (el) => el === 33
+                  ) &&
+                    !blockTable)) && (
+                  <div
+                    style={{ marginRight: "15px" }}
+                    className={styles.btnMenuBox}
+                    onClick={onExportClick}
+                  >
+                    <img className={styles.btnLeft} src="./img/export.svg" />
+                    {popupExport && (
+                      <ConfirmSaving
+                        title={`Вы уверены, что хотите отправить таблицу ${basicTabData.nameKaf}?`}
+                        confirmClick={exportClick}
+                        setShow={setPopupExport}
+                      />
+                    )}
+                  </div>
+                )}
                 {((appData.metodRole[appData.myProfile?.role]?.some(
                   (el) => el === 27
                 ) &&

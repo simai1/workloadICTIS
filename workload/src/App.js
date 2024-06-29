@@ -423,6 +423,9 @@ function App() {
           if (item.request === "addEducatorWorkload") {
             existingObj.educator = item.edicatorName.edicatorName;
           }
+          if (item.request === "removeEducatorinWorkload") {
+            existingObj.educator = "___";
+          }
           if (item.request === "workloadUpdata") {
             if (item.data.key === "numberOfStudents") {
               existingObj.numberOfStudents = item.data.value;
@@ -438,6 +441,15 @@ function App() {
             );
             ob = ob.map((el) => {
               return { ...el, educator: item.edicatorName.edicatorName };
+            });
+            obj.push(...ob);
+          }
+          if (item.request === "removeEducatorinWorkload") {
+            let ob = newData.filter((el) =>
+              item.data.workloadIds?.some((e) => e === el.id)
+            );
+            ob = ob.map((el) => {
+              return { ...el, educator: "___" };
             });
             obj.push(...ob);
           }
