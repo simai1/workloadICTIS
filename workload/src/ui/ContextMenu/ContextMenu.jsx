@@ -377,7 +377,7 @@ const ContextMenu = (props) => {
 
         {appData.metodRole[appData.myProfile?.role]?.some(
           (el) =>
-            el === 11 &&
+            el === 11.1 &&
             basicTabData.workloadDataFix
               .filter((item) => tabPar.selectedTr.some((el) => el === item.id))
               .every((it) => it.isSplit === false)
