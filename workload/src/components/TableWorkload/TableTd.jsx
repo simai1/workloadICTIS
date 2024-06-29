@@ -132,6 +132,9 @@ function TableTd(props) {
     if (showFullText && props.item[props.itemKey.key]?.length > lenSlice) {
       text = `${text} ${styles.gettdInner}`;
     }
+    if (props.item.isSplitArrow === true) {
+      text = `${text} ${styles.tdInnerIsSplitArrow}`;
+    }
     return text;
   };
 
