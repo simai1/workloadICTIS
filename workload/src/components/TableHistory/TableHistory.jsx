@@ -52,7 +52,7 @@ function TableHistory(props) {
 
   useEffect(() => {
     apiGetHistory().then((req) => {
-      const hd = req.filter(
+      const hd = req?.filter(
         (it) =>
           it.checked === tabPar.perenesenAction &&
           it.department === basicTabData.nameKaf

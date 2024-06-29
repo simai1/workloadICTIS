@@ -54,7 +54,7 @@ export function getDataAllComment(setCommentAllData) {
 //! функция получения всех предупреждений
 export function getAllWarnin(setAllWarningMessage) {
   getAllWarningMessage().then((data) => {
-    console.log("AllWarning ", data);
+    // console.log("AllWarning ", data);
     setAllWarningMessage(data);
   });
 }

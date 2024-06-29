@@ -1,0 +1,116 @@
+@import "./../../style/colors.scss";
+@import "./../../style/mixin.scss";
+
+.popupToShare {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 500;
+  background-color: #00000027;
+
+  .popupToShare_inner {
+    background-color: #fff;
+    @include boxShadow();
+    border-radius: 16px;
+    padding: 24px;
+    h2 {
+      margin-bottom: 10px;
+    }
+    .errortext {
+      width: 100%;
+      height: 30px;
+      display: flex;
+      justify-content: center;
+      color: red;
+      transition: all 0.15s ease;
+    }
+    .button {
+      display: flex;
+      justify-content: end;
+      .buttonlft {
+        button {
+          @include button(#fff, #000, 9px, 18px);
+          border: 1px solid #000;
+          box-sizing: border-box;
+        }
+        margin-right: 20px;
+      }
+      .buttonrig {
+        button {
+          @include button(var(--blue-color), #fff, 10px, 18px);
+          border: none;
+        }
+      }
+    }
+  }
+
+  .popupToShare_body {
+    max-height: 80vh;
+
+    overflow: auto;
+    @include scrollStyle(8px, 8px);
+    .errorBorder {
+      border: 3px solid #ffff2f;
+      width: 100px;
+      margin: 0 auto;
+      border-radius: 10px;
+      transition: all 0.15s ease;
+    }
+
+    table {
+      border-collapse: collapse;
+      border-spacing: 0;
+      height: 100%;
+      .trtop {
+        height: 16px;
+      }
+      td {
+        text-align: center;
+        padding: 4px;
+        width: 200px;
+      }
+      th:nth-child(1) {
+        border-top-left-radius: 8px;
+      }
+      th:last-child {
+        border-top-right-radius: 8px;
+      }
+      th {
+        text-align: center;
+        padding: 10px 0;
+        width: 200px;
+        background-color: var(--gray-color);
+      }
+      .origData {
+        td {
+          background-color: var(--blue-color);
+          color: #fff;
+          padding: 16px;
+        }
+        td:nth-child(1) {
+          border-radius: 8px 0 0 8px;
+        }
+        td:last-child {
+          border-radius: 0 8px 8px 0;
+        }
+      }
+      .inputTd {
+        input {
+          @include input-text(100px, 4px);
+          text-align: center;
+          padding-left: 27px;
+        }
+        .errorBorder {
+          border: 3px solid var(--gray-color);
+          transition: all 0.15s ease;
+          border-radius: 10px;
+        }
+      }
+    }
+  }
+}

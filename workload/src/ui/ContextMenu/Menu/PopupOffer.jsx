@@ -1,6 +1,6 @@
 import React from "react";
-import styles from "./ContextMenu.module.scss";
-import DataContext from "../../context";
+import styles from "./../ContextMenu.module.scss";
+import DataContext from "../../../context";
 function PopupOffer(props) {
   const { tabPar } = React.useContext(DataContext);
 

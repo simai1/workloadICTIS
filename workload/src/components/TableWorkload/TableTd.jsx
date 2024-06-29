@@ -22,8 +22,7 @@ function TableTd(props) {
     if (
       //! проеряем роль
       appData.metodRole[appData.myProfile?.role]?.some((el) => el === 8) &&
-      (props.itemKey.key === "numberOfStudents" ||
-        props.itemKey.key === "hours")
+      props.itemKey.key === "audienceHours"
     ) {
       return onTextArea;
     }

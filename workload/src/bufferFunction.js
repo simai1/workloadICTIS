@@ -75,7 +75,8 @@ export async function bufferRequestToApi(buffer) {
       count++;
     }
   }
-  return count === buffer.length - 1;
+  console.log(count, buffer.length);
+  return count === buffer.length;
 }
 /////////////////////////////////////////////////
 //! возвращение предыдущего стостояния таблицы
@@ -133,7 +134,7 @@ export function fixDataBuff(data, bufferAction) {
     }
     
     //! если запрос на обьединение
-    if (bufferItem.request === "joinWorkloads") {
+    else if (bufferItem.request === "joinWorkloads") {
       newData = newData.flatMap((item) => {
         if (bufferItem.data.ids.includes(item.id)) {
           return item.id === bufferItem.newState.id
@@ -143,7 +144,46 @@ export function fixDataBuff(data, bufferAction) {
           return [item];
         }
       });
+    } else if (bufferItem.request === "splitByHours") {
+      newData = handleSplitWorkload(newData, bufferItem, bufferItem.data.n - 1);
     }
   });
   return newData;
 }
+
+//! функция для разделения строк при нажатии сохранить
+const handleSplitWorkload = (newData, bufdat, inpValueHoursPopup) => {
+  let updatedData = newData;
+  //! находим индекс строки которую будем делить
+  const indexWorkload = updatedData.findIndex(
+    (el) => el.id === bufdat.workloadId
+  );
+  //! создадим массив который необходимо вставить в существующий
+  if (indexWorkload !== -1) {
+    const newValue = [];
+    for (let i = 0; i < Number(inpValueHoursPopup); i++) {
+      const origHours = {
+        ...updatedData[indexWorkload],
+        ...bufdat.data.hoursData[i],
+        id: updatedData[indexWorkload].id + (i + 1),
+        isMerged: false,
+      };
+      newValue.push(origHours);
+    }
+    //! вставляем в массив новые данные
+    updatedData = [
+      ...updatedData.slice(0, indexWorkload),
+      {
+        ...updatedData[indexWorkload],
+        id: updatedData[indexWorkload].id + 0,
+        isSplit: true,
+        isSplitArrow: true,
+        isMerged: false,
+      },
+      ...newValue,
+      ...updatedData.slice(indexWorkload + 1),
+    ];
+  }
+
+  return updatedData;
+};
