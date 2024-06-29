@@ -81,6 +81,10 @@ export function SamplePoints(props) {
     checkPar.setAllChecked(allChecked);
   };
 
+  useEffect(()=>{
+    console.log("вот я да")
+  },[])
+
   return (
     <main className={styles.SamplePoints} ref={spRef}>
       <div className={styles.container}>
