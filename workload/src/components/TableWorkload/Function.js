@@ -240,3 +240,17 @@ export const funGetConfirmation = (itemId, changedData, bufferAction) => {
     };
   } else return { blocked: false, height: "150px", top: "0", type: 0 };
 };
+
+//! функция сравнения 2х тексовых массивов
+export function areArraysIdenticalText(arr1, arr2) {
+  if (arr1.length !== arr2.length) {
+    return false;
+  }
+
+  // Преобразуем массивы в наборы для быстрого сравнения
+  const set1 = new Set(arr1);
+  const set2 = new Set(arr2);
+
+  // Проверяем, что наборы содержат одинаковые элементы
+  return set1.size === set2.size && [...set1].every((value) => set2.has(value));
+}
