@@ -135,6 +135,8 @@ export default {
                         workloadDto.hoursFirstPeriod += workload.period === 1 ? workload.hours : 0;
                         workloadDto.hoursSecondPeriod += workload.period === 2 ? workload.hours : 0;
                         workloadDto.hoursWithoutPeriod += workload.period === null ? workload.hours : 0;
+                        // ориентировочно часы это сумма 3 столбиков этих (уточнить)
+                        workloadDto.hours = workloadDto.hoursFirstPeriod + workload.hoursWithoutPeriod + workloadDto.hoursSecondPeriod;
                         flag = false;
                         console.log(workloadDto);
                         break;
