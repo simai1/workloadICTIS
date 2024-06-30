@@ -208,6 +208,9 @@ export const funGetConfirmation = (itemId, changedData, bufferAction) => {
       data.prevState = [
         data.prevState.find((e) => e.id === itemId.slice(0, -1)),
       ];
+      data.hoursData = [
+        data.hoursData.find((e) => e.workloadId === itemId.slice(0, -1)),
+      ];
 
       const length =
         buff.request === "splitWorkload" ? data.data.n + 1 : data.data.n;

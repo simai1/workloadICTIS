@@ -175,6 +175,7 @@ function OverlapWindow(props) {
       });
     } else if (props.getConfirmation.type === 2) {
       //! подтверждение разделить нагрузку по подгруппам
+      console.log("props.getConfirmation", props.getConfirmation);
       // собираем данные для запроса
       const obj = props.getConfirmation.data;
       const data = {
