@@ -165,6 +165,7 @@ export function funfastenedDataSort(data, fastenedData) {
 //! функция удаления обьекта по id при нажатии на применить удаление
 export function deleteItemBuffer(buff, itemId, type) {
   let itemData = null;
+  console.log(itemId);
   let newBuffer = buff
     .map((item) => {
       if (item.request === type) {
@@ -172,6 +173,11 @@ export function deleteItemBuffer(buff, itemId, type) {
         itemData = p;
         p.data.ids = p.data.ids.filter((id) => id !== itemId.slice(0, -1));
         p.data.ids = p.data.ids.filter((id) => id !== itemId);
+        if (p.hoursData) {
+          p.hoursData = p?.hoursData.filter(
+            (el) => el.workloadId !== itemId.slice(0, -1)
+          );
+        }
         if (p.data.ids.length > 0) {
           return p;
         } else {
@@ -208,9 +214,11 @@ export const funGetConfirmation = (itemId, changedData, bufferAction) => {
       data.prevState = [
         data.prevState.find((e) => e.id === itemId.slice(0, -1)),
       ];
-      data.hoursData = [
-        data.hoursData.find((e) => e.workloadId === itemId.slice(0, -1)),
-      ];
+      if (data.hoursData) {
+        data.hoursData = [
+          data.hoursData.find((e) => e.workloadId === itemId.slice(0, -1)),
+        ];
+      }
 
       const length =
         buff.request === "splitWorkload" ? data.data.n + 1 : data.data.n;
