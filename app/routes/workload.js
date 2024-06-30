@@ -9,6 +9,8 @@ import checkRole from '../middlewares/checkRoles.js';
 const router = Router();
 router.use(verify.general);
 
+router.route('/splitByHours').post(asyncRoute(workloadController.splitByHours));
+
 router
     .route('/split')
     .post(
@@ -23,7 +25,7 @@ router
                 role.DEPUTY_DEPARTMENT_HEAD,
             ])
         ),
-        asyncRoute(workloadController.splitRow)
+        asyncRoute(workloadController.splitBySubgroups)
     );
 router
     .route('/getDepartment/:department')

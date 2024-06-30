@@ -34,25 +34,24 @@ export default {
     async updateUser(req, res) {
         const { role, allowedDepartments, institutionalAffiliation } = req.body;
         if (!role && !allowedDepartments && !institutionalAffiliation) throw new AppErrorMissing('body');
-        if (!Object.values(roles).includes(role)) throw new AppErrorInvalid('role');
-        if (allowedDepartments.some(d => !Object.values(departments).includes(d))) {
+        if (role && !Object.values(roles).includes(role)) throw new AppErrorInvalid('role');
+        if (allowedDepartments && allowedDepartments.some(d => !Object.values(departments).includes(d))) {
             throw new AppErrorInvalid('allowedDepartments');
         }
-        if (!Object.values(institutionalAffiliations).includes(institutionalAffiliation)) {
+        if (institutionalAffiliation && !Object.values(institutionalAffiliations).includes(institutionalAffiliation)) {
             throw new AppErrorInvalid('institutionalAffiliation');
         }
-        const user = User.update(
+        await User.update(
             {
                 role,
                 allowedDepartments,
                 institutionalAffiliation,
             },
             {
-                where: { id: req.user },
+                where: { id: req.params.id },
             }
         );
-        const userDto = new UserDto(user);
-        res.json(userDto);
+        res.json({status: 'OK'});
     },
 
     async getAll(req, res) {
