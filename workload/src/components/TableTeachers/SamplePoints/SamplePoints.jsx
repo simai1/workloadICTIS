@@ -73,10 +73,10 @@ export function SamplePoints(props) {
     sessionStorage.setItem("isCheckedTeachers", JSON.stringify([...checked]));
 
     // Фильтруем данные
-    const fdfix = FilteredSample(props.updatedData, checked);
-    props.setFiltredData(fdfix);
+    const fdfix = FilteredSample(props.updatedData, checked); // функция фильтрации
+    props.setFiltredData(fdfix); // это в тааблице выводится
     const allChecked = checked.length === 0;
-    props.checkPar.setAllChecked(allChecked);
+    props.checkPar.setAllChecked(allChecked); 
   };
 
   return (
