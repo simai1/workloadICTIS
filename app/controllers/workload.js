@@ -294,6 +294,7 @@ export default {
                     isOid: originalWorkload.isOid,
                 })
             );
+            await originalWorkload.destroy();
         }
         const newWorkloads = await Workload.bulkCreate(newWorkloadsData);
         const workloadsDto = [];
