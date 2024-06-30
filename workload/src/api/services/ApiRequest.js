@@ -356,7 +356,7 @@ export const workloadUpdata = async (data) => {
 export const apiAdminUpdata = async (data) => {
   console.log("изменение данных админке ", data);
   try {
-    const response = await http.put(`${server}/users/${data.id}/update`, {
+    const response = await http.put(`${server}/user/${data.id}/update`, {
       [data.key]: data.value,
     });
     console.log("response ", response);
