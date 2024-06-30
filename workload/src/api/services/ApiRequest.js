@@ -204,11 +204,11 @@ export const addEducatorWorkload = async (data) => {
 
 //! запрос на разделение нагрузки
 export const splitWorkload = async (data) => {
-  console.log("Разделение нагрузки ", data);
+  console.log("Разделение нагрузки по подгруппам", data);
   try {
     const response = await http.post(`${server}/workload/split`, data);
     console.log("response ", response);
-    return response.data;
+    return response;
   } catch (error) {
     console.error("Error:", error);
     //throw error;

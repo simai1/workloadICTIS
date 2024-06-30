@@ -13,9 +13,11 @@ export function SubMenu(props) {
       ids: tabPar.selectedTr,
       n: count,
     };
+
     const prev = basicTabData.workloadDataFix.filter((item) =>
       tabPar.selectedTr.some((el) => el === item.id)
     );
+
     // Создаем новый массив для измененных данных
     let updatedData = [...basicTabData.workloadDataFix];
     const funData = splitWorkloadCount(updatedData, tabPar.selectedTr, count);
@@ -24,6 +26,8 @@ export function SubMenu(props) {
     tabPar.setChangedData(
       addСhangedData(tabPar.changedData, "split", funData.blocked)
     );
+
+    console.log("funData", funData);
     //! буфер
     appData.setBufferAction([
       {
@@ -33,6 +37,7 @@ export function SubMenu(props) {
         prevState: [...prev],
         newState: funData.newState,
         newIds: [...funData.newIds],
+        hoursData: funData.hoursData,
       },
       ...appData.bufferAction,
     ]);

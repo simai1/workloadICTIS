@@ -51,11 +51,7 @@ function TableWorkload(props) {
     const ssIsChecked = JSON.parse(sessionStorage.getItem("isCheckedWorkload"));
     if (ssIsChecked && ssIsChecked !== null && ssIsChecked.length > 0) {
       checkPar.setIsChecked(ssIsChecked);
-      // checkPar.setAllChecked(false);
     }
-    // if (checkPar.isChecked.length !== 0) {
-    //   checkPar.setAllChecked(false);
-    // }
   }, []);
 
   return (

@@ -24,6 +24,7 @@ export function splitWorkloadCount(data, selectedTr, count) {
   const newIds = [];
   const blocked = [];
   const newState = [];
+  const hoursData = [];
   for (const id of selectedTr) {
     const workloadIndex = updatedData.findIndex((item) => item.id === id);
     if (workloadIndex !== -1) {
@@ -43,9 +44,12 @@ export function splitWorkloadCount(data, selectedTr, count) {
         isMerged: false,
       };
       newState.push(origDat);
+
       //! расчитаем рейтинг контроль
 
       let newValue = [];
+      let workloadsData = [];
+
       for (let i = 0; i < count; i++) {
         const rch =
           workload?.audienceHours *
@@ -61,11 +65,22 @@ export function splitWorkloadCount(data, selectedTr, count) {
           ratingControlHours: rch,
           hours: (rch + workload?.audienceHours).toFixed(2),
         };
+        const hoursDataObj = {
+          numberOfStudents: studentsPerGroup + (i < remainder ? 1 : 0),
+          hours: (rch + workload?.audienceHours).toFixed(2),
+          audienceHours: workload?.audienceHours,
+          ratingControlHours: rch,
+        };
+        workloadsData.push(hoursDataObj);
         newValue.push(newWorkload);
         newState.push(newWorkload);
         newIds.push(newWorkload.id);
         blocked.push(newWorkload.id);
       }
+      hoursData.push({
+        workloadId: workload.id,
+        workloadsData: workloadsData,
+      });
 
       updatedData = [
         ...updatedData.slice(0, workloadIndex),
@@ -75,7 +90,7 @@ export function splitWorkloadCount(data, selectedTr, count) {
       ];
     }
   }
-  return { updatedData, newIds, blocked, newState };
+  return { updatedData, newIds, blocked, newState, hoursData };
 }
 
 export function combineData(data, selectedTr) {
