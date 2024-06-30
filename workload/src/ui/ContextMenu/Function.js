@@ -37,6 +37,8 @@ export function splitWorkloadCount(data, selectedTr, count) {
           numberOfStudents: studentsPerGroup + (i < remainder ? 1 : 0),
           educator: null,
           id: `${workload.id}${i}`,
+          isMerged: false,
+          isSplit: true,
         };
         newState.push(newWorkload);
         updatedData.splice(workloadIndex + i, 0, newWorkload);

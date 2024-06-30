@@ -138,8 +138,8 @@ function Table(props) {
               <td className={styles.tdfix2} style={{ pointerEvents: "none" }}>
                 <div className={styles.notdatadiv}>
                   {tabPar.perenesenAction
-                    ? "Нет данных"
-                    : "Нет перенесенных данных"}
+                    ? "Нет перенесенных данных"
+                    : "Нет данных"}
                 </div>
               </td>
             </tr>

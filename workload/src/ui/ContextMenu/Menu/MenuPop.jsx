@@ -1,6 +1,6 @@
 import React from "react";
-import styles from "./ContextMenu.module.scss";
-import arrow from "./../../img/arrow.svg";
+import styles from "./../ContextMenu.module.scss";
+import arrow from "./../../../img/arrow.svg";
 
 function MenuPop(props) {
   return (

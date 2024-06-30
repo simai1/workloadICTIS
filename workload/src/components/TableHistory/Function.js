@@ -270,7 +270,7 @@ export function funHistoryFix(history) {
   let fixMass = [];
   let length = 0;
   let keys = [];
-  history.map((item) => {
+  history?.map((item) => {
     length = item.after.length + item.before.length;
     keys = getChangedKeys(item.before, item.after);
     if (item.after.length !== 0 || item.before.length !== 0) {

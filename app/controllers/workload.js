@@ -385,7 +385,7 @@ export default {
         res.json(workloadDto);
     },
 
-    async update({ params: { id }, body: { numberOfStudents, hours, comment } }, res) {
+    async update({ params: { id }, body: { numberOfStudents, hours, comment, audienceHours } }, res) {
         try {
             const workload = await Workload.findByPk(id, {
                 include: { model: Educator },
@@ -397,11 +397,13 @@ export default {
             if (!numberOfStudents) numberOfStudents = workload.numberOfStudents;
             if (!hours) hours = workload.hours;
             if (!comment) comment = workload.comment;
+            if (!audienceHours) audienceHours = workload.audienceHours;
             // Обновляем запись в таблице Workload
             await workload.update({
                 numberOfStudents,
                 hours,
                 comment,
+                audienceHours,
             });
 
             await History.create({

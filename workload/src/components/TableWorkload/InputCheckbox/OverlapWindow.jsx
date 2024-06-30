@@ -26,12 +26,23 @@ function OverlapWindow(props) {
       changed.deleted = changed.deleted.filter((item) => item !== props.itid);
       tabPar.setChangedData(changed);
     } else if (props.getConfirmation.type === 2) {
-      const dat = { ...props.getConfirmation.data };
+      //! отмена разделения
+      const dat = { ...props.getConfirmation.data }; //! данные буффера для разделенной
       let buff = [...appData.bufferAction];
-      let itemBuff = buff.find((el) => el.id === dat.id);
-      let index = buff.findIndex((el) => el.id === dat.id);
+      console.log("dat", dat);
+
+      //! получаем обьект из буффера так как в массиве могут быть данные нескольких строк
+      let itemBuff = buff.find((el) =>
+        el.data.ids.some((e) => e === dat.data.ids[0])
+      );
+      //! индекс из буффер нашего обьекта
+      let index = buff.findIndex((el) =>
+        el.data.ids.some((e) => e === dat.data.ids[0])
+      );
+
+      //! корректируем data из буффера
       let bd = { ...itemBuff.data };
-      const bdids = bd.ids.filter((el) => !dat.data.ids.some((e) => e === el));
+      const bdids = bd.ids.filter((el) => dat.data.ids[0] !== el);
       const newbd = {
         ids: bdids,
         n: bd.n,
@@ -42,6 +53,7 @@ function OverlapWindow(props) {
         (el) => el.id !== dat.newState.id
       );
       let ps = itemBuff.prevState.filter((el) => el.id !== dat.prevState.id);
+
       let buffDat = {
         id: dat.id,
         data: newbd,
@@ -51,9 +63,12 @@ function OverlapWindow(props) {
         request: "splitWorkload",
       };
       buff[index] = buffDat;
-      appData.setBufferAction([...buff]);
-      let wdf = [...basicTabData.workloadDataFix];
 
+      //! если ids пустой значит убираем данный обьект из буффера
+      appData.setBufferAction(
+        [...buff].filter((el) => el.data?.ids?.length > 0)
+      );
+      let wdf = [...basicTabData.workloadDataFix];
       let datMap = { ...dat };
       let f = true;
       const wdfNew = wdf
@@ -75,6 +90,7 @@ function OverlapWindow(props) {
       );
       tabPar.setChangedData(changed);
     } else if (props.getConfirmation.type === 3) {
+      //! отмена обьединения
       const bd = props.getConfirmation.data;
       // удаляем нагрузку которую обьеденили
       const dataTable = [...basicTabData.workloadDataFix].filter(
@@ -91,11 +107,47 @@ function OverlapWindow(props) {
       let cd = { ...tabPar.changedData };
       let cdJoin = [...cd.join];
       cdJoin = cdJoin.filter(
-        (el) => !bd.prevState.some((item) => item.id !== el)
+        (el) => !bd.prevState.some((item) => item.id === el)
       );
       cd.join = cdJoin;
       tabPar.setChangedData(cd);
       appData.setBufferAction((prevItems) => prevItems.slice(1));
+    } else if (props.getConfirmation.type === 4) {
+      //! если разделили по часам применяем эту отмену
+      const dat = { ...props.getConfirmation.data };
+      let updatedData = [...basicTabData.workloadDataFix];
+      updatedData = updatedData
+        .map((item) => {
+          const ind = dat.newIds.findIndex((e) => e === item.id);
+          if (ind === -1) {
+            return item;
+          } else if (ind === 0) {
+            return dat.prevState[0];
+          }
+        })
+        .filter((el) => el !== undefined);
+      console.log(updatedData);
+
+      basicTabData.setWorkloadDataFix(updatedData);
+
+      let changed = { ...tabPar.changedData };
+      changed.split = changed.split.filter(
+        (item) => !dat.newIds.some((el) => el === item)
+      );
+      tabPar.setChangedData(changed);
+      //! удалим из буфера
+      let buff = [...appData.bufferAction];
+      buff = buff
+        .filter((el) => {
+          if (
+            el.request === "splitByHours" &&
+            el.data.ids[0] === dat.data.ids[0]
+          ) {
+            return null;
+          } else return el;
+        })
+        .filter((el) => el !== null);
+      appData.setBufferAction([...buff]);
     }
   };
 
@@ -170,6 +222,8 @@ function OverlapWindow(props) {
           )?.id
         );
       });
+    } else if (props.getConfirmation.type === 4) {
+      console.log("жду бэк", props.getConfirmation);
     }
   };
 
