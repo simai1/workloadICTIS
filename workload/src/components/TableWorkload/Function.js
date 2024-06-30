@@ -209,9 +209,10 @@ export const funGetConfirmation = (itemId, changedData, bufferAction) => {
         data.prevState.find((e) => e.id === itemId.slice(0, -1)),
       ];
 
-      const length = data.data.n;
+      const length =
+        buff.request === "splitWorkload" ? data.data.n + 1 : data.data.n;
       const index = data.newIds.findIndex((e) => e === itemId);
-      if (data.data.n) {
+      if (length) {
         return {
           blocked: true,
           height: `${150 * length}px`,

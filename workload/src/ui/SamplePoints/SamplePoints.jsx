@@ -46,14 +46,24 @@ export function SamplePoints(props) {
   ];
   //! при нажатии на Input All
   const onAllChecked = () => {
-    const checked = checkPar.isAllChecked ? [...filteredData] : [];
-    let check = [];
-    checked.map((item) => {
-      check.push({ value: item, itemKey: props.itemKey });
-    });
-    checkPar.setIsChecked(check);
-    sessionStorage.setItem("isCheckedWorkload", JSON.stringify([...check]));
-    checkPar.setAllChecked(!checkPar.isAllChecked);
+    console.log("checkPar.isAllChecked", checkPar.isAllChecked);
+    // const checked = checkPar.isAllChecked.some((el) => el === props.itemKey)
+    //   ? [...filteredData]
+    //   : [];
+    let checked = [...checkPar.isChecked];
+    if (
+      [...checkPar.isChecked].filter((el) => el.itemKey === props.itemKey)
+        .length > 0
+    ) {
+      checked = checked.filter((el) => el.itemKey !== props.itemKey);
+    } else {
+      [...filteredData].map((item) => {
+        checked.push({ value: item, itemKey: props.itemKey });
+      });
+    }
+    checkPar.setIsChecked(checked);
+    sessionStorage.setItem("isCheckedWorkload", JSON.stringify([...checked]));
+
     // Фильтруем данные
     const fdfix = FilteredSample(
       basicTabData.workloadData,
@@ -61,6 +71,7 @@ export function SamplePoints(props) {
       props.itemKey
     );
     basicTabData.setWorkloadDataFix(fdfix);
+    console.log("checkPar.isAllChecked", checkPar.isAllChecked);
   };
 
   //! при нажатии на Input
@@ -77,8 +88,15 @@ export function SamplePoints(props) {
     // Фильтруем данные
     const fdfix = FilteredSample(basicTabData.workloadData, checked);
     basicTabData.setWorkloadDataFix(fdfix);
-    const allChecked = checked.length === 0;
-    checkPar.setAllChecked(allChecked);
+
+    // if (
+    //   [...checkPar.isChecked].filter((el) => el.itemKey === props.itemKey) === 0
+    // ) {
+    //   checkPar.setAllChecked(
+    //     checkPar.isAllChecked.filter((el) => el !== props.itemKey)
+    //   );
+    // }
+    console.log("checkPar.isChecked", checkPar.isChecked);
   };
 
   useEffect(()=>{
@@ -101,7 +119,11 @@ export function SamplePoints(props) {
               id="allCheckbox"
               type="checkbox"
               onChange={onAllChecked}
-              checked={checkPar.isAllChecked}
+              checked={
+                ![...checkPar.isChecked].filter(
+                  (el) => el.itemKey === props.itemKey
+                ).length > 0
+              }
             />
             <p>Все</p>
           </div>

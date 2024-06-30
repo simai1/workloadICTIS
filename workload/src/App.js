@@ -73,8 +73,8 @@ function App() {
       31, 34, 35, 36, 38, 16, 40, 44, 46, 48, 50,
     ],
     GOD: [
-      1, 3, 4, 8, 9, 10, 11, 11.1, 12, 13, 14, 17, 18, 20, 21, 22, 23, 25, 26,
-      27, 28, 29, 30, 31, 34, 35, 36, 38, 16, 40, 44, 45, 46, 48, 50,
+      1, 3, 4, 8, 8.1, 9, 10, 11, 11.1, 12, 13, 14, 17, 18, 20, 21, 22, 23, 25,
+      26, 27, 28, 29, 30, 31, 34, 35, 36, 38, 16, 40, 44, 45, 46, 48, 50,
     ],
   };
   // appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)
@@ -200,7 +200,7 @@ function App() {
   // храним id и ключь измененных td для подсвечивания
   const [changedData, setChangedData] = useState(changedDataObj);
   const [isChecked, setIsChecked] = useState([]); // состояние инпутов в SamplePoints
-  const [isAllChecked, setAllChecked] = useState(true); // инпут все в SamplePoints
+  const [isAllChecked, setAllChecked] = useState([]); // инпут все в SamplePoints
   const checkPar = {
     isChecked,
     setIsChecked,

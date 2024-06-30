@@ -30,6 +30,7 @@ function SplitByHoursPopup() {
         ...bufdat.data.hoursData[i],
         id: updatedData[indexWorkload].id + (i + 1),
         isMerged: false,
+        isSplit: true,
       };
       newValue.push(origHours);
     }
@@ -40,7 +41,7 @@ function SplitByHoursPopup() {
       {
         ...updatedData[indexWorkload],
         id: updatedData[indexWorkload].id + 0,
-        isSplit: true,
+        isSplit: false,
         isSplitArrow: true,
         isMerged: false,
       },

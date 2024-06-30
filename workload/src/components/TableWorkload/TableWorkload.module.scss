@@ -274,6 +274,9 @@ $heightCell: 150px;
       }
       pointer-events: none;
     }
+    .tdInnerIsSplitArrow {
+      color: #a6a6a6;
+    }
     .tdChanged {
       .tdInner {
         background-color: var(--red-color);
@@ -281,6 +284,7 @@ $heightCell: 150px;
         padding: 5px 0px;
         color: #fff;
       }
+
       .tdInner:hover {
         background-color: var(--red-color);
       }

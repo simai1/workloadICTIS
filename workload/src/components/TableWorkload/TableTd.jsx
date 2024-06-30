@@ -25,6 +25,10 @@ function TableTd(props) {
       props.itemKey.key === "audienceHours"
     ) {
       return onTextArea;
+    } else if (
+      appData.metodRole[appData.myProfile?.role]?.some((el) => el === 8.1)
+    ) {
+      return onTextArea;
     }
   };
 
@@ -131,6 +135,9 @@ function TableTd(props) {
     let text = styles.tdInner;
     if (showFullText && props.item[props.itemKey.key]?.length > lenSlice) {
       text = `${text} ${styles.gettdInner}`;
+    }
+    if (props.item.isSplitArrow === true) {
+      text = `${text} ${styles.tdInnerIsSplitArrow}`;
     }
     return text;
   };

@@ -20,6 +20,7 @@ export function SubMenu(props) {
     let updatedData = [...basicTabData.workloadDataFix];
     const funData = splitWorkloadCount(updatedData, tabPar.selectedTr, count);
     basicTabData.setWorkloadDataFix(funData.updatedData);
+    console.log(funData.blocked);
     tabPar.setChangedData(
       addСhangedData(tabPar.changedData, "split", funData.blocked)
     );

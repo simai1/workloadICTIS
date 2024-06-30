@@ -57,9 +57,15 @@ function InputCheckbox(props) {
             props.workload?.isSplit === true && (
               <div className={styles.isSplit}>
                 <span>Разделенная</span>
-                {props.workload?.isSplitArrow === true && (
-                  <img src="img/Arrow.svg" alt=">" />
-                )}
+              </div>
+            )
+          }
+          {
+            //! после резделения или обьединения исходную помечаем
+            props.workload?.isSplitArrow === true && (
+              <div className={styles.isSplit}>
+                <span>Исходная</span>
+                <img src="img/Arrow.svg" alt=">" />
               </div>
             )
           }

@@ -20,7 +20,7 @@ export function upDateEducators(data, ItemSelectedTr, name) {
 }
 
 export function splitWorkloadCount(data, selectedTr, count) {
-  const updatedData = [...data];
+  let updatedData = [...data];
   const newIds = [];
   const blocked = [];
   const newState = [];
@@ -30,21 +30,49 @@ export function splitWorkloadCount(data, selectedTr, count) {
       const workload = updatedData[workloadIndex];
       const studentsPerGroup = Math.floor(workload.numberOfStudents / count);
       const remainder = workload.numberOfStudents % count;
-      updatedData.splice(workloadIndex, 1);
+      // updatedData.splice(workloadIndex, 1);
+      // updatedData[workloadIndex] = { ...workload, id: workload.id + "0" };
+
+      blocked.push(workload.id + "0");
+      newIds.push(workload.id + "0");
+      const origDat = {
+        ...workload,
+        id: workload.id + 0,
+        isSplit: false,
+        isSplitArrow: true,
+        isMerged: false,
+      };
+      newState.push(origDat);
+      //! расчитаем рейтинг контроль
+
+      let newValue = [];
       for (let i = 0; i < count; i++) {
+        const rch =
+          workload?.audienceHours *
+          (studentsPerGroup + (i < remainder ? 1 : 0)) *
+          0.01;
         const newWorkload = {
           ...workload,
           numberOfStudents: studentsPerGroup + (i < remainder ? 1 : 0),
           educator: null,
-          id: `${workload.id}${i}`,
+          id: `${workload.id}${i + 1}`,
           isMerged: false,
           isSplit: true,
+          ratingControlHours: rch,
+          hours: (rch + workload?.audienceHours).toFixed(2),
         };
+        newValue.push(newWorkload);
         newState.push(newWorkload);
-        updatedData.splice(workloadIndex + i, 0, newWorkload);
         newIds.push(newWorkload.id);
         blocked.push(newWorkload.id);
       }
+
+      updatedData = [
+        ...updatedData.slice(0, workloadIndex),
+        origDat,
+        ...newValue,
+        ...updatedData.slice(workloadIndex + 1),
+      ];
     }
   }
   return { updatedData, newIds, blocked, newState };
@@ -81,6 +109,9 @@ export function combineData(data, selectedTr) {
         ...upData[index],
         groups,
         numberOfStudents: sumOfStudents,
+        isSplit: false,
+        isMerged: true,
+        educator: "___",
       };
       newState = updatedObject;
       const newUpdatedData = [

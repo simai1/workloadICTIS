@@ -1,4 +1,6 @@
-// @import "./../../styles/mixins.scss";
+@import "./../../../style/colors.scss";
+@import "./../../../style/mixin.scss";
+
 @mixin Button(
   $paddingTB: 10px,
   $paddingLR: 20px,
@@ -43,6 +45,7 @@
 }
 
 .Popup {
+  box-sizing: border-box;
   position: absolute;
   width: 100vw;
   height: 100vh;
@@ -50,15 +53,88 @@
   justify-content: center;
   align-items: center;
   z-index: 200;
+  .box_scroll {
+    height: 60vh;
+    box-sizing: border-box;
+    overflow: auto;
+    @include scrollStyle(8px, 8px);
+    padding-right: 20px;
+  }
   .PopupBody {
+    box-sizing: border-box;
+    position: relative;
+    box-sizing: border-box;
     display: flex;
+    flex-direction: column;
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 30px;
+    margin-top: 15px;
+
+    .list {
+      position: absolute;
+      background-color: #fff;
+      width: 100%;
+      border: 1px solid #b0b0b0;
+      border-radius: 8px;
+      top: 3px;
+      left: 0;
+      max-height: 250px;
+      padding: 10px;
+      box-sizing: border-box;
+      z-index: 10;
+
+      ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: auto;
+        max-height: 230px;
+
+        li {
+          padding: 2px 16px;
+          width: 80%;
+          border-radius: 8px;
+          margin: 12px;
+          &:hover {
+            background-color: #e3e3e3;
+          }
+        }
+      }
+    }
+
     .left {
-      width: 200px;
+      position: absolute;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      top: -2px;
+      left: 10px;
       margin-right: 20px;
       padding-bottom: 10px;
+      background-color: #fff;
+      height: 4px;
+      padding: 4px 8px;
+      border-radius: 8px;
+      font-weight: 600;
     }
     .rigth {
-      width: 200px;
+      color: #b0b0b0;
+      @include input-text(400px, 8px);
+    }
+    &:hover {
+      .rigth {
+        background-color: #f3f3f3;
+        transition: all 0.2s ease;
+        cursor: pointer;
+      }
+      .left {
+        font-size: 18px;
+        background-color: #f3f3f3;
+
+        transition: all 0.2s ease;
+      }
     }
   }
   .PopupBack {
