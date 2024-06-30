@@ -215,6 +215,18 @@ export const splitWorkload = async (data) => {
   }
 };
 
+//! запрос на разделение нагрузки по часам
+export const apiSplitByHours = async (data) => {
+  console.log("Разделение нагрузки по часам ", data);
+  try {
+    const response = await http.post(`${server}/workload/splitByHours`, data);
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};
+
 //! запрос на соединение нагрузки
 export const joinWorkloads = async (data) => {
   console.log("Соединение нагрузки ", data);

@@ -26,6 +26,7 @@ function SplitByHoursMenu(props) {
       hours: prev.hours,
       audienceHours: prev.audienceHours,
       ratingControlHours: prev.ratingControlHours,
+      numberOfStudents: prev.numberOfStudents,
     };
     tabPar.setTableDataHoursPopup(origHours);
     tabPar.setBuffDataHoursPopup((el) => ({

@@ -4,6 +4,7 @@ import DataContext from "../../../context";
 import styles from "./../TableWorkload.module.scss";
 import React from "react";
 import {
+  apiSplitByHours,
   deleteWorkload,
   joinWorkloads,
   splitWorkload,
@@ -223,7 +224,40 @@ function OverlapWindow(props) {
         );
       });
     } else if (props.getConfirmation.type === 4) {
+      //! подтверждение разделения по часам
       console.log("жду бэк", props.getConfirmation);
+      const obj = props.getConfirmation.data;
+      // собираем данные для запроса
+      const data = {
+        workloadId: obj.workloadId,
+        workloadsData: obj.data.hoursData,
+      };
+      // запрос на разделение
+      apiSplitByHours(data).then((req) => {
+        console.log(req);
+        if (req?.status === 200) {
+          //! убираем обьект из буффера
+          appData.setBufferAction(
+            deleteItemBuffer(
+              [...appData.bufferAction],
+              props.itid,
+              "splitByHours"
+            ).buffer
+          );
+          //! убираем из блокированных
+          let changed = { ...tabPar.changedData };
+          changed.split = changed.split.filter(
+            (item) => item.slice(0, -1) !== props.itid.slice(0, -1)
+          );
+          tabPar.setChangedData(changed);
+          //! обновляем таблицу
+          basicTabData.funUpdateTable(
+            basicTabData.tableDepartment.find(
+              (el) => el.name === basicTabData.nameKaf
+            )?.id
+          );
+        }
+      });
     }
   };
 
