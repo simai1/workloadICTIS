@@ -1,4 +1,4 @@
-import { AppErrorForbiddenAction, AppErrorInvalid, AppErrorMissing, AppErrorNotExist } from '../utils/errors.js';
+import { AppErrorInvalid, AppErrorMissing, AppErrorNotExist } from '../utils/errors.js';
 // eslint-disable-next-line import/no-duplicates
 import departments from '../config/departments.js';
 import Workload from '../models/workload.js';
@@ -210,74 +210,172 @@ export default {
         res.json(workloadsDto);
     },
 
-    async splitRow({ body: { ids, n }, user }, res) {
-        if (!ids || !Array.isArray(ids) || ids.length === 0) {
-            throw new Error('Укажите идентификаторы нагрузок для разделения');
-        }
-        if (!n || isNaN(n) || n < 1) {
-            throw new Error('Укажите количество групп для разделения нагрузки');
-        }
-        if (n > 4) {
-            throw new Error('Максимальное количество групп для разделения нагрузки - 4');
-        }
-
-        // Проверяем существование всех нагрузок
-        const existingWorkloads = await Workload.findAll({ where: { id: ids } });
-
-        for (const workload of existingWorkloads) {
-            if (workload.isSplit) throw new AppErrorForbiddenAction();
-        }
-
-        if (existingWorkloads.length !== ids.length) {
-            const existingIds = existingWorkloads.map(workload => workload.id);
-            const nonExistingIds = ids.filter(id => !existingIds.includes(id));
-            res.status(404).json({ error: `Нагрузки с идентификаторами ${nonExistingIds.join(', ')} не найдены` });
-            return;
-        }
-
-        // Разделяем нагрузки
-        const newWorkloads = [];
-        for (const workload of existingWorkloads) {
-            const studentsCount = workload.numberOfStudents;
-            const studentsPerGroup = Math.floor(studentsCount / n);
-            const remainder = studentsCount % n;
-            // Создаем и сохраняем новые нагрузки в базу данных
-            for (let i = 0; i < n; i++) {
-                const copyWorkload = {
-                    ...workload.get(),
-                    isMerged: false,
-                };
-                copyWorkload.isSplit = true;
-                copyWorkload.originalId = workload.id;
-                delete copyWorkload.id;
-                delete copyWorkload.educatorId;
-                delete copyWorkload.EducatorId;
-                // Распределение студентов между группами
-                if (i < remainder) {
-                    // Если индекс группы меньше остатка, добавляем по одному студенту
-                    copyWorkload.numberOfStudents = studentsPerGroup + 1;
-                } else {
-                    // В остальных случаях добавляем студентов равномерно
-                    copyWorkload.numberOfStudents = studentsPerGroup;
-                }
-
-                const newWorkload = await Workload.create(copyWorkload);
-                newWorkloads.push(newWorkload);
-            }
-
-            // Удаляем изначальную нагрузку
-            await workload.destroy();
-        }
+    async splitByHours({ body: { workloadId, workloadsData } }, res) {
+        if (!workloadId) throw new AppErrorMissing('workloadId');
+        if (!workloadsData) throw new AppErrorMissing('workloadsData');
+        const originalWorkload = await Workload.findByPk(workloadId);
+        const newWorkloadsData = [];
+        workloadsData.map(w =>
+            newWorkloadsData.push({
+                department: originalWorkload.department,
+                discipline: originalWorkload.discipline,
+                workload: originalWorkload.workload,
+                groups: originalWorkload.groups,
+                block: originalWorkload.block,
+                semester: originalWorkload.semester,
+                period: originalWorkload.period,
+                curriculum: originalWorkload.curriculum,
+                curriculumUnit: originalWorkload.curriculumUnit,
+                formOfEducation: originalWorkload.formOfEducation,
+                levelOfTraining: originalWorkload.levelOfTraining,
+                specialty: originalWorkload.specialty,
+                core: originalWorkload.core,
+                numberOfStudents: w.numberOfStudents,
+                hours: w.hours,
+                audienceHours: w.audienceHours,
+                ratingControlHours: w.ratingControlHours,
+                comment: w.comment ? w.comment : null,
+                isSplit: true,
+                originalId: originalWorkload.id,
+                educatorId: null,
+                isOid: originalWorkload.isOid,
+            })
+        );
+        const newWorkloads = await Workload.bulkCreate(newWorkloadsData);
+        await originalWorkload.destroy();
+        const workloadsDto = [];
+        newWorkloads.map(w => workloadsDto.push(new WorkloadDto(w)));
 
         await History.create({
             type: 1,
-            department: existingWorkloads[0].department,
-            before: getIds(existingWorkloads),
+            department: originalWorkload.department,
+            before: getIds([originalWorkload]),
             after: getIds(newWorkloads),
         });
 
         res.json(newWorkloads);
     },
+
+    async splitBySubgroups({ body: { workloads } }, res) {
+        if (!workloads) throw new AppErrorMissing('workloads');
+        let workloadId, workloadsData, originalWorkload;
+        const newWorkloadsData = [];
+        const ids = [];
+        for (const workload of workloads) {
+            workloadId = workload.workloadId;
+            workloadsData = workload.workloadsData;
+            if (!workloadId) throw new AppErrorMissing('workloadId');
+            if (!workloadsData) throw new AppErrorMissing('workloadsData');
+            ids.push(workloadId);
+            originalWorkload = await Workload.findByPk(workloadId);
+            workloadsData.map(w =>
+                newWorkloadsData.push({
+                    department: originalWorkload.department,
+                    discipline: originalWorkload.discipline,
+                    workload: originalWorkload.workload,
+                    groups: originalWorkload.groups,
+                    block: originalWorkload.block,
+                    semester: originalWorkload.semester,
+                    period: originalWorkload.period,
+                    curriculum: originalWorkload.curriculum,
+                    curriculumUnit: originalWorkload.curriculumUnit,
+                    formOfEducation: originalWorkload.formOfEducation,
+                    levelOfTraining: originalWorkload.levelOfTraining,
+                    specialty: originalWorkload.specialty,
+                    core: originalWorkload.core,
+                    numberOfStudents: w.numberOfStudents,
+                    hours: w.hours,
+                    audienceHours: w.audienceHours,
+                    ratingControlHours: w.ratingControlHours,
+                    comment: w.comment ? w.comment : null,
+                    isSplit: true,
+                    originalId: originalWorkload.id,
+                    educatorId: null,
+                    isOid: originalWorkload.isOid,
+                })
+            );
+        }
+        const newWorkloads = await Workload.bulkCreate(newWorkloadsData);
+        const workloadsDto = [];
+        newWorkloads.map(w => workloadsDto.push(new WorkloadDto(w)));
+
+        await History.create({
+            type: 1,
+            department: originalWorkload.department,
+            before: ids,
+            after: getIds(newWorkloads),
+        });
+
+        res.json(workloadsDto);
+    },
+
+    // async splitBySubgroups({ body: { ids, n }, user }, res) {
+    //     if (!ids || !Array.isArray(ids) || ids.length === 0) {
+    //         throw new Error('Укажите идентификаторы нагрузок для разделения');
+    //     }
+    //     if (!n || isNaN(n) || n < 1) {
+    //         throw new Error('Укажите количество групп для разделения нагрузки');
+    //     }
+    //     if (n > 4) {
+    //         throw new Error('Максимальное количество групп для разделения нагрузки - 4');
+    //     }
+    //
+    //     const existingWorkloads = await Workload.findAll({ where: { id: ids } });
+    //
+    //     for (const workload of existingWorkloads) {
+    //         if (workload.isSplit) throw new AppErrorForbiddenAction();
+    //     }
+    //
+    //     if (existingWorkloads.length !== ids.length) {
+    //         const existingIds = existingWorkloads.map(workload => workload.id);
+    //         const nonExistingIds = ids.filter(id => !existingIds.includes(id));
+    //         res.status(404).json({ error: `Нагрузки с идентификаторами ${nonExistingIds.join(', ')} не найдены` });
+    //         return;
+    //     }
+    //
+    //     // Разделяем нагрузки
+    //     const newWorkloads = [];
+    //     for (const workload of existingWorkloads) {
+    //         const studentsCount = workload.numberOfStudents;
+    //         const studentsPerGroup = Math.floor(studentsCount / n);
+    //         const remainder = studentsCount % n;
+    //         // Создаем и сохраняем новые нагрузки в базу данных
+    //         for (let i = 0; i < n; i++) {
+    //             const copyWorkload = {
+    //                 ...workload.get(),
+    //                 isMerged: false,
+    //             };
+    //             copyWorkload.isSplit = true;
+    //             copyWorkload.originalId = workload.id;
+    //             delete copyWorkload.id;
+    //             delete copyWorkload.educatorId;
+    //             delete copyWorkload.EducatorId;
+    //             // Распределение студентов между группами
+    //             if (i < remainder) {
+    //                 // Если индекс группы меньше остатка, добавляем по одному студенту
+    //                 copyWorkload.numberOfStudents = studentsPerGroup + 1;
+    //             } else {
+    //                 // В остальных случаях добавляем студентов равномерно
+    //                 copyWorkload.numberOfStudents = studentsPerGroup;
+    //             }
+    //
+    //             const newWorkload = await Workload.create(copyWorkload);
+    //             newWorkloads.push(newWorkload);
+    //         }
+    //
+    //         // Удаляем изначальную нагрузку
+    //         await workload.destroy();
+    //     }
+    //
+    //     await History.create({
+    //         type: 1,
+    //         department: existingWorkloads[0].department,
+    //         before: getIds(existingWorkloads),
+    //         after: getIds(newWorkloads),
+    //     });
+    //
+    //     res.json(newWorkloads);
+    // },
 
     // Получение нагрузки
     async getOne({ params: { id } }, res) {
@@ -328,7 +426,7 @@ export default {
         if (checkWorkloads.some(workload => !workload)) throw new AppErrorNotExist('workload');
 
         checkWorkloads.reduce((chain, workload) => {
-            return chain.then(() => workload.update({ educatorId } ));
+            return chain.then(() => workload.update({ educatorId }));
         }, Promise.resolve());
 
         const historyData = [];
@@ -355,7 +453,7 @@ export default {
         // await Workload.update({ educatorId: null }, {where: {id: workloadIds}});
 
         workloads.reduce((chain, workload) => {
-            return chain.then(() => workload.update({ educatorId: null } ));
+            return chain.then(() => workload.update({ educatorId: null }));
         }, Promise.resolve());
 
         let remainingWorkloads;
@@ -483,6 +581,7 @@ export default {
 
         res.status(200).json('Successfully deleted');
     },
+
     async deleteSeveralWorkloads({ body: { ids } }, res) {
         if (!ids || !Array.isArray(ids) || ids.length === 0) {
             throw new Error('Укажите идентификаторы нагрузок для удаления');
@@ -652,6 +751,7 @@ export default {
         }
         res.json(usableDepartments);
     },
+
     async changeColorWorkload(req, res) {},
 
     async blockWorkload({ params: { department } }, res) {
@@ -740,6 +840,7 @@ export default {
         }
         res.json(filteredDepartments);
     },
+
     async checkHoursByAllEducators(req, res) {
         const educators = await Educator.findAll({
             include: { model: Workload },
@@ -807,12 +908,12 @@ export default {
         }
         res.json({ status: 'OK' });
     },
-    
+
     async checkHoursEducators() {
         const educators = await Educator.findAll({
             include: { model: Workload },
         });
-        console.log(educators.length)
+        console.log(educators.length);
         const educatorsWithCleanedWorkloads = educators.map(educator => ({
             ...educator.dataValues,
             Workloads: educator.Workloads.map(workload => workload.dataValues),
@@ -875,5 +976,4 @@ export default {
             }
         }
     },
-
 };
