@@ -299,12 +299,23 @@ export default {
         const workloadsDto = [];
         newWorkloads.map(w => workloadsDto.push(new WorkloadDto(w)));
 
-        await History.create({
-            type: 1,
-            department: originalWorkload.department,
-            before: ids,
-            after: getIds(newWorkloads),
-        });
+        let after;
+        for (const id of ids){
+            after = newWorkloads.filter(w => w.originalId === id);
+            await History.create({
+                type: 1,
+                department: after[0].department,
+                before: [id, ],
+                after: getIds(after),
+            });
+        }
+
+        // ids.forEach(async id => await History.create({
+        //     type: 1,
+        //     department: originalWorkload.department,
+        //     before: [id,],
+        //     after: getIds(newWorkloads),
+        // }));
 
         res.json(workloadsDto);
     },
