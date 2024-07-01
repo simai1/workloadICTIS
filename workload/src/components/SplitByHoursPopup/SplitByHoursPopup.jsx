@@ -9,7 +9,11 @@ function SplitByHoursPopup() {
   //! вводим в инпут часы и записываем в состояние
   const changeHours = (e, index) => {
     let prevVal = [...tabPar.inputEditValue];
-    prevVal[index] = Number(e.target.value) ? Number(e.target.value) : "";
+    prevVal[index] = Number(e.target.value)
+      ? Number(e.target.value)
+      : e.target.value === "0"
+      ? 0
+      : "";
     tabPar.setInputEditValue(prevVal);
   };
 
@@ -31,6 +35,7 @@ function SplitByHoursPopup() {
         id: updatedData[indexWorkload].id + (i + 1),
         isMerged: false,
         isSplit: true,
+        educator: "___",
       };
       newValue.push(origHours);
     }

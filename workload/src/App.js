@@ -86,7 +86,7 @@ function App() {
   const [createEdicatorPopUp, setcreateEdicatorPopUp] = useState(false); //popUp error visible
   const [selectedComponent, setSelectedComponent] = useState("Disciplines");
   const [loaderAction, setLoaderAction] = useState(false);
-
+  const [universalPopupTitle, setUniversalPopupTitle] = useState(""); // если он не пустой, то открывается универсальный попап с данным title
   const appData = {
     individualCheckboxes,
     setIndividualCheckboxes,
@@ -119,6 +119,8 @@ function App() {
     setMyProfile,
     WhyColor,
     funSaveAllData,
+    universalPopupTitle,
+    setUniversalPopupTitle,
   };
 
   useEffect(() => {

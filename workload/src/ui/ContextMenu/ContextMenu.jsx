@@ -12,17 +12,13 @@ import {
 } from "../../api/services/ApiRequest";
 import { Highlight } from "./Menu/Highlight";
 import MenuPop from "./Menu/MenuPop";
-import {
-  combineData,
-  splitWorkloadCount,
-  addСhangedData,
-  upDateEducators,
-} from "./Function";
+import { combineData, addСhangedData, upDateEducators } from "./Function";
 import CommentsMenu from "./Menu/CommentsMenu";
 import PopupOffer from "./Menu/PopupOffer";
 import SplitByHoursMenu from "./Menu/SplitByHoursMenu";
+import { UniversalPopup } from "../UniversalPopup/UniversalPopup";
 
-const ContextMenu = (props) => {
+const ContextMenu = () => {
   const { appData, tabPar, basicTabData } = React.useContext(DataContext);
   const [menuShow, setMenuShow] = useState("");
   //! функция которая открывает попап подтверждения отправки предложения
@@ -42,6 +38,15 @@ const ContextMenu = (props) => {
 
   const splitByHoursFun = () => {
     setMenuShow(menuShow === "splitByHoursMenu" ? "" : "splitByHoursMenu");
+    if (
+      basicTabData.workloadDataFix.find(
+        (item) => item.id === tabPar.selectedTr[0]
+      ).audienceHours === 0
+    ) {
+      appData.setUniversalPopupTitle(
+        "Внимание, аудиторные часы равняются нулю!"
+      );
+    }
   };
 
   //! нажатие на добавить преподавателя
@@ -311,15 +316,14 @@ const ContextMenu = (props) => {
             img={true}
           />
         )}
-        {appData.metodRole[appData.myProfile?.role]?.some(
-          (el) => el === 10
-        ) && new Set(tabPar.selectedTr).size < 10 &&(
-          <MenuPop
-            btnText={"Удалить преподавателя"}
-            func={removeEducator}
-            img={false}
-          />
-        )}
+        {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 10) &&
+          new Set(tabPar.selectedTr).size < 10 && (
+            <MenuPop
+              btnText={"Удалить преподавателя"}
+              func={removeEducator}
+              img={false}
+            />
+          )}
         <MenuPop btnText={"Закрепить"} func={pinaCell} img={false} />
         <MenuPop btnText={"Открепить"} func={unPinaCell} img={false} />
         {appData.metodRole[appData.myProfile?.role]?.some(
@@ -421,6 +425,7 @@ const ContextMenu = (props) => {
       {menuShow === "splitByHoursMenu" && (
         <SplitByHoursMenu styles={styles} setMenuShow={setMenuShow} />
       )}
+      {appData.universalPopupTitle !== "" && <UniversalPopup />}
     </div>
   );
 };
