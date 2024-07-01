@@ -1,12 +1,22 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./Popup.module.scss";
 import { roles, tableHeaderPopup } from "../AdminData";
-import { apiAdminUpdata } from "../../../api/services/ApiRequest";
+import { GetAllDepartments, apiAdminUpdata } from "../../../api/services/ApiRequest";
+import DataContext from "../../../context";
 function Popup(props) {
   const [popupData, setPopupData] = useState({ ...props.data });
   const [listData, setListData] = useState([]);
   const [listShow, setListShow] = useState("");
-
+  const {basicTabData } = React.useContext(DataContext);
+  const [department, setDepartment] = useState([])
+  useEffect(()=>{
+    GetAllDepartments().then((resp)=>{
+      if(resp.status == 200){
+        setDepartment(resp.data);
+        console.log("department", department)
+      }
+    })
+  },[])
   //! при клике на инпут внрути попапа
   const inpClick = (key) => {
     if (listShow === key) {
@@ -17,9 +27,16 @@ function Popup(props) {
         setListShow(key);
         setListData(Object.keys(roles));
       }
+      if (key === "department") {
+        setListShow(key);
+        setListData(department.map((el)=> el.name));
+      }
     }
     if (key === "role") {
-      setListData(Object.keys(roles));
+      setListData(Object.keys(roles)); 
+    }
+    if (key === "department") {
+      setListData(department.map((el)=> el.name));
     }
   };
 
@@ -39,12 +56,19 @@ function Popup(props) {
           setPopupData(dat);
         }
       });
+    }else if(key === 'department'){
+      // const data = {
+      //   id: popupData.id,
+      //   key: key,
+      //   value: Object.keys(department?.name).findIndex((e) => e === value) + 1,
+      // };
     }
 
     //  apiAdminUpdata
   };
 
   return (
+    <>
     <div className={styles.Popup}>
       <div className={styles.PopupBox}>
         <div className={styles.box_scroll}>
@@ -83,6 +107,7 @@ function Popup(props) {
       </div>
       <div className={styles.PopupBack}></div>
     </div>
+    </>
   );
 }
 
