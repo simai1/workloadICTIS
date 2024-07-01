@@ -76,7 +76,7 @@ export function SamplePoints(props) {
 
   //! при нажатии на Input
   const onChecked = (el) => {
-    let checked = [...checkPar.isChecked];
+    let checked = [...checkPar.isChecked]; // основной массив 
     if (checked.some((item) => item.value === el)) {
       checked = checked.filter((item) => item.value !== el);
     } else {
@@ -99,9 +99,22 @@ export function SamplePoints(props) {
     console.log("checkPar.isChecked", checkPar.isChecked);
   };
 
+  useEffect(()=>{
+    console.log("вот я да")
+  },[])
+
   return (
     <main className={styles.SamplePoints} ref={spRef}>
+    
       <div className={styles.container}>
+        {/* <div className={styles.sorted}>
+          <button>В</button>
+          <button>У</button>
+          <button>А</button>
+        </div> */}
+      <div>
+
+     
         <input
           className={styles.search}
           type="text"
@@ -139,6 +152,7 @@ export function SamplePoints(props) {
             );
           })}
         </div>
+      </div>
       </div>
     </main>
   );

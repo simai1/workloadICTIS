@@ -1,3 +1,6 @@
+@import "./../../style/colors.scss";
+@import "./../../style/mixin.scss";
+
 .SamplePoints {
   position: absolute;
   top: 110px;
@@ -56,4 +59,36 @@
     border-radius: 5px;
     border: 3px solid #a6a6a6;
   }
+  .container{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    .sorted{
+      background-color: #fff;
+      position: absolute;
+      top: -50px;
+      border-radius: 8px 8px 0px 0px;
+      height: 35px;
+      width: 100%;
+      border: 1px solid #000;
+      button{
+        margin: 2.5px 4px;
+        border: none;
+        border: 1px solid #000;
+        background-color: #fff;
+        border-radius: 4px;
+        padding: 4px 8px;
+        &:hover{
+          background-color: var(--blue-color);
+          color: #fff;
+        }
+        &:focus{
+          background-color: var(--blue-color);
+          color: #fff;
+          
+        }
+      }
+    }
+  }
+ 
 }

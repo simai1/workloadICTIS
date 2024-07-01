@@ -313,7 +313,7 @@ const ContextMenu = (props) => {
         )}
         {appData.metodRole[appData.myProfile?.role]?.some(
           (el) => el === 10
-        ) && (
+        ) && new Set(tabPar.selectedTr).size < 10 &&(
           <MenuPop
             btnText={"Удалить преподавателя"}
             func={removeEducator}
