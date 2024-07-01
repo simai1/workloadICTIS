@@ -40,7 +40,7 @@ import * as XLSX from "xlsx";
 import SplitByHoursPopup from "../../components/SplitByHoursPopup/SplitByHoursPopup";
 
 function HomePage() {
-  const { appData, tabPar, visibleDataPar, basicTabData } =
+  const { appData, tabPar, visibleDataPar, basicTabData, checkPar } =
     React.useContext(DataContext);
   //! заголовки таблиц
   const workloadTableHeaders = headers; // заголовок таблицы на главной странице
@@ -328,7 +328,7 @@ function HomePage() {
       `Экспорт_Таблицы_${nameDepartment}_${formattedDate}.xlsx`
     );
   };
-
+  
   useEffect(() => {
     setBlockTable(checkBlocked);
   }, [
@@ -497,6 +497,7 @@ function HomePage() {
                 <img src="./img/search.svg"></img>
               </div>
             </div>
+           
             <div className={styles.header_button}>
               <Button
                 Bg={

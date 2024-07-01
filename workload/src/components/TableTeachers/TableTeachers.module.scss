@@ -277,4 +277,35 @@
       top: 0;
     }
   }
+  .filterdClear{
+    position: relative;
+    left: -30px;
+    top: 65px;
+    img{
+      &:hover{
+        opacity: 0.6;
+        cursor: pointer; 
+      }
+    }
+    .BlockTextFilter{
+      .textFilter{
+        position: absolute;
+        left: 0px;
+        top:25px;
+        z-index: 9999;
+        border-radius: 8px;
+        width: 181px;
+        padding: 12px 16px;
+        background-color: #fff;
+        box-shadow: 5px 0px 15px #b3b0b0;
+      }
+      .triangle{
+        @include triangle();
+        left: 0px;
+        top: 25px;
+        z-index: 99999;
+      }
+    
+    }
+  }
 }

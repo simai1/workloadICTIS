@@ -198,9 +198,9 @@ function App() {
     audienceHours: [],
   };
   // храним id и ключь измененных td для подсвечивания
-  const [changedData, setChangedData] = useState(changedDataObj);
-  const [isChecked, setIsChecked] = useState([]); // состояние инпутов в SamplePoints
-  const [isAllChecked, setAllChecked] = useState([]); // инпут все в SamplePoints
+  const [changedData, setChangedData] = useState(changedDataObj); 
+  const [isChecked, setIsChecked] = useState([]); // состояние инпутов в SamplePoints //! сбросить
+  const [isAllChecked, setAllChecked] = useState([]); // инпут все в SamplePoints //! сбросить
   const checkPar = {
     isChecked,
     setIsChecked,
