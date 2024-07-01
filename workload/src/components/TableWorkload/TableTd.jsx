@@ -86,6 +86,7 @@ function TableTd(props) {
         ...appData.bufferAction,
       ]);
       let cd = { ...tabPar.changedData };
+      console.log("props.itemKey.key", cd);
       cd[props.itemKey.key] = [...cd[props.itemKey.key], props.item.id];
       tabPar.setChangedData(cd);
       setOnTextArea(false);

@@ -4,6 +4,7 @@ import DataContext from "../../../context";
 import styles from "./../TableWorkload.module.scss";
 import React from "react";
 import {
+  apiSplitByHours,
   deleteWorkload,
   joinWorkloads,
   splitWorkload,
@@ -172,28 +173,38 @@ function OverlapWindow(props) {
         changed.deleted = changed.deleted.filter((item) => item !== props.itid);
         tabPar.setChangedData(changed);
       });
-    }
-    // разделяем нагрузку
-    else if (props.getConfirmation.type === 2) {
-      splitWorkload(props.getConfirmation.data.data).then(() => {
-        appData.setBufferAction(
-          deleteItemBuffer(
-            [...appData.bufferAction],
-            props.itid,
-            "splitWorkload"
-          ).buffer
-        );
-        let changed = { ...tabPar.changedData };
-        changed.split = changed.split.filter(
-          (item) => item.slice(0, -1) !== props.itid.slice(0, -1)
-        );
-        tabPar.setChangedData(changed);
+    } else if (props.getConfirmation.type === 2) {
+      //! подтверждение разделить нагрузку по подгруппам
+      console.log("props.getConfirmation", props.getConfirmation);
+      // собираем данные для запроса
+      const obj = props.getConfirmation.data;
+      const data = {
+        workloads: obj.hoursData,
+      };
 
-        basicTabData.funUpdateTable(
-          basicTabData.tableDepartment.find(
-            (el) => el.name === basicTabData.nameKaf
-          )?.id
-        );
+      splitWorkload(data).then((req) => {
+        // убираем из буфера
+        if (req?.status === 200) {
+          appData.setBufferAction(
+            deleteItemBuffer(
+              [...appData.bufferAction],
+              props.itid,
+              "splitWorkload"
+            ).buffer
+          );
+          // убираем из блокированных
+          let changed = { ...tabPar.changedData };
+          changed.split = changed.split.filter(
+            (item) => item.slice(0, -1) !== props.itid.slice(0, -1)
+          );
+          tabPar.setChangedData(changed);
+          // обновляем таблицу согласно кафедре
+          basicTabData.funUpdateTable(
+            basicTabData.tableDepartment.find(
+              (el) => el.name === basicTabData.nameKaf
+            )?.id
+          );
+        }
       });
     } else if (props.getConfirmation.type === 3) {
       joinWorkloads(props.getConfirmation.data.data).then((res) => {
@@ -223,7 +234,39 @@ function OverlapWindow(props) {
         );
       });
     } else if (props.getConfirmation.type === 4) {
-      console.log("жду бэк", props.getConfirmation);
+      //! подтверждение разделения по часам
+      const obj = props.getConfirmation.data;
+      // собираем данные для запроса
+      const data = {
+        workloadId: obj.workloadId,
+        workloadsData: obj.data.hoursData,
+      };
+      // запрос на разделение
+      apiSplitByHours(data).then((req) => {
+        console.log(req);
+        if (req?.status === 200) {
+          //! убираем обьект из буффера
+          appData.setBufferAction(
+            deleteItemBuffer(
+              [...appData.bufferAction],
+              props.itid,
+              "splitByHours"
+            ).buffer
+          );
+          //! убираем из блокированных
+          let changed = { ...tabPar.changedData };
+          changed.split = changed.split.filter(
+            (item) => item.slice(0, -1) !== props.itid.slice(0, -1)
+          );
+          tabPar.setChangedData(changed);
+          //! обновляем таблицу
+          basicTabData.funUpdateTable(
+            basicTabData.tableDepartment.find(
+              (el) => el.name === basicTabData.nameKaf
+            )?.id
+          );
+        }
+      });
     }
   };
 

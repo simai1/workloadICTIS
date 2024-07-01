@@ -71,8 +71,10 @@ function SplitByHoursPopup() {
     // tabPar.setContextMenuShow(false);
     //! расчитаем часы для буффера
     let hoursData = [];
+    console.log(tabPar.tableDataHoursPopup);
     for (let i = 0; i < Number(tabPar.inpValueHoursPopup); i++) {
       const origHours = {
+        numberOfStudents: tabPar.tableDataHoursPopup?.numberOfStudents,
         hours: Number(funCalculationHours(i)),
         audienceHours: tabPar.inputEditValue[i],
         ratingControlHours: Number(funCalculationRatingControlHours(i)),
@@ -106,9 +108,9 @@ function SplitByHoursPopup() {
     tabPar.setPopupShareShow(false);
   };
 
-  //   useEffect(() => {
-  //     console.log("tabPar.buffDataHoursPopup", tabPar.buffDataHoursPopup);
-  //   }, [tabPar.buffDataHoursPopup, tabPar.changedData]);
+  // React.useEffect(() => {
+  //   console.log("tabPar.buffDataHoursPopup", tabPar.buffDataHoursPopup);
+  // }, [tabPar.buffDataHoursPopup, tabPar.changedData]);
 
   //! функция расчета часов
   const funCalculationHours = (index) => {
