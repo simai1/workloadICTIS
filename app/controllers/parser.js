@@ -91,7 +91,8 @@ export default {
                 console.log(e);
             }
         }
-        await workloadController.checkHoursEducators();
+        // 504 долго работает запрос (слишком много всего)
+        // await workloadController.checkHoursEducators();
         
         try {
             fs.unlinkSync(req.file.path); // Синхронное удаление файла
