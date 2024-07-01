@@ -93,18 +93,26 @@ export function splitWorkloadCount(data, selectedTr, count) {
   return { updatedData, newIds, blocked, newState, hoursData };
 }
 
-export function combineData(data, selectedTr) {
+export function combineData(data, selectedTr, action = "") {
   let newState = null;
   const prevState = data.filter((item) =>
     Object.values(selectedTr).includes(item.id)
   );
   if (
-    prevState.every(
-      (item) =>
-        item.workload === prevState[0].workload &&
-        item.discipline === prevState[0].discipline &&
-        item.hours === prevState[0].hours
-    )
+    (action === "g" &&
+      prevState.every(
+        (item) =>
+          item.workload === prevState[0].workload &&
+          item.discipline === prevState[0].discipline &&
+          item.audienceHours === prevState[0].audienceHours
+      )) ||
+    (action === "h" &&
+      prevState.every(
+        (item) =>
+          item.workload === prevState[0].workload &&
+          item.discipline === prevState[0].discipline &&
+          item.numberOfStudents === prevState[0].numberOfStudents
+      ))
   ) {
     const sumOfStudents = prevState.reduce(
       (total, el) => total + el.numberOfStudents,
@@ -116,22 +124,40 @@ export function combineData(data, selectedTr) {
       }
       return total;
     }, "");
+
     const individualCB = Object.values(selectedTr).slice(1);
     const upData = data.filter((item) => !individualCB.includes(item.id));
     const index = upData.findIndex((item) => item.id === selectedTr[0]);
     if (index !== -1) {
-      const updatedObject = {
-        ...upData[index],
-        groups,
-        numberOfStudents: sumOfStudents,
-        isSplit: false,
-        isMerged: true,
-        educator: "___",
+      const updatedObject =
+        action === "g"
+          ? {
+              ...upData[index],
+              groups,
+              numberOfStudents: sumOfStudents,
+              isSplit: false,
+              isMerged: true,
+              educator: "___",
+            }
+          : action === "h" && {
+              ...upData[index],
+              groups,
+              isSplit: false,
+              isMerged: true,
+              educator: "___",
+            };
+      const rc =
+        updatedObject.audienceHours * updatedObject.numberOfStudents * 0.01;
+      const updatedObjectFix = {
+        ...updatedObject,
+        ratingControlHours: rc,
+        hours: rc + updatedObject.audienceHours,
       };
-      newState = updatedObject;
+      newState = updatedObjectFix;
+
       const newUpdatedData = [
         ...upData.slice(0, index),
-        updatedObject,
+        updatedObjectFix,
         ...upData.slice(index + 1),
       ];
       return { newUpdatedData, prevState, newState };

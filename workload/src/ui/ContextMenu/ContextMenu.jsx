@@ -148,14 +148,15 @@ const ContextMenu = () => {
   };
 
   //! соединение нагрузок
-  const handleJoinWorkloads = () => {
+  const handleJoinWorkloads = (action) => {
     setMenuShow("");
     const data = {
       ids: tabPar.selectedTr,
     };
     const funData = combineData(
       basicTabData.workloadDataFix,
-      tabPar.selectedTr
+      tabPar.selectedTr,
+      action
     );
     if (funData === null) {
       appData.seterrorPopUp(true);
@@ -181,6 +182,11 @@ const ContextMenu = () => {
 
     tabPar.setSelectedTr([]);
   };
+
+  // //! обьединение по часам
+  // const  handleJoinWorkloadsByHors = () => {
+
+  // }
   //! удаление нагрузки
   const handleDeletWorkload = () => {
     setMenuShow("");
@@ -368,8 +374,16 @@ const ContextMenu = () => {
         {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 12) &&
           tabPar.selectedTr.length > 1 && (
             <MenuPop
-              btnText={"Объеденить"}
-              func={handleJoinWorkloads}
+              btnText={"Объеденить по подгруппам"}
+              func={() => handleJoinWorkloads("g")}
+              img={false}
+            />
+          )}
+        {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 12) &&
+          tabPar.selectedTr.length > 1 && (
+            <MenuPop
+              btnText={"Объеденить по часам"}
+              func={() => handleJoinWorkloads("h")}
               img={false}
             />
           )}
