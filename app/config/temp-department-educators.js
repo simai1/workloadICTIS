@@ -1,4 +1,4 @@
-import { mapObjectKeys } from "../utils/map";
+import { mapObjectKeys } from "../utils/map.js";
 
 const tempDepartmentEducators = {
     'Вакансия БИТ 0': 1,
@@ -7,7 +7,7 @@ const tempDepartmentEducators = {
     'Вакансия ИАСБ 0': 4,
     'Вакансия ИБТКС 0': 5,
     'Вакансия ИМС 0': 6,
-    'Вакансия МОП ЭВМ 0': 7,
+    'Вакансия МОПЭВМ 0': 7,
     'Вакансия ПиБЖ 0': 8,
     'Вакансия САИТ 0': 9,
     'Вакансия САПР 0': 10,
