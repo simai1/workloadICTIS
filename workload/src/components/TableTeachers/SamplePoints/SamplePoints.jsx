@@ -47,18 +47,25 @@ export function SamplePoints(props) {
 
   //! при нажатии на Input All
   const onAllChecked = () => {
-    const checked = props.checkPar.isAllChecked ? [...filteredData] : [];
-    let check = [];
-    checked.map((item) => {
-      check.push({ value: item, itemKey: props.itemKey });
-    });
-    props.checkPar.setIsChecked(check);
-    sessionStorage.setItem("isCheckedTeachers", JSON.stringify([...check]));
+    let checked = [...props.checkPar.isChecked];
+    if (
+      [...props.checkPar.isChecked].filter((el) => el.itemKey === props.itemKey)
+        .length > 0
+    ) {
+      checked = checked.filter((el) => el.itemKey !== props.itemKey);
+    } else {
+      [...filteredData].map((item) => {
+        checked.push({ value: item, itemKey: props.itemKey });
+      });
+    }
+    props.checkPar.setIsChecked(checked);
+    sessionStorage.setItem("isCheckedTeachers", JSON.stringify([...checked]));
 
-    props.checkPar.setAllChecked(!props.checkPar.isAllChecked);
     // Фильтруем данные
     const fdfix = FilteredSample(props.updatedData, checked, props.itemKey);
     props.setFiltredData(fdfix);
+
+    console.log("checkPar.isAllChecked", props.checkPar.isAllChecked);
   };
 
   //! при нажатии на Input
@@ -76,7 +83,7 @@ export function SamplePoints(props) {
     const fdfix = FilteredSample(props.updatedData, checked); // функция фильтрации
     props.setFiltredData(fdfix); // это в тааблице выводится
     const allChecked = checked.length === 0;
-    props.checkPar.setAllChecked(allChecked); 
+    props.checkPar.setAllChecked(allChecked);
   };
 
   return (
@@ -95,7 +102,11 @@ export function SamplePoints(props) {
               id="allCheckbox"
               type="checkbox"
               onChange={onAllChecked}
-              checked={props.checkPar.isAllChecked}
+              checked={
+                ![...props.checkPar.isChecked].filter(
+                  (el) => el.itemKey === props.itemKey
+                ).length > 0
+              }
             />
             <p>Все</p>
           </div>

@@ -47,9 +47,7 @@ export function SamplePoints(props) {
   //! при нажатии на Input All
   const onAllChecked = () => {
     console.log("checkPar.isAllChecked", checkPar.isAllChecked);
-    // const checked = checkPar.isAllChecked.some((el) => el === props.itemKey)
-    //   ? [...filteredData]
-    //   : [];
+
     let checked = [...checkPar.isChecked];
     if (
       [...checkPar.isChecked].filter((el) => el.itemKey === props.itemKey)
@@ -76,7 +74,7 @@ export function SamplePoints(props) {
 
   //! при нажатии на Input
   const onChecked = (el) => {
-    let checked = [...checkPar.isChecked]; // основной массив 
+    let checked = [...checkPar.isChecked]; // основной массив
     if (checked.some((item) => item.value === el)) {
       checked = checked.filter((item) => item.value !== el);
     } else {
@@ -84,75 +82,63 @@ export function SamplePoints(props) {
     }
     checkPar.setIsChecked(checked);
     sessionStorage.setItem("isCheckedWorkload", JSON.stringify([...checked]));
-
     // Фильтруем данные
     const fdfix = FilteredSample(basicTabData.workloadData, checked);
     basicTabData.setWorkloadDataFix(fdfix);
-
-    // if (
-    //   [...checkPar.isChecked].filter((el) => el.itemKey === props.itemKey) === 0
-    // ) {
-    //   checkPar.setAllChecked(
-    //     checkPar.isAllChecked.filter((el) => el !== props.itemKey)
-    //   );
-    // }
     console.log("checkPar.isChecked", checkPar.isChecked);
   };
 
-  useEffect(()=>{
-    console.log("вот я да")
-  },[])
+  useEffect(() => {
+    console.log("вот я да");
+  }, []);
 
   return (
     <main className={styles.SamplePoints} ref={spRef}>
-    
       <div className={styles.container}>
         {/* <div className={styles.sorted}>
           <button>В</button>
           <button>У</button>
           <button>А</button>
         </div> */}
-      <div>
-
-     
-        <input
-          className={styles.search}
-          type="text"
-          placeholder="Поиск"
-          value={searchText}
-          onChange={handleInputChange}
-        />
-        <div className={styles.points}>
-          <div htmlFor="allCheckbox">
-            <input
-              id="allCheckbox"
-              type="checkbox"
-              onChange={onAllChecked}
-              checked={
-                ![...checkPar.isChecked].filter(
-                  (el) => el.itemKey === props.itemKey
-                ).length > 0
-              }
-            />
-            <p>Все</p>
+        <div>
+          <input
+            className={styles.search}
+            type="text"
+            placeholder="Поиск"
+            value={searchText}
+            onChange={handleInputChange}
+          />
+          <div className={styles.points}>
+            <div htmlFor="allCheckbox">
+              <input
+                id="allCheckbox"
+                type="checkbox"
+                onChange={onAllChecked}
+                checked={
+                  ![...checkPar.isChecked].filter(
+                    (el) => el.itemKey === props.itemKey
+                  ).length > 0
+                }
+              />
+              <p>Все</p>
+            </div>
+            {filteredData.map((el, index) => {
+              return (
+                <div key={index} htmlFor={`checkbox-${index}`}>
+                  <input
+                    id={`checkbox-${index}`}
+                    type="checkbox"
+                    onChange={() => onChecked(el)}
+                    checked={
+                      !checkPar.isChecked.some((item) => item.value === el)
+                    }
+                  />
+                  <p>{props.index === 0 ? index + 1 : el === "" ? "__" : el}</p>
+                </div>
+              );
+            })}
           </div>
-          {filteredData.map((el, index) => {
-            return (
-              <div key={index} htmlFor={`checkbox-${index}`}>
-                <input
-                  id={`checkbox-${index}`}
-                  type="checkbox"
-                  onChange={() => onChecked(el)}
-                  checked={
-                    !checkPar.isChecked.some((item) => item.value === el)
-                  }
-                />
-                <p>{props.index === 0 ? index + 1 : el === "" ? "__" : el}</p>
-              </div>
-            );
-          })}
         </div>
-      </div>
       </div>
     </main>
   );
