@@ -385,6 +385,7 @@ function HomePage() {
                   (el) => el === 25 && appData.selectedComponent !== "Teachers"
                 ) && (
                   <div
+                  title="Отмена действия"
                     className={styles.btnMenuBox}
                     onClick={appData.backBuffer}
                   >
@@ -398,7 +399,7 @@ function HomePage() {
                 ) &&
                   appData.selectedComponent === "Disciplines" &&
                   !blockTable && (
-                    <div className={styles.btnMenuBox} onClick={onSaveClick}>
+                    <div className={styles.btnMenuBox} onClick={onSaveClick} title="Сохранение изменений">
                       <img
                         className={styles.btnLeft}
                         src="./img/saveButton.svg"
@@ -418,8 +419,8 @@ function HomePage() {
                   appData.selectedComponent === "Disciplines" &&
                   basicTabData.nameKaf != "Все" &&
                   blockTable && (
-                    <div className={styles.btnMenuBox} onClick={onUnblockClick}>
-                      <img className={styles.btnLeft} src="./img/unblock.svg" />
+                    <div className={styles.btnMenuBox} onClick={onUnblockClick} title="Разблокировать таблицу">
+                      <img className={styles.btnLeft} src="./img/unblock.svg"/>
                       {popupUnblockTable && (
                         <UnlockDepartment
                           title={`Вы уверены, что хотите разблокировать таблицу ${basicTabData.nameKaf} ?`}
@@ -433,7 +434,7 @@ function HomePage() {
                 ) &&
                   appData.selectedComponent === "Disciplines" &&
                   blockTable && (
-                    <div className={styles.btnMenuBox} onClick={onUnblockClick}>
+                    <div className={styles.btnMenuBox} onClick={onUnblockClick} title="Попросить разблокировать таблицу">
                       <img className={styles.btnLeft} src="./img/unblock.svg" />
                       {popupUnblockTable && (
                         <UnlockDepartment
@@ -458,6 +459,7 @@ function HomePage() {
                     style={{ marginRight: "15px" }}
                     className={styles.btnMenuBox}
                     onClick={onExportClick}
+                    title="Выгрузка таблицы для методистов"
                   >
                     <img className={styles.btnLeft} src="./img/export.svg" />
                     {popupExport && (
@@ -567,13 +569,15 @@ function HomePage() {
               {appData.metodRole[appData.myProfile?.role]?.some(
                 (el) => el === 30
               ) && (
-                <Warnings
-                  setEducatorIdforLk={setEducatorIdforLk}
-                  educatorIdforLk={educatorIdforLk}
-                  className={styles.Warnings}
-                  setSelectedComponent={appData.setSelectedComponent}
-                  setEducatorData={setEducatorData}
-                />
+                <div title="Уведомления">
+                  <Warnings
+                    setEducatorIdforLk={setEducatorIdforLk}
+                    educatorIdforLk={educatorIdforLk}
+                    className={styles.Warnings}
+                    setSelectedComponent={appData.setSelectedComponent}
+                    setEducatorData={setEducatorData}
+                  />
+                </div>
               )}
               <Profile
                 className={styles.Profile}

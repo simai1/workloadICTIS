@@ -32,9 +32,15 @@ function TableWorkload(props) {
 
   //! фильтрация по поиску
   useEffect(() => {
-    const fd = filteredWorkload(basicTabData.workloadDataFix, props.searchTerm);
-    const fixfd = basicTabData.funFilteredFilterSelected(fd);
-    basicTabData.setFiltredData(fixfd);
+      if(props.searchTerm.length === 0){
+        basicTabData.setWorkloadDataFix(
+          funfastenedDataSort(basicTabData.workloadDataFix, tabPar.fastenedData)
+        );
+      }else{
+        const fd = filteredWorkload(basicTabData.workloadDataFix, props.searchTerm, tabPar.fastenedData);
+        const fixfd = basicTabData.funFilteredFilterSelected(fd);
+        basicTabData.setFiltredData(fixfd); 
+      }
   }, [props.searchTerm]);
 
   //! при нажатии правой кнопки мыши на таблицу открывает мню
