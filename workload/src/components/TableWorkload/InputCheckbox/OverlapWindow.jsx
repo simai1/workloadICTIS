@@ -153,7 +153,7 @@ function OverlapWindow(props) {
   };
 
   const confirmChanges = () => {
-    // удаляем нагрузку
+    //! удаляем нагрузку
     if (props.getConfirmation.type === 1) {
       deleteWorkload({ ids: [props.itid] }).then(() => {
         appData.setBufferAction(
@@ -207,7 +207,11 @@ function OverlapWindow(props) {
         }
       });
     } else if (props.getConfirmation.type === 3) {
-      joinWorkloads(props.getConfirmation.data.data).then((res) => {
+      //! обьединение соединенеи строк
+      joinWorkloads(
+        props.getConfirmation.data.data,
+        props.getConfirmation.data.action
+      ).then((res) => {
         const ab = [...appData.bufferAction];
         const abfix = ab
           .filter((item) => {
