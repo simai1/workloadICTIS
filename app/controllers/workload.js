@@ -6,6 +6,7 @@ import Educator from '../models/educator.js';
 import Notification from '../models/notifications.js';
 import User from '../models/user.js';
 // eslint-disable-next-line import/no-duplicates
+import {map as mapTempDepartmentEducators} from '../config/temp-department-educators.js';
 import { map as mapDepartments } from '../config/departments.js';
 import WorkloadDto from '../dtos/workload-dto.js';
 import SummaryWorkload from '../models/summary-workload.js';
@@ -186,9 +187,10 @@ export default {
     },
 
     async getAllDepartment(req, res) {
-        const departmentsObj = Object.entries(departments).map(([name, id]) => ({
-            name,
-            id,
+        const filteredKeys = Object.keys(departments).filter(key => key!== 'ДИР');
+        const departmentsObj = filteredKeys.map(key => ({
+            name: key,
+            id: departments[key],
         }));
         res.json(departmentsObj);
     },
@@ -998,4 +1000,48 @@ export default {
         sendMail(process.env.EMAIL_RECIEVER, 'requestUnblocking', user.name, mapDepartments[department]);
         res.json({status: 'OK'});
     },
+    async getAllocatedAndUnallocatedWrokloadHours({ params: { department } }, res){
+        const vacancyEducator = mapTempDepartmentEducators[department];
+        const existEducator = await Educator.findOne({
+            where:{
+                name: vacancyEducator,
+            }
+        })
+        let workloadWithoutEducators = {};
+        if(!existEducator) {
+            workloadWithoutEducators = await Workload.findAll({
+                where: {
+                    educatorId: null,
+                    department: department,
+                }
+            })
+        } else {
+            workloadWithoutEducators = await Workload.findAll({
+                where: {
+                    [Op.or]: [
+                        { educatorId: null },
+                        { educatorId: existEducator.id }
+                    ],
+                    department: department,
+                }
+            })
+        }
+        let hoursWorkloadWithoutEducators = 0;
+        let hoursAllWorkload =0;
+        for(const wrkl of workloadWithoutEducators ){
+            hoursWorkloadWithoutEducators+= wrkl.hours;
+        }
+        const workloadAll = await Workload.findAll({
+            where: {
+                department: department,
+            }
+        });
+        for(const wrkl of workloadAll ){
+            hoursAllWorkload+= wrkl.hours;
+        }
+        hoursWorkloadWithoutEducators = hoursWorkloadWithoutEducators.toFixed(2);
+        hoursAllWorkload = hoursAllWorkload.toFixed(2);
+        res.json({hoursWorkloadWithoutEducators: hoursWorkloadWithoutEducators, hoursAllWorkload: hoursAllWorkload});
+
+    }
 };
