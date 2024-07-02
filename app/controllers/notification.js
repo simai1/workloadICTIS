@@ -9,7 +9,7 @@ export default {
         try {
             const _user = await User.findByPk(req.user, { include: Educator });
             let notifications;
-            if (_user.role === 3) {
+            if (_user.role === 3 || _user.role === 8) {
                 notifications = await Notification.findAll({
                     include: [
                         {
