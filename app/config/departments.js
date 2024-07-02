@@ -29,6 +29,8 @@ const departments = {
     ИГиКД: 22,  
     САУ: 23,
     ЭиМ: 24,
+    // Дирекция
+    ДИР: 99,
 };
 
 export default departments;

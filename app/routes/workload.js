@@ -315,5 +315,22 @@ router
         ),
         asyncRoute(workloadController.checkHoursByAllEducators)
     );
-router.route('/requestUnblock').post(asyncRoute(checkRole([role.GOD])), asyncRoute(workloadController.requestUnblock));
+router
+    .route('/requestUnblock')
+    .post(asyncRoute(checkRole([role.GOD])), asyncRoute(workloadController.requestUnblock));
+router
+    .route('/getAllocatedAndUnallocatedWrokloadHours/:department')
+    .get(
+        asyncRoute(
+            checkRole([
+                role.GOD,
+                role.GIGA_ADMIN,
+                role.UNIT_ADMIN,
+                role.DIRECTORATE,
+                role.METHODIST,
+                role.DEPUTY_DIRECTORATE,
+            ])
+        ),
+        asyncRoute(workloadController.getAllocatedAndUnallocatedWrokloadHours)
+    );
 export default router;
