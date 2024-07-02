@@ -15,18 +15,19 @@ export default {
     async getAll(req, res) {
         const _user = await User.findByPk(req.user);
         let educators;
-        if(_user.role === 4 || _user.role === 7){
-            if(!_user.institutionalAffiliation) throw new Error('Нет привязки (institutionalAffiliation) к институту у директора');
+        if (_user.role === 4 || _user.role === 7) {
+            if (!_user.institutionalAffiliation)
+                throw new Error('Нет привязки (institutionalAffiliation) к институту у директора');
             const allowedDepartments = [];
 
-            const start = _user.institutionalAffiliation === 1? 0 : _user.institutionalAffiliation === 2? 13 : 17;
-            const end = _user.institutionalAffiliation === 1? 12 : _user.institutionalAffiliation === 2? 16 : 24;
-        
+            const start = _user.institutionalAffiliation === 1 ? 0 : _user.institutionalAffiliation === 2 ? 13 : 17;
+            const end = _user.institutionalAffiliation === 1 ? 12 : _user.institutionalAffiliation === 2 ? 16 : 24;
+
             for (let i = start; i <= end; i++) {
                 allowedDepartments.push(i);
             }
             educators = await Educator.findAll({
-                where:{
+                where: {
                     department: allowedDepartments,
                 },
                 include: [
@@ -39,9 +40,9 @@ export default {
                     ['name', 'ASC'],
                 ],
             });
-        } else if(_user.role === 6){
+        } else if (_user.role === 6) {
             educators = await Educator.findAll({
-                where:{
+                where: {
                     department: _user.allowedDepartments,
                 },
                 include: [
@@ -128,24 +129,32 @@ export default {
             //     }
             // }
             for (const workloadDto of workloadsDto) {
-                    if (
-                        departments[workloadDto.department] === workload.department &&
-                        workloadDto.discipline === workload.discipline && workloadDto.workload === workload.workload
-                    ) {
-                        workloadDto.hoursFirstPeriod += workload.period === 1 ? workload.hours : 0;
-                        workloadDto.hoursSecondPeriod += workload.period === 2 ? workload.hours : 0;
-                        workloadDto.hoursWithoutPeriod += workload.period === null ? workload.hours : 0;
-                        // ориентировочно часы это сумма 3 столбиков этих (уточнить)
-                        workloadDto.hours = workloadDto.hoursFirstPeriod + workloadDto.hoursWithoutPeriod + workloadDto.hoursSecondPeriod;
-                        flag = false;
-                        break;
-                    }
+                if (
+                    departments[workloadDto.department] === workload.department &&
+                    workloadDto.discipline === workload.discipline &&
+                    workloadDto.workload === workload.workload
+                ) {
+                    workloadDto.hoursFirstPeriod += workload.period === 1 ? workload.hours : 0;
+                    workloadDto.hoursSecondPeriod += workload.period === 2 ? workload.hours : 0;
+                    workloadDto.hoursWithoutPeriod += workload.period === null ? workload.hours : 0;
+                    // ориентировочно часы это сумма 3 столбиков этих (уточнить)
+                    workloadDto.hours =
+                        workloadDto.hoursFirstPeriod + workloadDto.hoursWithoutPeriod + workloadDto.hoursSecondPeriod;
+                    flag = false;
+                    break;
                 }
+            }
             if (flag) workloadsDto.push(new WorkloadProfileDto(workload));
         }
 
         educatorProfileDto.workloads.push(workloadsDto);
-        res.json(educatorProfileDto);
+
+        res.json({
+            ...educatorProfileDto,
+            totalHours: educator.SummaryWorkload.totalHours,
+            totalKafedralHours: educator.SummaryWorkload.totalKafedralHours,
+            totalOidHours: educator.SummaryWorkload.totalOidHours,
+        });
     },
 
     // Обновляем данные преподователя
@@ -206,7 +215,7 @@ export default {
 
         const educator = await Educator.findByPk(educatorId);
 
-        if(educator.userId === user ) throw AppErrorForbiddenAction();
+        if (educator.userId === user) throw AppErrorForbiddenAction();
 
         if (!educator) {
             return res.status(404).json('Educator not found');
