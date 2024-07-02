@@ -2,7 +2,17 @@ import Educator from '../models/educator.js';
 import Notification from '../models/notifications.js';
 import NotificationDto from '../dtos/notification-dto.js';
 import User from '../models/user.js';
-import { Sequelize } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
+
+const order = [
+    'Превышены максимальные часы для преподавателя',
+    'Превышены рекомендуемые максимальные часы для преподавателя',
+    'Нужно увеличить нагрузку для преподавателя'
+];
+
+function getPosition(message) {
+    return order.indexOf(message);
+  }
 
 export default {
     async getAllNotifications(req, res) {
@@ -21,6 +31,7 @@ export default {
                         },
                     ],
                 });
+                notifications.sort((a, b) => getPosition(a.message) - getPosition(b.message));
             } else if (_user.role === 6) {
                 notifications = await Notification.findAll({
                     include: {
@@ -34,6 +45,7 @@ export default {
                     },
                     attributes: { exclude: ['EducatorId'] }, // Исключаем EducatorId из результата
                 });
+                notifications.sort((a, b) => getPosition(a.message) - getPosition(b.message));
             } else if (_user.role === 4 || _user.role === 7) {
                 if (!_user.institutionalAffiliation) {
                     throw new Error('Нет привязки (institutionalAffiliation) к институту у директора');
@@ -58,11 +70,13 @@ export default {
                     },
                     attributes: { exclude: ['EducatorId'] }, // Исключаем EducatorId из результата
                 });
+                notifications.sort((a, b) => getPosition(a.message) - getPosition(b.message));
             } else {
                 notifications = await Notification.findAll({
                     include: { model: Educator },
-                    attributes: { exclude: ['EducatorId'] }, // Исключаем EducatorId из результата
+                    attributes: { exclude: ['EducatorId'] },
                 });
+                notifications.sort((a, b) => getPosition(a.message) - getPosition(b.message));
             }
             const notificationDtos = [];
             for (const notification of notifications) {
