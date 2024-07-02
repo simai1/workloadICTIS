@@ -499,13 +499,14 @@ export default {
 
     async merge(req, res){
         const { ids } = req.body;
+        const { type } = req.query;
         if (!ids) throw new AppErrorMissing('ids');
         const workloads = await Workload.findAll({ where: { id: ids } });
         const audienceHours = workloads[0].audienceHours;
         const numberOfStudents = workloads[0].numberOfStudents;
         const first = workloads[0];
         let newWorkloadData;
-        if (workloads.every(w => w.audienceHours === audienceHours)){
+        if (type === 'g' && workloads.every(w => w.audienceHours === audienceHours)){
             // Объединение по подгруппам
             const newNumberOfStudents = workloads.reduce((accumulator, currentValue) => accumulator + currentValue.numberOfStudents, 0);
             newWorkloadData = {
@@ -533,7 +534,7 @@ export default {
                 educatorId: null,
                 isOid: first.isOid,
             }
-        } else if (workloads.every(w => (w.numberOfStudents === numberOfStudents) && w.isSplit)){
+        } else if (type === 'h' && workloads.every(w => (w.numberOfStudents === numberOfStudents) && w.isSplit)){
             // Объединение по часам
             newWorkloadData = {
                 department: first.department,
@@ -560,7 +561,7 @@ export default {
                 educatorId: null,
                 isOid: first.isOid,
             }
-        }
+        } else throw new AppErrorInvalid('type');
         const newWorkload = await Workload.create(newWorkloadData);
         workloads.reduce((chain, workload) => {
             return chain.then(() => workload.destroy());
