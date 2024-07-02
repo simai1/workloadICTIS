@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 
 import styles from "./UnlockDepartment.module.scss";
 import DataContext from "../../context";
-import { ApiUnblockTable } from "../../api/services/ApiRequest";
+import { ApiUnblockTable, UnblockTablePlease } from "../../api/services/ApiRequest";
 const UnlockDepartment = (props) => {
   const { basicTabData, appData } = React.useContext(DataContext);
   const refSave = useRef(null);
@@ -24,14 +24,28 @@ const UnlockDepartment = (props) => {
               }
             })
         }else{  //! функция запроса на разблокирование таблицы
-            const idTableUnlock = appData.myProfile.educator.departmentId
-            console.log("idTableUnlock", idTableUnlock)
-            props.denyClick()
-            basicTabData.funUpdateTable(
-                basicTabData.tableDepartment.find(
-                  (el) => el.name === basicTabData?.nameKaf
-                )?.id
-              );
+            let idTableUnlock = 0
+            if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 53)){
+              idTableUnlock = appData.myProfile.educator.departmentId
+            }else{
+              idTableUnlock = basicTabData?.tableDepartment.find((el)=>el.name === basicTabData?.nameKaf).id
+            }
+            UnblockTablePlease(idTableUnlock).then((resp)=>{
+              if(resp.status === 200){
+                props.denyClick()
+                if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 53)){
+                  idTableUnlock = appData.myProfile.educator.departmentId
+                  basicTabData.funUpdateTable(appData.myProfile.educator.departmentId);
+                }
+                else{
+                  basicTabData.funUpdateTable(
+                    basicTabData.tableDepartment.find(
+                      (el) => el.name === basicTabData?.nameKaf
+                    )?.id
+                  );
+                }
+              }
+            })
         }
     }
 

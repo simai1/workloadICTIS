@@ -609,3 +609,14 @@ export const getAllocatedAndUnallocatedWrokloadHours = async (indexDepartment) =
     //throw error;
   }
 };
+
+//! запрос на разблокирование таблицы
+export const UnblockTablePlease = async (indexDepartment) => {
+  try {
+    const response = await http.post(`${server}/workload/requestUnblock/${indexDepartment}`);
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};
