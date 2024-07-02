@@ -24,26 +24,11 @@ const UnlockDepartment = (props) => {
               }
             })
         }else{  //! функция запроса на разблокирование таблицы
-            let idTableUnlock = 0
-            if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 53)){
-              idTableUnlock = appData.myProfile.educator.departmentId
-            }else{
-              idTableUnlock = basicTabData?.tableDepartment.find((el)=>el.name === basicTabData?.nameKaf).id
-            }
+            const idTableUnlock = appData.myProfile.educator.departmentId
             UnblockTablePlease(idTableUnlock).then((resp)=>{
               if(resp.status === 200){
                 props.denyClick()
-                if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 53)){
-                  idTableUnlock = appData.myProfile.educator.departmentId
-                  basicTabData.funUpdateTable(appData.myProfile.educator.departmentId);
-                }
-                else{
-                  basicTabData.funUpdateTable(
-                    basicTabData.tableDepartment.find(
-                      (el) => el.name === basicTabData?.nameKaf
-                    )?.id
-                  );
-                }
+                basicTabData.funUpdateTable(appData.myProfile.educator.departmentId);
                 appData.setgodPopUp(true);
               }else{
                 appData.seterrorPopUp(true)
