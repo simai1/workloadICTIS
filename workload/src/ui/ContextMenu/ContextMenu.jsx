@@ -171,6 +171,7 @@ const ContextMenu = () => {
           data: data,
           newState: funData.newState,
           prevState: funData.prevState,
+          action: `?type=${action}`,
         },
         ...appData.bufferAction,
       ]);
@@ -183,10 +184,6 @@ const ContextMenu = () => {
     tabPar.setSelectedTr([]);
   };
 
-  // //! обьединение по часам
-  // const  handleJoinWorkloadsByHors = () => {
-
-  // }
   //! удаление нагрузки
   const handleDeletWorkload = () => {
     setMenuShow("");
@@ -349,7 +346,7 @@ const ContextMenu = () => {
 
         {appData.metodRole[appData.myProfile?.role]?.some(
           (el) =>
-            el === 11.1 &&
+            el === 11 &&
             basicTabData.workloadDataFix
               .filter((item) => tabPar.selectedTr.some((el) => el === item.id))
               .every((it) => it.isSplit === false)
@@ -380,7 +377,10 @@ const ContextMenu = () => {
             />
           )}
         {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 12) &&
-          tabPar.selectedTr.length > 1 && (
+          tabPar.selectedTr.length > 1 &&
+          basicTabData.workloadDataFix
+            .filter((item) => tabPar.selectedTr.some((el) => el === item.id))
+            .every((it) => it.isSplit === true) && (
             <MenuPop
               btnText={"Объеденить по часам"}
               func={() => handleJoinWorkloads("h")}

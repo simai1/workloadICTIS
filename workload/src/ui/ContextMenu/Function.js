@@ -98,6 +98,7 @@ export function combineData(data, selectedTr, action = "") {
   const prevState = data.filter((item) =>
     Object.values(selectedTr).includes(item.id)
   );
+
   if (
     (action === "g" &&
       prevState.every(
@@ -111,11 +112,16 @@ export function combineData(data, selectedTr, action = "") {
         (item) =>
           item.workload === prevState[0].workload &&
           item.discipline === prevState[0].discipline &&
-          item.numberOfStudents === prevState[0].numberOfStudents
+          item.numberOfStudents === prevState[0].numberOfStudents &&
+          item.isSplit === true
       ))
   ) {
     const sumOfStudents = prevState.reduce(
       (total, el) => total + el.numberOfStudents,
+      0
+    );
+    const audienceHours = prevState.reduce(
+      (total, el) => total + el.audienceHours,
       0
     );
     const groups = prevState.reduce((total, el) => {
@@ -141,23 +147,37 @@ export function combineData(data, selectedTr, action = "") {
             }
           : action === "h" && {
               ...upData[index],
+              audienceHours,
               groups,
               isSplit: false,
               isMerged: true,
               educator: "___",
             };
-      const rc =
-        updatedObject.audienceHours * updatedObject.numberOfStudents * 0.01;
-      const updatedObjectFix = {
-        ...updatedObject,
-        ratingControlHours: rc,
-        hours: rc + updatedObject.audienceHours,
-      };
-      newState = updatedObjectFix;
+
+      if (action === "g") {
+        const rc =
+          updatedObject.audienceHours * updatedObject.numberOfStudents * 0.01;
+        const updatedObjectFix = {
+          ...updatedObject,
+          ratingControlHours: rc,
+          hours: rc + updatedObject.audienceHours,
+        };
+        newState = updatedObjectFix;
+      }
+      if (action === "h") {
+        const rc =
+          updatedObject.audienceHours * updatedObject.numberOfStudents * 0.01;
+        const updatedObjectFix = {
+          ...updatedObject,
+          ratingControlHours: rc,
+          hours: rc + updatedObject.audienceHours,
+        };
+        newState = updatedObjectFix;
+      }
 
       const newUpdatedData = [
         ...upData.slice(0, index),
-        updatedObjectFix,
+        newState,
         ...upData.slice(index + 1),
       ];
       return { newUpdatedData, prevState, newState };
