@@ -1084,13 +1084,9 @@ export default {
     },
     async getAllocatedAndUnallocatedWrokloadHours({ params: { department } }, res){
         const vacancyEducator = mapTempDepartmentEducators[department];
-        const existEducator = await Educator.findOne({
-            where:{
-                name: vacancyEducator,
-            }
-        })
+        console.log(vacancyEducator)
         let workloadWithoutEducators = {};
-        if(!existEducator) {
+        if(!vacancyEducator) {
             workloadWithoutEducators = await Workload.findAll({
                 where: {
                     educatorId: null,
@@ -1098,6 +1094,12 @@ export default {
                 }
             })
         } else {
+            const existEducator = await Educator.findOne({
+                where:{
+                    name: vacancyEducator,
+                }
+            })
+            console.log(existEducator.dataValues)
             workloadWithoutEducators = await Workload.findAll({
                 where: {
                     [Op.or]: [
