@@ -315,4 +315,5 @@ router
         ),
         asyncRoute(workloadController.checkHoursByAllEducators)
     );
+router.route('/requestUnblock').post(asyncRoute(checkRole([role.GOD])), asyncRoute(workloadController.requestUnblock));
 export default router;
