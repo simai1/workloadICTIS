@@ -56,7 +56,18 @@ export default {
                 ],
             });
         } else {
+            const allowedDepartments = [];
+
+            const start = 0;
+            const end = 24;
+
+            for (let i = start; i <= end; i++) {
+                allowedDepartments.push(i);
+            }
             educators = await Educator.findAll({
+                where: {
+                    department: allowedDepartments,
+                },
                 include: [
                     {
                         model: SummaryWorkload,
