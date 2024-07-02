@@ -329,6 +329,8 @@ router
                 role.DIRECTORATE,
                 role.METHODIST,
                 role.DEPUTY_DIRECTORATE,
+                role.DEPARTMENT_HEAD,
+                role.DEPUTY_DEPARTMENT_HEAD,
             ])
         ),
         asyncRoute(workloadController.getAllocatedAndUnallocatedWrokloadHours)
