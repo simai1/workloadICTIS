@@ -317,7 +317,10 @@ router
     );
 router
     .route('/requestUnblock')
-    .post(asyncRoute(checkRole([role.GOD])), asyncRoute(workloadController.requestUnblock));
+    .post(
+        asyncRoute(checkRole([role.GOD, role.DEPARTMENT_HEAD, role.UNIT_ADMIN, role.DEPUTY_DEPARTMENT_HEAD])),
+        asyncRoute(workloadController.requestUnblock)
+    );
 router
     .route('/getAllocatedAndUnallocatedWrokloadHours/:department')
     .get(
