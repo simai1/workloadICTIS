@@ -44,6 +44,9 @@ const UnlockDepartment = (props) => {
                     )?.id
                   );
                 }
+                appData.setgodPopUp(true);
+              }else{
+                appData.seterrorPopUp(true)
               }
             })
         }

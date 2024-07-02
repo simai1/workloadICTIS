@@ -612,8 +612,9 @@ export const getAllocatedAndUnallocatedWrokloadHours = async (indexDepartment) =
 
 //! запрос на разблокирование таблицы
 export const UnblockTablePlease = async (indexDepartment) => {
+  const data = {"department" : indexDepartment}
   try {
-    const response = await http.post(`${server}/workload/requestUnblock/${indexDepartment}`);
+    const response = await http.post(`${server}/workload/requestUnblock`, data);
     return response;
   } catch (error) {
     console.error("Error:", error);
