@@ -310,7 +310,7 @@ export const educators = [
         rate: 1,
     },
     {
-        name: 'Вакансия МОПЭВM 0',
+        name: 'Вакансия МОПЭВМ 0',
         department: 7,
         position: 5,
         typeOfEmployment: 4,
