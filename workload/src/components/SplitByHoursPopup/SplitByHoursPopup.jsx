@@ -109,8 +109,8 @@ function SplitByHoursPopup() {
     tabPar.setTableDataHoursPopup(null);
     tabPar.setInpValueHoursPopup(2);
     tabPar.setInputEditValue([]);
-    tabPar.setBuffDataHoursPopup(null);
     tabPar.setPopupShareShow(false);
+    tabPar.setBuffDataHoursPopup(null);
   };
 
   // React.useEffect(() => {

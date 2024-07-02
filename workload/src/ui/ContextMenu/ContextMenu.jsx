@@ -49,6 +49,11 @@ const ContextMenu = () => {
     }
   };
 
+  //! разделение вкр
+  const splitVKR = () => {
+    setMenuShow(menuShow === "splitVKR" ? "" : "splitVKR");
+  };
+
   //! нажатие на добавить преподавателя
   const addEducator = () => {
     setMenuShow(menuShow === "educator" ? "" : "educator");
@@ -334,7 +339,9 @@ const ContextMenu = () => {
             el === 11 &&
             basicTabData.workloadDataFix
               .filter((item) => tabPar.selectedTr.some((el) => el === item.id))
-              .every((it) => it.isSplit === false)
+              .every(
+                (it) => it.isSplit === false && it.workload !== "Защита ВКР"
+              )
         ) && (
           <MenuPop
             btnText={"Разделить по подгруппам"}
@@ -349,12 +356,31 @@ const ContextMenu = () => {
             el === 11 &&
             basicTabData.workloadDataFix
               .filter((item) => tabPar.selectedTr.some((el) => el === item.id))
-              .every((it) => it.isSplit === false)
+              .every(
+                (it) => it.isSplit === false && it.workload !== "Защита ВКР"
+              )
         ) && (
           <MenuPop
             btnText={"Разделить по часам"}
             func={splitByHoursFun}
             menuShow={menuShow === "splitByHoursMenu"}
+            img={true}
+          />
+        )}
+
+        {appData.metodRole[appData.myProfile?.role]?.some(
+          (el) =>
+            el === 11 &&
+            basicTabData.workloadDataFix
+              .filter((item) => tabPar.selectedTr.some((el) => el === item.id))
+              .every(
+                (it) => it.isSplit === false && it.workload === "Защита ВКР"
+              )
+        ) && (
+          <MenuPop
+            btnText={"Разделить"}
+            func={splitVKR}
+            menuShow={menuShow === "splitVKR"}
             img={true}
           />
         )}
@@ -369,7 +395,10 @@ const ContextMenu = () => {
             />
           )}
         {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 12) &&
-          tabPar.selectedTr.length > 1 && (
+          tabPar.selectedTr.length > 1 &&
+          basicTabData.workloadDataFix
+            .filter((item) => tabPar.selectedTr.some((el) => el === item.id))
+            .every((it) => it.workload !== "Защита ВКР") && (
             <MenuPop
               btnText={"Объеденить по подгруппам"}
               func={() => handleJoinWorkloads("g")}
@@ -380,13 +409,27 @@ const ContextMenu = () => {
           tabPar.selectedTr.length > 1 &&
           basicTabData.workloadDataFix
             .filter((item) => tabPar.selectedTr.some((el) => el === item.id))
-            .every((it) => it.isSplit === true) && (
+            .every(
+              (it) => it.isSplit === true && it.workload !== "Защита ВКР"
+            ) && (
             <MenuPop
               btnText={"Объеденить по часам"}
               func={() => handleJoinWorkloads("h")}
               img={false}
             />
           )}
+        {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 12) &&
+          tabPar.selectedTr.length > 1 &&
+          basicTabData.workloadDataFix
+            .filter((item) => tabPar.selectedTr.some((el) => el === item.id))
+            .every((it) => it.workload === "Защита ВКР") && (
+            <MenuPop
+              btnText={"Объеденить"}
+              func={() => handleJoinWorkloads("g")}
+              img={false}
+            />
+          )}
+
         {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 18) &&
           tabPar.selectedTr.length === 1 && (
             <MenuPop
@@ -437,7 +480,18 @@ const ContextMenu = () => {
         />
       )}
       {menuShow === "splitByHoursMenu" && (
-        <SplitByHoursMenu styles={styles} setMenuShow={setMenuShow} />
+        <SplitByHoursMenu
+          styles={styles}
+          setMenuShow={setMenuShow}
+          typeMenu={"splitByHoursMenu"}
+        />
+      )}
+      {menuShow === "splitVKR" && (
+        <SplitByHoursMenu
+          styles={styles}
+          setMenuShow={setMenuShow}
+          typeMenu={"splitVKR"}
+        />
       )}
       {appData.universalPopupTitle !== "" && <UniversalPopup />}
     </div>

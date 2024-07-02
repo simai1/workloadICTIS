@@ -62,7 +62,7 @@ export function splitWorkloadCount(data, selectedTr, count) {
           id: `${workload.id}${i + 1}`,
           isMerged: false,
           isSplit: true,
-          ratingControlHours: rch,
+          ratingControlHours: rch.toFixed(2),
           hours: (rch + workload?.audienceHours).toFixed(2),
         };
         const hoursDataObj = {
