@@ -95,7 +95,7 @@ function TableLks(props) {
     }
     return text;
   };
-
+  console.log("EducatorLkData", EducatorLkData)
   return (
     <div className={styles.TableLks}>
       {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 16) && (
@@ -108,39 +108,58 @@ function TableLks(props) {
         <div className={styles.DataLksInner}>
           <div className={styles.DataLksHead}>
             <h1>{EducatorLkData?.name}</h1>
-            <div
-              className={styles.DataLksHeadSchet}
-              style={
-                EducatorLkData
-                  ? {
-                      backgroundColor: appData.WhyColor(EducatorLkData),
-                    }
-                  : null
-              }
-            >
-              <div>
-                <span>{EducatorLkData?.totalHours}</span>/
-                <span>{900 * EducatorLkData?.rate}</span>
-              </div>
-            </div>
           </div>
 
           <div className={styles.spanbox}>
-            <p>
-              <span className={styles.pTop}>
-                Кафедра: {EducatorLkData?.department}
-              </span>
-            </p>
-            <p>
-              <span className={styles.pTop}>
-                Должность: {EducatorLkData?.position}
-              </span>
-            </p>
-            <p>
-              <span className={styles.pTop}>
-                Ставка: {EducatorLkData?.rate}
-              </span>
-            </p>
+            <div className={styles.blockFirst}>
+                  <p>
+                    <span className={styles.pTop}>
+                      Кафедра: <strong>{EducatorLkData?.department}</strong>
+                    </span>
+                  </p>
+                  <p>
+                    <span className={styles.pTop}>
+                      Должность: <strong>{EducatorLkData?.position}</strong>
+                    </span>
+                  </p>
+                  <p>
+                    <span className={styles.pTop}>
+                      Ставка: <strong>{EducatorLkData?.rate}</strong>
+                    </span>
+                  </p>
+            </div>
+            <div className={styles.blockTwo}>
+                  <div style={{display:"flex"}}>
+                  
+                      <div className={styles.textFirstBlockTwo}>
+                        <span>
+                          Всего часов: 
+                        </span>
+                      </div>
+                      <div  className={styles.DataLksHeadSchet}
+                        style={
+                          EducatorLkData
+                            ? {
+                                backgroundColor: appData.WhyColor(EducatorLkData),
+                              }
+                            : null
+                        }>                      
+                        <span>{EducatorLkData?.totalHours}</span>/
+                        <span>{900 * EducatorLkData?.rate}</span>
+                      </div>
+                  </div>
+                  <p>
+                    <span className={styles.pTop}>
+                      Кафедральные часы: <strong>{EducatorLkData?.totalKafedralHours}</strong>
+                    </span>
+                  </p>
+                  <p>
+                    <span className={styles.pTop}>
+                      Общеинстетутские часы: <strong>{EducatorLkData?.totalOidHours}</strong>
+                    </span>
+                  </p>
+            </div>
+           
           </div>
 
           {appData.metodRole[appData.myProfile?.role]?.some(

@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import styles from "./Profile.module.scss";
 import svgExit from "./../../img/exit.svg";
 import DataContext from "../../context";
+import { getAllocatedAndUnallocatedWrokloadHours } from "../../api/services/ApiRequest";
 function Profile(props) {
   const { appData } = React.useContext(DataContext);
+  const [hoursWorkloadSumma, setHoursWorkloadSumma] = useState([])
   const roles = {
     METHODIST: "Методист",
     LECTURER: "Лектор",
@@ -26,6 +28,14 @@ function Profile(props) {
 
   //! закрытие модального окна при нажати вне него
   useEffect(() => {
+    if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 52)){
+      getAllocatedAndUnallocatedWrokloadHours(appData.myProfile?.educator.departmentId).then((resp)=>{
+        if(resp.status === 200){
+          setHoursWorkloadSumma(resp.data)
+          console.log("hoursWorkloadSumma", hoursWorkloadSumma)
+        }
+      })
+    }
     const handler = (event) => {
       if (
         props.refProfile.current &&
@@ -38,11 +48,15 @@ function Profile(props) {
     return () => {
       document.removeEventListener("click", handler);
     };
+
+   
   }, []);
 
   const clickModalWind = () => {
     props.setOpenModalWind(!props.onenModalWind);
   };
+
+
 
   return (
     <div ref={props.refProfile} className={styles.Profile}>
