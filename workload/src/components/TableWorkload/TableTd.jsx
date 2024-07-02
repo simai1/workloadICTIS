@@ -34,7 +34,10 @@ function TableTd(props) {
 
   const onChangeTextareaTd = (e) => {
     const query = e.target.value;
+    console.log(Number(query));
     if (query === "") {
+      setTextareaTd(query);
+    } else if (query === "0") {
       setTextareaTd(query);
     } else if (Number(query)) {
       setTextareaTd(query);
@@ -56,22 +59,19 @@ function TableTd(props) {
   const onClickButton = () => {
     let parsedValue = parseFloat(textareaTd);
     let numberValue = isNaN(parsedValue) ? textareaTd : parsedValue;
-
     //! параметры запроса на изменение данных
     const data = {
       id: props.item.id,
       key: props.itemKey.key,
       value: numberValue,
     };
-
-    if (numberValue) {
+    if (numberValue || textareaTd === "0") {
       const updatedArray = basicTabData.workloadDataFix.map((item) => {
         if (item.id === props.item.id) {
           return { ...item, [props.itemKey.key]: numberValue };
         }
         return item;
       });
-
       basicTabData.setWorkloadDataFix(updatedArray);
       basicTabData.setFiltredData(updatedArray);
       const workloadId = data.id;

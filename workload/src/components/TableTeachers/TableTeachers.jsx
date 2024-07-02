@@ -41,10 +41,6 @@ function TableTeachers(props) {
     const ssIsChecked = JSON.parse(sessionStorage.getItem("isCheckedTeachers"));
     if (ssIsChecked && ssIsChecked !== null && ssIsChecked.length > 0) {
       setIsChecked(ssIsChecked);
-      setAllChecked(false);
-    }
-    if (isChecked.length !== 0) {
-      setAllChecked(false);
     }
   }, []);
 
