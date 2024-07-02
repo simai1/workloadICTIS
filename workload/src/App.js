@@ -91,6 +91,7 @@ function App() {
   const [hoursWorkloadSumma, setHoursWorkloadSumma] = useState([])
 
   const appData = {
+    hoursWorkloadSumma,
     individualCheckboxes,
     setIndividualCheckboxes,
     educator,
