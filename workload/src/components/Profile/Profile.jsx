@@ -63,7 +63,7 @@ function Profile(props) {
           </span>
           <span className={styles.inner}>{appData.myProfile?.login}</span>
           {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 52) &&
-            <div>
+            <div className={styles.profileData}>
               <p>Общая сумма нагрузки : 1234 часов </p>
               <p>Осталось распределить : 999 часов</p>
             </div>

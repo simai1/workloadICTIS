@@ -554,14 +554,14 @@ function App() {
     if (myProfile) {
       setnameKaf(tableDepartment[0]?.name);
       updateAlldata();
-      // if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 52)){
-      //   getAllocatedAndUnallocatedWrokloadHours(appData.myProfile?.educator.departmentId).then((resp)=>{
-      //     if(resp.status === 200){
-      //       setHoursWorkloadSumma(resp.data)
-      //       console.log("hoursWorkloadSumma", hoursWorkloadSumma)
-      //     }
-      //   })
-      // }
+      if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 52)){
+        getAllocatedAndUnallocatedWrokloadHours(appData.myProfile?.educator.departmentId).then((resp)=>{
+          if(resp.status === 200){
+            setHoursWorkloadSumma(resp.data)
+            console.log("hoursWorkloadSumma", hoursWorkloadSumma)
+          }
+        })
+      }
     }
   }, [tableDepartment, myProfile]); // [myProfile, tableDepartment]
 

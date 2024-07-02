@@ -27,8 +27,7 @@
     position: absolute;
     top: 65px;
     right: 0;
-    // min-width: 210px;
-    width: auto;
+    width: 120%;
     height: auto;
     background-color: #fff;
     z-index: 300;
@@ -42,17 +41,24 @@
     .title {
       font-size: 16px;
       font-weight: 400;
-      margin-bottom: 10px;
+      // margin-bottom: 3px;
     }
     .inner {
       font-size: 14px;
       font-weight: 400;
       color: #5a5a5a;
-      margin-bottom: 10px;
+      // margin-bottom: 3px;
+    }
+    .profileData{
+      margin: 10px 0px;
+      p{
+        margin: 0;
+      }
     }
     .exid {
       color: red;
       display: flex;
+      justify-content: end;
       cursor: pointer;
       a {
         display: flex;
