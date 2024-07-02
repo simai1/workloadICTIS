@@ -27,8 +27,9 @@
     position: absolute;
     top: 65px;
     right: 0;
-    min-width: 210px;
-    height: 118px;
+    // min-width: 210px;
+    width: auto;
+    height: auto;
     background-color: #fff;
     z-index: 300;
     padding: 10px 16px;

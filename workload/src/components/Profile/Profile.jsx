@@ -62,6 +62,12 @@ function Profile(props) {
             {roles[appData.myProfile?.role]} {getInstitut()}
           </span>
           <span className={styles.inner}>{appData.myProfile?.login}</span>
+          {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 52) &&
+            <div>
+              <p>Общая сумма нагрузки : 1234 часов </p>
+              <p>Осталось распределить : 999 часов</p>
+            </div>
+          }
           <div className={styles.exid}>
             <a href="https://workload.sfedu.ru/auth/logout">
               Выйти <img src={svgExit} alt="->"></img>
