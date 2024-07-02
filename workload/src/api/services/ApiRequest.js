@@ -87,6 +87,7 @@ export const CreateEducator = async (data) => {
     return response;
   } catch (error) {
     console.error("Error:", error);
+    return error;
     //throw error;
   }
 };
@@ -600,9 +601,13 @@ export const ApiUnblockTable = async (indexTable) => {
 };
 
 //! Получение текущей суммы и остатка по нагрузкам для ЗК
-export const getAllocatedAndUnallocatedWrokloadHours = async (indexDepartment) => {
+export const getAllocatedAndUnallocatedWrokloadHours = async (
+  indexDepartment
+) => {
   try {
-    const response = await http.get(`${server}/workload/getAllocatedAndUnallocatedWrokloadHours/${indexDepartment}`);
+    const response = await http.get(
+      `${server}/workload/getAllocatedAndUnallocatedWrokloadHours/${indexDepartment}`
+    );
     return response;
   } catch (error) {
     console.error("Error:", error);
@@ -612,7 +617,7 @@ export const getAllocatedAndUnallocatedWrokloadHours = async (indexDepartment) =
 
 //! запрос на разблокирование таблицы
 export const UnblockTablePlease = async (indexDepartment) => {
-  const data = {"department" : indexDepartment}
+  const data = { department: indexDepartment };
   try {
     const response = await http.post(`${server}/workload/requestUnblock`, data);
     return response;

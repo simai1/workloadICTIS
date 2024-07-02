@@ -50,7 +50,7 @@ function App() {
     LECTURER: [2, 15, 17, 17.1, 18, 20, 22, 24, 34, 37, 41],
     DEPARTMENT_HEAD: [
       2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 20, 22, 23, 25, 26, 27, 30, 31,
-      32, 33, 34, 36, 16, 39, 40, 49, 50, 51, 52
+      32, 33, 34, 36, 16, 39, 40, 49, 50, 51, 52,
     ],
     DIRECTORATE: [
       1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
@@ -67,7 +67,7 @@ function App() {
     ],
     DEPUTY_DEPARTMENT_HEAD: [
       2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 20, 22, 23, 25, 26, 27, 30, 31,
-      32, 33, 34, 36, 16, 39, 40, 49, 50, 51, 52
+      32, 33, 34, 36, 16, 39, 40, 49, 50, 51, 52,
     ],
     GIGA_ADMIN: [
       1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 29, 30,
@@ -88,7 +88,9 @@ function App() {
   const [selectedComponent, setSelectedComponent] = useState("Disciplines");
   const [loaderAction, setLoaderAction] = useState(false);
   const [universalPopupTitle, setUniversalPopupTitle] = useState(""); // если он не пустой, то открывается универсальный попап с данным title
-  const [hoursWorkloadSumma, setHoursWorkloadSumma] = useState([])
+  const [hoursWorkloadSumma, setHoursWorkloadSumma] = useState([]);
+
+  const [popupErrorText, setPopupErrorText] = useState("");
 
   const appData = {
     hoursWorkloadSumma,
@@ -125,6 +127,8 @@ function App() {
     funSaveAllData,
     universalPopupTitle,
     setUniversalPopupTitle,
+    popupErrorText,
+    setPopupErrorText,
   };
 
   useEffect(() => {
@@ -204,7 +208,7 @@ function App() {
     audienceHours: [],
   };
   // храним id и ключь измененных td для подсвечивания
-  const [changedData, setChangedData] = useState(changedDataObj); 
+  const [changedData, setChangedData] = useState(changedDataObj);
   const [isChecked, setIsChecked] = useState([]); // состояние инпутов в SamplePoints //! сбросить
   const [isAllChecked, setAllChecked] = useState([]); // инпут все в SamplePoints //! сбросить
   const checkPar = {
@@ -555,13 +559,15 @@ function App() {
     if (myProfile) {
       setnameKaf(tableDepartment[0]?.name);
       updateAlldata();
-      if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 52)){
-        getAllocatedAndUnallocatedWrokloadHours(appData.myProfile?.educator.departmentId).then((resp)=>{
-          if(resp.status === 200){
-            setHoursWorkloadSumma(resp.data)
-            console.log("hoursWorkloadSumma", hoursWorkloadSumma)
+      if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 52)) {
+        getAllocatedAndUnallocatedWrokloadHours(
+          appData.myProfile?.educator.departmentId
+        ).then((resp) => {
+          if (resp.status === 200) {
+            setHoursWorkloadSumma(resp.data);
+            console.log("hoursWorkloadSumma", hoursWorkloadSumma);
           }
-        })
+        });
       }
     }
   }, [tableDepartment, myProfile]); // [myProfile, tableDepartment]
