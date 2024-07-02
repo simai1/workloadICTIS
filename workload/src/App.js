@@ -19,6 +19,7 @@ import {
   apiGetHistory,
   CommentsLecktorer,
   getOffersLecturer,
+  getAllocatedAndUnallocatedWrokloadHours,
 } from "./api/services/ApiRequest";
 
 import {
@@ -87,6 +88,8 @@ function App() {
   const [selectedComponent, setSelectedComponent] = useState("Disciplines");
   const [loaderAction, setLoaderAction] = useState(false);
   const [universalPopupTitle, setUniversalPopupTitle] = useState(""); // если он не пустой, то открывается универсальный попап с данным title
+  const [hoursWorkloadSumma, setHoursWorkloadSumma] = useState([])
+
   const appData = {
     individualCheckboxes,
     setIndividualCheckboxes,
@@ -551,6 +554,14 @@ function App() {
     if (myProfile) {
       setnameKaf(tableDepartment[0]?.name);
       updateAlldata();
+      if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 52)){
+        getAllocatedAndUnallocatedWrokloadHours(appData.myProfile?.educator.departmentId).then((resp)=>{
+          if(resp.status === 200){
+            setHoursWorkloadSumma(resp.data)
+            console.log("hoursWorkloadSumma", hoursWorkloadSumma)
+          }
+        })
+      }
     }
   }, [tableDepartment, myProfile]); // [myProfile, tableDepartment]
 

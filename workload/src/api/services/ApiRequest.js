@@ -602,7 +602,7 @@ export const ApiUnblockTable = async (indexTable) => {
 //! Получение текущей суммы и остатка по нагрузкам для ЗК
 export const getAllocatedAndUnallocatedWrokloadHours = async (indexDepartment) => {
   try {
-    const response = await http.get(`${server}/getAllocatedAndUnallocatedWrokloadHours/${indexDepartment}`);
+    const response = await http.get(`${server}/workload/getAllocatedAndUnallocatedWrokloadHours/${indexDepartment}`);
     return response;
   } catch (error) {
     console.error("Error:", error);
