@@ -184,6 +184,7 @@ export default {
             res.status(500).json({ error: error.message });
         }
     },
+
     async getAllDepartment(req, res) {
         const departmentsObj = Object.entries(departments).map(([name, id]) => ({
             name,
@@ -301,12 +302,12 @@ export default {
         newWorkloads.map(w => workloadsDto.push(new WorkloadDto(w)));
 
         let after;
-        for (const id of ids){
+        for (const id of ids) {
             after = newWorkloads.filter(w => w.originalId === id);
             await History.create({
                 type: 1,
                 department: after[0].department,
-                before: [id, ],
+                before: [id],
                 after: getIds(after),
             });
         }
@@ -989,5 +990,12 @@ export default {
                 await checkHours(summaryWorkload);
             }
         }
+    },
+
+    async requestUnblock(req, res) {
+        const { department } = req.body;
+        const user = await User.findByPk(req.user);
+        sendMail(process.env.EMAIL_RECIEVER, 'requestUnblocking', user.name, mapDepartments[department]);
+        res.json({status: 'OK'});
     },
 };
