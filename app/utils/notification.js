@@ -18,7 +18,7 @@ async function createNotification(message, educator) {
 }
 
 function getNotificationMessage(totalHours, minHours, maxHours, recommendedMaxHours) {
-    if (totalHours < minHours) return notificationMessages.underMin;
+    if (totalHours < minHours && totalHours !==0 ) return notificationMessages.underMin;
     if (totalHours > maxHours) return notificationMessages.overMax;
     if (maxHours > totalHours && totalHours > recommendedMaxHours) return notificationMessages.overRecommendedMax;
     return null;
