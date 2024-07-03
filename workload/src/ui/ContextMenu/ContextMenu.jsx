@@ -426,7 +426,7 @@ const ContextMenu = () => {
             .every((it) => it.workload === "Защита ВКР") && (
             <MenuPop
               btnText={"Объеденить"}
-              func={() => handleJoinWorkloads("g")}
+              func={() => handleJoinWorkloads("vkr")}
               img={false}
             />
           )}
