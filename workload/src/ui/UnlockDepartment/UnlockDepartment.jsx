@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 
 import styles from "./UnlockDepartment.module.scss";
 import DataContext from "../../context";
-import { ApiUnblockTable } from "../../api/services/ApiRequest";
+import { ApiUnblockTable, UnblockTablePlease } from "../../api/services/ApiRequest";
 const UnlockDepartment = (props) => {
   const { basicTabData, appData } = React.useContext(DataContext);
   const refSave = useRef(null);
@@ -25,13 +25,15 @@ const UnlockDepartment = (props) => {
             })
         }else{  //! функция запроса на разблокирование таблицы
             const idTableUnlock = appData.myProfile.educator.departmentId
-            console.log("idTableUnlock", idTableUnlock)
-            props.denyClick()
-            basicTabData.funUpdateTable(
-                basicTabData.tableDepartment.find(
-                  (el) => el.name === basicTabData?.nameKaf
-                )?.id
-              );
+            UnblockTablePlease(idTableUnlock).then((resp)=>{
+              if(resp.status === 200){
+                props.denyClick()
+                basicTabData.funUpdateTable(appData.myProfile.educator.departmentId);
+                appData.setgodPopUp(true);
+              }else{
+                appData.seterrorPopUp(true)
+              }
+            })
         }
     }
 

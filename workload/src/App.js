@@ -19,6 +19,7 @@ import {
   apiGetHistory,
   CommentsLecktorer,
   getOffersLecturer,
+  getAllocatedAndUnallocatedWrokloadHours,
 } from "./api/services/ApiRequest";
 
 import {
@@ -49,32 +50,32 @@ function App() {
     LECTURER: [2, 15, 17, 17.1, 18, 20, 22, 24, 34, 37, 41],
     DEPARTMENT_HEAD: [
       2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 20, 22, 23, 25, 26, 27, 30, 31,
-      32, 33, 34, 36, 16, 39, 40, 50, 51,
+      32, 33, 34, 36, 16, 39, 40, 49, 50, 51, 52,
     ],
     DIRECTORATE: [
       1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
-      34, 35, 36, 38, 16, 40, 44, 47, 48, 50,
+      34, 35, 36, 38, 16, 40, 44, 47, 50,
     ],
     UNIT_ADMIN: [
       2, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
-      34, 35, 36, 38, 16, 40, 42, 48, 50,
+      34, 35, 36, 38, 16, 40, 48, 42, 50,
     ],
     EDUCATOR: [15, 24, 41],
     DEPUTY_DIRECTORATE: [
       1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
-      34, 35, 36, 38, 16, 40, 44, 47, 48, 50,
+      34, 35, 36, 38, 16, 40, 44, 47, 50,
     ],
     DEPUTY_DEPARTMENT_HEAD: [
       2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 20, 22, 23, 25, 26, 27, 30, 31,
-      32, 33, 34, 36, 16, 39, 40, 50, 51,
+      32, 33, 34, 36, 16, 39, 40, 49, 50, 51, 52,
     ],
     GIGA_ADMIN: [
       1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 29, 30,
       31, 34, 35, 36, 38, 16, 40, 44, 46, 48, 50,
     ],
     GOD: [
-      1, 3, 4, 8, 9, 10, 11, 11.1, 12, 13, 14, 17, 18, 20, 21, 22, 23, 25, 26,
-      27, 28, 29, 30, 31, 34, 35, 36, 38, 16, 40, 44, 45, 46, 48, 50,
+      1, 3, 4, 8, 8.1, 9, 10, 11, 11.1, 12, 13, 14, 17, 18, 20, 21, 22, 23, 25,
+      26, 27, 28, 29, 30, 31, 34, 35, 36, 38, 16, 40, 44, 45, 46, 48, 50,
     ],
   };
   // appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)
@@ -86,8 +87,13 @@ function App() {
   const [createEdicatorPopUp, setcreateEdicatorPopUp] = useState(false); //popUp error visible
   const [selectedComponent, setSelectedComponent] = useState("Disciplines");
   const [loaderAction, setLoaderAction] = useState(false);
+  const [universalPopupTitle, setUniversalPopupTitle] = useState(""); // если он не пустой, то открывается универсальный попап с данным title
+  const [hoursWorkloadSumma, setHoursWorkloadSumma] = useState([]);
+
+  const [popupErrorText, setPopupErrorText] = useState("");
 
   const appData = {
+    hoursWorkloadSumma,
     individualCheckboxes,
     setIndividualCheckboxes,
     educator,
@@ -119,6 +125,10 @@ function App() {
     setMyProfile,
     WhyColor,
     funSaveAllData,
+    universalPopupTitle,
+    setUniversalPopupTitle,
+    popupErrorText,
+    setPopupErrorText,
   };
 
   useEffect(() => {
@@ -199,8 +209,8 @@ function App() {
   };
   // храним id и ключь измененных td для подсвечивания
   const [changedData, setChangedData] = useState(changedDataObj);
-  const [isChecked, setIsChecked] = useState([]); // состояние инпутов в SamplePoints
-  const [isAllChecked, setAllChecked] = useState(true); // инпут все в SamplePoints
+  const [isChecked, setIsChecked] = useState([]); // состояние инпутов в SamplePoints //! сбросить
+  const [isAllChecked, setAllChecked] = useState([]); // инпут все в SamplePoints //! сбросить
   const checkPar = {
     isChecked,
     setIsChecked,
@@ -549,6 +559,16 @@ function App() {
     if (myProfile) {
       setnameKaf(tableDepartment[0]?.name);
       updateAlldata();
+      if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 52)) {
+        getAllocatedAndUnallocatedWrokloadHours(
+          appData.myProfile?.educator.departmentId
+        ).then((resp) => {
+          if (resp.status === 200) {
+            setHoursWorkloadSumma(resp.data);
+            console.log("hoursWorkloadSumma", hoursWorkloadSumma);
+          }
+        });
+      }
     }
   }, [tableDepartment, myProfile]); // [myProfile, tableDepartment]
 

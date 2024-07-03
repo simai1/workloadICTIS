@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./../TableWorkload.module.scss";
 import DataContext from "../../../context";
 import OverlapWindow from "./OverlapWindow";
 import Comments from "./Comments";
 import Offers from "./Offers";
+import { FilteredSample } from "../../../ui/SamplePoints/Function";
 function InputCheckbox(props) {
-  const { appData, tabPar, basicTabData } = React.useContext(DataContext);
+  const { appData, tabPar, basicTabData, checkPar } = React.useContext(DataContext);
+  const [isHovered, setIsHovered] = useState(false);
 
   //! функция определения есть ли комментарии к строке
   const getComment = () => {
@@ -25,11 +27,38 @@ function InputCheckbox(props) {
     backgroundColor: props.bgColor,
   };
 
+    //!функция сброса фильтров
+    const refreshFilters = () => {
+        checkPar.setIsChecked([]);
+        checkPar.setAllChecked([]);
+        sessionStorage.setItem("isCheckedWorkload", null);
+        const fdfix = FilteredSample(
+          basicTabData.workloadData,
+          [],
+          "idasdasd"
+        );
+        basicTabData.setWorkloadDataFix(fdfix);
+      
+    };
+
   return (
     <>
       {props.th ? (
         <th style={stylesTh} className={styles.InputCheckbox}>
-          <div className={styles.bacground}></div>
+          <div className={styles.bacground}>
+          <img
+            src="./img/ClearFilter.svg"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            onClick={refreshFilters}
+          />
+            {isHovered && (
+              <div className={styles.BlockTextFilter}>
+                <div className={styles.triangle}></div>
+                <p className={styles.textFilter}>Сбросить фильтры</p>
+              </div>
+            )}
+          </div>
           <input
             onChange={(e) => props.clickTr(e, props.itemId)}
             type="checkbox"
@@ -57,9 +86,15 @@ function InputCheckbox(props) {
             props.workload?.isSplit === true && (
               <div className={styles.isSplit}>
                 <span>Разделенная</span>
-                {props.workload?.isSplitArrow === true && (
-                  <img src="img/Arrow.svg" alt=">" />
-                )}
+              </div>
+            )
+          }
+          {
+            //! после резделения или обьединения исходную помечаем
+            props.workload?.isSplitArrow === true && (
+              <div className={styles.isSplit}>
+                <span>Исходная</span>
+                <img src="img/Arrow.svg" alt=">" />
               </div>
             )
           }

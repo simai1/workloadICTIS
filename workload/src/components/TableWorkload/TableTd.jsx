@@ -25,12 +25,19 @@ function TableTd(props) {
       props.itemKey.key === "audienceHours"
     ) {
       return onTextArea;
+    } else if (
+      appData.metodRole[appData.myProfile?.role]?.some((el) => el === 8.1)
+    ) {
+      return onTextArea;
     }
   };
 
   const onChangeTextareaTd = (e) => {
     const query = e.target.value;
+    console.log(Number(query));
     if (query === "") {
+      setTextareaTd(query);
+    } else if (query === "0") {
       setTextareaTd(query);
     } else if (Number(query)) {
       setTextareaTd(query);
@@ -52,22 +59,19 @@ function TableTd(props) {
   const onClickButton = () => {
     let parsedValue = parseFloat(textareaTd);
     let numberValue = isNaN(parsedValue) ? textareaTd : parsedValue;
-
     //! параметры запроса на изменение данных
     const data = {
       id: props.item.id,
       key: props.itemKey.key,
       value: numberValue,
     };
-
-    if (numberValue) {
+    if (numberValue || textareaTd === "0") {
       const updatedArray = basicTabData.workloadDataFix.map((item) => {
         if (item.id === props.item.id) {
           return { ...item, [props.itemKey.key]: numberValue };
         }
         return item;
       });
-
       basicTabData.setWorkloadDataFix(updatedArray);
       basicTabData.setFiltredData(updatedArray);
       const workloadId = data.id;
@@ -82,6 +86,7 @@ function TableTd(props) {
         ...appData.bufferAction,
       ]);
       let cd = { ...tabPar.changedData };
+      console.log("props.itemKey.key", cd);
       cd[props.itemKey.key] = [...cd[props.itemKey.key], props.item.id];
       tabPar.setChangedData(cd);
       setOnTextArea(false);
@@ -131,6 +136,9 @@ function TableTd(props) {
     let text = styles.tdInner;
     if (showFullText && props.item[props.itemKey.key]?.length > lenSlice) {
       text = `${text} ${styles.gettdInner}`;
+    }
+    if (props.item.isSplitArrow === true) {
+      text = `${text} ${styles.tdInnerIsSplitArrow}`;
     }
     return text;
   };

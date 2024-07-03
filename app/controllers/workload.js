@@ -500,89 +500,172 @@ export default {
         res.json({ status: 'OK' });
     },
 
-    async mapRow({ body: { ids }, user }, res) {
-        const workloads = await Workload.findAll({ where: { id: ids } }, { include: { model: Educator } });
-
-        if (!ids) {
-            throw new AppErrorMissing('id');
-        }
-        // Проверка массива нагрузок на идентичность полей для соединения
-        const firstWorkload = workloads[0];
-        if (
-            workloads.some(
-                workload =>
-                    workload.department !== firstWorkload.department ||
-                    workload.workload !== firstWorkload.workload ||
-                    workload.discipline !== firstWorkload.discipline ||
-                    workload.core !== firstWorkload.core ||
-                    workload.specialty !== firstWorkload.specialty ||
-                    workload.hours !== firstWorkload.hours
-            )
-        ) {
-            return res.status(400).json({
-                error: 'Invalid request. Department, workload, and discipline must be the same for all workloads.',
-            });
-        }
-
-        // Совмещаем часы
-        let totalStudents = 0;
-
-        workloads.forEach(workload => {
-            totalStudents += workload.numberOfStudents;
-        });
-
-        // Создаем совмещенную нагрузку
-        const mergeWorkload = {
-            department: firstWorkload.get('department'),
-            discipline: firstWorkload.get('discipline'),
-            workload: firstWorkload.get('workload'),
-            groups: firstWorkload.get('groups'),
-            block: firstWorkload.get('block'),
-            semester: firstWorkload.get('semester'),
-            period: firstWorkload.get('period'),
-            curriculum: firstWorkload.get('curriculum'),
-            curriculumUnit: firstWorkload.get('curriculumUnit'),
-            formOfEducation: firstWorkload.get('formOfEducation'),
-            levelOfTraining: firstWorkload.get('levelOfTraining'),
-            specialty: firstWorkload.get('specialty'),
-            core: firstWorkload.get('core'),
-            numberOfStudents: totalStudents,
-            hours: firstWorkload.get('hours'),
-            audienceHours: firstWorkload.get('audienceHours'),
-            ratingControlHours: firstWorkload.get('ratingControlHours'),
-            comment: firstWorkload.get('comment'),
-            isSplit: false,
-            isMerged: true,
-            originalId: null,
-            isOid: firstWorkload.get('isOid'),
-            kafedralAutumnWorkload: firstWorkload.get('kafedralAutumnWorkload'),
-            kafedralSpringWorkload: firstWorkload.get('kafedralSpringWorkload'),
-            kafedralAdditionalWorkload: firstWorkload.get('kafedralAdditionalWorkload'),
-            instituteAutumnWorkload: firstWorkload.get('instituteAutumnWorkload'),
-            instituteSpringWorkload: firstWorkload.get('instituteSpringWorkload'),
-            instituteManagementWorkload: firstWorkload.get('instituteManagementWorkload'),
-        };
-
-        const createdWorkload = await Workload.create(mergeWorkload);
-
-        // Удаляем записи которые учавствовали в совмещении
+    async merge(req, res){
+        const { ids } = req.body;
+        const { type } = req.query;
+        if (!ids) throw new AppErrorMissing('ids');
+        const workloads = await Workload.findAll({ where: { id: ids } });
+        const audienceHours = workloads[0].audienceHours;
+        const numberOfStudents = workloads[0].numberOfStudents;
+        const first = workloads[0];
+        let newWorkloadData;
+        if (type === 'g' && workloads.every(w => w.audienceHours === audienceHours)){
+            // Объединение по подгруппам
+            const newNumberOfStudents = workloads.reduce((accumulator, currentValue) => accumulator + currentValue.numberOfStudents, 0);
+            newWorkloadData = {
+                department: first.department,
+                discipline: first.discipline,
+                workload: first.workload,
+                groups: first.groups,
+                block: first.block,
+                semester: first.semester,
+                period: first.period,
+                curriculum: first.curriculum,
+                curriculumUnit: first.curriculumUnit,
+                formOfEducation: first.formOfEducation,
+                levelOfTraining: first.levelOfTraining,
+                specialty: first.specialty,
+                core: first.core,
+                numberOfStudents: newNumberOfStudents,
+                hours: Math.round((newNumberOfStudents * first.audienceHours * 0.01 + first.audienceHours) * 100) / 100,
+                audienceHours: first.audienceHours,
+                ratingControlHours: Math.round((newNumberOfStudents * first.audienceHours * 0.01) * 100) / 100,
+                comment: first.comment ? first.comment : null,
+                isSplit: false,
+                isMerged: true,
+                originalId: null,
+                educatorId: null,
+                isOid: first.isOid,
+            }
+        } else if (type === 'h' && workloads.every(w => (w.numberOfStudents === numberOfStudents) && w.isSplit)){
+            // Объединение по часам
+            newWorkloadData = {
+                department: first.department,
+                discipline: first.discipline,
+                workload: first.workload,
+                groups: first.groups,
+                block: first.block,
+                semester: first.semester,
+                period: first.period,
+                curriculum: first.curriculum,
+                curriculumUnit: first.curriculumUnit,
+                formOfEducation: first.formOfEducation,
+                levelOfTraining: first.levelOfTraining,
+                specialty: first.specialty,
+                core: first.core,
+                numberOfStudents: first.numberOfStudents,
+                hours: workloads.reduce((accumulator, currentValue) => accumulator + currentValue.hours, 0),
+                audienceHours: workloads.reduce((accumulator, currentValue) => accumulator + currentValue.audienceHours, 0),
+                ratingControlHours: workloads.reduce((accumulator, currentValue) => accumulator + currentValue.ratingControlHours, 0),
+                comment: first.comment ? first.comment : null,
+                isSplit: false,
+                isMerged: true,
+                originalId: null,
+                educatorId: null,
+                isOid: first.isOid,
+            }
+        } else throw new AppErrorInvalid('type');
+        const newWorkload = await Workload.create(newWorkloadData);
         workloads.reduce((chain, workload) => {
             return chain.then(() => workload.destroy());
         }, Promise.resolve());
 
         await History.create({
             type: 2,
-            department: workloads[0].department,
-            before: getIds(workloads),
-            after: [createdWorkload.id],
+            department: first.department,
+            before: ids,
+            after: [newWorkload.id,],
         });
 
-        const responseData = {
-            id: createdWorkload.id,
-            ...mergeWorkload,
-        };
-        res.json(responseData);
+        res.json({
+            id: newWorkloadData.id,
+            ...newWorkload,
+        })
     },
+
+    // async mapRow({ body: { ids }, user }, res) {
+    //     const workloads = await Workload.findAll({ where: { id: ids } }, { include: { model: Educator } });
+    //
+    //     if (!ids) {
+    //         throw new AppErrorMissing('id');
+    //     }
+    //     // Проверка массива нагрузок на идентичность полей для соединения
+    //     const firstWorkload = workloads[0];
+    //     if (
+    //         workloads.some(
+    //             workload =>
+    //                 workload.department !== firstWorkload.department ||
+    //                 workload.workload !== firstWorkload.workload ||
+    //                 workload.discipline !== firstWorkload.discipline ||
+    //                 workload.core !== firstWorkload.core ||
+    //                 workload.specialty !== firstWorkload.specialty ||
+    //                 workload.hours !== firstWorkload.hours
+    //         )
+    //     ) {
+    //         return res.status(400).json({
+    //             error: 'Invalid request. Department, workload, and discipline must be the same for all workloads.',
+    //         });
+    //     }
+    //
+    //     // Совмещаем часы
+    //     let totalStudents = 0;
+    //
+    //     workloads.forEach(workload => {
+    //         totalStudents += workload.numberOfStudents;
+    //     });
+    //
+    //     // Создаем совмещенную нагрузку
+    //     const mergeWorkload = {
+    //         department: firstWorkload.get('department'),
+    //         discipline: firstWorkload.get('discipline'),
+    //         workload: firstWorkload.get('workload'),
+    //         groups: firstWorkload.get('groups'),
+    //         block: firstWorkload.get('block'),
+    //         semester: firstWorkload.get('semester'),
+    //         period: firstWorkload.get('period'),
+    //         curriculum: firstWorkload.get('curriculum'),
+    //         curriculumUnit: firstWorkload.get('curriculumUnit'),
+    //         formOfEducation: firstWorkload.get('formOfEducation'),
+    //         levelOfTraining: firstWorkload.get('levelOfTraining'),
+    //         specialty: firstWorkload.get('specialty'),
+    //         core: firstWorkload.get('core'),
+    //         numberOfStudents: totalStudents,
+    //         hours: firstWorkload.get('hours'),
+    //         audienceHours: firstWorkload.get('audienceHours'),
+    //         ratingControlHours: firstWorkload.get('ratingControlHours'),
+    //         comment: firstWorkload.get('comment'),
+    //         isSplit: false,
+    //         isMerged: true,
+    //         originalId: null,
+    //         isOid: firstWorkload.get('isOid'),
+    //         kafedralAutumnWorkload: firstWorkload.get('kafedralAutumnWorkload'),
+    //         kafedralSpringWorkload: firstWorkload.get('kafedralSpringWorkload'),
+    //         kafedralAdditionalWorkload: firstWorkload.get('kafedralAdditionalWorkload'),
+    //         instituteAutumnWorkload: firstWorkload.get('instituteAutumnWorkload'),
+    //         instituteSpringWorkload: firstWorkload.get('instituteSpringWorkload'),
+    //         instituteManagementWorkload: firstWorkload.get('instituteManagementWorkload'),
+    //     };
+    //
+    //     const createdWorkload = await Workload.create(mergeWorkload);
+    //
+    //     // Удаляем записи которые учавствовали в совмещении
+    //     workloads.reduce((chain, workload) => {
+    //         return chain.then(() => workload.destroy());
+    //     }, Promise.resolve());
+    //
+    //     await History.create({
+    //         type: 2,
+    //         department: workloads[0].department,
+    //         before: getIds(workloads),
+    //         after: [createdWorkload.id],
+    //     });
+    //
+    //     const responseData = {
+    //         id: createdWorkload.id,
+    //         ...mergeWorkload,
+    //     };
+    //     res.json(responseData);
+    // },
 
     async deleteWorkload({ params: { id } }, res) {
         if (!id) throw new AppErrorMissing('id');

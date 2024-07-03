@@ -9,7 +9,11 @@ function SplitByHoursPopup() {
   //! вводим в инпут часы и записываем в состояние
   const changeHours = (e, index) => {
     let prevVal = [...tabPar.inputEditValue];
-    prevVal[index] = Number(e.target.value) ? Number(e.target.value) : "";
+    prevVal[index] = e.target.value;
+    // ? Number(e.target.value)
+    // : e.target.value === "0"
+    // ? 0
+    // : "";
     tabPar.setInputEditValue(prevVal);
   };
 
@@ -30,6 +34,8 @@ function SplitByHoursPopup() {
         ...bufdat.data.hoursData[i],
         id: updatedData[indexWorkload].id + (i + 1),
         isMerged: false,
+        isSplit: true,
+        educator: "___",
       };
       newValue.push(origHours);
     }
@@ -40,7 +46,7 @@ function SplitByHoursPopup() {
       {
         ...updatedData[indexWorkload],
         id: updatedData[indexWorkload].id + 0,
-        isSplit: true,
+        isSplit: false,
         isSplitArrow: true,
         isMerged: false,
       },
@@ -70,10 +76,12 @@ function SplitByHoursPopup() {
     // tabPar.setContextMenuShow(false);
     //! расчитаем часы для буффера
     let hoursData = [];
+    console.log(tabPar.tableDataHoursPopup);
     for (let i = 0; i < Number(tabPar.inpValueHoursPopup); i++) {
       const origHours = {
+        numberOfStudents: tabPar.tableDataHoursPopup?.numberOfStudents,
         hours: Number(funCalculationHours(i)),
-        audienceHours: tabPar.inputEditValue[i],
+        audienceHours: Number(tabPar.inputEditValue[i]),
         ratingControlHours: Number(funCalculationRatingControlHours(i)),
       };
       hoursData.push(origHours);
@@ -101,20 +109,20 @@ function SplitByHoursPopup() {
     tabPar.setTableDataHoursPopup(null);
     tabPar.setInpValueHoursPopup(2);
     tabPar.setInputEditValue([]);
-    tabPar.setBuffDataHoursPopup(null);
     tabPar.setPopupShareShow(false);
+    tabPar.setBuffDataHoursPopup(null);
   };
 
-  //   useEffect(() => {
-  //     console.log("tabPar.buffDataHoursPopup", tabPar.buffDataHoursPopup);
-  //   }, [tabPar.buffDataHoursPopup, tabPar.changedData]);
+  // React.useEffect(() => {
+  //   console.log("tabPar.buffDataHoursPopup", tabPar.buffDataHoursPopup);
+  // }, [tabPar.buffDataHoursPopup, tabPar.changedData]);
 
   //! функция расчета часов
   const funCalculationHours = (index) => {
     let value = 0;
     if (tabPar.inputEditValue[index]) {
       value =
-        (tabPar.inputEditValue[index] /
+        (Number(tabPar.inputEditValue[index]) /
           tabPar.tableDataHoursPopup.audienceHours) *
         tabPar.tableDataHoursPopup.hours;
     }
@@ -124,9 +132,9 @@ function SplitByHoursPopup() {
   //! функция расчета часов рейтинг-констроль
   const funCalculationRatingControlHours = (index) => {
     let value = 0;
-    if (tabPar.inputEditValue[index]) {
+    if (Number(tabPar.inputEditValue[index])) {
       value =
-        (tabPar.inputEditValue[index] /
+        (Number(tabPar.inputEditValue[index]) /
           tabPar.tableDataHoursPopup.audienceHours) *
         tabPar.tableDataHoursPopup.ratingControlHours;
     }
@@ -136,7 +144,7 @@ function SplitByHoursPopup() {
   //! функция для расчета совпадает ли сумма введенных данных с исходными
   const funCalcInputHours = () => {
     const sum = tabPar.inputEditValue?.reduce(
-      (accumulator, currentValue) => accumulator + currentValue,
+      (accumulator, currentValue) => Number(accumulator) + Number(currentValue),
       0
     );
     return !(tabPar.tableDataHoursPopup.audienceHours === sum);
@@ -179,8 +187,8 @@ function SplitByHoursPopup() {
                         className={styles.errorBorder}
                         placeholder="0"
                         value={
-                          tabPar.inputEditValue[index]
-                            ? tabPar.inputEditValue[index]
+                          Number(tabPar.inputEditValue[index])
+                            ? Number(tabPar.inputEditValue[index])
                             : ""
                         }
                         type="number"

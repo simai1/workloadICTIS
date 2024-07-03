@@ -87,6 +87,7 @@ export const CreateEducator = async (data) => {
     return response;
   } catch (error) {
     console.error("Error:", error);
+    return error;
     //throw error;
   }
 };
@@ -204,11 +205,23 @@ export const addEducatorWorkload = async (data) => {
 
 //! запрос на разделение нагрузки
 export const splitWorkload = async (data) => {
-  console.log("Разделение нагрузки ", data);
+  console.log("Разделение нагрузки по подгруппам", data);
   try {
     const response = await http.post(`${server}/workload/split`, data);
     console.log("response ", response);
-    return response.data;
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};
+
+//! запрос на разделение нагрузки по часам
+export const apiSplitByHours = async (data) => {
+  console.log("Разделение нагрузки по часам ", data);
+  try {
+    const response = await http.post(`${server}/workload/splitByHours`, data);
+    return response;
   } catch (error) {
     console.error("Error:", error);
     //throw error;
@@ -216,10 +229,10 @@ export const splitWorkload = async (data) => {
 };
 
 //! запрос на соединение нагрузки
-export const joinWorkloads = async (data) => {
-  console.log("Соединение нагрузки ", data);
+export const joinWorkloads = async (data, action) => {
+  console.log("Соединение нагрузки ", data, action);
   try {
-    const response = await http.post(`${server}/workload/map`, data);
+    const response = await http.post(`${server}/workload/map${action}`, data);
     console.log("response ", response);
     return response.data;
   } catch (error) {
@@ -354,9 +367,9 @@ export const workloadUpdata = async (data) => {
 
 //! запрос на изменени данных в админке
 export const apiAdminUpdata = async (data) => {
-  console.log("изменение данных нагрузки ", data);
+  console.log("изменение данных админке ", data);
   try {
-    const response = await http.patch(`${server}/users/${data.id}/update`, {
+    const response = await http.put(`${server}/user/${data.id}/update`, {
       [data.key]: data.value,
     });
     console.log("response ", response);
@@ -577,7 +590,9 @@ export const GetAllDepartments = async () => {
 //! Разблокироование таблицы
 export const ApiUnblockTable = async (indexTable) => {
   try {
-    const response = await http.patch(`${server}/workload/unblock/${indexTable}`);
+    const response = await http.patch(
+      `${server}/workload/unblock/${indexTable}`
+    );
     return response;
   } catch (error) {
     console.error("Error:", error);
@@ -585,5 +600,29 @@ export const ApiUnblockTable = async (indexTable) => {
   }
 };
 
+//! Получение текущей суммы и остатка по нагрузкам для ЗК
+export const getAllocatedAndUnallocatedWrokloadHours = async (
+  indexDepartment
+) => {
+  try {
+    const response = await http.get(
+      `${server}/workload/getAllocatedAndUnallocatedWrokloadHours/${indexDepartment}`
+    );
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};
 
-//ИАСБ
+//! запрос на разблокирование таблицы
+export const UnblockTablePlease = async (indexDepartment) => {
+  const data = { department: indexDepartment };
+  try {
+    const response = await http.post(`${server}/workload/requestUnblock`, data);
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};

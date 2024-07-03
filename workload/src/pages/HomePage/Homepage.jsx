@@ -38,9 +38,10 @@ import UnlockDepartment from "../../ui/UnlockDepartment/UnlockDepartment";
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
 import SplitByHoursPopup from "../../components/SplitByHoursPopup/SplitByHoursPopup";
+import { UniversalPopup } from "../../ui/UniversalPopup/UniversalPopup";
 
 function HomePage() {
-  const { appData, tabPar, visibleDataPar, basicTabData } =
+  const { appData, tabPar, visibleDataPar, basicTabData, checkPar } =
     React.useContext(DataContext);
   //! заголовки таблиц
   const workloadTableHeaders = headers; // заголовок таблицы на главной странице
@@ -328,7 +329,7 @@ function HomePage() {
       `Экспорт_Таблицы_${nameDepartment}_${formattedDate}.xlsx`
     );
   };
-
+  
   useEffect(() => {
     setBlockTable(checkBlocked);
   }, [
@@ -385,6 +386,7 @@ function HomePage() {
                   (el) => el === 25 && appData.selectedComponent !== "Teachers"
                 ) && (
                   <div
+                  title="Отмена действия"
                     className={styles.btnMenuBox}
                     onClick={appData.backBuffer}
                   >
@@ -398,7 +400,7 @@ function HomePage() {
                 ) &&
                   appData.selectedComponent === "Disciplines" &&
                   !blockTable && (
-                    <div className={styles.btnMenuBox} onClick={onSaveClick}>
+                    <div className={styles.btnMenuBox} onClick={onSaveClick} title="Сохранение изменений">
                       <img
                         className={styles.btnLeft}
                         src="./img/saveButton.svg"
@@ -418,8 +420,8 @@ function HomePage() {
                   appData.selectedComponent === "Disciplines" &&
                   basicTabData.nameKaf != "Все" &&
                   blockTable && (
-                    <div className={styles.btnMenuBox} onClick={onUnblockClick}>
-                      <img className={styles.btnLeft} src="./img/unblock.svg" />
+                    <div className={styles.btnMenuBox} onClick={onUnblockClick} title="Разблокировать таблицу">
+                      <img className={styles.btnLeft} src="./img/unblock.svg"/>
                       {popupUnblockTable && (
                         <UnlockDepartment
                           title={`Вы уверены, что хотите разблокировать таблицу ${basicTabData.nameKaf} ?`}
@@ -433,7 +435,7 @@ function HomePage() {
                 ) &&
                   appData.selectedComponent === "Disciplines" &&
                   blockTable && (
-                    <div className={styles.btnMenuBox} onClick={onUnblockClick}>
+                    <div className={styles.btnMenuBox} onClick={onUnblockClick} title="Попросить разблокировать таблицу">
                       <img className={styles.btnLeft} src="./img/unblock.svg" />
                       {popupUnblockTable && (
                         <UnlockDepartment
@@ -458,6 +460,7 @@ function HomePage() {
                     style={{ marginRight: "15px" }}
                     className={styles.btnMenuBox}
                     onClick={onExportClick}
+                    title="Выгрузка таблицы для методистов"
                   >
                     <img className={styles.btnLeft} src="./img/export.svg" />
                     {popupExport && (
@@ -495,6 +498,7 @@ function HomePage() {
                 <img src="./img/search.svg"></img>
               </div>
             </div>
+           
             <div className={styles.header_button}>
               <Button
                 Bg={
@@ -567,13 +571,15 @@ function HomePage() {
               {appData.metodRole[appData.myProfile?.role]?.some(
                 (el) => el === 30
               ) && (
-                <Warnings
-                  setEducatorIdforLk={setEducatorIdforLk}
-                  educatorIdforLk={educatorIdforLk}
-                  className={styles.Warnings}
-                  setSelectedComponent={appData.setSelectedComponent}
-                  setEducatorData={setEducatorData}
-                />
+                <div title="Уведомления">
+                  <Warnings
+                    setEducatorIdforLk={setEducatorIdforLk}
+                    educatorIdforLk={educatorIdforLk}
+                    className={styles.Warnings}
+                    setSelectedComponent={appData.setSelectedComponent}
+                    setEducatorData={setEducatorData}
+                  />
+                </div>
               )}
               <Profile
                 className={styles.Profile}
@@ -748,6 +754,7 @@ function HomePage() {
       )}
       {appData.createEdicatorPopUp && <PopUpCreateEmploy />}
       {appData.errorPopUp && <PopUpError />}
+
       {appData.godPopUp && <PopUpGoodMessage />}
       {tabPar.popupShareShow && <SplitByHoursPopup />}
     </Layout>

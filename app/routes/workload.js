@@ -142,7 +142,7 @@ router
                 role.DEPUTY_DEPARTMENT_HEAD,
             ])
         ),
-        asyncRoute(workloadController.mapRow)
+        asyncRoute(workloadController.merge)
     );
 router
     .route('/delete/:id')

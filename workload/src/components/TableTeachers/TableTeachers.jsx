@@ -18,13 +18,14 @@ function TableTeachers(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]);
   const [updatedData, setUpdatedData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const { appData, basicTabData } = React.useContext(DataContext);
+  const { appData, basicTabData, checkPar } = React.useContext(DataContext);
   const [sampleShow, setSampleShow] = useState(false);
   const [sampleData, setSampleData] = useState([]);
   const [selectRows, setSelectRow] = useState(null);
   const [vizibleCont, setVizibleCont] = useState(false);
   const tableHeaders = headersEducator;
   const [positionMenu, setPositionMenu] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
 
   const [isChecked, setIsChecked] = useState([]); // состояние инпутов в SamplePoints для преподавателей
   const [isAllChecked, setAllChecked] = useState(true); // инпут все в SamplePoints для преподавателей
@@ -40,10 +41,6 @@ function TableTeachers(props) {
     const ssIsChecked = JSON.parse(sessionStorage.getItem("isCheckedTeachers"));
     if (ssIsChecked && ssIsChecked !== null && ssIsChecked.length > 0) {
       setIsChecked(ssIsChecked);
-      setAllChecked(false);
-    }
-    if (isChecked.length !== 0) {
-      setAllChecked(false);
     }
   }, []);
 
@@ -239,6 +236,20 @@ function TableTeachers(props) {
     } else return "";
   };
 
+ //!функция сброса фильтров
+ const refreshFilters = () => {
+    setIsChecked([]);
+    setAllChecked([]);
+    sessionStorage.setItem("isCheckedTeachers", null);
+    const fdfix = FilteredSample(
+      updatedData,
+      [],
+      "idasdasd"
+    );
+    setFilteredData(fdfix);
+      console.log("click")
+  };
+
   const funGetStyle = (action) => {
     let mass = [];
     if (action) {
@@ -271,8 +282,24 @@ function TableTeachers(props) {
           }}
         />
       ) : (
-        <div style={{ height: "59px" }}></div>
+        <div style={{ height: "59px" }}> 
+        </div>
       )}
+
+      
+      <div className={styles.filterdClear}>
+        <img src="./img/ClearFilter.svg"
+           onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            onClick={refreshFilters}
+        />
+         {isHovered && (
+              <div className={styles.BlockTextFilter}>
+                <div className={styles.triangle}></div>
+                <p className={styles.textFilter}>Сбросить фильтры</p>
+              </div>
+            )}
+      </div>
       <div className={styles.TableTeachers__inner}>
         <table className={styles.table}>
           <thead>

@@ -1,25 +1,17 @@
 import React from "react";
-import styles from "./PopUpError.module.scss";
+import styles from "./UniversalPopup.module.scss";
 import Button from "../Button/Button";
 import DataContext from "../../context";
 
-export function PopUpError() {
+export function UniversalPopup(props) {
   const { appData } = React.useContext(DataContext);
-
   return (
     <div className={styles.mainPop}>
       <div className={styles.mainPop__inner}>
-        <p>
-          {appData.popupErrorText !== ""
-            ? appData.popupErrorText
-            : "Извините, данную операцию невозможно выполнить"}
-        </p>
+        <p>{appData.universalPopupTitle}</p>
         <div className={styles.buttonBlock}>
           <Button
-            onClick={() => {
-              appData.seterrorPopUp(false);
-              appData.setPopupErrorText("");
-            }}
+            onClick={() => appData.setUniversalPopupTitle("")}
             text="Закрыть"
             Bg="#3b28cc"
             textColot="#fff"

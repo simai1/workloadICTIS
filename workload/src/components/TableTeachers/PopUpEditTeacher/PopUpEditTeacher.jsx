@@ -76,11 +76,9 @@ export function PopUpEditTeacher(props) {
   const handleClicks = () => {
     let depart;
     let position;
-    console.log(dataNewEdicator);
-    !Number(dataNewEdicator?.department) && appData.metodRole[appData.myProfile?.role]?.some((el) => el === 39) 
-      ? (depart = appData.myProfile?.educator?.departmentId)
-      : (depart = dataKaf.find((el)=>el.name === dataNewEdicator?.department).id );
-    !Number(dataNewEdicator?.position)
+      appData.metodRole[appData.myProfile?.role]?.some((el) => el === 39) ? depart = appData.myProfile?.educator?.departmentId : depart = dataNewEdicator?.department
+    
+      !Number(dataNewEdicator?.position)
       ? (position = dataListPosition.find(
           (el) => el.name === dataNewEdicator?.position
         )?.id)
@@ -95,7 +93,8 @@ export function PopUpEditTeacher(props) {
           : dataNewEdicator?.rate,
       department: depart,
     };
-
+    
+    console.log("data", data)
     EditTeacher(selectedRowsId, data).then((resp) => {
       if (resp.status === 200) {
         props.updateTable();

@@ -23,7 +23,10 @@ export async function bufferRequestToApi(buffer) {
     }
     // разделения нагрузки
     else if (buffer[i].request === "splitWorkload") {
-      await splitWorkload(buffer[i].data);
+      const data = {
+        workloads: buffer[i].hoursData,
+      };
+      await splitWorkload(data);
       count++;
     }
 
@@ -132,7 +135,7 @@ export function fixDataBuff(data, bufferAction) {
         }
       });
     }
-    
+
     //! если запрос на обьединение
     else if (bufferItem.request === "joinWorkloads") {
       newData = newData.flatMap((item) => {
