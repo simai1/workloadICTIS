@@ -564,6 +564,32 @@ export default {
                 educatorId: null,
                 isOid: first.isOid,
             }
+        } else if (type==='vkr'){
+            newWorkloadData = {
+                department: first.department,
+                discipline: first.discipline,
+                workload: first.workload,
+                groups: first.groups,
+                block: first.block,
+                semester: first.semester,
+                period: first.period,
+                curriculum: first.curriculum,
+                curriculumUnit: first.curriculumUnit,
+                formOfEducation: first.formOfEducation,
+                levelOfTraining: first.levelOfTraining,
+                specialty: first.specialty,
+                core: first.core,
+                numberOfStudents: first.numberOfStudents,
+                hours: first.hours,
+                audienceHours: first.audienceHours,
+                ratingControlHours: first.ratingControlHours,
+                comment: first.comment ? first.comment : null,
+                isSplit: false,
+                isMerged: true,
+                originalId: null,
+                educatorId: null,
+                isOid: first.isOid,
+            };
         } else throw new AppErrorInvalid('type');
         const newWorkload = await Workload.create(newWorkloadData);
         workloads.reduce((chain, workload) => {
