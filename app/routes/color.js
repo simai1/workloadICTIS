@@ -11,25 +11,77 @@ router.use(verify.general);
 router
     .route('/getAllColors')
     .get(
-        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST, role.LECTURER, role.EDUCATOR])),
+        asyncRoute(
+            checkRole([
+                role.GOD,
+                role.GIGA_ADMIN,
+                role.UNIT_ADMIN,
+                role.DEPARTMENT_HEAD,
+                role.DIRECTORATE,
+                role.METHODIST,
+                role.LECTURER,
+                role.EDUCATOR,
+                role.DEPUTY_DIRECTORATE,
+                role.DEPUTY_DEPARTMENT_HEAD,
+            ])
+        ),
         asyncRoute(colorController.getAllColors)
     );
 router
     .route('/setColor')
     .post(
-        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST, role.LECTURER, role.EDUCATOR])),
+        asyncRoute(
+            checkRole([
+                role.GOD,
+                role.GIGA_ADMIN,
+                role.UNIT_ADMIN,
+                role.DEPARTMENT_HEAD,
+                role.DIRECTORATE,
+                role.METHODIST,
+                role.LECTURER,
+                role.EDUCATOR,
+                role.DEPUTY_DIRECTORATE,
+                role.DEPUTY_DEPARTMENT_HEAD,
+            ])
+        ),
         asyncRoute(colorController.setColor)
     );
 router
     .route('/changeColor')
     .patch(
-        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST, role.LECTURER, role.EDUCATOR])),
+        asyncRoute(
+            checkRole([
+                role.GOD,
+                role.GIGA_ADMIN,
+                role.UNIT_ADMIN,
+                role.DEPARTMENT_HEAD,
+                role.DIRECTORATE,
+                role.METHODIST,
+                role.LECTURER,
+                role.EDUCATOR,
+                role.DEPUTY_DIRECTORATE,
+                role.DEPUTY_DEPARTMENT_HEAD,
+            ])
+        ),
         asyncRoute(colorController.changeColors)
     );
 router
     .route('/deleteColors')
     .delete(
-        asyncRoute(checkRole([role.DEPARTMENT_HEAD, role.DIRECTORATE, role.METHODIST, role.LECTURER, role.EDUCATOR])),
+        asyncRoute(
+            checkRole([
+                role.GOD,
+                role.GIGA_ADMIN,
+                role.UNIT_ADMIN,
+                role.DEPARTMENT_HEAD,
+                role.DIRECTORATE,
+                role.METHODIST,
+                role.LECTURER,
+                role.EDUCATOR,
+                role.DEPUTY_DIRECTORATE,
+                role.DEPUTY_DEPARTMENT_HEAD,
+            ])
+        ),
         asyncRoute(colorController.deleteColor)
     );
 export default router;

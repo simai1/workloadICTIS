@@ -37,12 +37,6 @@ function TableHistory(props) {
 
   //! фильтрация по поиску
   useEffect(() => {
-    console.log(
-      "orighistoryData",
-      orighistoryData,
-      "props.searchTerm",
-      props.searchTerm
-    );
     const hd = filteredWorkloadHistory(orighistoryData, props.searchTerm);
     sethistoryData(hd);
   }, [props.searchTerm]);
@@ -58,16 +52,13 @@ function TableHistory(props) {
 
   useEffect(() => {
     apiGetHistory().then((req) => {
-      console.log("history", req);
-      const hd = req.filter(
+      const hd = req?.filter(
         (it) =>
           it.checked === tabPar.perenesenAction &&
           it.department === basicTabData.nameKaf
       );
-      console.log("история изменений", hd);
       //! преобразуем историю для вывода
       const fixHistory = funHistoryFix(hd);
-      console.log("fixHistory", fixHistory);
       sethistoryData(fixHistory);
       origsethistoryData(fixHistory);
 
@@ -85,7 +76,6 @@ function TableHistory(props) {
       ids: tabPar.selectedTr,
     };
     apiCheckedUpdate(data).then((res) => {
-      console.log(res, data);
       tabPar.setSelectedTr([]);
       setContetxShow(false);
       basicTabData.funUpdateHistory();

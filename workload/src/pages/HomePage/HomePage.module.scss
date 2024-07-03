@@ -41,6 +41,13 @@ body {
           border: 1px solid #b0b0b0;
           border-radius: 8px;
           color: #b0b0b0;
+          cursor: pointer;
+
+          &:hover {
+            cursor: pointer;
+            opacity: 0.6;
+            transition: opacity 0.15s ease;
+          }
 
           .hedaer_search_inner {
             width: 100%;
@@ -54,6 +61,7 @@ body {
             font-size: 18px;
             font-weight: 500;
             color: #000000;
+            cursor: pointer;
           }
           .hedaer_search::-webkit-input-placeholder {
             color: #b0b0b0;
@@ -62,9 +70,10 @@ body {
       }
       .header_left_component {
         display: flex;
+        position: relative;
         .Warnings {
           width: 45px;
-          margin-right: 12px;
+          margin-right: 15px;
         }
         // .Profile {
         // }
@@ -92,7 +101,6 @@ body {
         display: flex;
       }
     }
-
     .right_button {
       display: flex;
       flex-direction: row;
@@ -106,13 +114,21 @@ body {
         height: 44px;
         width: 176px;
         background-color: #fff;
-        margin-left: 16px;
+        margin-left: 12px;
         border-radius: 8px;
-        color: #0040e5;
+        color: var(--blue-color);
         justify-content: space-between;
         position: relative;
+        .export__img{
+          margin-right: 5px;
+        }
         input::placeholder {
-          color: #0040e5;
+          color: var(--blue-color);
+        }
+        &:hover {
+          cursor: pointer;
+          opacity: 0.75;
+          transition: opacity 0.2s ease;
         }
 
         input {
@@ -136,15 +152,19 @@ body {
           width: 176px;
           height: 42px;
           display: flex;
-          cursor: pointer;
           border: none;
           border-radius: 6px;
           align-items: center;
           justify-content: center;
+          &:hover{
+            cursor: pointer;
+          }
           p {
-            color: #0040e5;
+            color: var(--blue-color);
             font-size: 16px;
-            margin-right: 8px;
+            &:first-child{
+              margin-right: 8px;
+            }
           }
         }
       }
@@ -194,16 +214,17 @@ body {
 
   .perenesen {
     button {
-      @include button(var(--blue-color), #fff, 10px, 16px);
+      @include button(var(--blue-color), #fff, 9px, 16px);
       font-size: 18px;
       border: none;
     }
-    margin-left: 10px;
+    margin-left: 0px;
   }
 
   .saveBuffre {
     display: flex;
     flex-direction: row;
+
     .btnMenuBox {
       position: relative;
       display: flex;
@@ -215,11 +236,25 @@ body {
         padding-right: 10px;
       }
       cursor: pointer;
+      &:hover {
+        img {
+          cursor: pointer;
+          opacity: 0.6;
+          transition: opacity 0.15s ease;
+        }
+        .text {
+          opacity: 0.6;
+          transition: opacity 0.15s ease;
+        }
+      }
     }
     .btnMenuBox:nth-child(1) {
       margin-right: 15px;
     }
     .btnMenuBox:nth-child(2) {
+      margin-right: 15px;
+    }
+    .btnMenuBox:nth-child(3) {
       margin-right: 15px;
     }
   }

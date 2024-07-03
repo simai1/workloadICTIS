@@ -41,7 +41,6 @@ function Table(props) {
       }
     });
     props.setContetxShow(!props.contextShow);
-    console.log(e);
     props.setContextPosition({ x: e.clientX, y: e.clientY - 200 });
   };
 
@@ -139,8 +138,8 @@ function Table(props) {
               <td className={styles.tdfix2} style={{ pointerEvents: "none" }}>
                 <div className={styles.notdatadiv}>
                   {tabPar.perenesenAction
-                    ? "Нет данных"
-                    : "Нет перенесенных данных"}
+                    ? "Нет перенесенных данных"
+                    : "Нет данных"}
                 </div>
               </td>
             </tr>

@@ -4,7 +4,7 @@ import DataContext from "../../../context";
 import { FilteredSample } from "./Function";
 
 export function SamplePoints(props) {
-  const { tabPar, checkPar, basicTabData } = React.useContext(DataContext);
+  const { tabPar, basicTabData } = React.useContext(DataContext);
   const [searchText, setSearchText] = useState("");
 
   const handleInputChange = (event) => {
@@ -47,32 +47,43 @@ export function SamplePoints(props) {
 
   //! при нажатии на Input All
   const onAllChecked = () => {
-    const checked = checkPar.isAllChecked ? [...filteredData] : [];
-    let check = [];
-    checked.map((item) => {
-      check.push({ value: item, itemKey: props.itemKey });
-    });
-    checkPar.setIsChecked(check);
-    checkPar.setAllChecked(!checkPar.isAllChecked);
+    let checked = [...props.checkPar.isChecked];
+    if (
+      [...props.checkPar.isChecked].filter((el) => el.itemKey === props.itemKey)
+        .length > 0
+    ) {
+      checked = checked.filter((el) => el.itemKey !== props.itemKey);
+    } else {
+      [...filteredData].map((item) => {
+        checked.push({ value: item, itemKey: props.itemKey });
+      });
+    }
+    props.checkPar.setIsChecked(checked);
+    sessionStorage.setItem("isCheckedTeachers", JSON.stringify([...checked]));
+
     // Фильтруем данные
     const fdfix = FilteredSample(props.updatedData, checked, props.itemKey);
     props.setFiltredData(fdfix);
+
+    console.log("checkPar.isAllChecked", props.checkPar.isAllChecked);
   };
 
   //! при нажатии на Input
   const onChecked = (el) => {
-    let checked = [...checkPar.isChecked];
+    let checked = [...props.checkPar.isChecked];
     if (checked.some((item) => item.value === el)) {
       checked = checked.filter((item) => item.value !== el);
     } else {
       checked.push({ value: el, itemKey: props.itemKey });
     }
-    checkPar.setIsChecked(checked);
+    props.checkPar.setIsChecked(checked);
+    sessionStorage.setItem("isCheckedTeachers", JSON.stringify([...checked]));
+
     // Фильтруем данные
-    const fdfix = FilteredSample(props.updatedData, checked);
-    props.setFiltredData(fdfix);
+    const fdfix = FilteredSample(props.updatedData, checked); // функция фильтрации
+    props.setFiltredData(fdfix); // это в тааблице выводится
     const allChecked = checked.length === 0;
-    checkPar.setAllChecked(allChecked);
+    props.checkPar.setAllChecked(allChecked);
   };
 
   return (
@@ -91,7 +102,11 @@ export function SamplePoints(props) {
               id="allCheckbox"
               type="checkbox"
               onChange={onAllChecked}
-              checked={checkPar.isAllChecked}
+              checked={
+                ![...props.checkPar.isChecked].filter(
+                  (el) => el.itemKey === props.itemKey
+                ).length > 0
+              }
             />
             <p>Все</p>
           </div>
@@ -103,7 +118,7 @@ export function SamplePoints(props) {
                   type="checkbox"
                   onChange={() => onChecked(el)}
                   checked={
-                    !checkPar.isChecked.some((item) => item.value === el)
+                    !props.checkPar.isChecked.some((item) => item.value === el)
                   }
                 />
                 <p>{props.index === 0 ? index + 1 : el}</p>

@@ -1,18 +1,18 @@
 import React from "react";
-import styles from "./ContextMenu.module.scss";
-import DataContext from "../../context";
+import styles from "./../ContextMenu.module.scss";
+import DataContext from "../../../context";
 import {
   apiAddColored,
   apiDelColors,
   apiUpdateColors,
-} from "../../api/services/ApiRequest";
+} from "../../../api/services/ApiRequest";
 
 export function Highlight() {
   const { tabPar, basicTabData } = React.useContext(DataContext);
   //! функция занесения выбранных цветов в состояние
   const SetColor = (colorNumber) => {
     colorNumber = colorNumber + 1;
-    if (colorNumber === 0) {
+    if (colorNumber === 1) {
       //! удаляем выделение
       const coloerd = tabPar.coloredData
         .filter((item) =>
@@ -43,7 +43,6 @@ export function Highlight() {
         color: colorNumber,
         colorIds: setWorkloadIds,
       };
-      console.log("setData", setData);
 
       if (workloadIds.length > 0) {
         apiAddColored(data).then(() => {

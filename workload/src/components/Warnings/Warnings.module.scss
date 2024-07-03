@@ -1,24 +1,17 @@
 @import "./../../style/colors.scss";
+@import "./../../ui/UniversalInput/Input.module.scss";
 
 .Warnings {
   position: relative;
   height: 45px;
   width: 45px;
-  margin-right: 24px;
+  margin-right: 12px;
   background-color: #fff;
   align-items: center;
   justify-content: center;
   border-radius: 8px;
   z-index: 200;
-  .span_length {
-    display: flex;
-    font-size: 14px;
-    justify-content: center;
-    align-items: center;
-    transform: translateX(0.5px);
-    transform: translateY(0.5px);
-    min-width: 22px;
-  }
+
   .WarningsButton {
     display: flex;
     width: 45px;
@@ -50,6 +43,7 @@
   .WarningsButton:hover {
     cursor: pointer;
     opacity: 0.6;
+    transition: all 0.15s ease;
   }
   .WarningsOpen {
     position: absolute;
@@ -94,7 +88,20 @@
   padding: 0;
   width: 219px;
   max-height: 60vh;
+  margin-top: 0;
 }
+
+.seach {
+  padding-right: 6px;
+  input {
+    @include Input(90%, 6px, 8px, 8px);
+    margin: 0 5%;
+    box-sizing: border-box;
+    margin-top: 10px;
+    margin-bottom: 5px;
+  }
+}
+
 .WarningsList {
   display: flex;
   justify-content: center;
@@ -122,13 +129,28 @@
 }
 
 .circlesbuttonWarn {
-  width: auto;
-  height: auto;
+  width: 24px;
+  height: 24px;
   padding: 2px;
-  color: var(--white-color);
+  color: #e81414;
   border-radius: 50%;
+  font-size: 18px;
+  font-weight: 500;
   margin-right: 8px;
   align-items: center;
   text-align: center;
-  background-color: #e81414;
+  // background-color: #e81414;
+
+  .span_length {
+    display: flex;
+    font-size: 14px;
+    justify-content: center;
+    align-items: center;
+    transform: translateY(0.5px);
+    // padding-left: 1px;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 2px;
+  }
 }

@@ -80,7 +80,7 @@ export default {
 
   async getByDepartment({ params: { department }}, res){
     const histories = await History.findAll({ where: { department }, order: [
-        ['createdAt', 'ASC']
+        ['createdAt', 'DESC']
       ]});
     const resArr = [];
     for (const history of histories){

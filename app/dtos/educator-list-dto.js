@@ -1,5 +1,6 @@
 import { map as positionsMap } from '../config/position.js';
 import { map as departmentsMap } from '../config/departments.js';
+import { map as typeOfEmploymentMap} from '../config/type-of-employment.js';
 
 export default class EducatorListDto {
     id;
@@ -7,6 +8,10 @@ export default class EducatorListDto {
     position;
     department;
     rate;
+    typeOfEmployment;
+    maxHours;
+    recommendedMaxHours;
+    minHours;
     kafedralAutumnWorkload;
     kafedralSpringWorkload;
     kafedralAdditionalWorkload;
@@ -23,6 +28,10 @@ export default class EducatorListDto {
         this.position = positionsMap[model.position];
         this.department = departmentsMap[model.department];
         this.rate = model.rate;
+        this.typeOfEmployment = typeOfEmploymentMap[model.typeOfEmployment];
+        this.maxHours = model.maxHours;
+        this.recommendedMaxHours = model.recommendedMaxHours;
+        this.minHours = model.minHours;
         this.totalHours = Math.round(model.SummaryWorkload.totalHours * 100) / 100;
         this.kafedralAutumnWorkload = Math.round(model.SummaryWorkload.kafedralAutumnWorkload * 100) / 100;
         this.kafedralSpringWorkload = Math.round(model.SummaryWorkload.kafedralSpringWorkload * 100) / 100;
@@ -33,6 +42,5 @@ export default class EducatorListDto {
         this.instituteManagementWorkload = Math.round(model.SummaryWorkload.instituteManagementWorkload * 100) / 100;
         this.totalKafedralHours = Math.round(model.SummaryWorkload.totalKafedralHours * 100) / 100;
         this.totalOidHours = Math.round(model.SummaryWorkload.totalOidHours * 100) / 100;
-        this.hoursFirstPeriod = Math.round(model.SummaryWorkload.hoursFirstPeriod * 100) / 100;
     }
 }

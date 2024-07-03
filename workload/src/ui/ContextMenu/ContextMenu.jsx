@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./ContextMenu.module.scss";
-import { SubMenu } from "./SubMenu";
-import { EducatorMenu } from "./EducatorMenu";
+import { SubMenu } from "./Menu/SubMenu";
+import { EducatorMenu } from "./Menu/EducatorMenu";
 import DataContext from "../../context";
 import {
   EducatorLK,
@@ -10,18 +10,15 @@ import {
   createComment,
   createOffer,
 } from "../../api/services/ApiRequest";
-import { Highlight } from "./Highlight";
-import MenuPop from "./MenuPop";
-import {
-  combineData,
-  splitWorkloadCount,
-  upDateEducator,
-  addСhangedData,
-} from "./Function";
-import CommentsMenu from "./CommentsMenu";
-import PopupOffer from "./PopupOffer";
+import { Highlight } from "./Menu/Highlight";
+import MenuPop from "./Menu/MenuPop";
+import { combineData, addСhangedData, upDateEducators } from "./Function";
+import CommentsMenu from "./Menu/CommentsMenu";
+import PopupOffer from "./Menu/PopupOffer";
+import SplitByHoursMenu from "./Menu/SplitByHoursMenu";
+import { UniversalPopup } from "../UniversalPopup/UniversalPopup";
 
-const ContextMenu = (props) => {
+const ContextMenu = () => {
   const { appData, tabPar, basicTabData } = React.useContext(DataContext);
   const [menuShow, setMenuShow] = useState("");
   //! функция которая открывает попап подтверждения отправки предложения
@@ -29,17 +26,33 @@ const ContextMenu = (props) => {
   const [popupComment, setPopupComment] = useState(false);
   const [popupCommentAction, setPopupCommentAction] = useState(null);
 
-  useEffect(() => {
-    console.log("bufferAction", appData.bufferAction);
-  }, []);
-
   const handleContextMenu = (e) => {
     e.preventDefault();
   };
+  console.log("bufferAction", appData.bufferAction);
 
   //! нажатие на разделить
   const handleMouseClickPop = () => {
     setMenuShow(menuShow === "subMenu" ? "" : "subMenu");
+  };
+
+  const splitByHoursFun = () => {
+    setMenuShow(menuShow === "splitByHoursMenu" ? "" : "splitByHoursMenu");
+    if (
+      basicTabData.workloadDataFix.find(
+        (item) => item.id === tabPar.selectedTr[0]
+      ).audienceHours === 0 &&
+      menuShow === ""
+    ) {
+      appData.setUniversalPopupTitle(
+        "Внимание, аудиторные часы равняются нулю!"
+      );
+    }
+  };
+
+  //! разделение вкр
+  const splitVKR = () => {
+    setMenuShow(menuShow === "splitVKR" ? "" : "splitVKR");
   };
 
   //! нажатие на добавить преподавателя
@@ -59,32 +72,28 @@ const ContextMenu = (props) => {
 
   //! оставить комментарий
   const onAddComment = () => {
-    console.log("оставить комментарий");
     setMenuShow(menuShow === "commentsMenu" ? "" : "commentsMenu");
   };
 
-  //! Выбор преподавателя
+  //! функция выбора преподавателя
   const selectedEducator = (id) => {
-    // appData.metodRole[appData.myProfile?.role]?.some((el) => el === 9) &&
-    //   tabPar.setContextMenuShow(!tabPar.contextMenuShow);
     setMenuShow("");
-
     const data = {
-      workloadId: tabPar.selectedTr[0],
+      workloadIds: tabPar.selectedTr,
       educatorId: id,
     };
-
+    console.log(data);
     if (menuShow === "educator") {
       EducatorLK(id).then((dataReq) => {
-        const { newData, prevState } = upDateEducator(
-          basicTabData.workloadDataFix,
-          tabPar.selectedTr[0],
-          dataReq.name
+        const { newData, prevState } = upDateEducators(
+          basicTabData?.workloadDataFix,
+          tabPar?.selectedTr,
+          dataReq?.name
         );
-        const edicatorName = { edicatorName: dataReq.name };
+        const edicatorName = { edicatorName: dataReq?.name };
         basicTabData.setWorkloadDataFix(newData);
         basicTabData.setFiltredData(newData);
-        const workloadId = data.workloadId;
+        const workloadId = data.workloadIds;
         appData.setBufferAction([
           {
             request: "addEducatorWorkload",
@@ -97,12 +106,11 @@ const ContextMenu = (props) => {
         ]);
         //! занесем id измененнных данных в состояние
         tabPar.setChangedData(
-          addСhangedData(tabPar.changedData, "educator", [tabPar.selectedTr[0]])
+          addСhangedData(tabPar.changedData, "educator", tabPar.selectedTr)
         );
       });
     } else if (menuShow === "propose") {
       setPopupOffer(id);
-      console.log("popup", id);
     }
   };
 
@@ -145,62 +153,19 @@ const ContextMenu = (props) => {
     }
   };
 
-  //! разделение нагрузки на count
-  const handleSplitWorkload = (cou) => {
-    const count = Number(cou);
-    console.log("tabPar.selectedTr", tabPar.selectedTr);
-    const dataSel = {
-      ids: tabPar.selectedTr,
-      n: count,
-    };
-    const prev = basicTabData.workloadDataFix.filter((item) =>
-      tabPar.selectedTr.some((el) => el === item.id)
-    );
-
-    console.log("prev", prev);
-
-    // Создаем новый массив для измененных данных
-    let updatedData = [...basicTabData.workloadDataFix];
-    const funData = splitWorkloadCount(updatedData, tabPar.selectedTr, count);
-    basicTabData.setWorkloadDataFix(funData.updatedData);
-    tabPar.setChangedData(
-      addСhangedData(tabPar.changedData, "split", funData.blocked)
-    );
-    //! буфер
-    appData.setBufferAction([
-      {
-        id: appData.bufferAction.length,
-        request: "splitWorkload",
-        data: dataSel,
-        prevState: [...prev],
-        newState: funData.newState,
-        newIds: [...funData.newIds],
-      },
-      ...appData.bufferAction,
-    ]);
-    //! занесем id измененнных данных в состояние
-    tabPar.setChangedData(
-      addСhangedData(tabPar.changedData, "split", funData.newIds)
-    );
-    tabPar.setSelectedTr([]);
-    tabPar.setContextMenuShow(false);
-    setMenuShow("");
-  };
-
   //! соединение нагрузок
-  const handleJoinWorkloads = () => {
+  const handleJoinWorkloads = (action) => {
     setMenuShow("");
     const data = {
       ids: tabPar.selectedTr,
     };
     const funData = combineData(
       basicTabData.workloadDataFix,
-      tabPar.selectedTr
+      tabPar.selectedTr,
+      action
     );
     if (funData === null) {
-      // console.error("неправильно соеденяем данные");
       appData.seterrorPopUp(true);
-      console.log(appData.errorPopUp);
     } else {
       tabPar.setSelectedTr([]);
       basicTabData.setWorkloadDataFix(funData.newUpdatedData);
@@ -212,6 +177,7 @@ const ContextMenu = (props) => {
           data: data,
           newState: funData.newState,
           prevState: funData.prevState,
+          action: `?type=${action}`,
         },
         ...appData.bufferAction,
       ]);
@@ -223,6 +189,7 @@ const ContextMenu = (props) => {
 
     tabPar.setSelectedTr([]);
   };
+
   //! удаление нагрузки
   const handleDeletWorkload = () => {
     setMenuShow("");
@@ -241,22 +208,24 @@ const ContextMenu = (props) => {
   //! удалить преподавателя у нагрузки
   const removeEducator = () => {
     setMenuShow("");
-    // const { selectedTr, workloadDataFix, setWorkloadDataFix } = tabPar;
-    const workloadId = tabPar.selectedTr[0];
-    const prevState = basicTabData.workloadDataFix.find(
-      (obj) => obj.id === workloadId
-    )?.educator;
+    const workloadIds = tabPar.selectedTr;
+    let prevState = [];
+    basicTabData.workloadDataFix.map((obj) => {
+      if (workloadIds.some((e) => e === obj.id)) {
+        prevState.push({ workloadId: obj.id, state: obj.educator });
+      }
+    });
     const newUpdatedData = basicTabData.workloadDataFix.map((obj) =>
-      obj.id === workloadId ? { ...obj, educator: null } : obj
+      workloadIds.some((e) => e === obj.id) ? { ...obj, educator: null } : obj
     );
     basicTabData.setWorkloadDataFix(newUpdatedData);
     //! заносим данные в буффер
     appData.setBufferAction([
-      { request: "removeEducatorinWorkload", data: { workloadId }, prevState },
+      { request: "removeEducatorinWorkload", data: { workloadIds }, prevState },
       ...appData.bufferAction,
     ]);
     tabPar.setChangedData(
-      addСhangedData(tabPar.changedData, "educator", [workloadId])
+      addСhangedData(tabPar.changedData, "educator", workloadIds)
     );
     tabPar.setContextMenuShow(false);
   };
@@ -267,7 +236,6 @@ const ContextMenu = (props) => {
     const fastened = tabPar.selectedTr.filter(
       (item) => !tabPar.fastenedData.some((el) => el.workloadId === item)
     );
-    console.log(fastened);
     if (fastened.length > 0) {
       const data = {
         workloadIds: fastened,
@@ -296,7 +264,11 @@ const ContextMenu = (props) => {
         tabPar.setFastenedData(mass);
         tabPar.setContextMenuShow(false);
         tabPar.setSelectedTr([]);
-        basicTabData.funUpdateTable();
+        basicTabData.funUpdateTable(
+          basicTabData.tableDepartment.find(
+            (el) => el.name === basicTabData?.nameKaf
+          )?.id
+        );
       });
     }
   };
@@ -347,39 +319,69 @@ const ContextMenu = (props) => {
       <div style={positStyle} className={styles.blockMenu}>
         {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 9) && (
           <MenuPop
-            btnText={"Добавить преподователя"}
+            btnText={"Добавить преподавателя"}
             func={addEducator}
             menuShow={menuShow === "educator"}
             img={true}
           />
         )}
         {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 10) &&
-          tabPar.selectedTr.length === 1 && (
+          new Set(tabPar.selectedTr).size < 10 && (
             <MenuPop
               btnText={"Удалить преподавателя"}
               func={removeEducator}
               img={false}
             />
           )}
-        {/* {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 31)&& */}
-
         <MenuPop btnText={"Закрепить"} func={pinaCell} img={false} />
-        {/* } */}
-        {/* {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 31)&& */}
         <MenuPop btnText={"Открепить"} func={unPinaCell} img={false} />
-        {/* } */}
+        {appData.metodRole[appData.myProfile?.role]?.some(
+          (el) =>
+            el === 11 &&
+            basicTabData.workloadDataFix
+              .filter((item) => tabPar.selectedTr.some((el) => el === item.id))
+              .every(
+                (it) => it.isSplit === false && it.workload !== "Защита ВКР"
+              )
+        ) && (
+          <MenuPop
+            btnText={"Разделить по подгруппам"}
+            func={handleMouseClickPop}
+            menuShow={menuShow === "subMenu"}
+            img={true}
+          />
+        )}
 
         {appData.metodRole[appData.myProfile?.role]?.some(
           (el) =>
             el === 11 &&
             basicTabData.workloadDataFix
               .filter((item) => tabPar.selectedTr.some((el) => el === item.id))
-              .every((it) => it.isSplit === false)
+              .every(
+                (it) => it.isSplit === false && it.workload !== "Защита ВКР"
+              )
+        ) && (
+          <MenuPop
+            btnText={"Разделить по часам"}
+            func={splitByHoursFun}
+            menuShow={menuShow === "splitByHoursMenu"}
+            img={true}
+          />
+        )}
+
+        {appData.metodRole[appData.myProfile?.role]?.some(
+          (el) =>
+            el === 11 &&
+            basicTabData.workloadDataFix
+              .filter((item) => tabPar.selectedTr.some((el) => el === item.id))
+              .every(
+                (it) => it.isSplit === false && it.workload === "Защита ВКР"
+              )
         ) && (
           <MenuPop
             btnText={"Разделить"}
-            func={handleMouseClickPop}
-            menuShow={menuShow === "subMenu"}
+            func={splitVKR}
+            menuShow={menuShow === "splitVKR"}
             img={true}
           />
         )}
@@ -394,13 +396,41 @@ const ContextMenu = (props) => {
             />
           )}
         {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 12) &&
-          tabPar.selectedTr.length > 1 && (
+          tabPar.selectedTr.length > 1 &&
+          basicTabData.workloadDataFix
+            .filter((item) => tabPar.selectedTr.some((el) => el === item.id))
+            .every((it) => it.workload !== "Защита ВКР") && (
             <MenuPop
-              btnText={"Объеденить"}
-              func={handleJoinWorkloads}
+              btnText={"Объеденить по подгруппам"}
+              func={() => handleJoinWorkloads("g")}
               img={false}
             />
           )}
+        {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 12) &&
+          tabPar.selectedTr.length > 1 &&
+          basicTabData.workloadDataFix
+            .filter((item) => tabPar.selectedTr.some((el) => el === item.id))
+            .every(
+              (it) => it.isSplit === true && it.workload !== "Защита ВКР"
+            ) && (
+            <MenuPop
+              btnText={"Объеденить по часам"}
+              func={() => handleJoinWorkloads("h")}
+              img={false}
+            />
+          )}
+        {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 12) &&
+          tabPar.selectedTr.length > 1 &&
+          basicTabData.workloadDataFix
+            .filter((item) => tabPar.selectedTr.some((el) => el === item.id))
+            .every((it) => it.workload === "Защита ВКР") && (
+            <MenuPop
+              btnText={"Объеденить"}
+              func={() => handleJoinWorkloads("vkr")}
+              img={false}
+            />
+          )}
+
         {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 18) &&
           tabPar.selectedTr.length === 1 && (
             <MenuPop
@@ -426,8 +456,8 @@ const ContextMenu = (props) => {
       {menuShow === "subMenu" && (
         // разделение нагрузки
         <SubMenu
+          setMenuShow={setMenuShow}
           contextPosition={tabPar.contextPosition}
-          handleSplitWorkload={handleSplitWorkload}
         />
       )}
       {(menuShow === "educator" || menuShow === "propose") && (
@@ -450,6 +480,21 @@ const ContextMenu = (props) => {
           setPopupCommentAction={setPopupCommentAction}
         />
       )}
+      {menuShow === "splitByHoursMenu" && (
+        <SplitByHoursMenu
+          styles={styles}
+          setMenuShow={setMenuShow}
+          typeMenu={"splitByHoursMenu"}
+        />
+      )}
+      {menuShow === "splitVKR" && (
+        <SplitByHoursMenu
+          styles={styles}
+          setMenuShow={setMenuShow}
+          typeMenu={"splitVKR"}
+        />
+      )}
+      {appData.universalPopupTitle !== "" && <UniversalPopup />}
     </div>
   );
 };

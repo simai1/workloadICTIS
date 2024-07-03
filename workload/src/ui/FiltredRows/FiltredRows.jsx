@@ -4,6 +4,8 @@ import ArrowImg from "./../../img/arrow-White.svg";
 import Arrowtop from "./../../img/arrow.svg";
 import pencil from "./../../img/pencil.svg";
 import filter from "./../../img/filter.svg";
+import comm from "./../../img/commentSvg.svg";
+import offer from "./../../img/offerSvg.svg";
 import thimbtack from "./../../img/thumbtack.svg";
 import DataContext from "../../context";
 const FiltredRows = () => {
@@ -43,7 +45,10 @@ const FiltredRows = () => {
     <div ref={refFR} className={styles.FiltredRows}>
       <div className={styles.FiltredRows__inner}>
         <button onClick={OpCloseMenu}>
-          {tabPar.selectedFilter} <img src={ArrowImg} alt="ArrowImg"></img>
+          {tabPar.selectedFilter}
+          <div className={styles.FiltredRows__inner_img}>
+            <img src={ArrowImg} alt="ArrowImg"></img>
+          </div>
         </button>
         {OpenCloseMenu && (
           <ul className={styles.FiltredRows__list}>
@@ -74,14 +79,14 @@ const FiltredRows = () => {
               (el) => el === 20
             ) && (
               <li onClick={() => Fuctionmenu("Комментарии")}>
-                Комментарии <img src={filter} alt="filter"></img>
+                Комментарии <img src={comm} alt="filter"></img>
               </li>
             )}
             {appData.metodRole[appData.myProfile?.role]?.some(
               (el) => el === 34
             ) && (
               <li onClick={() => Fuctionmenu("Предложения")}>
-                Предложения <img src={filter} alt="filter"></img>
+                Предложения <img src={offer} alt="filter"></img>
               </li>
             )}
           </ul>

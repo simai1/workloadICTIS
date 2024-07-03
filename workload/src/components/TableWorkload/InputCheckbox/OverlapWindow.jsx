@@ -4,6 +4,7 @@ import DataContext from "../../../context";
 import styles from "./../TableWorkload.module.scss";
 import React from "react";
 import {
+  apiSplitByHours,
   deleteWorkload,
   joinWorkloads,
   splitWorkload,
@@ -14,7 +15,6 @@ function OverlapWindow(props) {
   const { tabPar, appData, basicTabData } = React.useContext(DataContext);
 
   const cancelChanges = () => {
-    console.log("отмена", props.getConfirmation.type);
     if (props.getConfirmation.type === 1) {
       appData.setBufferAction(
         deleteItemBuffer(
@@ -27,13 +27,23 @@ function OverlapWindow(props) {
       changed.deleted = changed.deleted.filter((item) => item !== props.itid);
       tabPar.setChangedData(changed);
     } else if (props.getConfirmation.type === 2) {
-      const dat = { ...props.getConfirmation.data };
-      console.log("dat", dat);
+      //! отмена разделения
+      const dat = { ...props.getConfirmation.data }; //! данные буффера для разделенной
       let buff = [...appData.bufferAction];
-      let itemBuff = buff.find((el) => el.id === dat.id);
-      let index = buff.findIndex((el) => el.id === dat.id);
+      console.log("dat", dat);
+
+      //! получаем обьект из буффера так как в массиве могут быть данные нескольких строк
+      let itemBuff = buff.find((el) =>
+        el.data.ids.some((e) => e === dat.data.ids[0])
+      );
+      //! индекс из буффер нашего обьекта
+      let index = buff.findIndex((el) =>
+        el.data.ids.some((e) => e === dat.data.ids[0])
+      );
+
+      //! корректируем data из буффера
       let bd = { ...itemBuff.data };
-      const bdids = bd.ids.filter((el) => !dat.data.ids.some((e) => e === el));
+      const bdids = bd.ids.filter((el) => dat.data.ids[0] !== el);
       const newbd = {
         ids: bdids,
         n: bd.n,
@@ -44,6 +54,7 @@ function OverlapWindow(props) {
         (el) => el.id !== dat.newState.id
       );
       let ps = itemBuff.prevState.filter((el) => el.id !== dat.prevState.id);
+
       let buffDat = {
         id: dat.id,
         data: newbd,
@@ -53,10 +64,12 @@ function OverlapWindow(props) {
         request: "splitWorkload",
       };
       buff[index] = buffDat;
-      appData.setBufferAction([...buff]);
-      let wdf = [...basicTabData.workloadDataFix];
-      console.log(wdf);
 
+      //! если ids пустой значит убираем данный обьект из буффера
+      appData.setBufferAction(
+        [...buff].filter((el) => el.data?.ids?.length > 0)
+      );
+      let wdf = [...basicTabData.workloadDataFix];
       let datMap = { ...dat };
       let f = true;
       const wdfNew = wdf
@@ -73,14 +86,12 @@ function OverlapWindow(props) {
       basicTabData.setWorkloadDataFix(wdfNew);
 
       let changed = { ...tabPar.changedData };
-      console.log("changed", changed.split);
       changed.split = changed.split.filter(
         (item) => !dat.newIds.some((el) => el === item)
       );
-      console.log("changed", changed.split);
       tabPar.setChangedData(changed);
     } else if (props.getConfirmation.type === 3) {
-      console.log(props.getConfirmation.data);
+      //! отмена обьединения
       const bd = props.getConfirmation.data;
       // удаляем нагрузку которую обьеденили
       const dataTable = [...basicTabData.workloadDataFix].filter(
@@ -94,21 +105,55 @@ function OverlapWindow(props) {
       newArray.splice(deletedIndex, 0, ...bd.prevState);
       basicTabData.setWorkloadDataFix(newArray);
       // убираем заблокированные элементы
-      console.log(tabPar.changedData);
       let cd = { ...tabPar.changedData };
       let cdJoin = [...cd.join];
       cdJoin = cdJoin.filter(
-        (el) => !bd.prevState.some((item) => item.id !== el)
+        (el) => !bd.prevState.some((item) => item.id === el)
       );
       cd.join = cdJoin;
       tabPar.setChangedData(cd);
       appData.setBufferAction((prevItems) => prevItems.slice(1));
+    } else if (props.getConfirmation.type === 4) {
+      //! если разделили по часам применяем эту отмену
+      const dat = { ...props.getConfirmation.data };
+      let updatedData = [...basicTabData.workloadDataFix];
+      updatedData = updatedData
+        .map((item) => {
+          const ind = dat.newIds.findIndex((e) => e === item.id);
+          if (ind === -1) {
+            return item;
+          } else if (ind === 0) {
+            return dat.prevState[0];
+          }
+        })
+        .filter((el) => el !== undefined);
+      console.log(updatedData);
+
+      basicTabData.setWorkloadDataFix(updatedData);
+
+      let changed = { ...tabPar.changedData };
+      changed.split = changed.split.filter(
+        (item) => !dat.newIds.some((el) => el === item)
+      );
+      tabPar.setChangedData(changed);
+      //! удалим из буфера
+      let buff = [...appData.bufferAction];
+      buff = buff
+        .filter((el) => {
+          if (
+            el.request === "splitByHours" &&
+            el.data.ids[0] === dat.data.ids[0]
+          ) {
+            return null;
+          } else return el;
+        })
+        .filter((el) => el !== null);
+      appData.setBufferAction([...buff]);
     }
   };
 
   const confirmChanges = () => {
-    console.log("подтвердить", props.getConfirmation.type);
-    // удаляем нагрузку
+    //! удаляем нагрузку
     if (props.getConfirmation.type === 1) {
       deleteWorkload({ ids: [props.itid] }).then(() => {
         appData.setBufferAction(
@@ -128,59 +173,103 @@ function OverlapWindow(props) {
         changed.deleted = changed.deleted.filter((item) => item !== props.itid);
         tabPar.setChangedData(changed);
       });
-    }
-    // разделяем нагрузку
-    else if (props.getConfirmation.type === 2) {
-      splitWorkload(props.getConfirmation.data.data).then(() => {
-        appData.setBufferAction(
-          deleteItemBuffer(
-            [...appData.bufferAction],
-            props.itid,
-            "splitWorkload"
-          ).buffer
-        );
-        let changed = { ...tabPar.changedData };
-        changed.split = changed.split.filter(
-          (item) => item.slice(0, -1) !== props.itid.slice(0, -1)
-        );
-        console.log("changed", changed);
-        tabPar.setChangedData(changed);
-        console.log(
-          "basicTabData.tableDepartment",
-          basicTabData.tableDepartment
-        );
-        if(basicTabData.selectISOid) {
-          basicTabData.funUpdateTable(0)
-         }else{
-          basicTabData.funUpdateTable(basicTabData.tableDepartment.find((el) => el.name === basicTabData.nameKaf)?.id);
-         }
+    } else if (props.getConfirmation.type === 2) {
+      //! подтверждение разделить нагрузку по подгруппам
+      console.log("props.getConfirmation", props.getConfirmation);
+      // собираем данные для запроса
+      const obj = props.getConfirmation.data;
+      const data = {
+        workloads: obj.hoursData,
+      };
+
+      splitWorkload(data).then((req) => {
+        // убираем из буфера
+        if (req?.status === 200) {
+          appData.setBufferAction(
+            deleteItemBuffer(
+              [...appData.bufferAction],
+              props.itid,
+              "splitWorkload"
+            ).buffer
+          );
+          // убираем из блокированных
+          let changed = { ...tabPar.changedData };
+          changed.split = changed.split.filter(
+            (item) => item.slice(0, -1) !== props.itid.slice(0, -1)
+          );
+          tabPar.setChangedData(changed);
+          // обновляем таблицу согласно кафедре
+          basicTabData.funUpdateTable(
+            basicTabData.tableDepartment.find(
+              (el) => el.name === basicTabData.nameKaf
+            )?.id
+          );
+        }
       });
     } else if (props.getConfirmation.type === 3) {
-      joinWorkloads(props.getConfirmation.data.data).then((res) => {
-        console.log(res);
-        appData.setBufferAction(
-          deleteItemBuffer(
-            [...appData.bufferAction],
-            props.itid,
-            "joinWorkload"
-          ).buffer
-        );
+      //! обьединение соединенеи строк
+      joinWorkloads(
+        props.getConfirmation.data.data,
+        props.getConfirmation.data.action
+      ).then((res) => {
+        const ab = [...appData.bufferAction];
+        const abfix = ab
+          .filter((item) => {
+            if (
+              item.request === "joinWorkloads" &&
+              item.newState.id === props.itid
+            ) {
+              return null;
+            } else {
+              return item;
+            }
+          })
+          .filter((el) => el !== null);
+
+        appData.setBufferAction(abfix);
+
         let changed = { ...tabPar.changedData };
         changed.join = changed.join.filter((item) => item !== props.itid);
-        console.log(changed);
         tabPar.setChangedData(changed);
-        // if (basicTabData.tableDepartment.length > 0) {
-        //   basicTabData.funUpdateTable(
-        //     basicTabData.tableDepartment.find(
-        //       (el) => el.name === basicTabData.nameKaf
-        //     )?.id
-        //   );
-        // }
-       if(basicTabData.selectISOid) {
-        basicTabData.funUpdateTable(0)
-       }else{
-        basicTabData.funUpdateTable(basicTabData.tableDepartment.find((el) => el.name === basicTabData.nameKaf)?.id);
-       }
+        basicTabData.funUpdateTable(
+          basicTabData.tableDepartment.find(
+            (el) => el.name === basicTabData.nameKaf
+          )?.id
+        );
+      });
+    } else if (props.getConfirmation.type === 4) {
+      //! подтверждение разделения по часам
+      const obj = props.getConfirmation.data;
+      // собираем данные для запроса
+      const data = {
+        workloadId: obj.workloadId,
+        workloadsData: obj.data.hoursData,
+      };
+      // запрос на разделение
+      apiSplitByHours(data).then((req) => {
+        console.log(req);
+        if (req?.status === 200) {
+          //! убираем обьект из буффера
+          appData.setBufferAction(
+            deleteItemBuffer(
+              [...appData.bufferAction],
+              props.itid,
+              "splitByHours"
+            ).buffer
+          );
+          //! убираем из блокированных
+          let changed = { ...tabPar.changedData };
+          changed.split = changed.split.filter(
+            (item) => item.slice(0, -1) !== props.itid.slice(0, -1)
+          );
+          tabPar.setChangedData(changed);
+          //! обновляем таблицу
+          basicTabData.funUpdateTable(
+            basicTabData.tableDepartment.find(
+              (el) => el.name === basicTabData.nameKaf
+            )?.id
+          );
+        }
       });
     }
   };

@@ -5,7 +5,11 @@ import Button from "../../../ui/Button/Button";
 import List from "../../../ui/List/List";
 import Input from "../../../ui/Input/Input";
 import styles from "./PopUpEditTeacher.module.scss";
-import { EditTeacher } from "../../../api/services/ApiRequest";
+import {
+  EditTeacher,
+  GetAllDepartments,
+  GetUsibleDepartment,
+} from "../../../api/services/ApiRequest";
 
 export function PopUpEditTeacher(props) {
   const { appData, basicTabData } = React.useContext(DataContext);
@@ -22,7 +26,6 @@ export function PopUpEditTeacher(props) {
     { id: 1, name: "Ассистент" },
     { id: 2, name: "Ведущий научный сотрудник" },
     { id: 3, name: "Главный научный сотрудник" },
-    { id: 4, name: "Директор института" },
     { id: 5, name: "Доцент" },
     { id: 6, name: "Научный сотрудник" },
     { id: 7, name: "Профессор" },
@@ -32,20 +35,24 @@ export function PopUpEditTeacher(props) {
     { id: 11, name: "Заведующий кафедрой" },
   ];
 
-  const dataKaf = [
-    { id: 1, name: "БИТ" },
-    { id: 2, name: "ИИТиС" },
-    { id: 3, name: "ВТ" },
-    { id: 4, name: "ИАСБ" },
-    { id: 5, name: "ИБТКС" },
-    { id: 6, name: "ИМС" },
-    { id: 7, name: "МОП ЭВМ" },
-    { id: 8, name: "ПиБЖ" },
-    { id: 9, name: "САИТ" },
-    { id: 10, name: "САПР" },
-    { id: 11, name: "СиПУ" },
-    { id: 12, name: "ФМОИО" },
-  ];
+  const [dataKaf, setDataKaf] = useState([]);
+  useEffect(() => {
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 46)) {
+      GetAllDepartments().then((resp) => {
+        let newData = resp.data.filter(obj => obj.name !== "ОИД");
+        setDataKaf(newData);
+      });
+    } else {
+      GetUsibleDepartment().then((resp) => {
+        if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 47)){
+          let newData = resp.data.filter(obj => obj.name !== "ОИД");
+          setDataKaf(newData);
+        }else{
+          setDataKaf(resp.data);
+        }
+      });
+    }
+  }, []);
 
   const handleInputChange = (name, value) => {
     if (name === "rate") {
@@ -69,16 +76,12 @@ export function PopUpEditTeacher(props) {
   const handleClicks = () => {
     let depart;
     let position;
-
-    !Number(dataNewEdicator?.department)
-      ? (depart = dataKaf.find(
-          (el) => el.name === dataNewEdicator?.department
-        ).id)
-      : (depart = dataNewEdicator?.department);
-    !Number(dataNewEdicator?.position)
+      appData.metodRole[appData.myProfile?.role]?.some((el) => el === 39) ? depart = appData.myProfile?.educator?.departmentId : depart = dataNewEdicator?.department
+    
+      !Number(dataNewEdicator?.position)
       ? (position = dataListPosition.find(
           (el) => el.name === dataNewEdicator?.position
-        ).id)
+        )?.id)
       : (position = dataNewEdicator?.position);
 
     const data = {
@@ -90,9 +93,8 @@ export function PopUpEditTeacher(props) {
           : dataNewEdicator?.rate,
       department: depart,
     };
-
-    console.log("IdRows", selectedRowsId);
-    console.log("dataNewEdicator", data);
+    
+    console.log("data", data)
     EditTeacher(selectedRowsId, data).then((resp) => {
       if (resp.status === 200) {
         props.updateTable();
@@ -106,7 +108,7 @@ export function PopUpEditTeacher(props) {
     <div className={styles.Mt}>
       <PopUpContainer
         setVizibleCont={props.setVizibleCont}
-        title={"Редактирование Преподавателя"}
+        title={"Редактирование преподавателя"}
       >
         <div className={styles.mainPop__inner}>
           <div className={styles.inputBlock}>
@@ -164,13 +166,54 @@ export function PopUpEditTeacher(props) {
               bottom: "-10px",
             }}
           >
-            <Button
-              text="Сохранить"
-              Bg="#3b28cc"
-              textColot="#fff"
-              handleClicks={handleClicks}
-              disabled={!isRateValid}
-            />
+            <button
+              className={styles.buttonSave}
+              onClick={handleClicks}
+              disabled={
+                !isRateValid ||
+                !dataNewEdicator.name ||
+                !dataNewEdicator.position ||
+                !dataNewEdicator.rate ||
+                !dataNewEdicator.department
+              }
+              style={{
+                backgroundColor:
+                  !isRateValid ||
+                  !dataNewEdicator.name ||
+                  !dataNewEdicator.position ||
+                  !dataNewEdicator.rate ||
+                  !dataNewEdicator.department
+                    ? "#b9b9ba"
+                    : "#3b28cc",
+                cursor:
+                  !isRateValid ||
+                  !dataNewEdicator.name ||
+                  !dataNewEdicator.position ||
+                  !dataNewEdicator.rate ||
+                  !dataNewEdicator.department
+                    ? "not-allowed"
+                    : "pointer",
+                color: "#fff",
+                borderRadius: "8px",
+                paddingLeft: "16px",
+                paddingRight: "16px",
+                paddingTop: "10px",
+                paddingBottom: "10px",
+                width: "150px",
+                transition: "opacity 0.3s ease",
+                opacity: 1,
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.transition = "opacity 0.15s ease";
+                e.target.style.opacity = 0.7;
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transition = "opacity 0.15s ease";
+                e.target.style.opacity = 1;
+              }}
+            >
+              Сохранить
+            </button>
           </div>
         </div>
       </PopUpContainer>

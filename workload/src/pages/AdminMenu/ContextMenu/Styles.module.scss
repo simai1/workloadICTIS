@@ -1,0 +1,21 @@
+@import "./../../../style/colors.scss";
+@import "./../../../style/mixin.scss";
+
+.ContextMenu {
+  .context {
+    position: absolute;
+    z-index: 10;
+    background-color: #fff;
+    @include boxShadow();
+    padding: 10px;
+    p {
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 8px;
+      margin: 0;
+      &:hover {
+        background-color: var(--gray-color);
+      }
+    }
+  }
+}

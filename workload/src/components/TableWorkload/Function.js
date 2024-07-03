@@ -96,7 +96,7 @@ export function funFilterSelected(
   allOffersData
 ) {
   const origData = [...data];
-  if (selectedFilter === "Выделенные" && colored.length > 0) {
+  if (selectedFilter === "Выделенные") {
     let fd = [];
     fd = origData.filter((item) =>
       colored.some((el) => el.workloadId === item.id)
@@ -131,7 +131,6 @@ export function funFilterSelected(
 }
 
 export function getTextForNotData(selectedFilter) {
-  console.log("selectedFilter", selectedFilter);
   if (selectedFilter === "Измененные") {
     return "Нет измененных данных";
   } else if (selectedFilter === "Закрепленные") {
@@ -165,17 +164,20 @@ export function funfastenedDataSort(data, fastenedData) {
 
 //! функция удаления обьекта по id при нажатии на применить удаление
 export function deleteItemBuffer(buff, itemId, type) {
-  console.log("fundata", buff, itemId, type);
-
   let itemData = null;
+  console.log(itemId);
   let newBuffer = buff
     .map((item) => {
       if (item.request === type) {
-        console.log("item.request true", type, "id");
         let p = { ...item };
         itemData = p;
         p.data.ids = p.data.ids.filter((id) => id !== itemId.slice(0, -1));
         p.data.ids = p.data.ids.filter((id) => id !== itemId);
+        if (p.hoursData) {
+          p.hoursData = p?.hoursData.filter(
+            (el) => el.workloadId !== itemId.slice(0, -1)
+          );
+        }
         if (p.data.ids.length > 0) {
           return p;
         } else {
@@ -186,7 +188,6 @@ export function deleteItemBuffer(buff, itemId, type) {
       }
     })
     .filter(Boolean);
-  console.log("newBuffer", newBuffer);
   return { buffer: newBuffer, item: itemData };
 }
 
@@ -201,7 +202,8 @@ export const funGetConfirmation = (itemId, changedData, bufferAction) => {
     // получим нужную строку из буффера
     const buff = [...bufferAction].filter(
       (el) =>
-        el.request === "splitWorkload" && el.newIds.some((e) => e === itemId)
+        (el.request === "splitWorkload" || el.request === "splitByHours") &&
+        el.newIds.some((e) => e === itemId)
     )[0];
     let data = { ...buff };
     if (data.data) {
@@ -212,15 +214,21 @@ export const funGetConfirmation = (itemId, changedData, bufferAction) => {
       data.prevState = [
         data.prevState.find((e) => e.id === itemId.slice(0, -1)),
       ];
+      if (data.hoursData) {
+        data.hoursData = [
+          data.hoursData.find((e) => e.workloadId === itemId.slice(0, -1)),
+        ];
+      }
 
-      const length = data.data.n;
+      const length =
+        buff.request === "splitWorkload" ? data.data.n + 1 : data.data.n;
       const index = data.newIds.findIndex((e) => e === itemId);
-      if (data.data.n) {
+      if (length) {
         return {
           blocked: true,
           height: `${150 * length}px`,
           top: `${-150 * index}px`,
-          type: 2,
+          type: buff.request === "splitByHours" ? 4 : 2,
           data: data,
         };
       } else {
@@ -244,3 +252,17 @@ export const funGetConfirmation = (itemId, changedData, bufferAction) => {
     };
   } else return { blocked: false, height: "150px", top: "0", type: 0 };
 };
+
+//! функция сравнения 2х тексовых массивов
+export function areArraysIdenticalText(arr1, arr2) {
+  if (arr1.length !== arr2.length) {
+    return false;
+  }
+
+  // Преобразуем массивы в наборы для быстрого сравнения
+  const set1 = new Set(arr1);
+  const set2 = new Set(arr2);
+
+  // Проверяем, что наборы содержат одинаковые элементы
+  return set1.size === set2.size && [...set1].every((value) => set2.has(value));
+}

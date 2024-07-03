@@ -20,9 +20,9 @@ export default class WorkloadProfileDto {
         this.curriculumUnit = model.curriculumUnit;
         this.specialty = model.specialty;
         this.hours = model.hours;
-        this.hoursFirstPeriod = model.period === 1? model.hours : 0;
-        this.hoursSecondPeriod = model.period === 2? model.hours : 0;
-        this.hoursWithoutPeriod = model.period === null? model.hours : 0;
-        this.audienceHours = model.audienceHours;
+        this.hoursFirstPeriod = model.period === 1? Math.round(model.hours * 100) / 100 : 0;
+        this.hoursSecondPeriod = model.period === 2? Math.round(model.hours * 100) / 100 : 0;
+        this.hoursWithoutPeriod = model.period === null? Math.round(model.hours * 100) / 100 : 0;
+        this.audienceHours = Math.round(model.audienceHours * 100) / 100;
     }
 }

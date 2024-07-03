@@ -44,16 +44,24 @@ export function SamplePoints(props) {
       })
     ),
   ];
-
   //! при нажатии на Input All
   const onAllChecked = () => {
-    const checked = checkPar.isAllChecked ? [...filteredData] : [];
-    let check = [];
-    checked.map((item) => {
-      check.push({ value: item, itemKey: props.itemKey });
-    });
-    checkPar.setIsChecked(check);
-    checkPar.setAllChecked(!checkPar.isAllChecked);
+    console.log("checkPar.isAllChecked", checkPar.isAllChecked);
+
+    let checked = [...checkPar.isChecked];
+    if (
+      [...checkPar.isChecked].filter((el) => el.itemKey === props.itemKey)
+        .length > 0
+    ) {
+      checked = checked.filter((el) => el.itemKey !== props.itemKey);
+    } else {
+      [...filteredData].map((item) => {
+        checked.push({ value: item, itemKey: props.itemKey });
+      });
+    }
+    checkPar.setIsChecked(checked);
+    sessionStorage.setItem("isCheckedWorkload", JSON.stringify([...checked]));
+
     // Фильтруем данные
     const fdfix = FilteredSample(
       basicTabData.workloadData,
@@ -61,60 +69,75 @@ export function SamplePoints(props) {
       props.itemKey
     );
     basicTabData.setWorkloadDataFix(fdfix);
+    console.log("checkPar.isAllChecked", checkPar.isAllChecked);
   };
 
   //! при нажатии на Input
   const onChecked = (el) => {
-    let checked = [...checkPar.isChecked];
+    let checked = [...checkPar.isChecked]; // основной массив
     if (checked.some((item) => item.value === el)) {
       checked = checked.filter((item) => item.value !== el);
     } else {
       checked.push({ value: el, itemKey: props.itemKey });
     }
     checkPar.setIsChecked(checked);
-    console.log("checked", checked);
+    sessionStorage.setItem("isCheckedWorkload", JSON.stringify([...checked]));
     // Фильтруем данные
     const fdfix = FilteredSample(basicTabData.workloadData, checked);
     basicTabData.setWorkloadDataFix(fdfix);
-    const allChecked = checked.length === 0;
-    checkPar.setAllChecked(allChecked);
+    console.log("checkPar.isChecked", checkPar.isChecked);
   };
+
+  useEffect(() => {
+    console.log("вот я да");
+  }, []);
 
   return (
     <main className={styles.SamplePoints} ref={spRef}>
       <div className={styles.container}>
-        <input
-          className={styles.search}
-          type="text"
-          placeholder="Поиск"
-          value={searchText}
-          onChange={handleInputChange}
-        />
-        <div className={styles.points}>
-          <div htmlFor="allCheckbox">
-            <input
-              id="allCheckbox"
-              type="checkbox"
-              onChange={onAllChecked}
-              checked={checkPar.isAllChecked}
-            />
-            <p>Все</p>
+        {/* <div className={styles.sorted}>
+          <button>В</button>
+          <button>У</button>
+          <button>А</button>
+        </div> */}
+        <div>
+          <input
+            className={styles.search}
+            type="text"
+            placeholder="Поиск"
+            value={searchText}
+            onChange={handleInputChange}
+          />
+          <div className={styles.points}>
+            <div htmlFor="allCheckbox">
+              <input
+                id="allCheckbox"
+                type="checkbox"
+                onChange={onAllChecked}
+                checked={
+                  ![...checkPar.isChecked].filter(
+                    (el) => el.itemKey === props.itemKey
+                  ).length > 0
+                }
+              />
+              <p>Все</p>
+            </div>
+            {filteredData.map((el, index) => {
+              return (
+                <div key={index} htmlFor={`checkbox-${index}`}>
+                  <input
+                    id={`checkbox-${index}`}
+                    type="checkbox"
+                    onChange={() => onChecked(el)}
+                    checked={
+                      !checkPar.isChecked.some((item) => item.value === el)
+                    }
+                  />
+                  <p>{props.index === 0 ? index + 1 : el === "" ? "__" : el}</p>
+                </div>
+              );
+            })}
           </div>
-          {filteredData.map((el, index) => {
-            return (
-              <div key={index} htmlFor={`checkbox-${index}`}>
-                <input
-                  id={`checkbox-${index}`}
-                  type="checkbox"
-                  onChange={() => onChecked(el)}
-                  checked={
-                    !checkPar.isChecked.some((item) => item.value === el)
-                  }
-                />
-                <p>{props.index === 0 ? index + 1 : el}</p>
-              </div>
-            );
-          })}
         </div>
       </div>
     </main>

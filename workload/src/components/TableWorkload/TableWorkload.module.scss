@@ -40,6 +40,21 @@ $heightCell: 150px;
     }
   }
 }
+.tabledisciplinesMain::-webkit-scrollbar {
+  width: 12px; /* ширина scrollbar */
+  height: 12px;
+}
+.tabledisciplinesMain::-webkit-scrollbar-track {
+  background: var(--bgraund); /* цвет дорожки */
+  margin-top: 70px;
+  margin-left: 64px;
+}
+.tabledisciplinesMain::-webkit-scrollbar-thumb,
+.tabledisciplinesMain::-webkit-scrollbar-thumb {
+  background-color: #a6a6a6;
+  border-radius: 5px;
+  border: 3px solid #a6a6a6;
+}
 .DataGrid {
   display: flex;
   width: 100%;
@@ -48,12 +63,13 @@ $heightCell: 150px;
 }
 .tabledisciplinesMain {
   display: flex;
-  // width: 100%;
+  // width: 96.5vw;
   height: 76vh;
-  overflow: auto;
+  overflow: scroll;
   padding-left: 64px;
   margin-right: 52px;
   background-color: #fff;
+  box-sizing: border-box;
   &::after {
     content: "";
     background-color: var(--bgraund);
@@ -105,6 +121,15 @@ $heightCell: 150px;
     }
 
     th {
+      .th_title {
+        &:hover {
+          color: #878787;
+          transition: all 0.15s ease;
+        }
+      }
+    }
+
+    th {
       position: sticky;
       top: 0;
       background-color: var(--gray-color);
@@ -135,7 +160,7 @@ $heightCell: 150px;
         }
 
         svg:hover * {
-          fill: #3b28cc;
+          fill: var(--blue-color);
         }
       }
     }
@@ -219,6 +244,19 @@ $heightCell: 150px;
         top: 0;
       }
     }
+    th[name="workload"] {
+      &::after {
+        content: "";
+        position: absolute;
+        background-color: var(--td-bg);
+        box-shadow: 5px 0px 15px #b3b0b0;
+        opacity: 0.5;
+        width: 2px;
+        height: 100%;
+        right: 0;
+        top: 0;
+      }
+    }
 
     th[name="ratingControlHours"],
     td[name="ratingControlHours"] {
@@ -245,6 +283,9 @@ $heightCell: 150px;
       }
       pointer-events: none;
     }
+    .tdInnerIsSplitArrow {
+      color: #a6a6a6;
+    }
     .tdChanged {
       .tdInner {
         background-color: var(--red-color);
@@ -252,6 +293,7 @@ $heightCell: 150px;
         padding: 5px 0px;
         color: #fff;
       }
+
       .tdInner:hover {
         background-color: var(--red-color);
       }
@@ -266,8 +308,14 @@ $heightCell: 150px;
       display: flex;
       justify-content: center;
       cursor: pointer;
-      img {
-        padding: 0 6px;
+
+      .th_inner_img {
+        display: flex;
+        flex-direction: row;
+        img {
+          padding: 0 6px;
+          width: 24px;
+        }
       }
     }
 
@@ -377,6 +425,11 @@ $heightCell: 150px;
       padding-left: 10px;
       box-sizing: border-box;
       color: red;
+      display: flex;
+      flex-direction: row;
+      span {
+        padding-right: 10px;
+      }
     }
 
     input {
@@ -439,6 +492,37 @@ $heightCell: 150px;
       background-color: var(--bgraund);
       width: 64px;
       height: 100%;
+      img {
+        width: 18px;
+        height: 18px;
+        position: relative;
+        right: -38px;
+        top: -3px;
+        &:hover {
+          opacity: 0.6;
+          cursor: pointer;
+        }
+      }
+
+      .BlockTextFilter {
+        .textFilter {
+          position: absolute;
+          left: 25px;
+          top: 50px;
+          z-index: 20;
+          border-radius: 8px;
+          width: 181px;
+          padding: 12px 16px;
+          background-color: #fff;
+          box-shadow: 5px 0px 15px #b3b0b0;
+        }
+        .triangle {
+          @include triangle();
+          left: 34px;
+          top: 50px;
+          z-index: 100;
+        }
+      }
     }
     .Offers {
       display: flex;
@@ -635,12 +719,18 @@ $heightCell: 150px;
           }
           .btn_rigth {
             display: flex;
+            flex-direction: row;
             align-items: center;
             width: 40px;
-            justify-content: space-between;
+            justify-content: end;
+            // justify-content: space-between;
             cursor: pointer;
             .svg * {
               fill: var(--blue-color);
+            }
+            .btn_rigth_svg {
+              margin-left: 5px;
+              padding-top: 8px;
             }
           }
         }
@@ -679,20 +769,4 @@ $heightCell: 150px;
       }
     }
   }
-}
-
-.tabledisciplinesMain::-webkit-scrollbar {
-  width: 12px; /* ширина scrollbar */
-  height: 12px;
-}
-.tabledisciplinesMain::-webkit-scrollbar-track {
-  background: var(--bgraund); /* цвет дорожки */
-  margin-top: 70px;
-  margin-left: 64px;
-}
-.tabledisciplinesMain::-webkit-scrollbar-thumb,
-.tabledisciplinesMain::-webkit-scrollbar-thumb {
-  background-color: #a6a6a6;
-  border-radius: 5px;
-  border: 3px solid #a6a6a6;
 }

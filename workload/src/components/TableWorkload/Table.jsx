@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import TableTh from "./TableTh";
 import TableTd from "./TableTd";
 import styles from "./TableWorkload.module.scss";
@@ -8,7 +8,21 @@ import { funGetConfirmation, getTextForNotData } from "./Function";
 
 function Table(props) {
   const { tabPar, visibleDataPar, basicTabData, appData } =
-    React.useContext(DataContext);
+    useContext(DataContext);
+
+  const [tableHeaders, setTableHeaders] = useState([]);
+
+  //! заголово таблицы хранится в sessionStorage, есть он есть то применяем к таблице
+  useEffect(() => {
+    const ssUpdatedHeader = JSON.parse(
+      sessionStorage.getItem("headerWorkload")
+    );
+    if (ssUpdatedHeader) {
+      setTableHeaders(ssUpdatedHeader);
+    } else {
+      setTableHeaders(basicTabData.tableHeaders);
+    }
+  }, [basicTabData.tableHeaders]);
 
   //! определение верхнего отступа таблицы
   const getTopHeight = () => {
@@ -111,7 +125,7 @@ function Table(props) {
 
   return (
     <div>
-      <table className={styles.table} ref={props.tableRef}>
+      <table id={"table-id"} className={styles.table}>
         <thead>
           <tr key={"tr1"}>
             <InputCheckbox
@@ -122,7 +136,7 @@ function Table(props) {
               th={true}
             />
 
-            {basicTabData.tableHeaders.map((item, index) => (
+            {tableHeaders.map((item, index) => (
               <TableTh
                 key={item.key}
                 item={item}
@@ -188,7 +202,7 @@ function Table(props) {
                   getConfirmation={getConfirmation(item.id)}
                   checked={tabPar.selectedTr.includes(item.id)}
                 />
-                {basicTabData.tableHeaders.map((itemKey, index) => (
+                {tableHeaders.map((itemKey, index) => (
                   <TableTd
                     key={item.id + "td" + itemKey.key + "_" + index}
                     item={item}

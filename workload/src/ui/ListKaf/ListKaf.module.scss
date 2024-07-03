@@ -6,15 +6,19 @@
   justify-content: center;
   z-index: 120;
   margin-top: -4px;
-  margin-right: 10px;
-
+  margin-right: 12px;
+  // &:hover {
+  //   cursor: pointer;
+  //   opacity: 0.75;
+  //   transition: all 0.2s ease;
+  // }
   input {
     @include input-text(225px, 8px);
     margin-bottom: 18px;
     height: 44px;
     font-size: 16px;
     color: #ffffff;
-    background-color: #3b28cc;
+    background-color: var(--blue-color);
     &:hover {
       cursor: pointer;
     }
@@ -29,13 +33,26 @@
   .ListCont {
     position: relative;
     color: #ffffff;
+    span,
+    img {
+      pointer-events: none;
+    }
+    input,
+    img {
+      &:hover {
+        cursor: pointer;
+        opacity: 0.75;
+        transition: all 0.2s ease;
+      }
+    }
   }
   .arrowBot img {
     position: absolute;
-    right: 10px;
+    right: 16px;
     top: 22px;
     transform: rotate(-90deg);
     z-index: 150;
+    width: 14px;
   }
   .ListData {
     width: auto;
@@ -80,5 +97,11 @@
     .ListDatas {
       border-left: #dddddd 1px solid;
     }
+  }
+  .inner_scroll {
+    max-height: 35vh;
+    overflow: auto;
+
+    @include scrollStyle(8px, 4px);
   }
 }

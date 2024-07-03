@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
-import styles from "./ContextMenu.module.scss";
-import DataContext from "../../context";
-import { createComment } from "../../api/services/ApiRequest";
+import React, { useState } from "react";
+import styles from "./../ContextMenu.module.scss";
+import DataContext from "../../../context";
 function CommentsMenu(props) {
-  const { appData, tabPar, basicTabData } = React.useContext(DataContext);
+  const { appData, tabPar } = React.useContext(DataContext);
   const [isError, setError] = useState(false);
   const [textAreaValue, setTextAreaValue] = useState("");
 
@@ -34,12 +33,12 @@ function CommentsMenu(props) {
         tabPar.contextPosition.x + 280 + 180 > window.innerWidth
           ? {
               position: "fixed",
-              top: tabPar.contextPosition.y,
+              top: tabPar.contextPosition.y - 5,
               left: tabPar.contextPosition.x - 150,
             }
           : {
               position: "fixed",
-              top: tabPar.contextPosition.y,
+              top: tabPar.contextPosition.y - 5,
               left: tabPar.contextPosition.x + 280,
             }
       }

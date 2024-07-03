@@ -8,14 +8,37 @@ import { sequelize } from '../models/index.js';
 import HeaderTranslation from '../config/header_translation.js';
 import HeaderTranslationEducators from '../config/header_translation_educators.js';
 import positions from '../config/position.js';
+import sendMail from '../services/email.js';
 import recommendHours from '../config/recommend-hours.js';
+import workloadController from '../controllers/workload.js';
 import fs from 'fs';
+import User from '../models/user.js';
+import { Op } from 'sequelize';
 
 export default {
     async parseWorkload(req, res) {
         const numberDepartment = req.params.numberDepartment;
+        console.log(req.file.path);
         const workbook = XLSX.readFile(req.file.path);
-        
+        const sheetName = workbook.SheetNames[0];
+        const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {
+            header: 1,
+            defval: '',
+            blankrows: true,
+        });
+        const headers = sheetData[0];
+        const checkDepart = {};
+        const checkRow = sheetData[1];
+        headers.forEach((header, index) => {
+            const englishHeader = HeaderTranslation[header];
+            checkDepart[englishHeader] = checkRow[index];
+        });
+        checkDepart.department = checkDepart.department.trim();
+        checkDepart.department = FullNameDepartments[checkDepart.department];
+        if (checkDepart.department !== Number(numberDepartment)) {
+            throw new Error('Загруженная нагрузка не совпадает с кафедрой, которую вы отправили');
+        }
+
         const recordsToDelete = await Workload.findAll({
             where: {
                 department: numberDepartment,
@@ -31,14 +54,7 @@ export default {
             });
         }
 
-        const sheetName = workbook.SheetNames[0];
-        const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {
-            header: 1,
-            defval: '',
-            blankrows: true,
-        });
         const isOid = numberDepartment == 0;
-        const headers = sheetData[0];
         console.log('Total rows after slice:', sheetData.slice(1).length);
         for (const row of sheetData.slice(1, sheetData.length - 1)) {
             try {
@@ -47,6 +63,7 @@ export default {
                     const englishHeader = HeaderTranslation[header];
                     obj[englishHeader] = row[index];
                 });
+                obj.department = obj.department.trim();
                 obj.department = FullNameDepartments[obj.department];
                 obj.numberOfStudents = obj.numberOfStudents ? Number(obj.numberOfStudents.replace(',00', '')) : 0;
                 obj.hours = obj.hours ? parseFloat(obj.hours.replace(',', '.')) : 0.0;
@@ -78,12 +95,35 @@ export default {
                 console.log(e);
             }
         }
+        // 504 долго работает запрос (слишком много всего)
+        // await workloadController.checkHoursEducators();
 
         try {
             fs.unlinkSync(req.file.path); // Синхронное удаление файла
             console.log('Файл успешно удален.');
         } catch (error) {
             console.error('Ошибка при удалении файла:', error);
+        }
+
+        if (process.env.NODE_ENV === 'production') {
+            const recievers = await User.findAll({
+                where: {
+                    role: { [Op.in]: [3, 8] },
+                },
+                include: [
+                    {
+                        model: Educator,
+                        where: {
+                            department: numberDepartment,
+                        },
+                    },
+                ],
+            });
+            for (const reciever of recievers) {
+                sendMail(reciever.login, 'uploadedNewWorkload');
+            }
+        } else {
+            sendMail(process.env.EMAIL_RECIEVER, 'uploadedNewWorkload');
         }
 
         return res.json({ status: 'ok' });
@@ -102,12 +142,18 @@ export default {
         const validPositions = [
             'Ассистент',
             'Доцент',
+            'Ведущий научный сотрудник',
+            'Главный научный сотрудник',
+            'Научный сотрудник',
+            'Старший преподаватель',
             'Профессор',
+            'Старший научный сотрудник',
             'Заведующий кафедрой',
             'Директор',
             'Научный сотрудник',
             'Директор института',
         ];
+        console.log(sheetData.length);
         for (const row of sheetData.slice(1)) {
             try {
                 const newEducator = {};
@@ -117,16 +163,25 @@ export default {
                 });
                 const existEducator = await Educator.findOne({ where: { email: newEducator.email } });
                 newEducator.department = FullNameDepartments[newEducator.department];
+                console.log(newEducator);
                 if (!existEducator && validPositions.includes(newEducator.position) && newEducator.department) {
                     delete newEducator.undefined;
                     newEducator.position = positions[newEducator.position];
-                    const newRate = newEducator.rate.trim().split(' ');
+                    let newRate = newEducator.rate.trim().split(' ');
                     let numberPart = parseFloat(newRate[0].replace(',', '.'));
-                    if (!Number(numberPart)) {
-                        numberPart = 0;
+                    if (!Number(numberPart) || Number(numberPart) < 0.1) {
+                        numberPart = 1;
                     }
                     newEducator.rate = numberPart;
-                    await Educator.create(newEducator);
+                    console.log(newEducator);
+                    const resEducator = await Educator.create({
+                        name: newEducator.name,
+                        email: newEducator.email,
+                        department: newEducator.department,
+                        position: newEducator.position,
+                        rate: newEducator.rate,
+                    });
+                    console.log('resEducator', resEducator.dataValues);
                 }
             } catch (e) {
                 // Обработка ошибок
