@@ -628,8 +628,8 @@ function App() {
         if (action) {
           setBufferAction([0]);
           updateAlldata();
-          appData.setLoaderAction(false);
         }
+        appData.setLoaderAction(false);
       })
       .catch((error) => {
         console.error("Error in bufferRequestToApi:", error);
