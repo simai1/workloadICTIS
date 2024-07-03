@@ -126,19 +126,6 @@ export default {
         let flag;
         for (const workload of workloads) {
             flag = true;
-            // for (const workloadDto of workloadsDto) {
-            //     if (
-            //         departments[workloadDto.department] === workload.department &&
-            //         workloadDto.discipline === workload.discipline
-            //     ) {
-            //         workloadDto.hoursFirstPeriod += workload.period === 1 ? workload.hours : 0;
-            //         workloadDto.hoursSecondPeriod += workload.period === 2 ? workload.hours : 0;
-            //         workloadDto.hoursWithoutPeriod += workload.period === null ? workload.hours : 0;
-            //         flag = false;
-            //         console.log(workloadDto);
-            //         break;
-            //     }
-            // }
             for (const workloadDto of workloadsDto) {
                 if (
                     departments[workloadDto.department] === workload.department &&
@@ -169,7 +156,7 @@ export default {
     },
 
     // Обновляем данные преподователя
-    async update({ params: { educatorId }, body: { name, position, rate, email, department } }, res) {
+    async update({ params: { educatorId }, body: { name, position, rate, email, department, typeOfEmployment } }, res) {
         if (!educatorId) throw new AppErrorMissing('educatorId');
         const educator = await Educator.findByPk(educatorId);
         if (!educator) throw new AppErrorNotExist('educator');
@@ -180,6 +167,7 @@ export default {
         if (!rate) rate = educator.rate;
         if (!email) email = educator.email;
         if (!department) department = educator.department;
+        if (!typeOfEmployment) typeOfEmployment = educator.typeOfEmployment;
 
         await educator.update({
             name,
@@ -187,17 +175,19 @@ export default {
             rate,
             email,
             department,
+            typeOfEmployment,
         });
 
         res.json(educator);
     },
     // Создаем преподователя
-    async create({ body: { name, position, rate, email, department }, user }, res) {
+    async create({ body: { name, position, rate, email, department, typeOfEmployment }, user }, res) {
         if (!name) throw new AppErrorMissing('name');
         if (!position) throw new AppErrorMissing('position');
         if (!rate) throw new AppErrorMissing('rate');
         if (!email) throw new AppErrorMissing('email');
         if (!department) throw new AppErrorMissing('department');
+        if (!typeOfEmployment) throw new AppErrorMissing('typeOfEmployment');
         const checkEducator = await Educator.findOne({ where: { email } });
         if (checkEducator) throw new AppErrorAlreadyExists('educator');
 
@@ -207,6 +197,7 @@ export default {
             position,
             rate,
             department,
+            typeOfEmployment,
         });
         const educatorDto = new EducatorDto(educator);
         try {
