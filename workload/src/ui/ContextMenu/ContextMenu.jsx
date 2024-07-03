@@ -41,7 +41,8 @@ const ContextMenu = () => {
     if (
       basicTabData.workloadDataFix.find(
         (item) => item.id === tabPar.selectedTr[0]
-      ).audienceHours === 0
+      ).audienceHours === 0 &&
+      menuShow === ""
     ) {
       appData.setUniversalPopupTitle(
         "Внимание, аудиторные часы равняются нулю!"

@@ -18,20 +18,38 @@ function TableTh(props) {
     }
   };
 
+  //! сортируем по колонке
+  const funSortByColumn = () => {
+    console.log(props.item.key);
+  };
+
   return (
     <th name={props.item.key} key={props.item.key}>
       {props.modal && (
         <SamplePoints index={props.index} itemKey={props.item.key} />
       )}
 
-      <div className={styles.th_inner} onClick={clickTh}>
-        {props.item.label}
+      <div className={styles.th_inner}>
+        <div
+          onClick={clickTh}
+          className={styles.th_title}
+          title="Открыть меню фильтрации"
+        >
+          {props.item.label}
+        </div>
+        {checkPar.isChecked.find((item) => item.itemKey === props.item.key) && (
+          <img
+            src="./img/filterColumn.svg"
+            alt=">"
+            title="К колонке применен фильтр"
+          ></img>
+        )}
         <img
-          src={
-            checkPar.isChecked.find((item) => item.itemKey === props.item.key)
-              ? "./img/filterColumn.svg"
-              : "./img/th_fight.svg"
-          }
+          onClick={funSortByColumn}
+          className={styles.trSort}
+          src="./img/th_fight.svg"
+          title="Сортировать колонку"
+          alt=">"
         ></img>
       </div>
     </th>
