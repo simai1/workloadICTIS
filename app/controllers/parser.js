@@ -8,14 +8,17 @@ import { sequelize } from '../models/index.js';
 import HeaderTranslation from '../config/header_translation.js';
 import HeaderTranslationEducators from '../config/header_translation_educators.js';
 import positions from '../config/position.js';
+import sendMail from '../services/email.js';
 import recommendHours from '../config/recommend-hours.js';
 import workloadController from '../controllers/workload.js';
 import fs from 'fs';
+import User from '../models/user.js';
+import { Op } from 'sequelize';
 
 export default {
     async parseWorkload(req, res) {
         const numberDepartment = req.params.numberDepartment;
-        console.log(req.file.path)
+        console.log(req.file.path);
         const workbook = XLSX.readFile(req.file.path);
         const sheetName = workbook.SheetNames[0];
         const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {
@@ -32,9 +35,10 @@ export default {
         });
         checkDepart.department = checkDepart.department.trim();
         checkDepart.department = FullNameDepartments[checkDepart.department];
-        if(checkDepart.department !== Number(numberDepartment))
+        if (checkDepart.department !== Number(numberDepartment)) {
             throw new Error('Загруженная нагрузка не совпадает с кафедрой, которую вы отправили');
-        
+        }
+
         const recordsToDelete = await Workload.findAll({
             where: {
                 department: numberDepartment,
@@ -93,12 +97,33 @@ export default {
         }
         // 504 долго работает запрос (слишком много всего)
         // await workloadController.checkHoursEducators();
-        
+
         try {
             fs.unlinkSync(req.file.path); // Синхронное удаление файла
             console.log('Файл успешно удален.');
         } catch (error) {
             console.error('Ошибка при удалении файла:', error);
+        }
+
+        if (process.env.NODE_ENV === 'production') {
+            const recievers = await User.findAll({
+                where: {
+                    role: { [Op.in]: [3, 8] },
+                },
+                include: [
+                    {
+                        model: Educator,
+                        where: {
+                            department: numberDepartment,
+                        },
+                    },
+                ],
+            });
+            for (const reciever of recievers) {
+                sendMail(reciever.login, 'uploadedNewWorkload');
+            }
+        } else {
+            sendMail(process.env.EMAIL_RECIEVER, 'uploadedNewWorkload');
         }
 
         return res.json({ status: 'ok' });
@@ -128,7 +153,7 @@ export default {
             'Научный сотрудник',
             'Директор института',
         ];
-        console.log(sheetData.length)
+        console.log(sheetData.length);
         for (const row of sheetData.slice(1)) {
             try {
                 const newEducator = {};
@@ -138,17 +163,17 @@ export default {
                 });
                 const existEducator = await Educator.findOne({ where: { email: newEducator.email } });
                 newEducator.department = FullNameDepartments[newEducator.department];
-                console.log(newEducator)
+                console.log(newEducator);
                 if (!existEducator && validPositions.includes(newEducator.position) && newEducator.department) {
                     delete newEducator.undefined;
                     newEducator.position = positions[newEducator.position];
                     let newRate = newEducator.rate.trim().split(' ');
                     let numberPart = parseFloat(newRate[0].replace(',', '.'));
-                    if (!Number(numberPart) || Number(numberPart)< 0.1) {
+                    if (!Number(numberPart) || Number(numberPart) < 0.1) {
                         numberPart = 1;
                     }
-                    newEducator.rate = numberPart
-                    console.log(newEducator)
+                    newEducator.rate = numberPart;
+                    console.log(newEducator);
                     const resEducator = await Educator.create({
                         name: newEducator.name,
                         email: newEducator.email,
@@ -156,7 +181,7 @@ export default {
                         position: newEducator.position,
                         rate: newEducator.rate,
                     });
-                    console.log("resEducator", resEducator.dataValues)
+                    console.log('resEducator', resEducator.dataValues);
                 }
             } catch (e) {
                 // Обработка ошибок
