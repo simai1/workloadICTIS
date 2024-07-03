@@ -160,15 +160,14 @@ export default {
         if (!educatorId) throw new AppErrorMissing('educatorId');
         const educator = await Educator.findByPk(educatorId);
         if (!educator) throw new AppErrorNotExist('educator');
-
         if (!name && !position && !rate) throw new AppErrorMissing('body');
         if (!name) name = educator.name;
         if (!position) position = educator.position;
-        if (!rate) rate = educator.rate;
+        if (!rate && rate != 0) rate = educator.rate;
         if (!email) email = educator.email;
         if (!department) department = educator.department;
         if (!typeOfEmployment) typeOfEmployment = educator.typeOfEmployment;
-
+        console.log(rate)
         await educator.update({
             name,
             position,
