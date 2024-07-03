@@ -18,10 +18,17 @@ export function PopUpEditTeacher(props) {
     name: props.selectRows?.name,
     position: props.selectRows?.position,
     rate: props.selectRows?.rate,
+    typeOfEmployment: props.selectRows?.typeOfEmployment,
     department: props.selectRows?.department,
   });
   const [isRateValid, setIsRateValid] = useState(true);
 
+  const ListTypeOfEmployment = [
+    { id: 1, name: "Внешнее совместительство" },
+    { id: 2, name: "Внутреннее совместительство" },
+    { id: 3, name: "Основное место работы" },
+    { id: 4, name: "Почасовая оплата труда" },
+  ];
   const dataListPosition = [
     { id: 1, name: "Ассистент" },
     { id: 2, name: "Ведущий научный сотрудник" },
@@ -76,17 +83,24 @@ export function PopUpEditTeacher(props) {
   const handleClicks = () => {
     let depart;
     let position;
-      appData.metodRole[appData.myProfile?.role]?.some((el) => el === 39) ? depart = appData.myProfile?.educator?.departmentId : depart = dataNewEdicator?.department
-    
-      !Number(dataNewEdicator?.position)
-      ? (position = dataListPosition.find(
-          (el) => el.name === dataNewEdicator?.position
-        )?.id)
-      : (position = dataNewEdicator?.position);
+    let type;
+    if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 39)){
+        depart = appData.myProfile?.educator?.departmentId 
+      }else{
+        !Number(dataNewEdicator?.department)? depart =  dataKaf.find((el)=> el.name === dataNewEdicator?.department).id  : depart= dataNewEdicator?.department
+      }
+      
+      !Number(dataNewEdicator?.typeOfEmployment) ? type = ListTypeOfEmployment.find((el)=> el.name === dataNewEdicator?.typeOfEmployment).id : type = dataNewEdicator?.typeOfEmployment
+      !Number(dataNewEdicator?.position)? (position = dataListPosition.find((el) => el.name === dataNewEdicator?.position)?.id): (position = dataNewEdicator?.position);
+
+
+      
+
 
     const data = {
       name: dataNewEdicator?.name,
       position: position,
+      typeOfEmployment: type,
       rate:
         typeof dataNewEdicator?.rate === "string"
           ? Number(dataNewEdicator?.rate.replace(",", "."))
@@ -126,6 +140,14 @@ export function PopUpEditTeacher(props) {
               name={"position"}
               handleInputList={handleInputList}
               value={dataNewEdicator.position}
+            />
+            <List
+                dataList={ListTypeOfEmployment}
+                Textlabel="Вид занятости"
+                defaultValue="Выберите вид занятости"
+                name={"typeOfEmployment"}
+                value={dataNewEdicator.typeOfEmployment}
+                handleInputList={handleInputList}
             />
             <Input
               Textlabel="Ставка"

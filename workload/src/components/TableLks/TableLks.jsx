@@ -127,6 +127,11 @@ function TableLks(props) {
                       Ставка: <strong>{EducatorLkData?.rate}</strong>
                     </span>
                   </p>
+                  <p>
+                    <span className={styles.pTop}>
+                      Вид занятости: <strong>{EducatorLkData?.typeOfEmployment}</strong>
+                    </span>
+                  </p>
             </div>
             <div className={styles.blockTwo}>
                   <div style={{display:"flex"}}>
