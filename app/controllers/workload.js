@@ -33,7 +33,7 @@ const orderRule = [
 
 export default {
     // Получение нагрузки
-    async getAllWorkload({ query: { isOid, department }, user }, res) {
+    async getAllWorkload({ query: { isOid, department, col, type}, user }, res) {
         const _user = await User.findByPk(user, { include: Educator });
         let workloadsDto;
         try {
@@ -46,13 +46,13 @@ export default {
                             educatorId: _user.Educator.id,
                         },
                         include: { model: Educator },
-                        order: orderRule,
+                        order: (col && type)? [[col, type.toUpperCase()]] : orderRule,
                     });
                 } else {
                     workloads = await Workload.findAll({
                         where: { isOid },
                         include: { model: Educator },
-                        order: orderRule,
+                        order: (col && type)? [[col, type.toUpperCase()]] : orderRule,
                     });
                 }
                 workloadsDto = workloads.map(workload => new WorkloadDto(workload));
@@ -65,7 +65,7 @@ export default {
                             educatorId: _user.Educator.id,
                         },
                         include: { model: Educator },
-                        order: orderRule,
+                        order: (col && type)? [[col, type.toUpperCase()]] : orderRule,
                     });
                 } else if (_user.role === 2) {
                     workloads = await Workload.findAll({
@@ -74,7 +74,7 @@ export default {
                             department,
                         },
                         include: { model: Educator },
-                        order: orderRule,
+                        order: (col && type)? [[col, type.toUpperCase()]] : orderRule,
                     });
                 } else {
                     workloads = await Workload.findAll({
@@ -83,7 +83,7 @@ export default {
                             department,
                         },
                         include: { model: Educator },
-                        order: orderRule,
+                        order: (col && type)? [[col, type.toUpperCase()]] : orderRule,
                     });
                 }
                 workloadsDto = workloads.map(workload => new WorkloadDto(workload));
@@ -94,7 +94,7 @@ export default {
                             educatorId: _user.Educator.id,
                         },
                         include: { model: Educator },
-                        order: orderRule,
+                        order: (col && type)? [[col, type.toUpperCase()]] : orderRule,
                     });
                 } else if (_user.role === 2) {
                     // LECTURER HANDLER
@@ -107,7 +107,7 @@ export default {
                                 model: Educator,
                             },
                         ],
-                        order: orderRule,
+                        order: (col && type)? [[col, type.toUpperCase()]] : orderRule,
                     });
 
                     const disciplines = [];
@@ -124,7 +124,7 @@ export default {
                                 workload: { [Op.in]: ['Лабораторные', 'Практические'] },
                             },
                             include: { model: Educator },
-                            order: orderRule,
+                            order: (col && type)? [[col, type.toUpperCase()]] : orderRule,
                         })),
                         ...ownWorkloads,
                     ];
@@ -134,7 +134,7 @@ export default {
                             department: _user.Educator.department,
                         },
                         include: { model: Educator },
-                        order: orderRule,
+                        order: (col && type)? [[col, type.toUpperCase()]] : orderRule,
                     });
                 } else if (_user.role === 6) {
                     // UNIT_ADMIN HANDLER
@@ -143,7 +143,7 @@ export default {
                             department: _user.allowedDepartments,
                         },
                         include: { model: Educator },
-                        order: orderRule,
+                        order: (col && type)? [[col, type.toUpperCase()]] : orderRule,
                     });
                 } else if (_user.role === 4 || _user.role === 7) {
                     if (!_user.institutionalAffiliation) {
@@ -166,7 +166,7 @@ export default {
                             isBlocked: false,
                         },
                         include: { model: Educator },
-                        order: orderRule,
+                        order: (col && type)? [[col, type.toUpperCase()]] : orderRule,
                     });
                 } else {
                     workloads = await Workload.findAll({
@@ -175,7 +175,7 @@ export default {
                             isOid: false,
                         },
                         include: { model: Educator },
-                        order: orderRule,
+                        order: (col && type)? [[col, type.toUpperCase()]] : orderRule,
                     });
                 }
                 workloadsDto = workloads.map(workload => new WorkloadDto(workload));
