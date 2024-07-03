@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./TableWorkload.module.scss";
 import DataContext from "../../context";
 import { SamplePoints } from "../../ui/SamplePoints/SamplePoints";
 
 function TableTh(props) {
-  const { tabPar, basicTabData, checkPar } = React.useContext(DataContext);
+  const { tabPar, basicTabData, checkPar, appData } =
+    React.useContext(DataContext);
   //! открытие модального окна фильтрации столбца
   const clickTh = () => {
     if (tabPar.spShow === props.index) {
@@ -21,8 +22,15 @@ function TableTh(props) {
   //! сортируем по колонке
   const funSortByColumn = () => {
     console.log(props.item.key);
+    appData.setSortParamByColumn(`col=${props.item.key}&type=${"asc"}`);
   };
-
+  useEffect(() => {
+    basicTabData.funUpdateTable(
+      basicTabData.tableDepartment.find(
+        (el) => el.name === basicTabData?.nameKaf
+      )?.id
+    );
+  }, [appData.sortParamByColumn]);
   return (
     <th name={props.item.key} key={props.item.key}>
       {props.modal && (

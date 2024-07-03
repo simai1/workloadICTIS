@@ -120,6 +120,7 @@ export function combineData(data, selectedTr, action = "") {
       (total, el) => total + el.numberOfStudents,
       0
     );
+    console.log(prevState);
     const audienceHours = prevState.reduce(
       (total, el) => total + el.audienceHours,
       0

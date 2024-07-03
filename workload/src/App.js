@@ -89,8 +89,9 @@ function App() {
   const [loaderAction, setLoaderAction] = useState(false);
   const [universalPopupTitle, setUniversalPopupTitle] = useState(""); // если он не пустой, то открывается универсальный попап с данным title
   const [hoursWorkloadSumma, setHoursWorkloadSumma] = useState([]);
+  const [sortParamByColumn, setSortParamByColumn] = useState(""); //! сортировка в колнке по возрастанию убыванию или без если ""
 
-  const [popupErrorText, setPopupErrorText] = useState("");
+  const [popupErrorText, setPopupErrorText] = useState(""); //! если не пустой то в поап ерор будет текст который в состоянии
 
   const appData = {
     hoursWorkloadSumma,
@@ -129,6 +130,8 @@ function App() {
     setUniversalPopupTitle,
     popupErrorText,
     setPopupErrorText,
+    sortParamByColumn,
+    setSortParamByColumn,
   };
 
   useEffect(() => {
@@ -389,7 +392,7 @@ function App() {
   function funUpdateTable(param) {
     //param = tableDepartment[0]?.id
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
-      Workload("").then((data) => {
+      Workload(sortParamByColumn).then((data) => {
         if (data) {
           funUpdTab(data);
         }
@@ -405,7 +408,7 @@ function App() {
       } else if (param != 99 && param != 0) {
         url = `?department=${param}`;
       }
-      Workload(`${url}`).then((data) => {
+      Workload(`${url}${sortParamByColumn}`).then((data) => {
         funUpdTab(data);
       });
     }
