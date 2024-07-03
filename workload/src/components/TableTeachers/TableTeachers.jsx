@@ -18,7 +18,7 @@ function TableTeachers(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]);
   const [updatedData, setUpdatedData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const { appData, basicTabData, checkPar } = React.useContext(DataContext);
+  const { appData, basicTabData } = React.useContext(DataContext);
   const [sampleShow, setSampleShow] = useState(false);
   const [sampleData, setSampleData] = useState([]);
   const [selectRows, setSelectRow] = useState(null);
@@ -236,18 +236,14 @@ function TableTeachers(props) {
     } else return "";
   };
 
- //!функция сброса фильтров
- const refreshFilters = () => {
+  //!функция сброса фильтров
+  const refreshFilters = () => {
     setIsChecked([]);
     setAllChecked([]);
     sessionStorage.setItem("isCheckedTeachers", null);
-    const fdfix = FilteredSample(
-      updatedData,
-      [],
-      "idasdasd"
-    );
+    const fdfix = FilteredSample(updatedData, [], "idasdasd");
     setFilteredData(fdfix);
-      console.log("click")
+    console.log("click");
   };
 
   const funGetStyle = (action) => {
@@ -282,23 +278,22 @@ function TableTeachers(props) {
           }}
         />
       ) : (
-        <div style={{ height: "59px" }}> 
-        </div>
+        <div style={{ height: "59px" }}></div>
       )}
 
-      
       <div className={styles.filterdClear}>
-        <img src="./img/ClearFilter.svg"
-           onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            onClick={refreshFilters}
+        <img
+          src="./img/ClearFilter.svg"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          onClick={refreshFilters}
         />
-         {isHovered && (
-              <div className={styles.BlockTextFilter}>
-                <div className={styles.triangle}></div>
-                <p className={styles.textFilter}>Сбросить фильтры</p>
-              </div>
-            )}
+        {isHovered && (
+          <div className={styles.BlockTextFilter}>
+            <div className={styles.triangle}></div>
+            <p className={styles.textFilter}>Сбросить фильтры</p>
+          </div>
+        )}
       </div>
       <div className={styles.TableTeachers__inner}>
         <table className={styles.table}>
