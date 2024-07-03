@@ -392,7 +392,8 @@ function App() {
   function funUpdateTable(param) {
     //param = tableDepartment[0]?.id
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
-      Workload(sortParamByColumn).then((data) => {
+      const par = sortParamByColumn !== "" ? `?${sortParamByColumn}` : "";
+      Workload(par).then((data) => {
         if (data) {
           funUpdTab(data);
         }
@@ -404,11 +405,16 @@ function App() {
         url = "?isOid=true";
       }
       if (param == 99) {
-        url = ``;
+        if (sortParamByColumn !== "") {
+          url = `?${sortParamByColumn}`;
+        } else {
+          url = "";
+        }
       } else if (param != 99 && param != 0) {
-        url = `?department=${param}`;
+        url = `?department=${param}&${sortParamByColumn}`;
       }
-      Workload(`${url}${sortParamByColumn}`).then((data) => {
+      console.log(url);
+      Workload(url).then((data) => {
         funUpdTab(data);
       });
     }
@@ -418,6 +424,13 @@ function App() {
     // ?isOid=false - вся кафедральная нагрузка,
     // ?department={номер кафедры} - нагрузка одной кафедры
   }
+
+  //! вызываем функцию для обновления массива данных при сортировке через tableTh
+  useEffect(() => {
+    funUpdateTable(
+      tableDepartment.find((el) => el.name === basicTabData?.nameKaf)?.id
+    );
+  }, [sortParamByColumn]);
 
   //!функция прокида буфера
   function UpdateWorkloadForBoofer(data) {

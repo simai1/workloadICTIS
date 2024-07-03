@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./TableWorkload.module.scss";
 import DataContext from "../../context";
 import { SamplePoints } from "../../ui/SamplePoints/SamplePoints";
@@ -6,6 +6,9 @@ import { SamplePoints } from "../../ui/SamplePoints/SamplePoints";
 function TableTh(props) {
   const { tabPar, basicTabData, checkPar, appData } =
     React.useContext(DataContext);
+
+  const [sortImg, setSortImg] = useState(0);
+
   //! открытие модального окна фильтрации столбца
   const clickTh = () => {
     if (tabPar.spShow === props.index) {
@@ -19,18 +22,40 @@ function TableTh(props) {
     }
   };
 
-  //! сортируем по колонке
+  //! сортируем по колонке в App вызывается useEfferc для обновления массива
   const funSortByColumn = () => {
     console.log(props.item.key);
-    appData.setSortParamByColumn(`col=${props.item.key}&type=${"asc"}`);
+    let par = "";
+    if (appData.sortParamByColumn === "") {
+      par = `col=${props.item.key}&type=${"asc"}`;
+      setSortImg(1);
+    } else {
+      if (
+        appData.sortParamByColumn.includes(props.item.key) &&
+        appData.sortParamByColumn.includes("asc")
+      ) {
+        par = `col=${props.item.key}&type=${"desc"}`;
+        setSortImg(2);
+      } else if (
+        appData.sortParamByColumn.includes(props.item.key) &&
+        appData.sortParamByColumn.includes("desc")
+      ) {
+        par = "";
+        setSortImg(0);
+      } else {
+        par = `col=${props.item.key}&type=${"asc"}`;
+        setSortImg(1);
+      }
+    }
+    appData.setSortParamByColumn(par);
   };
+
   useEffect(() => {
-    basicTabData.funUpdateTable(
-      basicTabData.tableDepartment.find(
-        (el) => el.name === basicTabData?.nameKaf
-      )?.id
-    );
+    if (!appData.sortParamByColumn.includes(props.item.key)) {
+      setSortImg(0);
+    }
   }, [appData.sortParamByColumn]);
+
   return (
     <th name={props.item.key} key={props.item.key}>
       {props.modal && (
@@ -52,13 +77,20 @@ function TableTh(props) {
             title="К колонке применен фильтр"
           ></img>
         )}
-        <img
-          onClick={funSortByColumn}
-          className={styles.trSort}
-          src="./img/th_fight.svg"
-          title="Сортировать колонку"
-          alt=">"
-        ></img>
+        {props.item.key !== "id" && (
+          <img
+            onClick={funSortByColumn}
+            className={styles.trSort}
+            src={sortImg === 0 ? "./img/=.svg" : "./img/sort.svg"}
+            title="Сортировать колонку"
+            alt=">"
+            style={
+              sortImg !== 1
+                ? { transform: "rotate(-180deg)", transition: "all 0.2s ease" }
+                : { transition: "all 0.2s ease" }
+            }
+          ></img>
+        )}
       </div>
     </th>
   );
