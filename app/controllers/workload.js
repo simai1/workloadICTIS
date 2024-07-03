@@ -6,7 +6,7 @@ import Educator from '../models/educator.js';
 import Notification from '../models/notifications.js';
 import User from '../models/user.js';
 // eslint-disable-next-line import/no-duplicates
-import {map as mapTempDepartmentEducators} from '../config/temp-department-educators.js';
+import { map as mapTempDepartmentEducators } from '../config/temp-department-educators.js';
 import { map as mapDepartments } from '../config/departments.js';
 import WorkloadDto from '../dtos/workload-dto.js';
 import SummaryWorkload from '../models/summary-workload.js';
@@ -187,7 +187,7 @@ export default {
     },
 
     async getAllDepartment(req, res) {
-        const filteredKeys = Object.keys(departments).filter(key => key!== 'ДИР');
+        const filteredKeys = Object.keys(departments).filter(key => key !== 'ДИР');
         const departmentsObj = filteredKeys.map(key => ({
             name: key,
             id: departments[key],
@@ -779,7 +779,14 @@ export default {
             if (checkWorkload.isBlocked === true) throw new Error('Already blocked');
             await Workload.update({ isBlocked: true }, { where: { isOid: true } });
             try {
-                sendMail(process.env.EMAIL_RECIEVER, 'blocking', 'Общеинститутская нагрузка');
+                if (process.env.NODE_ENV === 'production') {
+                    const methodists = await User.findAll({ where: { role: 1 } });
+                    for (const methodist of methodists) {
+                        sendMail(methodist.login, 'blocking', 'Общеинститутская нагрузка');
+                    }
+                } else {
+                    sendMail(process.env.EMAIL_RECIEVER, 'blocking', 'Общеинститутская нагрузка');
+                }
             } catch (e) {
                 console.log('Email bad creditionals');
             }
@@ -787,7 +794,14 @@ export default {
             if (!Object.values(departments).includes(department)) throw new AppErrorInvalid('department');
             await Workload.update({ isBlocked: true }, { where: { department } });
             try {
-                sendMail(process.env.EMAIL_RECIEVER, 'blocking', `Нагрузка кафедры ${mapDepartments[department]}`);
+                if (process.env.NODE_ENV === 'production') {
+                    const methodists = await User.findAll({ where: { role: 1 } });
+                    for (const methodist of methodists) {
+                        sendMail(methodist.login, 'blocking', `Нагрузка кафедры ${mapDepartments[department]}`);
+                    }
+                } else {
+                    sendMail(process.env.EMAIL_RECIEVER, 'blocking', `Нагрузка кафедры ${mapDepartments[department]}`);
+                }
             } catch (e) {
                 console.log('Email bad creditionals');
             }
@@ -997,53 +1011,59 @@ export default {
     async requestUnblock(req, res) {
         const { department } = req.body;
         const user = await User.findByPk(req.user);
-        sendMail(process.env.EMAIL_RECIEVER, 'requestUnblocking', user.name, mapDepartments[department]);
-        res.json({status: 'OK'});
+        if (process.env.NODE_ENV === 'production') {
+            const methodists = await User.findAll({ where: { role: 1 } });
+            for (const methodist of methodists) {
+                sendMail(methodist.login, 'requestUnblocking', user.name, mapDepartments[department]);
+            }
+        } else {
+            sendMail(process.env.EMAIL_RECIEVER, 'requestUnblocking', user.name, mapDepartments[department]);
+        }
+        res.json({ status: 'OK' });
     },
-    async getAllocatedAndUnallocatedWrokloadHours({ params: { department } }, res){
+    async getAllocatedAndUnallocatedWrokloadHours({ params: { department } }, res) {
         const vacancyEducator = mapTempDepartmentEducators[department];
-        console.log(vacancyEducator)
+        console.log(vacancyEducator);
         let workloadWithoutEducators = {};
-        if(!vacancyEducator) {
+        if (!vacancyEducator) {
             workloadWithoutEducators = await Workload.findAll({
                 where: {
                     educatorId: null,
                     department: department,
-                }
-            })
+                },
+            });
         } else {
             const existEducator = await Educator.findOne({
-                where:{
+                where: {
                     name: vacancyEducator,
-                }
-            })
-            console.log(existEducator.dataValues)
+                },
+            });
+            console.log(existEducator.dataValues);
             workloadWithoutEducators = await Workload.findAll({
                 where: {
-                    [Op.or]: [
-                        { educatorId: null },
-                        { educatorId: existEducator.id }
-                    ],
+                    [Op.or]: [{ educatorId: null }, { educatorId: existEducator.id }],
                     department: department,
-                }
-            })
+                },
+            });
         }
         let hoursWorkloadWithoutEducators = 0;
-        let hoursAllWorkload =0;
-        for(const wrkl of workloadWithoutEducators ){
-            hoursWorkloadWithoutEducators+= wrkl.hours;
+        let hoursAllWorkload = 0;
+        for (const wrkl of workloadWithoutEducators) {
+            hoursWorkloadWithoutEducators += wrkl.hours;
         }
         const workloadAll = await Workload.findAll({
             where: {
                 department: department,
-            }
+            },
         });
-        for(const wrkl of workloadAll ){
-            hoursAllWorkload+= wrkl.hours;
+        for (const wrkl of workloadAll) {
+            hoursAllWorkload += wrkl.hours;
         }
         hoursWorkloadWithoutEducators = hoursWorkloadWithoutEducators.toFixed(2);
         hoursAllWorkload = hoursAllWorkload.toFixed(2);
-        res.json({hoursWorkloadWithoutEducators: hoursWorkloadWithoutEducators, hoursAllWorkload: hoursAllWorkload});
-
-    }
+        res.json({
+            hoursWorkloadWithoutEducators: hoursWorkloadWithoutEducators,
+            hoursAllWorkload: hoursAllWorkload,
+        });
+    },
 };
