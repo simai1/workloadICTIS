@@ -417,7 +417,6 @@ function App() {
       } else if (param != 99 && param != 0) {
         url = `?department=${param}&${sortParamByColumn}`;
       }
-      console.log(url);
       Workload(url).then((data) => {
         funUpdTab(data);
       });
