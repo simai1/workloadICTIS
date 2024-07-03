@@ -1093,14 +1093,13 @@ export default {
 
     async requestUnblock(req, res) {
         const { department } = req.body;
-        const user = await User.findByPk(req.user);
         if (process.env.NODE_ENV === 'production') {
             const methodists = await User.findAll({ where: { role: 1 } });
             for (const methodist of methodists) {
-                sendMail(methodist.login, 'requestUnblocking', user.name, mapDepartments[department]);
+                sendMail(methodist.login, 'requestUnblocking', mapDepartments[department]);
             }
         } else {
-            sendMail(process.env.EMAIL_RECIEVER, 'requestUnblocking', user.name, mapDepartments[department]);
+            sendMail(process.env.EMAIL_RECIEVER, 'requestUnblocking', mapDepartments[department]);
         }
         res.json({ status: 'OK' });
     },
