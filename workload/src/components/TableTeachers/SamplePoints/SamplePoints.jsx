@@ -54,7 +54,7 @@ export function SamplePoints(props) {
     ) {
       checked = checked.filter((el) => el.itemKey !== props.itemKey);
     } else {
-      [...filteredData].map((item) => {
+      [...props.isSamplePointsData].map((item) => {
         checked.push({ value: item, itemKey: props.itemKey });
       });
     }

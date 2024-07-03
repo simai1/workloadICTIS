@@ -55,7 +55,7 @@ export function SamplePoints(props) {
     ) {
       checked = checked.filter((el) => el.itemKey !== props.itemKey);
     } else {
-      [...filteredData].map((item) => {
+      [...tabPar.isSamplePointsData].map((item) => {
         checked.push({ value: item, itemKey: props.itemKey });
       });
     }
@@ -95,11 +95,6 @@ export function SamplePoints(props) {
   return (
     <main className={styles.SamplePoints} ref={spRef}>
       <div className={styles.container}>
-        {/* <div className={styles.sorted}>
-          <button>В</button>
-          <button>У</button>
-          <button>А</button>
-        </div> */}
         <div>
           <input
             className={styles.search}
