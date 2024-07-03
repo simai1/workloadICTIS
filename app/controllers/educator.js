@@ -183,7 +183,7 @@ export default {
     async create({ body: { name, position, rate, email, department, typeOfEmployment }, user }, res) {
         if (!name) throw new AppErrorMissing('name');
         if (!position) throw new AppErrorMissing('position');
-        if (!rate) throw new AppErrorMissing('rate');
+        if (!rate && rate != 0) throw new AppErrorMissing('rate');
         if (!email) throw new AppErrorMissing('email');
         if (!department) throw new AppErrorMissing('department');
         if (!typeOfEmployment) throw new AppErrorMissing('typeOfEmployment');
