@@ -114,12 +114,20 @@ export function combineData(data, selectedTr, action = "") {
           item.discipline === prevState[0].discipline &&
           item.numberOfStudents === prevState[0].numberOfStudents &&
           item.isSplit === true
+      )) ||
+    (action === "vkr" &&
+      prevState.every(
+        (item) =>
+          item.workload === prevState[0].workload &&
+          item.discipline === prevState[0].discipline &&
+          item.numberOfStudents === prevState[0].numberOfStudents
       ))
   ) {
     const sumOfStudents = prevState.reduce(
       (total, el) => total + el.numberOfStudents,
       0
     );
+    console.log(prevState);
     const audienceHours = prevState.reduce(
       (total, el) => total + el.audienceHours,
       0
@@ -145,7 +153,16 @@ export function combineData(data, selectedTr, action = "") {
               isMerged: true,
               educator: "___",
             }
-          : action === "h" && {
+          : action === "h"
+          ? {
+              ...upData[index],
+              audienceHours,
+              groups,
+              isSplit: false,
+              isMerged: true,
+              educator: "___",
+            }
+          : action === "vkr" && {
               ...upData[index],
               audienceHours,
               groups,
@@ -163,14 +180,21 @@ export function combineData(data, selectedTr, action = "") {
           hours: rc + updatedObject.audienceHours,
         };
         newState = updatedObjectFix;
-      }
-      if (action === "h") {
+      } else if (action === "h") {
         const rc =
           updatedObject.audienceHours * updatedObject.numberOfStudents * 0.01;
         const updatedObjectFix = {
           ...updatedObject,
           ratingControlHours: rc,
           hours: rc + updatedObject.audienceHours,
+        };
+        newState = updatedObjectFix;
+      } else if (action === "vkr") {
+        const updatedObjectFix = {
+          ...updatedObject,
+          ratingControlHours: 0,
+          hours: updatedObject.numberOfStudents * 0.5,
+          audienceHours: updatedObject.numberOfStudents * 0.5,
         };
         newState = updatedObjectFix;
       }
