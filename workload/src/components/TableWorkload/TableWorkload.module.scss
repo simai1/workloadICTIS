@@ -127,9 +127,6 @@ $heightCell: 150px;
           transition: all 0.15s ease;
         }
       }
-      .trSort {
-        margin-left: 5px;
-      }
     }
 
     th {
@@ -311,9 +308,14 @@ $heightCell: 150px;
       display: flex;
       justify-content: center;
       cursor: pointer;
-      img {
-        padding: 0 6px;
-        width: 24px;
+
+      .th_inner_img {
+        display: flex;
+        flex-direction: row;
+        img {
+          padding: 0 6px;
+          width: 24px;
+        }
       }
     }
 

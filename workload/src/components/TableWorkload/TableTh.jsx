@@ -70,27 +70,34 @@ function TableTh(props) {
         >
           {props.item.label}
         </div>
-        {checkPar.isChecked.find((item) => item.itemKey === props.item.key) && (
-          <img
-            src="./img/filterColumn.svg"
-            alt=">"
-            title="К колонке применен фильтр"
-          ></img>
-        )}
-        {props.item.key !== "id" && (
-          <img
-            onClick={funSortByColumn}
-            className={styles.trSort}
-            src={sortImg === 0 ? "./img/=.svg" : "./img/sort.svg"}
-            title="Сортировать колонку"
-            alt=">"
-            style={
-              sortImg !== 1
-                ? { transform: "rotate(-180deg)", transition: "all 0.2s ease" }
-                : { transition: "all 0.2s ease" }
-            }
-          ></img>
-        )}
+        <div className={styles.th_inner_img}>
+          {props.item.key !== "id" && (
+            <img
+              onClick={funSortByColumn}
+              className={styles.trSort}
+              src={sortImg === 0 ? "./img/=.svg" : "./img/sort.svg"}
+              title="Сортировать колонку"
+              alt=">"
+              style={
+                sortImg !== 1
+                  ? {
+                      transform: "rotate(-180deg)",
+                      transition: "all 0.2s ease",
+                    }
+                  : { transition: "all 0.2s ease" }
+              }
+            ></img>
+          )}
+          {checkPar.isChecked.find(
+            (item) => item.itemKey === props.item.key
+          ) && (
+            <img
+              src="./img/filterColumn.svg"
+              alt=">"
+              title="К колонке применен фильтр"
+            ></img>
+          )}
+        </div>
       </div>
     </th>
   );

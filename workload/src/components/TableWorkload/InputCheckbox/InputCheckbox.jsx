@@ -6,7 +6,8 @@ import Comments from "./Comments";
 import Offers from "./Offers";
 import { FilteredSample } from "../../../ui/SamplePoints/Function";
 function InputCheckbox(props) {
-  const { appData, tabPar, basicTabData, checkPar } = React.useContext(DataContext);
+  const { appData, tabPar, basicTabData, checkPar } =
+    React.useContext(DataContext);
   const [isHovered, setIsHovered] = useState(false);
 
   //! функция определения есть ли комментарии к строке
@@ -27,31 +28,27 @@ function InputCheckbox(props) {
     backgroundColor: props.bgColor,
   };
 
-    //!функция сброса фильтров
-    const refreshFilters = () => {
-        checkPar.setIsChecked([]);
-        checkPar.setAllChecked([]);
-        sessionStorage.setItem("isCheckedWorkload", null);
-        const fdfix = FilteredSample(
-          basicTabData.workloadData,
-          [],
-          "idasdasd"
-        );
-        basicTabData.setWorkloadDataFix(fdfix);
-      
-    };
+  //!функция сброса фильтров
+  const refreshFilters = () => {
+    checkPar.setIsChecked([]);
+    checkPar.setAllChecked([]);
+    sessionStorage.setItem("isCheckedWorkload", null);
+    const fdfix = FilteredSample(basicTabData.workloadData, [], "idasdasd");
+    basicTabData.setWorkloadDataFix(fdfix);
+    appData.setSortParamByColumn("");
+  };
 
   return (
     <>
       {props.th ? (
         <th style={stylesTh} className={styles.InputCheckbox}>
           <div className={styles.bacground}>
-          <img
-            src="./img/ClearFilter.svg"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            onClick={refreshFilters}
-          />
+            <img
+              src="./img/ClearFilter.svg"
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+              onClick={refreshFilters}
+            />
             {isHovered && (
               <div className={styles.BlockTextFilter}>
                 <div className={styles.triangle}></div>
