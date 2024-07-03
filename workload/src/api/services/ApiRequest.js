@@ -114,7 +114,6 @@ export const TypeOfEmployments = async () => {
 
 //! получаем нагрузки
 export const Workload = async (param) => {
-  console.log(param);
   try {
     const response = await http.get(`${server}/workload${param}`);
     return response.data;
