@@ -903,6 +903,28 @@ export default {
             if (!Object.values(departments).includes(department)) throw new AppErrorInvalid('department');
             await Workload.update({ isBlocked: false }, { where: { department } });
         }
+
+        if (process.env.NODE_ENV === 'production') {
+            const recievers = await User.findAll({
+                where: {
+                    role: { [Op.in]: [3, 8] },
+                },
+                include: [
+                    {
+                        model: Educator,
+                        where: {
+                            department,
+                        },
+                    },
+                ],
+            });
+            for (const reciever of recievers) {
+                sendMail(reciever.login, 'unblocking');
+            }
+        } else {
+            sendMail(process.env.EMAIL_RECIEVER, 'unblocking');
+        }
+
         res.json({ status: 'OK' });
     },
 
