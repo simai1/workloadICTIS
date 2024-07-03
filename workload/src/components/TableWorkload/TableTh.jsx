@@ -24,7 +24,6 @@ function TableTh(props) {
 
   //! сортируем по колонке в App вызывается useEfferc для обновления массива
   const funSortByColumn = () => {
-    console.log(props.item.key);
     let par = "";
     if (appData.sortParamByColumn === "") {
       par = `col=${props.item.key}&type=${"asc"}`;
@@ -47,6 +46,7 @@ function TableTh(props) {
         setSortImg(1);
       }
     }
+    console.log(par);
     appData.setSortParamByColumn(par);
   };
 
@@ -71,7 +71,7 @@ function TableTh(props) {
           {props.item.label}
         </div>
         <div className={styles.th_inner_img}>
-          {props.item.key !== "id" && (
+          {props.item.key !== "id" && props.item.key !== "educator" && (
             <img
               onClick={funSortByColumn}
               className={styles.trSort}
