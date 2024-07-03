@@ -390,6 +390,10 @@ function App() {
 
   //! функция обновления таблицы
   function funUpdateTable(param) {
+    if(param === undefined){
+      param = 99
+    }
+    console.log("param", param)
     //param = tableDepartment[0]?.id
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
       const par = sortParamByColumn !== "" ? `?${sortParamByColumn}` : "";
@@ -535,10 +539,10 @@ function App() {
       } else if (
         appData.metodRole[appData.myProfile?.role]?.some((el) => el === 28)
       ) {
-        selectISOid
-          ? // funUpdateTable(0)
-            funUpdateTable(99)
-          : funUpdateTable(
+        // selectISOid
+        //   ? // funUpdateTable(0)
+        //     funUpdateTable(99)
+           funUpdateTable(
               tableDepartment.find((el) => el.name === nameKaf)?.id
             );
       } else {
