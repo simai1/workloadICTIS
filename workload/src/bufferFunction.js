@@ -2,6 +2,7 @@ import React from "react";
 import {
   AcceptOffer,
   addEducatorWorkload,
+  apiSplitByHours,
   createComment,
   createOffer,
   deleteComment,
@@ -29,10 +30,20 @@ export async function bufferRequestToApi(buffer) {
       await splitWorkload(data);
       count++;
     }
+    // разделения по часам
+    else if (buffer[i].request === "splitByHours") {
+      const data = {
+        workloadId: buffer[i].workloadId,
+        workloadsData: buffer[i].data.hoursData,
+      };
+      // запрос на разделение
+      await apiSplitByHours(data);
+      count++;
+    }
 
     // соединение нагрузки
     else if (buffer[i].request === "joinWorkloads") {
-      await joinWorkloads(buffer[i].data);
+      await joinWorkloads(buffer[i].data, buffer[i].action);
       count++;
     }
 
