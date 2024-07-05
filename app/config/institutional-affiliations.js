@@ -2,7 +2,7 @@ import { mapObjectKeys } from '../utils/map.js';
 
 const institutionalAffiliations = {
     ИКТИБ: 1,
-    ИНЕП: 2,
+    ИНЭП: 2,
     ИРТСУ: 3,
 };
 
