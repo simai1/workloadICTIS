@@ -160,7 +160,7 @@ function TableLks(props) {
                   </p>
                   <p>
                     <span className={styles.pTop}>
-                      Общеинстетутские часы: <strong>{EducatorLkData?.totalOidHours}</strong>
+                      Общеинститутские часы: <strong>{EducatorLkData?.totalOidHours}</strong>
                     </span>
                   </p>
             </div>

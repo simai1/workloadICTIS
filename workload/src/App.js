@@ -47,7 +47,7 @@ function App() {
       1, 3, 4, 8, 9, 10, 14, 17, 20, 21, 25, 26, 28, 29, 31, 34, 35, 36, 16, 40,
       47, 48, 50,
     ],
-    LECTURER: [2, 15, 17, 17.1, 18, 20, 22, 24, 34, 37, 41],
+    LECTURER: [2, 15, 17, 17.1, 18, 20, 22, 24, 34, 37, 41, 53],
     DEPARTMENT_HEAD: [
       2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 20, 22, 23, 25, 26, 27, 30, 31,
       32, 33, 34, 36, 16, 39, 40, 49, 50, 51, 52,
@@ -60,7 +60,7 @@ function App() {
       2, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
       34, 35, 36, 38, 16, 40, 48, 42, 50,
     ],
-    EDUCATOR: [15, 24, 41],
+    EDUCATOR: [15, 24, 41, 53],
     DEPUTY_DIRECTORATE: [
       1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
       34, 35, 36, 38, 16, 40, 44, 47, 50,
@@ -90,10 +90,12 @@ function App() {
   const [universalPopupTitle, setUniversalPopupTitle] = useState(""); // если он не пустой, то открывается универсальный попап с данным title
   const [hoursWorkloadSumma, setHoursWorkloadSumma] = useState([]);
   const [sortParamByColumn, setSortParamByColumn] = useState(""); //! сортировка в колнке по возрастанию убыванию или без если ""
-
   const [popupErrorText, setPopupErrorText] = useState(""); //! если не пустой то в поап ерор будет текст который в состоянии
+  const [popupGoodText, setPopupGoodText] = useState(""); //! если не пустой то в поап ерор будет текст который в состоянии
 
   const appData = {
+    popupGoodText,
+    setPopupGoodText,
     hoursWorkloadSumma,
     individualCheckboxes,
     setIndividualCheckboxes,
@@ -390,9 +392,7 @@ function App() {
 
   //! функция обновления таблицы
   function funUpdateTable(param) {
-    if(param === undefined){
-      param = 99
-    }
+ 
     console.log("param", param)
     //param = tableDepartment[0]?.id
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
@@ -530,30 +530,15 @@ function App() {
 
   //! функция обновления всех данных
   function updateAlldata() {
-    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 44)) {
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 53)) {
       funUpdateTable(99);
     } else {
-      if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 42)) {
-        funUpdateTable(99);
-      } else if (
-        appData.metodRole[appData.myProfile?.role]?.some((el) => el === 28)
-      ) {
-        // selectISOid
-        //   ? // funUpdateTable(0)
-        //     funUpdateTable(99)
-           funUpdateTable(
-              tableDepartment.find((el) => el.name === nameKaf)?.id
-            );
-      } else {
-        if (
-          appData.metodRole[appData.myProfile?.role]?.some((el) => el === 32)
-        ) {
-          funUpdateTable(0);
-        } else {
-          funUpdateTable(99);
-        }
-      }
+      const idTable = tableDepartment.find(
+        (el) => el.name === nameKaf
+      )?.id;
+      idTable && funUpdateTable(idTable);
     }
+
 
     if (
       appData.metodRole[appData.myProfile?.role]?.some(
@@ -577,7 +562,6 @@ function App() {
   useEffect(() => {
     if (myProfile) {
       setnameKaf(tableDepartment[0]?.name);
-      updateAlldata();
       if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 52)) {
         getAllocatedAndUnallocatedWrokloadHours(
           appData.myProfile?.educator.departmentId
@@ -589,8 +573,12 @@ function App() {
         });
       }
     }
-  }, [tableDepartment, myProfile]); // [myProfile, tableDepartment]
+  }, [tableDepartment, myProfile]);
 
+  useEffect(()=>{
+    updateAlldata();
+  },[tableDepartment, nameKaf])
+  
   function funFilteredFilterSelected(splitData = [...workloadDataFix]) {
     return funFilterSelected(
       splitData,
