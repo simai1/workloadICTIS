@@ -182,12 +182,19 @@ const ContextMenu = () => {
     } else {
       tabPar.setSelectedTr([]);
       basicTabData.setWorkloadDataFix(funData.newUpdatedData);
+      const hoursData = {
+        numberOfStudents: funData.newState.numberOfStudents,
+        hours: funData.newState.hours,
+        ratingControlHours: funData.newState.ratingControlHours,
+        audienceHours: funData.newState.audienceHours,
+      };
       //! буфер
       appData.setBufferAction([
         {
           id: appData.bufferAction.length,
           request: "joinWorkloads",
           data: data,
+          hoursData: hoursData,
           newState: funData.newState,
           prevState: funData.prevState,
           action: `?type=${action}`,
