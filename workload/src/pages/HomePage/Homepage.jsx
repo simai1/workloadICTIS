@@ -148,17 +148,6 @@ function HomePage() {
   //! при нажатии на подтвердить сохранение изменений
   const confirmClick = (action) => {
     if (action) {
-      // //! отправляем все запросы на обработку
-      // bufferRequestToApi(appData.bufferAction).then((act) => {
-      //   if (act) {
-      //     appData.setBufferAction([0]);
-      //     basicTabData.updateAlldata();
-      //   }
-      // });
-      // tabPar.setSelectedTr([]);
-      // tabPar.setChangedData(tabPar.changedDataObj);
-      // console.log("выполнено и очищено", appData.bufferAction);
-      // appData.setBufferAction([0]);
       appData.funSaveAllData();
     } else {
       setPopupSaveAll(false);
@@ -329,7 +318,7 @@ function HomePage() {
       `Экспорт_Таблицы_${nameDepartment}_${formattedDate}.xlsx`
     );
   };
-  
+
   useEffect(() => {
     setBlockTable(checkBlocked);
   }, [
@@ -386,7 +375,7 @@ function HomePage() {
                   (el) => el === 25 && appData.selectedComponent !== "Teachers"
                 ) && (
                   <div
-                  title="Отмена действия"
+                    title="Отмена действия"
                     className={styles.btnMenuBox}
                     onClick={appData.backBuffer}
                   >
@@ -400,7 +389,11 @@ function HomePage() {
                 ) &&
                   appData.selectedComponent === "Disciplines" &&
                   !blockTable && (
-                    <div className={styles.btnMenuBox} onClick={onSaveClick} title="Сохранение изменений">
+                    <div
+                      className={styles.btnMenuBox}
+                      onClick={onSaveClick}
+                      title="Сохранение изменений"
+                    >
                       <img
                         className={styles.btnLeft}
                         src="./img/saveButton.svg"
@@ -420,8 +413,12 @@ function HomePage() {
                   appData.selectedComponent === "Disciplines" &&
                   basicTabData.nameKaf != "Все" &&
                   blockTable && (
-                    <div className={styles.btnMenuBox} onClick={onUnblockClick} title="Разблокировать таблицу">
-                      <img className={styles.btnLeft} src="./img/unblock.svg"/>
+                    <div
+                      className={styles.btnMenuBox}
+                      onClick={onUnblockClick}
+                      title="Разблокировать таблицу"
+                    >
+                      <img className={styles.btnLeft} src="./img/unblock.svg" />
                       {popupUnblockTable && (
                         <UnlockDepartment
                           title={`Вы уверены, что хотите разблокировать таблицу ${basicTabData.nameKaf} ?`}
@@ -435,7 +432,11 @@ function HomePage() {
                 ) &&
                   appData.selectedComponent === "Disciplines" &&
                   blockTable && (
-                    <div className={styles.btnMenuBox} onClick={onUnblockClick} title="Попросить разблокировать таблицу">
+                    <div
+                      className={styles.btnMenuBox}
+                      onClick={onUnblockClick}
+                      title="Попросить разблокировать таблицу"
+                    >
                       <img className={styles.btnLeft} src="./img/unblock.svg" />
                       {popupUnblockTable && (
                         <UnlockDepartment
@@ -498,7 +499,7 @@ function HomePage() {
                 <img src="./img/search.svg"></img>
               </div>
             </div>
-           
+
             <div className={styles.header_button}>
               <Button
                 Bg={

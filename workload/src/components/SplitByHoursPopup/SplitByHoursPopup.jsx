@@ -113,10 +113,6 @@ function SplitByHoursPopup() {
     tabPar.setBuffDataHoursPopup(null);
   };
 
-  // React.useEffect(() => {
-  //   console.log("tabPar.buffDataHoursPopup", tabPar.buffDataHoursPopup);
-  // }, [tabPar.buffDataHoursPopup, tabPar.changedData]);
-
   //! функция расчета часов
   const funCalculationHours = (index) => {
     let value = 0;

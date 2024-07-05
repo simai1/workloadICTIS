@@ -89,8 +89,9 @@ function App() {
   const [loaderAction, setLoaderAction] = useState(false);
   const [universalPopupTitle, setUniversalPopupTitle] = useState(""); // если он не пустой, то открывается универсальный попап с данным title
   const [hoursWorkloadSumma, setHoursWorkloadSumma] = useState([]);
+  const [sortParamByColumn, setSortParamByColumn] = useState(""); //! сортировка в колнке по возрастанию убыванию или без если ""
 
-  const [popupErrorText, setPopupErrorText] = useState("");
+  const [popupErrorText, setPopupErrorText] = useState(""); //! если не пустой то в поап ерор будет текст который в состоянии
 
   const appData = {
     hoursWorkloadSumma,
@@ -129,6 +130,8 @@ function App() {
     setUniversalPopupTitle,
     popupErrorText,
     setPopupErrorText,
+    sortParamByColumn,
+    setSortParamByColumn,
   };
 
   useEffect(() => {
@@ -387,9 +390,14 @@ function App() {
 
   //! функция обновления таблицы
   function funUpdateTable(param) {
+    if(param === undefined){
+      param = 99
+    }
+    console.log("param", param)
     //param = tableDepartment[0]?.id
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
-      Workload("").then((data) => {
+      const par = sortParamByColumn !== "" ? `?${sortParamByColumn}` : "";
+      Workload(par).then((data) => {
         if (data) {
           funUpdTab(data);
         }
@@ -401,11 +409,15 @@ function App() {
         url = "?isOid=true";
       }
       if (param == 99) {
-        url = ``;
+        if (sortParamByColumn !== "") {
+          url = `?${sortParamByColumn}`;
+        } else {
+          url = "";
+        }
       } else if (param != 99 && param != 0) {
-        url = `?department=${param}`;
+        url = `?department=${param}&${sortParamByColumn}`;
       }
-      Workload(`${url}`).then((data) => {
+      Workload(url).then((data) => {
         funUpdTab(data);
       });
     }
@@ -415,6 +427,13 @@ function App() {
     // ?isOid=false - вся кафедральная нагрузка,
     // ?department={номер кафедры} - нагрузка одной кафедры
   }
+
+  //! вызываем функцию для обновления массива данных при сортировке через tableTh
+  useEffect(() => {
+    funUpdateTable(
+      tableDepartment.find((el) => el.name === basicTabData?.nameKaf)?.id
+    );
+  }, [sortParamByColumn]);
 
   //!функция прокида буфера
   function UpdateWorkloadForBoofer(data) {
@@ -519,10 +538,10 @@ function App() {
       } else if (
         appData.metodRole[appData.myProfile?.role]?.some((el) => el === 28)
       ) {
-        selectISOid
-          ? // funUpdateTable(0)
-            funUpdateTable(99)
-          : funUpdateTable(
+        // selectISOid
+        //   ? // funUpdateTable(0)
+        //     funUpdateTable(99)
+           funUpdateTable(
               tableDepartment.find((el) => el.name === nameKaf)?.id
             );
       } else {
@@ -612,8 +631,8 @@ function App() {
         if (action) {
           setBufferAction([0]);
           updateAlldata();
-          appData.setLoaderAction(false);
         }
+        appData.setLoaderAction(false);
       })
       .catch((error) => {
         console.error("Error in bufferRequestToApi:", error);

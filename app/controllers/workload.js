@@ -564,6 +564,32 @@ export default {
                 educatorId: null,
                 isOid: first.isOid,
             }
+        } else if (type==='vkr'){
+            newWorkloadData = {
+                department: first.department,
+                discipline: first.discipline,
+                workload: first.workload,
+                groups: first.groups,
+                block: first.block,
+                semester: first.semester,
+                period: first.period,
+                curriculum: first.curriculum,
+                curriculumUnit: first.curriculumUnit,
+                formOfEducation: first.formOfEducation,
+                levelOfTraining: first.levelOfTraining,
+                specialty: first.specialty,
+                core: first.core,
+                numberOfStudents: first.numberOfStudents,
+                hours: first.hours,
+                audienceHours: first.audienceHours,
+                ratingControlHours: first.ratingControlHours,
+                comment: first.comment ? first.comment : null,
+                isSplit: false,
+                isMerged: true,
+                originalId: null,
+                educatorId: null,
+                isOid: first.isOid,
+            };
         } else throw new AppErrorInvalid('type');
         const newWorkload = await Workload.create(newWorkloadData);
         workloads.reduce((chain, workload) => {
@@ -1126,32 +1152,34 @@ export default {
         res.json({ status: 'OK' });
     },
     async getAllocatedAndUnallocatedWrokloadHours({ params: { department } }, res) {
-        const vacancyEducator = mapTempDepartmentEducators[department];
-        console.log(vacancyEducator);
-        let workloadWithoutEducators = {};
-        if (!vacancyEducator) {
-            workloadWithoutEducators = await Workload.findAll({
-                where: {
-                    educatorId: null,
-                    department: department,
+        const educators = await Educator.findAll({
+            where: {
+                name: {
+                  [Sequelize.Op.like]: '%Вакансия%'
                 },
-            });
-        } else {
-            const existEducator = await Educator.findOne({
-                where: {
-                    name: vacancyEducator,
-                },
-            });
-            console.log(existEducator.dataValues);
-            workloadWithoutEducators = await Workload.findAll({
-                where: {
-                    [Op.or]: [{ educatorId: null }, { educatorId: existEducator.id }],
-                    department: department,
-                },
-            });
-        }
+                department: department,
+              }
+        })
         let hoursWorkloadWithoutEducators = 0;
         let hoursAllWorkload = 0;
+        if(educators.length > 0 ){
+            for(const educator of educators){
+                const workloadWithoutEducators = await Workload.findAll({
+                    where:{
+                        educatorId: educator.id,
+                    }
+                });
+                for(const workload of workloadWithoutEducators){
+                    hoursWorkloadWithoutEducators += workload.hours;
+                }
+            }
+        }
+        const workloadWithoutEducators = await Workload.findAll({
+            where: {
+                educatorId: null,
+                department: department,
+            },
+        });
         for (const wrkl of workloadWithoutEducators) {
             hoursWorkloadWithoutEducators += wrkl.hours;
         }
@@ -1163,6 +1191,7 @@ export default {
         for (const wrkl of workloadAll) {
             hoursAllWorkload += wrkl.hours;
         }
+
         hoursWorkloadWithoutEducators = hoursWorkloadWithoutEducators.toFixed(2);
         hoursAllWorkload = hoursAllWorkload.toFixed(2);
         res.json({
