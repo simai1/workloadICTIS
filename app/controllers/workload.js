@@ -611,6 +611,7 @@ export default {
 
     async mergeReadyData({ body: { workloadData, ids } }, res){
         if (!ids) throw new AppErrorMissing('ids');
+        if (!workloadData) throw new AppErrorMissing('workloadData');
         const workloads = await Workload.findAll({ where: { id: ids } });
         const first = workloads[0];
         const newWorkloadData = {
