@@ -60,6 +60,7 @@ function Table(props) {
   //! при клике на tr выделяем его
   const clickTr = (el, itemId) => {
     // el.stopProgretions();
+    console.log("clickTr")
     const a = el.target.nodeName;
     if (a === "TD" || a === "INPUT") {
       var len = tabPar.selectedTr.length;
@@ -209,6 +210,7 @@ function Table(props) {
                     itemKey={itemKey}
                     ind={index}
                     index={visibleDataPar.startData + number}
+                   
                   />
                 ))}
               </tr>

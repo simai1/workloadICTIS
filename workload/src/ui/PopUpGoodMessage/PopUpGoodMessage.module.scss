@@ -30,10 +30,15 @@
       width: 100%;
       display: flex;
       justify-content: center;
+      align-items: center;
       font-size: 18px;
       font-weight: 500;
       margin-top: 20px;
       margin-bottom: 20px;
+      p{
+        text-align: center;
+      }
+
     }
     .x {
       width: 100%;

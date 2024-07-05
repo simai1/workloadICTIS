@@ -160,15 +160,14 @@ export default {
         if (!educatorId) throw new AppErrorMissing('educatorId');
         const educator = await Educator.findByPk(educatorId);
         if (!educator) throw new AppErrorNotExist('educator');
-
         if (!name && !position && !rate) throw new AppErrorMissing('body');
         if (!name) name = educator.name;
         if (!position) position = educator.position;
-        if (!rate) rate = educator.rate;
+        if (!rate && rate != 0) rate = educator.rate;
         if (!email) email = educator.email;
         if (!department) department = educator.department;
         if (!typeOfEmployment) typeOfEmployment = educator.typeOfEmployment;
-
+        console.log(rate)
         await educator.update({
             name,
             position,
@@ -184,7 +183,7 @@ export default {
     async create({ body: { name, position, rate, email, department, typeOfEmployment }, user }, res) {
         if (!name) throw new AppErrorMissing('name');
         if (!position) throw new AppErrorMissing('position');
-        if (!rate) throw new AppErrorMissing('rate');
+        if (!rate && rate != 0) throw new AppErrorMissing('rate');
         if (!email) throw new AppErrorMissing('email');
         if (!department) throw new AppErrorMissing('department');
         if (!typeOfEmployment) throw new AppErrorMissing('typeOfEmployment');
