@@ -241,6 +241,19 @@ export const joinWorkloads = async (data, action) => {
   }
 };
 
+//! запрос на соединение доп нагрузки
+export const joinAddWorkloads = async (data) => {
+  console.log("Соединение Доп нагрузки ", data);
+  try {
+    const response = await http.post(`${server}/workload/mapReadyData`, data);
+    console.log("response ", response);
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    return false;
+  }
+};
+
 //! запрос на принятие предложения
 // 1 - предложить
 // 4 - принять Дирекция
