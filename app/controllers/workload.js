@@ -609,6 +609,53 @@ export default {
         })
     },
 
+    async mergeReadyData({ body: { workloadData, ids } }, res){
+        if (!ids) throw new AppErrorMissing('ids');
+        const workloads = await Workload.findAll({ where: { id: ids } });
+        const first = workloads[0];
+        const newWorkloadData = {
+            department: first.department,
+            discipline: first.discipline,
+            workload: first.workload,
+            groups: first.groups,
+            block: first.block,
+            semester: first.semester,
+            period: first.period,
+            curriculum: first.curriculum,
+            curriculumUnit: first.curriculumUnit,
+            formOfEducation: first.formOfEducation,
+            levelOfTraining: first.levelOfTraining,
+            specialty: first.specialty,
+            core: first.core,
+            numberOfStudents: workloadData.numberOfStudents,
+            hours: Math.round((workloadData.hours) * 100) / 100,
+            audienceHours: workloadData.audienceHours,
+            ratingControlHours: Math.round((workloadData.ratingControlHours) * 100) / 100,
+            comment: first.comment ? first.comment : null,
+            isSplit: false,
+            isMerged: true,
+            originalId: null,
+            educatorId: null,
+            isOid: first.isOid,
+        };
+        const newWorkload = await Workload.create(newWorkloadData);
+        workloads.reduce((chain, workload) => {
+            return chain.then(() => workload.destroy());
+        }, Promise.resolve());
+
+        await History.create({
+            type: 2,
+            department: first.department,
+            before: ids,
+            after: [newWorkload.id,],
+        });
+
+        res.json({
+            id: newWorkloadData.id,
+            ...newWorkload,
+        })
+    },
+
     // async mapRow({ body: { ids }, user }, res) {
     //     const workloads = await Workload.findAll({ where: { id: ids } }, { include: { model: Educator } });
     //
@@ -1151,6 +1198,7 @@ export default {
         }
         res.json({ status: 'OK' });
     },
+
     async getAllocatedAndUnallocatedWrokloadHours({ params: { department } }, res) {
         const vacancyEducator = mapTempDepartmentEducators[department];
         console.log(vacancyEducator);
