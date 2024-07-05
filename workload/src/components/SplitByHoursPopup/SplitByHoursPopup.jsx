@@ -10,10 +10,6 @@ function SplitByHoursPopup() {
   const changeHours = (e, index) => {
     let prevVal = [...tabPar.inputEditValue];
     prevVal[index] = e.target.value;
-    // ? Number(e.target.value)
-    // : e.target.value === "0"
-    // ? 0
-    // : "";
     tabPar.setInputEditValue(prevVal);
   };
 
@@ -79,9 +75,13 @@ function SplitByHoursPopup() {
     console.log(tabPar.tableDataHoursPopup);
     for (let i = 0; i < Number(tabPar.inpValueHoursPopup); i++) {
       const origHours = {
-        numberOfStudents: tabPar.tableDataHoursPopup?.numberOfStudents,
+        numberOfStudents:
+          tabPar.typeSplit === ""
+            ? tabPar.tableDataHoursPopup?.numberOfStudents
+            : Number(tabPar.inputEditValue[i]),
         hours: Number(funCalculationHours(i)),
-        audienceHours: Number(tabPar.inputEditValue[i]),
+        audienceHours:
+          tabPar.typeSplit === "" ? Number(tabPar.inputEditValue[i]) : 0,
         ratingControlHours: Number(funCalculationRatingControlHours(i)),
       };
       hoursData.push(origHours);
@@ -101,6 +101,7 @@ function SplitByHoursPopup() {
       data,
       newIds: newIds,
       id: appData.bufferAction.length,
+      typeSplit: tabPar.typeSplit,
     };
     tabPar.setBuffDataHoursPopup(bufdat);
     //! вызываем функцию для разделения строк на бэке
@@ -116,11 +117,18 @@ function SplitByHoursPopup() {
   //! функция расчета часов
   const funCalculationHours = (index) => {
     let value = 0;
-    if (tabPar.inputEditValue[index]) {
-      value =
-        (Number(tabPar.inputEditValue[index]) /
-          tabPar.tableDataHoursPopup.audienceHours) *
-        tabPar.tableDataHoursPopup.hours;
+    if (tabPar.typeSplit === "") {
+      if (tabPar.inputEditValue[index]) {
+        value =
+          (Number(tabPar.inputEditValue[index]) /
+            tabPar.tableDataHoursPopup.audienceHours) *
+          tabPar.tableDataHoursPopup.hours;
+      }
+    } else {
+      if (Number(tabPar.inputEditValue[index])) {
+        value =
+          Number(tabPar.inputEditValue[index]) * Number(tabPar.typeSplit.hors);
+      }
     }
     return value.toFixed(2);
   };
@@ -128,11 +136,18 @@ function SplitByHoursPopup() {
   //! функция расчета часов рейтинг-констроль
   const funCalculationRatingControlHours = (index) => {
     let value = 0;
-    if (Number(tabPar.inputEditValue[index])) {
-      value =
-        (Number(tabPar.inputEditValue[index]) /
-          tabPar.tableDataHoursPopup.audienceHours) *
-        tabPar.tableDataHoursPopup.ratingControlHours;
+    if (tabPar.typeSplit === "") {
+      if (Number(tabPar.inputEditValue[index])) {
+        value =
+          (Number(tabPar.inputEditValue[index]) /
+            tabPar.tableDataHoursPopup.audienceHours) *
+          tabPar.tableDataHoursPopup.ratingControlHours;
+      }
+    } else {
+      if (Number(tabPar.inputEditValue[index])) {
+        value =
+          Number(tabPar.inputEditValue[index]) * Number(tabPar.typeSplit.hors);
+      }
     }
     return value.toFixed(2);
   };
@@ -143,7 +158,11 @@ function SplitByHoursPopup() {
       (accumulator, currentValue) => Number(accumulator) + Number(currentValue),
       0
     );
-    return !(tabPar.tableDataHoursPopup.audienceHours === sum);
+    if (tabPar.typeSplit === "") {
+      return !(tabPar.tableDataHoursPopup.audienceHours === sum);
+    } else {
+      return !(tabPar.tableDataHoursPopup.numberOfStudents === sum);
+    }
   };
 
   return (
@@ -154,7 +173,11 @@ function SplitByHoursPopup() {
           <table>
             <thead>
               <tr>
-                <th>Аудиторные часы</th>
+                <th>
+                  {tabPar.typeSplit === ""
+                    ? "Аудиторные часы"
+                    : "Количество студентов"}
+                </th>
                 <th>Часы рейтинг-контроль</th>
                 <th>Часы</th>
               </tr>
@@ -162,7 +185,11 @@ function SplitByHoursPopup() {
             </thead>
             <tbody>
               <tr className={styles.origData}>
-                <td>{tabPar.tableDataHoursPopup.audienceHours}</td>
+                <td>
+                  {tabPar.typeSplit === ""
+                    ? tabPar.tableDataHoursPopup.audienceHours
+                    : tabPar.tableDataHoursPopup.numberOfStudents}
+                </td>
                 <td>{tabPar.tableDataHoursPopup.ratingControlHours}</td>
                 <td>{tabPar.tableDataHoursPopup.hours}</td>
               </tr>
@@ -202,7 +229,8 @@ function SplitByHoursPopup() {
         <div className={styles.errortext}>
           {funCalcInputHours() && (
             <span>
-              Сумма введенных часов должна равняться исходному значению!
+              Сумма введенных {tabPar.typeSplit === "" ? "часов" : "студентов"}{" "}
+              должна равняться исходному значению!
             </span>
           )}
         </div>

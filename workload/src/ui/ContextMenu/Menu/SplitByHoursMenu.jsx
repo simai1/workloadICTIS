@@ -4,7 +4,7 @@ import { addСhangedData } from "../Function";
 
 function SplitByHoursMenu(props) {
   const { tabPar, basicTabData, appData } = React.useContext(DataContext);
-
+  console.log("typeSplit", tabPar.typeSplit);
   //! ввод в инпут значения, на сколько разделить строку по часам
   const inpChange = (e) => {
     const value = e.target.value;
