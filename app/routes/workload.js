@@ -145,6 +145,22 @@ router
         asyncRoute(workloadController.merge)
     );
 router
+    .route('/mapReadyData')
+    .post(
+        asyncRoute(
+            checkRole([
+                role.GOD,
+                role.GIGA_ADMIN,
+                role.UNIT_ADMIN,
+                role.DEPARTMENT_HEAD,
+                role.DIRECTORATE,
+                role.DEPUTY_DIRECTORATE,
+                role.DEPUTY_DEPARTMENT_HEAD,
+            ])
+        ),
+        asyncRoute(workloadController.mergeReadyData)
+    );
+router
     .route('/delete/:id')
     .delete(
         asyncRoute(
