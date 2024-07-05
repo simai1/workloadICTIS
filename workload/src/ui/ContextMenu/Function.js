@@ -1,3 +1,5 @@
+import { addWorkload } from "./ContextMenuData";
+
 export function upDateEducator(data, ItemSelectedTr, name) {
   const updatedData = data.map((obj) =>
     obj.id === ItemSelectedTr ? { ...obj, educator: name } : obj
@@ -105,7 +107,8 @@ export function combineData(data, selectedTr, action = "") {
         (item) =>
           item.workload === prevState[0].workload &&
           item.discipline === prevState[0].discipline &&
-          item.audienceHours === prevState[0].audienceHours
+          item.audienceHours === prevState[0].audienceHours &&
+          item.semester === prevState[0].semester
       )) ||
     (action === "h" &&
       prevState.every(
@@ -113,14 +116,23 @@ export function combineData(data, selectedTr, action = "") {
           item.workload === prevState[0].workload &&
           item.discipline === prevState[0].discipline &&
           item.numberOfStudents === prevState[0].numberOfStudents &&
-          item.isSplit === true
+          item.isSplit === true &&
+          item.semester === prevState[0].semester
       )) ||
     (action === "vkr" &&
       prevState.every(
         (item) =>
           item.workload === prevState[0].workload &&
           item.discipline === prevState[0].discipline &&
-          item.numberOfStudents === prevState[0].numberOfStudents
+          item.numberOfStudents === prevState[0].numberOfStudents &&
+          item.semester === prevState[0].semester
+      )) ||
+    (action === "addWorkload" &&
+      prevState.every(
+        (item) =>
+          item.workload === prevState[0].workload &&
+          item.discipline === prevState[0].discipline &&
+          item.semester === prevState[0].semester
       ))
   ) {
     const sumOfStudents = prevState.reduce(
@@ -162,10 +174,18 @@ export function combineData(data, selectedTr, action = "") {
               isMerged: true,
               educator: "___",
             }
-          : action === "vkr" && {
+          : action === "vkr"
+          ? {
               ...upData[index],
               audienceHours,
               groups,
+              isSplit: false,
+              isMerged: true,
+              educator: "___",
+            }
+          : action === "addWorkload" && {
+              ...upData[index],
+              numberOfStudents: sumOfStudents,
               isSplit: false,
               isMerged: true,
               educator: "___",
@@ -195,6 +215,18 @@ export function combineData(data, selectedTr, action = "") {
           ratingControlHours: 0,
           hours: updatedObject.numberOfStudents * 0.5,
           audienceHours: updatedObject.numberOfStudents * 0.5,
+        };
+        newState = updatedObjectFix;
+      } else if (action === "addWorkload") {
+        const addHours = addWorkload.find(
+          (el) => el.name === updatedObject.workload
+        );
+        const h = updatedObject.numberOfStudents * addHours?.hors;
+
+        const updatedObjectFix = {
+          ...updatedObject,
+          ratingControlHours: h,
+          hours: h,
         };
         newState = updatedObjectFix;
       }
