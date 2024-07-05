@@ -60,9 +60,14 @@ function Table(props) {
   //! при клике на tr выделяем его
   const clickTr = (el, itemId) => {
     // el.stopProgretions();
-    console.log("clickTr")
+    console.log("clickTr");
     const a = el.target.nodeName;
-    if (a === "TD" || a === "INPUT") {
+    console.log(el.target.getAttribute("name"));
+    if (
+      a === "TD" ||
+      a === "INPUT" ||
+      el.target.getAttribute("name") === "educator"
+    ) {
       var len = tabPar.selectedTr.length;
       tabPar.setSelectedTr((prev) => {
         const index = prev.indexOf(itemId);
@@ -210,7 +215,6 @@ function Table(props) {
                     itemKey={itemKey}
                     ind={index}
                     index={visibleDataPar.startData + number}
-                   
                   />
                 ))}
               </tr>
