@@ -130,9 +130,11 @@ function TableTd(props) {
       }
     }
   };
-const ClickName = () =>{
-  console.log("Вот я")
-}
+  const ClickName = () => {
+    console.log("Вот я");
+
+    tabPar.setContextMenuShow(true);
+  };
   //! функция определения класса td для открытия длинного текста в попап со скролом
   const getClassNameTdInner = () => {
     let text = styles.tdInner;
@@ -160,9 +162,10 @@ const ClickName = () =>{
             : { position: "relative" }
           : null
       }
-      onClick = {props.itemKey.key=== "educator" ? ClickName : null}
+      onClick={props.itemKey.key === "educator" ? ClickName : null}
     >
       <div
+        name={props.itemKey.key}
         key={props.item.id + "div" + props.itemKey.key + "_" + props.ind}
         className={getClassNameTdInner()}
         onDoubleClick={funDubleClick}

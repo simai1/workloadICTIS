@@ -6,6 +6,7 @@ import React from "react";
 import {
   apiSplitByHours,
   deleteWorkload,
+  joinAddWorkloads,
   joinWorkloads,
   splitWorkload,
 } from "../../../api/services/ApiRequest";
@@ -208,35 +209,67 @@ function OverlapWindow(props) {
       });
     } else if (props.getConfirmation.type === 3) {
       //! обьединение соединенеи строк
-      joinWorkloads(
-        props.getConfirmation.data.data,
-        props.getConfirmation.data.action
-      ).then((res) => {
-        const ab = [...appData.bufferAction];
-        const abfix = ab
-          .filter((item) => {
-            if (
-              item.request === "joinWorkloads" &&
-              item.newState.id === props.itid
-            ) {
-              return null;
-            } else {
-              return item;
-            }
-          })
-          .filter((el) => el !== null);
+      console.log("props.getConfirmation", props.getConfirmation);
+      if (props.getConfirmation.data.action === "?type=add") {
+        joinAddWorkloads(props.getConfirmation.data.data).then((res) => {
+          if (res?.status === 200) {
+            const ab = [...appData.bufferAction];
+            const abfix = ab
+              .filter((item) => {
+                if (
+                  item.request === "joinWorkloads" &&
+                  item.newState.id === props.itid
+                ) {
+                  return null;
+                } else {
+                  return item;
+                }
+              })
+              .filter((el) => el !== null);
 
-        appData.setBufferAction(abfix);
+            appData.setBufferAction(abfix);
 
-        let changed = { ...tabPar.changedData };
-        changed.join = changed.join.filter((item) => item !== props.itid);
-        tabPar.setChangedData(changed);
-        basicTabData.funUpdateTable(
-          basicTabData.tableDepartment.find(
-            (el) => el.name === basicTabData.nameKaf
-          )?.id
-        );
-      });
+            let changed = { ...tabPar.changedData };
+            changed.join = changed.join.filter((item) => item !== props.itid);
+            tabPar.setChangedData(changed);
+            basicTabData.funUpdateTable(
+              basicTabData.tableDepartment.find(
+                (el) => el.name === basicTabData.nameKaf
+              )?.id
+            );
+          }
+        });
+      } else {
+        joinWorkloads(
+          props.getConfirmation.data.data,
+          props.getConfirmation.data.action
+        ).then((res) => {
+          const ab = [...appData.bufferAction];
+          const abfix = ab
+            .filter((item) => {
+              if (
+                item.request === "joinWorkloads" &&
+                item.newState.id === props.itid
+              ) {
+                return null;
+              } else {
+                return item;
+              }
+            })
+            .filter((el) => el !== null);
+
+          appData.setBufferAction(abfix);
+
+          let changed = { ...tabPar.changedData };
+          changed.join = changed.join.filter((item) => item !== props.itid);
+          tabPar.setChangedData(changed);
+          basicTabData.funUpdateTable(
+            basicTabData.tableDepartment.find(
+              (el) => el.name === basicTabData.nameKaf
+            )?.id
+          );
+        });
+      }
     } else if (props.getConfirmation.type === 4) {
       //! подтверждение разделения по часам
       const obj = props.getConfirmation.data;
