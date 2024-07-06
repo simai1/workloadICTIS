@@ -456,7 +456,7 @@ function HomePage() {
                   appData.selectedComponent === "Disciplines") ||
                   (appData.metodRole[appData.myProfile?.role]?.some(
                     (el) => el === 33
-                  ) &&
+                  ) &&   appData.selectedComponent === "Disciplines" &&
                     !blockTable)) && (
                   <div
                     style={{ marginRight: "15px" }}
