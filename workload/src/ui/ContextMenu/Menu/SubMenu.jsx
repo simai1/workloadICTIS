@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./../ContextMenu.module.scss";
 import DataContext from "../../../context";
-import { addСhangedData, splitWorkloadCount } from "../Function";
+import {
+  addСhangedData,
+  getStylePosition,
+  splitWorkloadCount,
+} from "../Function";
 
 export function SubMenu(props) {
   const { tabPar, basicTabData, appData } = React.useContext(DataContext);
@@ -50,24 +54,25 @@ export function SubMenu(props) {
     props.setMenuShow("");
   };
 
+  //! переменная которая хранит ширину данного меню
+  const [menuWidth, setMenuWidth] = useState(136);
+  const menuRef = useRef(null);
+  useEffect(() => {
+    if (menuRef.current) {
+      setMenuWidth(menuRef.current.clientWidth);
+    }
+  }, [menuRef.current]);
+
   return (
     <div
+      ref={menuRef}
       className={styles.blockMenuRight}
-      style={
-        tabPar.contextPosition.x + 280 + 180 > window.innerWidth
-          ? {
-              position: "fixed",
-              top: tabPar.contextPosition.y,
-              left: tabPar.contextPosition.x - 150,
-            }
-          : {
-              position: "fixed",
-              top: tabPar.contextPosition.y,
-              left: tabPar.contextPosition.x + 280,
-            }
-      }
-      // onMouseEnter={handleMouseEnter}
-      // onMouseLeave={handleMouseLeave}
+      style={getStylePosition(
+        tabPar.contextPosition,
+        window.innerWidth,
+        menuWidth,
+        props.conxextMenuRef
+      )}
     >
       <div>
         <button

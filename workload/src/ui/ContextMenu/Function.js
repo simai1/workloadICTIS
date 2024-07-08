@@ -262,3 +262,44 @@ export function delChangeData(changedData, dataKey, ids) {
   });
   return cd;
 }
+
+//! применяется всместе с нижней функцией
+// const [menuWidth, setMenuWidth] = useState(300);
+// const menuRef = useRef(null);
+// useEffect(() => {
+//   if (menuRef.current) {
+//     setMenuWidth(menuRef.current.clientWidth);
+//   }
+// }, [menuRef.current]);
+
+// ref={menuRef}
+// style={getStylePosition(
+//   tabPar.contextPosition,
+//   window.innerWidth,
+//   menuWidth,
+//   props.conxextMenuRef
+// )}
+//! функция которая возвращает стиль для положения меню
+export function getStylePosition(
+  contextPosition,
+  innerWidth,
+  menuWidth,
+  conxextMenuRef
+) {
+  console.log("menuWidth", menuWidth);
+  console.log("clientWidth", conxextMenuRef);
+  const cmw = conxextMenuRef.current?.clientWidth + 20 || 280;
+  if (contextPosition?.x + cmw + menuWidth > innerWidth) {
+    return {
+      top: contextPosition?.y,
+      left: contextPosition?.x - menuWidth - 15,
+      transition: "all 0.15s ease",
+    };
+  } else {
+    return {
+      top: contextPosition?.y,
+      left: contextPosition?.x + cmw,
+      transition: "all 0.15s ease",
+    };
+  }
+}

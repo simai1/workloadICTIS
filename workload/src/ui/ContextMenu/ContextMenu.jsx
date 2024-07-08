@@ -375,24 +375,25 @@ const ContextMenu = () => {
 
   return (
     <div
-      // ref={props.refContextMenu}
-      ref={conxextMenuRef}
+      // ref={conxextMenuRef}
       onContextMenu={handleContextMenu}
       className={styles.ContextMenu}
     >
       {popupOffer && (
         <PopupOffer
+          conxextMenuRef={conxextMenuRef}
           onClickOfferPopup={onClickOfferPopup}
           title={"Вы уверенны что хотите отправить предложение?"}
         />
       )}
       {popupComment && (
         <PopupOffer
+          conxextMenuRef={conxextMenuRef}
           onClickOfferPopup={onClickCommentPopup}
           title={"Вы уверенны что хотите отправить комментарий?"}
         />
       )}
-      <div style={positStyle} className={styles.blockMenu}>
+      <div style={positStyle} className={styles.blockMenu} ref={conxextMenuRef}>
         {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 9) && (
           <MenuPop
             btnText={"Добавить преподавателя"}
@@ -551,6 +552,7 @@ const ContextMenu = () => {
       {menuShow === "subMenu" && (
         // разделение нагрузки
         <SubMenu
+          conxextMenuRef={conxextMenuRef}
           setMenuShow={setMenuShow}
           contextPosition={tabPar.contextPosition}
         />
@@ -558,6 +560,7 @@ const ContextMenu = () => {
       {(menuShow === "educator" || menuShow === "propose") && (
         // меню с выбором преподавалетля
         <EducatorMenu
+          conxextMenuRef={conxextMenuRef}
           propose={menuShow === "propose"}
           contextPosition={tabPar.contextPosition}
           selectedEducator={selectedEducator}
@@ -565,10 +568,11 @@ const ContextMenu = () => {
       )}
       {menuShow === "highlight" && (
         // выделение нагрузки
-        <Highlight />
+        <Highlight conxextMenuRef={conxextMenuRef} />
       )}
       {menuShow === "commentsMenu" && (
         <CommentsMenu
+          conxextMenuRef={conxextMenuRef}
           setMenuShow={setMenuShow}
           setPopupComment={setPopupComment}
           popupCommentAction={popupCommentAction}
@@ -577,6 +581,7 @@ const ContextMenu = () => {
       )}
       {menuShow === "splitByHoursMenu" && (
         <SplitByHoursMenu
+          conxextMenuRef={conxextMenuRef}
           styles={styles}
           setMenuShow={setMenuShow}
           typeMenu={"splitByHoursMenu"}
@@ -584,6 +589,7 @@ const ContextMenu = () => {
       )}
       {menuShow === "splitVKR" && (
         <SplitByHoursMenu
+          conxextMenuRef={conxextMenuRef}
           styles={styles}
           setMenuShow={setMenuShow}
           typeMenu={"splitVKR"}
@@ -591,6 +597,7 @@ const ContextMenu = () => {
       )}
       {menuShow === "splitByHoursMenu" && (
         <SplitByHoursMenu
+          conxextMenuRef={conxextMenuRef}
           styles={styles}
           setMenuShow={setMenuShow}
           typeMenu={"splitByHoursMenu"}

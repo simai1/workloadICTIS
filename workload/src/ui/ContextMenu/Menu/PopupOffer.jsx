@@ -1,25 +1,29 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./../ContextMenu.module.scss";
 import DataContext from "../../../context";
+import { getStylePosition } from "../Function";
 function PopupOffer(props) {
   const { tabPar } = React.useContext(DataContext);
+
+  //! переменная которая хранит ширину данного меню
+  const [menuWidth, setMenuWidth] = useState(262);
+  const menuRef = useRef(null);
+  useEffect(() => {
+    if (menuRef.current) {
+      setMenuWidth(menuRef.current.clientWidth);
+    }
+  }, [menuRef.current]);
 
   return (
     <div
       className={styles.blockMenuRight}
-      style={
-        tabPar.contextPosition.x + 280 + 180 > window.innerWidth
-          ? {
-              position: "fixed",
-              top: tabPar.contextPosition.y,
-              left: tabPar.contextPosition.x - 150,
-            }
-          : {
-              position: "fixed",
-              top: tabPar.contextPosition.y,
-              left: tabPar.contextPosition.x + 280,
-            }
-      }
+      ref={menuRef}
+      style={getStylePosition(
+        tabPar.contextPosition,
+        window.innerWidth,
+        menuWidth,
+        props.conxextMenuRef
+      )}
     >
       <div className={styles.PopupOfferBox}>
         <div className={styles.text}>{props.title}</div>

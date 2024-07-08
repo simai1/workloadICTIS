@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./../ContextMenu.module.scss";
 import DataContext from "../../../context";
 import {
@@ -6,8 +6,9 @@ import {
   apiDelColors,
   apiUpdateColors,
 } from "../../../api/services/ApiRequest";
+import { getStylePosition } from "../Function";
 
-export function Highlight() {
+export function Highlight(props) {
   const { tabPar, basicTabData } = React.useContext(DataContext);
   //! функция занесения выбранных цветов в состояние
   const SetColor = (colorNumber) => {
@@ -59,21 +60,30 @@ export function Highlight() {
     tabPar.setSelectedTr([]);
   };
 
-  const divStyle =
-    tabPar.contextPosition.x + 280 + 180 > window.innerWidth
-      ? {
-          position: "fixed",
-          top: tabPar.contextPosition.y,
-          left: tabPar.contextPosition.x - 130,
-        }
-      : {
-          position: "fixed",
-          top: tabPar.contextPosition.y,
-          left: tabPar.contextPosition.x + 280,
-        };
+  //! переменная которая хранит ширину данного меню
+  const [menuWidth, setMenuWidth] = useState(111);
+  const menuRef = useRef(null);
+  useEffect(() => {
+    if (menuRef.current) {
+      setMenuWidth(menuRef.current.clientWidth);
+    }
+    console.log(
+      "props.conxextMenuRef",
+      props.conxextMenuRef.current.offsetWidth
+    );
+  }, [menuRef.current]);
 
   return (
-    <div className={styles.blockHighlight} style={divStyle}>
+    <div
+      className={styles.blockHighlight}
+      ref={menuRef}
+      style={getStylePosition(
+        tabPar.contextPosition,
+        window.innerWidth,
+        menuWidth,
+        props.conxextMenuRef
+      )}
+    >
       <div onClick={() => SetColor(0)}>
         <button className={styles.Group0}>Убрать</button>
       </div>

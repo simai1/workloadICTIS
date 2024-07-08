@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./../ContextMenu.module.scss";
 import {
   Educator,
   apiEducatorDepartment,
 } from "../../../api/services/ApiRequest";
 import DataContext from "../../../context";
+import { getStylePosition } from "../Function";
 
 export function EducatorMenu(props) {
   const [educator, setEductor] = useState([]); //преподы с бд
@@ -34,22 +35,25 @@ export function EducatorMenu(props) {
     setFiltredData(fd);
   };
 
+  //! переменная которая хранит ширину данного меню
+  const [menuWidth, setMenuWidth] = useState(240);
+  const menuRef = useRef(null);
+  useEffect(() => {
+    if (menuRef.current) {
+      setMenuWidth(menuRef.current.clientWidth);
+    }
+  }, [menuRef.current]);
+
   return (
     <div
       className={styles.EducatorMenu}
-      style={
-        tabPar.contextPosition.x + 280 + 180 > window.innerWidth
-          ? {
-              position: "fixed",
-              top: tabPar.contextPosition.y,
-              left: tabPar.contextPosition.x - 200,
-            }
-          : {
-              position: "fixed",
-              top: tabPar.contextPosition.y,
-              left: tabPar.contextPosition.x + 280,
-            }
-      }
+      ref={menuRef}
+      style={getStylePosition(
+        tabPar.contextPosition,
+        window.innerWidth,
+        menuWidth,
+        props.conxextMenuRef
+      )}
     >
       <input
         type="text"
