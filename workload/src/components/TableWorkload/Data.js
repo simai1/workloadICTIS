@@ -28,6 +28,7 @@ export const headersEducator = [
   { key: "id", label: "№" },
   { key: "name", label: "Преподаватель" },
   { key: "position", label: "Должность" },
+  { key: "typeOfEmployment", label: "Вид занятости" },
   { key: "department", label: "Кафедра" },
   { key: "rate", label: "Ставка" },
 
@@ -46,8 +47,8 @@ export const headersEducator = [
 
 export const tableHeadersLks = [
   { key: "id", label: "№" },
+  { key: "discipline", label: "Дисциплина" },
   { key: "workload", label: "Нагрузка" },
-    { key: "discipline", label: "Дисциплина" },
   { key: "department", label: "Кафедра" },
   // { key: "type", label: "Тип" },
   { key: "curriculumUnit", label: "Подразделение учебного плана" },

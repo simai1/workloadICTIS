@@ -11,14 +11,17 @@ const PopUpGoodMessage = (props) => {
           <img
             src="./img/x.svg"
             alt="x"
-            onClick={() => appData.setgodPopUp(false)}
+            onClick={() => {
+              appData.setgodPopUp(false);
+              appData.setPopupGoodText("")
+              }}
           />
         </div>
 
         <div className={styles.mainPop__inner__inner}>
           <img src="./img/goodOk.svg" />
         </div>
-        <div className={styles.text}>Готово!</div>
+        <div className={styles.text}><p>{appData.popupGoodText != "" ?  appData.popupGoodText : "Готово!"}</p></div>
       </div>
     </div>
   );

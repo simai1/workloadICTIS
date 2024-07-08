@@ -138,6 +138,7 @@ function HomePage() {
   //! открыть попап
   const onUnblockClick = () => {
     setPopupUnblockTable(!popupUnblockTable);
+    appData.setPopupGoodText("Запрос успешно отправлен!")
   };
   //! открыть попап
   const onExportClick = () => {
@@ -455,7 +456,7 @@ function HomePage() {
                   appData.selectedComponent === "Disciplines") ||
                   (appData.metodRole[appData.myProfile?.role]?.some(
                     (el) => el === 33
-                  ) &&
+                  ) &&   appData.selectedComponent === "Disciplines" &&
                     !blockTable)) && (
                   <div
                     style={{ marginRight: "15px" }}
@@ -732,15 +733,20 @@ function HomePage() {
             />
           ) : null}
         </div>
-        <div onClick={raketClick}>
-          <div className={styles.rocket}>
-            <img
-              className={styles.rocket_img}
-              src="./img/rocket.png"
-              alt="up"
-            />
+        {!appData.metodRole[appData.myProfile?.role]?.some(
+            (el) => el === 41
+          ) && 
+          <div onClick={raketClick}>
+            <div className={styles.rocket}>
+              <img
+                className={styles.rocket_img}
+                src="./img/rocket.png"
+                alt="up"
+              />
+            </div>
           </div>
-        </div>
+          }
+       
         {appData.selectedComponent !== "Teachers" && (
           <div className={styles.countSet}>
             Кол-во выделенных нагрузок: {new Set(tabPar.selectedTr).size}

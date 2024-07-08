@@ -26,12 +26,12 @@ export function PopUpCreateEmploy(props) {
   });
   const [isEmailValid, setIsEmailValid] = useState(true);
   const [isRateValid, setIsRateValid] = useState(true);
-  // const dataList = [
-  //   { id: 1, name: "Внешнее совместительство" },
-  //   { id: 2, name: "Внутреннее совместительство" },
-  //   { id: 3, name: "Основное место работы" },
-  //   { id: 4, name: "Почасовая оплата труда" },
-  // ];
+  const ListTypeOfEmployment = [
+    { id: 1, name: "Внешнее совместительство" },
+    { id: 2, name: "Внутреннее совместительство" },
+    { id: 3, name: "Основное место работы" },
+    { id: 4, name: "Почасовая оплата труда" },
+  ];
   const dataListPosition = [
     { id: 1, name: "Ассистент" },
     { id: 2, name: "Ведущий научный сотрудник" },
@@ -87,6 +87,7 @@ export function PopUpCreateEmploy(props) {
       name: dataNewEdicator.name,
       email: dataNewEdicator.email,
       position: dataNewEdicator.position,
+      typeOfEmployment: dataNewEdicator.typeOfEmployment,
       rate: Number(dataNewEdicator.rate.replace(",", ".")),
       department: appData.metodRole[appData.myProfile?.role]?.some(
         (el) => el === 39
@@ -142,12 +143,19 @@ export function PopUpCreateEmploy(props) {
             >
               Почта должна валидной!
             </div>
-          )}
+          )} 
           <List
             dataList={dataListPosition}
             Textlabel="Должность"
             defaultValue="Выберите должность"
             name={"position"}
+            handleInputList={handleInputList}
+          />
+           <List
+            dataList={ListTypeOfEmployment}
+            Textlabel="Вид занятости"
+            defaultValue="Выберите вид занятости"
+            name={"typeOfEmployment"}
             handleInputList={handleInputList}
           />
           <Input

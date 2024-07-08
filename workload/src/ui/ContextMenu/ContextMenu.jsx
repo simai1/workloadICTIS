@@ -169,25 +169,43 @@ const ContextMenu = () => {
   //! соединение нагрузок
   const handleJoinWorkloads = (action) => {
     setMenuShow("");
-    const data = {
+    let data = {
       ids: tabPar.selectedTr,
     };
+
     const funData = combineData(
       basicTabData.workloadDataFix,
       tabPar.selectedTr,
       action
     );
+
     if (funData === null) {
       appData.seterrorPopUp(true);
     } else {
       tabPar.setSelectedTr([]);
       basicTabData.setWorkloadDataFix(funData.newUpdatedData);
+
+      const hoursData = {
+        numberOfStudents: funData.newState.numberOfStudents,
+        hours: funData.newState.hours,
+        ratingControlHours: funData.newState.ratingControlHours,
+        audienceHours: funData.newState.audienceHours,
+      };
+
+      if (action === "add") {
+        data = {
+          ids: tabPar.selectedTr,
+          workloadData: hoursData,
+        };
+      }
+
       //! буфер
       appData.setBufferAction([
         {
           id: appData.bufferAction.length,
           request: "joinWorkloads",
           data: data,
+          hoursData: hoursData,
           newState: funData.newState,
           prevState: funData.prevState,
           action: `?type=${action}`,
@@ -503,7 +521,7 @@ const ContextMenu = () => {
             .every((it) => it.workload !== "Защита ВКР") && (
             <MenuPop
               btnText={"Объеденить"}
-              func={() => handleJoinWorkloads("addWorkload")}
+              func={() => handleJoinWorkloads("add")}
               img={false}
             />
           )}
