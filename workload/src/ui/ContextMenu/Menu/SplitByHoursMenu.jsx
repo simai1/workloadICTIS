@@ -167,7 +167,7 @@ function SplitByHoursMenu(props) {
         tabPar.contextPosition,
         window.innerWidth,
         menuWidth,
-        props.conxextMenuRef
+        props.conxextMenuRefBlock
       )}
       // style={
       //   tabPar.contextPosition.x + 280 + 180 > window.innerWidth

@@ -67,10 +67,6 @@ export function Highlight(props) {
     if (menuRef.current) {
       setMenuWidth(menuRef.current.clientWidth);
     }
-    console.log(
-      "props.conxextMenuRef",
-      props.conxextMenuRef.current.offsetWidth
-    );
   }, [menuRef.current]);
 
   return (
@@ -81,7 +77,7 @@ export function Highlight(props) {
         tabPar.contextPosition,
         window.innerWidth,
         menuWidth,
-        props.conxextMenuRef
+        props.conxextMenuRefBlock
       )}
     >
       <div onClick={() => SetColor(0)}>

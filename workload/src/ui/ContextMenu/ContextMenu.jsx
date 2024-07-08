@@ -26,6 +26,7 @@ const ContextMenu = () => {
   const [popupOffer, setPopupOffer] = useState(null);
   const [popupComment, setPopupComment] = useState(false);
   const [popupCommentAction, setPopupCommentAction] = useState(null);
+  const conxextMenuRefBlock = useRef(null);
 
   const handleContextMenu = (e) => {
     e.preventDefault();
@@ -91,6 +92,7 @@ const ContextMenu = () => {
   //! функция выбора преподавателя
   const selectedEducator = (id) => {
     setMenuShow("");
+    tabPar.setContextMenuShow(false);
     const data = {
       workloadIds: tabPar.selectedTr,
       educatorId: id,
@@ -313,6 +315,7 @@ const ContextMenu = () => {
 
   //! закрытие модального окна при нажати вне него
   const conxextMenuRef = useRef(null);
+
   useEffect(() => {
     const handler = (event) => {
       if (
@@ -375,25 +378,29 @@ const ContextMenu = () => {
 
   return (
     <div
-      // ref={conxextMenuRef}
+      ref={conxextMenuRef}
       onContextMenu={handleContextMenu}
       className={styles.ContextMenu}
     >
       {popupOffer && (
         <PopupOffer
-          conxextMenuRef={conxextMenuRef}
+          conxextMenuRefBlock={conxextMenuRefBlock}
           onClickOfferPopup={onClickOfferPopup}
           title={"Вы уверенны что хотите отправить предложение?"}
         />
       )}
       {popupComment && (
         <PopupOffer
-          conxextMenuRef={conxextMenuRef}
+          conxextMenuRefBlock={conxextMenuRefBlock}
           onClickOfferPopup={onClickCommentPopup}
           title={"Вы уверенны что хотите отправить комментарий?"}
         />
       )}
-      <div style={positStyle} className={styles.blockMenu} ref={conxextMenuRef}>
+      <div
+        style={positStyle}
+        className={styles.blockMenu}
+        ref={conxextMenuRefBlock}
+      >
         {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 9) && (
           <MenuPop
             btnText={"Добавить преподавателя"}
@@ -552,7 +559,7 @@ const ContextMenu = () => {
       {menuShow === "subMenu" && (
         // разделение нагрузки
         <SubMenu
-          conxextMenuRef={conxextMenuRef}
+          conxextMenuRefBlock={conxextMenuRefBlock}
           setMenuShow={setMenuShow}
           contextPosition={tabPar.contextPosition}
         />
@@ -560,7 +567,7 @@ const ContextMenu = () => {
       {(menuShow === "educator" || menuShow === "propose") && (
         // меню с выбором преподавалетля
         <EducatorMenu
-          conxextMenuRef={conxextMenuRef}
+          conxextMenuRefBlock={conxextMenuRefBlock}
           propose={menuShow === "propose"}
           contextPosition={tabPar.contextPosition}
           selectedEducator={selectedEducator}
@@ -568,11 +575,11 @@ const ContextMenu = () => {
       )}
       {menuShow === "highlight" && (
         // выделение нагрузки
-        <Highlight conxextMenuRef={conxextMenuRef} />
+        <Highlight conxextMenuRefBlock={conxextMenuRefBlock} />
       )}
       {menuShow === "commentsMenu" && (
         <CommentsMenu
-          conxextMenuRef={conxextMenuRef}
+          conxextMenuRefBlock={conxextMenuRefBlock}
           setMenuShow={setMenuShow}
           setPopupComment={setPopupComment}
           popupCommentAction={popupCommentAction}
@@ -581,7 +588,7 @@ const ContextMenu = () => {
       )}
       {menuShow === "splitByHoursMenu" && (
         <SplitByHoursMenu
-          conxextMenuRef={conxextMenuRef}
+          conxextMenuRefBlock={conxextMenuRefBlock}
           styles={styles}
           setMenuShow={setMenuShow}
           typeMenu={"splitByHoursMenu"}
@@ -589,7 +596,7 @@ const ContextMenu = () => {
       )}
       {menuShow === "splitVKR" && (
         <SplitByHoursMenu
-          conxextMenuRef={conxextMenuRef}
+          conxextMenuRefBlock={conxextMenuRefBlock}
           styles={styles}
           setMenuShow={setMenuShow}
           typeMenu={"splitVKR"}
@@ -597,7 +604,7 @@ const ContextMenu = () => {
       )}
       {menuShow === "splitByHoursMenu" && (
         <SplitByHoursMenu
-          conxextMenuRef={conxextMenuRef}
+          conxextMenuRefBlock={conxextMenuRefBlock}
           styles={styles}
           setMenuShow={setMenuShow}
           typeMenu={"splitByHoursMenu"}

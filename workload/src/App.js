@@ -329,7 +329,7 @@ function App() {
   //! функция получения закрепленных строк
   function funUpdateFastenedData() {
     getAllAttaches().then((data) => {
-      if (data.length > 0) {
+      if (data?.length > 0) {
         setFastenedData(data);
       }
     });
@@ -346,7 +346,7 @@ function App() {
   //! функция получения выделенных цветом строк
   function funUpdateAllColors() {
     getAllColors().then((data) => {
-      if (data.length > 0) {
+      if (data?.length > 0) {
         setColoredData(data);
       }
     });

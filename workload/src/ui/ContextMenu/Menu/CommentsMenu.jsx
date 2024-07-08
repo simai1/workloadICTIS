@@ -44,7 +44,7 @@ function CommentsMenu(props) {
         tabPar.contextPosition,
         window.innerWidth,
         menuWidth,
-        props.conxextMenuRef
+        props.conxextMenuRefBlock
       )}
       className={styles.CommentsMenu}
     >

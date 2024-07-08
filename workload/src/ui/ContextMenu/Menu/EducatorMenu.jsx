@@ -52,7 +52,7 @@ export function EducatorMenu(props) {
         tabPar.contextPosition,
         window.innerWidth,
         menuWidth,
-        props.conxextMenuRef
+        props.conxextMenuRefBlock
       )}
     >
       <input

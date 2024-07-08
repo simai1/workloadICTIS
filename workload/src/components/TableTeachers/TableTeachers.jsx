@@ -5,14 +5,15 @@ import DataContext from "../../context";
 import { headersEducator } from "../TableWorkload/Data";
 import {
   Educator,
-  GetAllUsers,
+  // GetAllUsers,
   apiEducatorDepartment,
 } from "../../api/services/ApiRequest";
 import Button from "../../ui/Button/Button";
-import { SamplePoints } from "./SamplePoints/SamplePoints";
+// import { SamplePoints } from "./SamplePoints/SamplePoints";
 import { ContextFunc } from "./ContextFunc/ContextFunc";
 import { PopUpEditTeacher } from "./PopUpEditTeacher/PopUpEditTeacher";
 import { FilteredSample } from "./SamplePoints/Function";
+import { SamplePoints } from "../../ui/SamplePoints/SamplePoints";
 
 function TableTeachers(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]);
@@ -316,16 +317,28 @@ function TableTeachers(props) {
                     {funSpanRow(header)}
                   </div>
                   {sampleShow === index && (
+                    // <SamplePoints
+                    //   setSampleShow={setSampleShow}
+                    //   index={index}
+                    //   itemKey={header.key}
+                    //   filteredData={filteredData}
+                    //   setFiltredData={setFilteredData}
+                    //   setUpdatedData={setUpdatedData}
+                    //   updatedData={updatedData}
+                    //   isSamplePointsData={sampleData}
+                    //   checkPar={checkData}
+                    // />
                     <SamplePoints
-                      setSampleShow={setSampleShow}
                       index={index}
                       itemKey={header.key}
-                      filteredData={filteredData}
-                      setFiltredData={setFilteredData}
-                      setUpdatedData={setUpdatedData}
-                      updatedData={updatedData}
                       isSamplePointsData={sampleData}
-                      checkPar={checkData}
+                      isAllChecked={isAllChecked}
+                      isChecked={isChecked}
+                      setIsChecked={setIsChecked}
+                      workloadData={updatedData}
+                      setWorkloadDataFix={setFilteredData}
+                      setSpShow={setSampleShow}
+                      sesionName={"isCheckedTeachers"}
                     />
                   )}
 

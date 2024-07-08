@@ -22,7 +22,7 @@ function PopupOffer(props) {
         tabPar.contextPosition,
         window.innerWidth,
         menuWidth,
-        props.conxextMenuRef
+        props.conxextMenuRefBlock
       )}
     >
       <div className={styles.PopupOfferBox}>

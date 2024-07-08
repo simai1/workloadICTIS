@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./SamplePoints.module.scss";
-import DataContext from "../../context";
+// import DataContext from "../../context";
 import { FilteredSample } from "./Function";
 
 export function SamplePoints(props) {
-  const { basicTabData } = React.useContext(DataContext);
+  // const { basicTabData } = React.useContext(DataContext);
   const [searchText, setSearchText] = useState("");
 
   const handleInputChange = (event) => {
@@ -65,7 +65,8 @@ export function SamplePoints(props) {
       });
     }
     props.setIsChecked(checked);
-    sessionStorage.setItem("isCheckedWorkload", JSON.stringify([...checked]));
+
+    sessionStorage.setItem(props.sesionName, JSON.stringify([...checked]));
 
     // Фильтруем данные
     const fdfix = FilteredSample(props.workloadData, checked, props.itemKey);
@@ -82,10 +83,10 @@ export function SamplePoints(props) {
       checked.push({ value: el, itemKey: props.itemKey });
     }
     props.setIsChecked(checked);
-    sessionStorage.setItem("isCheckedWorkload", JSON.stringify([...checked]));
+    sessionStorage.setItem(props.sesionName, JSON.stringify([...checked]));
     // Фильтруем данные
-    const fdfix = FilteredSample(basicTabData.workloadData, checked);
-    basicTabData.setWorkloadDataFix(fdfix);
+    const fdfix = FilteredSample(props.workloadData, checked);
+    props.setWorkloadDataFix(fdfix);
     console.log("props.isChecked", props.isChecked);
   };
 

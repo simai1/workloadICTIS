@@ -71,7 +71,7 @@ export function SubMenu(props) {
         tabPar.contextPosition,
         window.innerWidth,
         menuWidth,
-        props.conxextMenuRef
+        props.conxextMenuRefBlock
       )}
     >
       <div>

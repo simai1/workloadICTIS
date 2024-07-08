@@ -69,6 +69,7 @@ function TableTh(props) {
           workloadData={basicTabData.workloadData}
           setWorkloadDataFix={basicTabData.setWorkloadDataFix}
           setSpShow={tabPar.setSpShow}
+          sesionName={"isCheckedWorkload"}
         />
       )}
 
