@@ -92,7 +92,6 @@ const ContextMenu = () => {
   //! функция выбора преподавателя
   const selectedEducator = (id) => {
     setMenuShow("");
-    tabPar.setContextMenuShow(false);
     const data = {
       workloadIds: tabPar.selectedTr,
       educatorId: id,
@@ -150,6 +149,7 @@ const ContextMenu = () => {
             basicTabData.funUpdateOffersLecturer();
         });
       });
+      tabPar.setContextMenuShow(false);
     } else {
       setPopupOffer(null);
       tabPar.setContextMenuShow(false);

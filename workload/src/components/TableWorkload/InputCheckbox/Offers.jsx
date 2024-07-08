@@ -17,16 +17,16 @@ function Offers(props) {
   };
   //! функция отклонить
   const reject = (offerData) => {
-    //! отклоняем дирекцией, сделалть зависимость от роли
-    //! отклоняем от зк
-    if (appData.myProfile?.role === "DEPARTMENT_HEAD") {
-      const data = { id: offerData.offer.id, status: 3 };
-      AcceptOfferZK(data).then(() => {
-        basicTabData.funUpdateOffers();
-        setOfferWindowShow(false);
-      });
-    }
-    if (appData.myProfile?.role === "DIRECTORATE") {
+    // //! отклоняем дирекцией, сделалть зависимость от роли
+    // //! отклоняем от зк
+    // if (appData.myProfile?.role === "DEPARTMENT_HEAD") {
+    //   const data = { id: offerData.offer.id, status: 3 };
+    //   AcceptOfferZK(data).then(() => {
+    //     basicTabData.funUpdateOffers();
+    //     setOfferWindowShow(false);
+    //   });
+    // }
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 38)) {
       const data = { id: offerData.offer.id, status: 5 };
       AcceptOffer(data).then(() => {
         basicTabData.funUpdateOffers();
