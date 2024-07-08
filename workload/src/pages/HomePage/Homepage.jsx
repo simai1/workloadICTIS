@@ -138,7 +138,7 @@ function HomePage() {
   //! открыть попап
   const onUnblockClick = () => {
     setPopupUnblockTable(!popupUnblockTable);
-    appData.setPopupGoodText("Запрос успешно отправлен!")
+    appData.setPopupGoodText("Запрос успешно отправлен!");
   };
   //! открыть попап
   const onExportClick = () => {
@@ -334,6 +334,17 @@ function HomePage() {
     basicTabData.setSearchTerm("");
   }, [appData.selectedComponent]);
 
+  //! функция определения выводить ли посик
+  const funGetSherch = () => {
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 41)) {
+      if (appData.selectedComponent === "Teachers" && educatorIdforLk !== "") {
+        return false;
+      } else return true;
+    } else {
+      return true;
+    }
+  };
+
   return (
     <Layout>
       <div className={styles.HomePage}>
@@ -456,7 +467,8 @@ function HomePage() {
                   appData.selectedComponent === "Disciplines") ||
                   (appData.metodRole[appData.myProfile?.role]?.some(
                     (el) => el === 33
-                  ) &&   appData.selectedComponent === "Disciplines" &&
+                  ) &&
+                    appData.selectedComponent === "Disciplines" &&
                     !blockTable)) && (
                   <div
                     style={{ marginRight: "15px" }}
@@ -475,30 +487,32 @@ function HomePage() {
                   </div>
                 )}
               </div>
-              <div
-                className={styles.header_search}
-                style={
-                  basicTabData?.searchTerm
-                    ? { backgroundColor: "#fff", border: "none" }
-                    : null
-                }
-              >
-                <input
-                  type="text"
-                  placeholder="Поиск..."
-                  id="search"
-                  name="search"
-                  onChange={handleSearch}
-                  value={basicTabData?.searchTerm}
-                  className={styles.hedaer_search_inner}
+              {funGetSherch() && (
+                <div
+                  className={styles.header_search}
                   style={
                     basicTabData?.searchTerm
-                      ? { backgroundColor: "#fff" }
+                      ? { backgroundColor: "#fff", border: "none" }
                       : null
                   }
-                />
-                <img src="./img/search.svg"></img>
-              </div>
+                >
+                  <input
+                    type="text"
+                    placeholder="Поиск..."
+                    id="search"
+                    name="search"
+                    onChange={handleSearch}
+                    value={basicTabData?.searchTerm}
+                    className={styles.hedaer_search_inner}
+                    style={
+                      basicTabData?.searchTerm
+                        ? { backgroundColor: "#fff" }
+                        : null
+                    }
+                  />
+                  <img src="./img/search.svg"></img>
+                </div>
+              )}
             </div>
 
             <div className={styles.header_button}>
@@ -734,8 +748,8 @@ function HomePage() {
           ) : null}
         </div>
         {!appData.metodRole[appData.myProfile?.role]?.some(
-            (el) => el === 41
-          ) && 
+          (el) => el === 41
+        ) && (
           <div onClick={raketClick}>
             <div className={styles.rocket}>
               <img
@@ -745,8 +759,8 @@ function HomePage() {
               />
             </div>
           </div>
-          }
-       
+        )}
+
         {appData.selectedComponent !== "Teachers" && (
           <div className={styles.countSet}>
             Кол-во выделенных нагрузок: {new Set(tabPar.selectedTr).size}

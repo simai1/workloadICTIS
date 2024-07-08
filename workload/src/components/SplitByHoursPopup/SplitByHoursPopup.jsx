@@ -8,9 +8,11 @@ function SplitByHoursPopup() {
 
   //! вводим в инпут часы и записываем в состояние
   const changeHours = (e, index) => {
-    let prevVal = [...tabPar.inputEditValue];
-    prevVal[index] = e.target.value;
-    tabPar.setInputEditValue(prevVal);
+    if (e.target.value >= 0) {
+      let prevVal = [...tabPar.inputEditValue];
+      prevVal[index] = e.target.value;
+      tabPar.setInputEditValue(prevVal);
+    }
   };
 
   //! функция для разделения строк при нажатии сохранить
@@ -209,12 +211,9 @@ function SplitByHoursPopup() {
                         }
                         className={styles.errorBorder}
                         placeholder="0"
-                        value={
-                          Number(tabPar.inputEditValue[index])
-                            ? Number(tabPar.inputEditValue[index])
-                            : ""
-                        }
+                        value={tabPar.inputEditValue[index]}
                         type="number"
+                        min="0"
                         onChange={(e) => changeHours(e, index)}
                       />
                     </td>
