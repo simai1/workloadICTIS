@@ -34,7 +34,6 @@ export function SamplePoints(props) {
       document.removeEventListener("click", handler);
     };
   }, []);
-
   const filteredData = [
     ...new Set(
       props.isSamplePointsData.filter((el) => {
@@ -65,7 +64,7 @@ export function SamplePoints(props) {
       });
     }
     props.setIsChecked(checked);
-
+    console.log(checked);
     sessionStorage.setItem(props.sesionName, JSON.stringify([...checked]));
 
     // Фильтруем данные
@@ -77,7 +76,11 @@ export function SamplePoints(props) {
   //! при нажатии на Input
   const onChecked = (el) => {
     let checked = [...props.isChecked]; // основной массив
-    if (checked.some((item) => item.value === el)) {
+    if (
+      checked.some(
+        (item) => item.value === el && props.itemKey === item.itemKey
+      )
+    ) {
       checked = checked.filter((item) => item.value !== el);
     } else {
       checked.push({ value: el, itemKey: props.itemKey });
@@ -87,12 +90,8 @@ export function SamplePoints(props) {
     // Фильтруем данные
     const fdfix = FilteredSample(props.workloadData, checked);
     props.setWorkloadDataFix(fdfix);
-    console.log("props.isChecked", props.isChecked);
   };
-
-  useEffect(() => {
-    console.log("вот я да");
-  }, []);
+  console.log("props.isChecked", props.isChecked, props.itemKey);
 
   return (
     <main className={styles.SamplePoints} ref={spRef}>
@@ -126,7 +125,12 @@ export function SamplePoints(props) {
                     id={`checkbox-${index}`}
                     type="checkbox"
                     onChange={() => onChecked(el)}
-                    checked={!props.isChecked.some((item) => item.value === el)}
+                    checked={
+                      !props.isChecked.some(
+                        (item) =>
+                          item.value === el && props.itemKey === item.itemKey
+                      )
+                    }
                   />
                   <p>{props.index === 0 ? index + 1 : el === "" ? "__" : el}</p>
                 </div>

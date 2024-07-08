@@ -308,13 +308,21 @@ $heightCell: 150px;
       display: flex;
       justify-content: center;
       cursor: pointer;
-
+      .th_title {
+        display: flex;
+        max-width: 110px;
+      }
       .th_inner_img {
         display: flex;
         flex-direction: row;
         img {
-          padding: 0 6px;
-          width: 24px;
+          margin: 0 6px;
+          display: flex;
+          justify-content: center;
+          width: 16px;
+        }
+        img:nth-child(2) {
+          margin-left: 0px;
         }
       }
     }
