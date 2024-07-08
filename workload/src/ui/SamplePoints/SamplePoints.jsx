@@ -4,7 +4,7 @@ import DataContext from "../../context";
 import { FilteredSample } from "./Function";
 
 export function SamplePoints(props) {
-  const { tabPar, checkPar, basicTabData } = React.useContext(DataContext);
+  const { basicTabData } = React.useContext(DataContext);
   const [searchText, setSearchText] = useState("");
 
   const handleInputChange = (event) => {
@@ -26,7 +26,7 @@ export function SamplePoints(props) {
   useEffect(() => {
     const handler = (event) => {
       if (spRef.current && !spRef.current.contains(event.target)) {
-        tabPar.setSpShow("");
+        props.setSpShow("");
       }
     };
     document.addEventListener("click", handler, true);
@@ -37,7 +37,7 @@ export function SamplePoints(props) {
 
   const filteredData = [
     ...new Set(
-      tabPar.isSamplePointsData.filter((el) => {
+      props.isSamplePointsData.filter((el) => {
         // Преобразовываем el в строку, если он является числом
         const elString = typeof el === "number" ? el.toString() : el;
         return elString?.toLowerCase().includes(searchText?.toLowerCase());
@@ -51,46 +51,42 @@ export function SamplePoints(props) {
   });
   //! при нажатии на Input All
   const onAllChecked = () => {
-    console.log("checkPar.isAllChecked", checkPar.isAllChecked);
+    console.log("props.isAllChecked", props.isAllChecked);
 
-    let checked = [...checkPar.isChecked];
+    let checked = [...props.isChecked];
     if (
-      [...checkPar.isChecked].filter((el) => el.itemKey === props.itemKey)
-        .length > 0
+      [...props.isChecked].filter((el) => el.itemKey === props.itemKey).length >
+      0
     ) {
       checked = checked.filter((el) => el.itemKey !== props.itemKey);
     } else {
-      [...tabPar.isSamplePointsData].map((item) => {
+      [...props.isSamplePointsData].map((item) => {
         checked.push({ value: item, itemKey: props.itemKey });
       });
     }
-    checkPar.setIsChecked(checked);
+    props.setIsChecked(checked);
     sessionStorage.setItem("isCheckedWorkload", JSON.stringify([...checked]));
 
     // Фильтруем данные
-    const fdfix = FilteredSample(
-      basicTabData.workloadData,
-      checked,
-      props.itemKey
-    );
-    basicTabData.setWorkloadDataFix(fdfix);
-    console.log("checkPar.isAllChecked", checkPar.isAllChecked);
+    const fdfix = FilteredSample(props.workloadData, checked, props.itemKey);
+    props.setWorkloadDataFix(fdfix);
+    console.log("props.isAllChecked", props.isAllChecked);
   };
 
   //! при нажатии на Input
   const onChecked = (el) => {
-    let checked = [...checkPar.isChecked]; // основной массив
+    let checked = [...props.isChecked]; // основной массив
     if (checked.some((item) => item.value === el)) {
       checked = checked.filter((item) => item.value !== el);
     } else {
       checked.push({ value: el, itemKey: props.itemKey });
     }
-    checkPar.setIsChecked(checked);
+    props.setIsChecked(checked);
     sessionStorage.setItem("isCheckedWorkload", JSON.stringify([...checked]));
     // Фильтруем данные
     const fdfix = FilteredSample(basicTabData.workloadData, checked);
     basicTabData.setWorkloadDataFix(fdfix);
-    console.log("checkPar.isChecked", checkPar.isChecked);
+    console.log("props.isChecked", props.isChecked);
   };
 
   useEffect(() => {
@@ -115,7 +111,7 @@ export function SamplePoints(props) {
                 type="checkbox"
                 onChange={onAllChecked}
                 checked={
-                  ![...checkPar.isChecked].filter(
+                  ![...props.isChecked].filter(
                     (el) => el.itemKey === props.itemKey
                   ).length > 0
                 }
@@ -129,9 +125,7 @@ export function SamplePoints(props) {
                     id={`checkbox-${index}`}
                     type="checkbox"
                     onChange={() => onChecked(el)}
-                    checked={
-                      !checkPar.isChecked.some((item) => item.value === el)
-                    }
+                    checked={!props.isChecked.some((item) => item.value === el)}
                   />
                   <p>{props.index === 0 ? index + 1 : el === "" ? "__" : el}</p>
                 </div>
