@@ -43,7 +43,12 @@ export function SamplePoints(props) {
         return elString?.toLowerCase().includes(searchText?.toLowerCase());
       })
     ),
-  ];
+  ].sort((a, b) => {
+    // Сортируем отфильтрованные данные по возрастанию
+    if (a < b) return -1;
+    if (a > b) return 1;
+    return 0;
+  });
 
   //! при нажатии на Input All
   const onAllChecked = () => {
