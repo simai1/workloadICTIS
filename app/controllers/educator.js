@@ -11,9 +11,15 @@ import Workload from '../models/workload.js';
 import departments from '../config/departments.js';
 import WorkloadProfileDto from '../dtos/workload-profile-dto.js';
 
+const orderRule = [
+    ['department', 'ASC'],
+    ['name', 'ASC'],
+];
+
 export default {
     async getAll(req, res) {
         const _user = await User.findByPk(req.user);
+        const {col, type} = req.query;
         let educators;
         if (_user.role === 4 || _user.role === 7) {
             if (!_user.institutionalAffiliation)
@@ -35,10 +41,7 @@ export default {
                         model: SummaryWorkload,
                     },
                 ],
-                order: [
-                    ['department', 'ASC'],
-                    ['name', 'ASC'],
-                ],
+                order: (col && type)? [[col, type.toUpperCase()]] : orderRule,
             });
         } else if (_user.role === 6) {
             educators = await Educator.findAll({
@@ -50,10 +53,7 @@ export default {
                         model: SummaryWorkload,
                     },
                 ],
-                order: [
-                    ['department', 'ASC'],
-                    ['name', 'ASC'],
-                ],
+                order: (col && type)? [[col, type.toUpperCase()]] : orderRule,
             });
         } else {
             const allowedDepartments = [];
@@ -73,10 +73,7 @@ export default {
                         model: SummaryWorkload,
                     },
                 ],
-                order: [
-                    ['department', 'ASC'],
-                    ['name', 'ASC'],
-                ],
+                order: (col && type)? [[col, type.toUpperCase()]] : orderRule,
             });
         }
         const educatorDtos = [];
