@@ -21,7 +21,7 @@ export function upDateEducators(data, ItemSelectedTr, name) {
   return { newData: updatedData, prevState };
 }
 
-export function splitWorkloadCount(data, selectedTr, count) {
+export function splitWorkloadCount(data, selectedTr, count, typeSplit) {
   let updatedData = [...data];
   const newIds = [];
   const blocked = [];
@@ -57,22 +57,46 @@ export function splitWorkloadCount(data, selectedTr, count) {
           workload?.audienceHours *
           (studentsPerGroup + (i < remainder ? 1 : 0)) *
           0.01;
-        const newWorkload = {
-          ...workload,
-          numberOfStudents: studentsPerGroup + (i < remainder ? 1 : 0),
-          educator: null,
-          id: `${workload.id}${i + 1}`,
-          isMerged: false,
-          isSplit: true,
-          ratingControlHours: rch.toFixed(2),
-          hours: (rch + workload?.audienceHours).toFixed(2),
-        };
-        const hoursDataObj = {
-          numberOfStudents: studentsPerGroup + (i < remainder ? 1 : 0),
-          hours: (rch + workload?.audienceHours).toFixed(2),
-          audienceHours: workload?.audienceHours,
-          ratingControlHours: rch,
-        };
+
+        let newWorkload = {};
+
+        let hoursDataObj = {};
+        if (typeSplit === "splitCandidatesExam") {
+          newWorkload = {
+            ...workload,
+            numberOfStudents: workload.numberOfStudents,
+            educator: null,
+            id: `${workload.id}${i + 1}`,
+            isMerged: false,
+            isSplit: true,
+            ratingControlHours: 0,
+            hours: workload.numberOfStudents,
+            audienceHours: workload.numberOfStudents,
+          };
+          hoursDataObj = {
+            numberOfStudents: workload.numberOfStudents,
+            hours: workload.numberOfStudents,
+            audienceHours: workload.numberOfStudents,
+            ratingControlHours: 0,
+          };
+        } else {
+          newWorkload = {
+            ...workload,
+            numberOfStudents: studentsPerGroup + (i < remainder ? 1 : 0),
+            educator: null,
+            id: `${workload.id}${i + 1}`,
+            isMerged: false,
+            isSplit: true,
+            ratingControlHours: rch.toFixed(2),
+            hours: (rch + workload?.audienceHours).toFixed(2),
+          };
+          hoursDataObj = {
+            numberOfStudents: studentsPerGroup + (i < remainder ? 1 : 0),
+            hours: (rch + workload?.audienceHours).toFixed(2),
+            audienceHours: workload?.audienceHours,
+            ratingControlHours: rch,
+          };
+        }
         workloadsData.push(hoursDataObj);
         newValue.push(newWorkload);
         newState.push(newWorkload);
@@ -133,6 +157,13 @@ export function combineData(data, selectedTr, action = "") {
           item.workload === prevState[0].workload &&
           item.discipline === prevState[0].discipline &&
           item.semester === prevState[0].semester
+      )) ||
+    (action === "candidatesExam" &&
+      prevState.every(
+        (item) =>
+          item.workload === prevState[0].workload &&
+          item.discipline === prevState[0].discipline &&
+          item.semester === prevState[0].semester
       ))
   ) {
     const sumOfStudents = prevState.reduce(
@@ -183,9 +214,16 @@ export function combineData(data, selectedTr, action = "") {
               isMerged: true,
               educator: "___",
             }
-          : action === "add" && {
+          : action === "add"
+          ? {
               ...upData[index],
               numberOfStudents: sumOfStudents,
+              isSplit: false,
+              isMerged: true,
+              educator: "___",
+            }
+          : action === "candidatesExam" && {
+              ...upData[index],
               isSplit: false,
               isMerged: true,
               educator: "___",
@@ -229,6 +267,8 @@ export function combineData(data, selectedTr, action = "") {
           hours: h,
         };
         newState = updatedObjectFix;
+      } else if (action === "candidatesExam") {
+        newState = { ...updatedObject };
       }
 
       const newUpdatedData = [

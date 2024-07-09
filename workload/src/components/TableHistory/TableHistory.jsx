@@ -10,7 +10,8 @@ import DataContext from "../../context";
 import { apiCheckedUpdate, apiGetHistory } from "../../api/services/ApiRequest";
 
 function TableHistory(props) {
-  const { tabPar, visibleDataPar, basicTabData } = useContext(DataContext);
+  const { tabPar, checkPar, visibleDataPar, basicTabData } =
+    useContext(DataContext);
   const [contextShow, setContetxShow] = useState(false);
   const [contextPosition, setContextPosition] = useState({ x: 0, y: 0 });
   const [historyData, sethistoryData] = useState([]);
@@ -19,6 +20,19 @@ function TableHistory(props) {
   //! получаем данные с апи по истории
   useEffect(() => {
     basicTabData.funUpdateHistory();
+  }, []);
+
+  useEffect(() => {
+    console.log("historyData", historyData);
+    console.log("orighistoryData", orighistoryData);
+  }, [historyData, orighistoryData]);
+
+  //! достаем и локал стореджа состояние фитрации по заголовку
+  useEffect(() => {
+    const ssIsChecked = JSON.parse(sessionStorage.getItem("isCheckedHistory")); //! сбросить
+    if (ssIsChecked && ssIsChecked !== null && ssIsChecked.length > 0) {
+      checkPar.setIsChecked(ssIsChecked);
+    }
   }, []);
 
   //! при событии скролл таблицы изменим индекс первого показываемого tr
@@ -106,6 +120,9 @@ function TableHistory(props) {
 
       <Table
         historyData={historyData}
+        orighistoryData={orighistoryData}
+        origsethistoryData={origsethistoryData}
+        sethistoryData={sethistoryData}
         setContetxShow={setContetxShow}
         contextShow={contextShow}
         contextPosition={contextPosition}

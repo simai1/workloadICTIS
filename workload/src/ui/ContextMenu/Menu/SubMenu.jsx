@@ -24,7 +24,12 @@ export function SubMenu(props) {
 
     // Создаем новый массив для измененных данных
     let updatedData = [...basicTabData.workloadDataFix];
-    const funData = splitWorkloadCount(updatedData, tabPar.selectedTr, count);
+    const funData = splitWorkloadCount(
+      updatedData,
+      tabPar.selectedTr,
+      count,
+      props.typeSplit
+    );
     basicTabData.setWorkloadDataFix(funData.updatedData);
     console.log(funData.blocked);
     tabPar.setChangedData(
@@ -90,14 +95,16 @@ export function SubMenu(props) {
           На 3 потока
         </button>
       </div>
-      <div>
-        <button
-          className={styles.activeStylePointer}
-          onClick={() => handleSplitWorkload("4")}
-        >
-          На 4 потока
-        </button>
-      </div>
+      {props.typeSplit !== "splitCandidatesExam" && (
+        <div>
+          <button
+            className={styles.activeStylePointer}
+            onClick={() => handleSplitWorkload("4")}
+          >
+            На 4 потока
+          </button>
+        </div>
+      )}
     </div>
   );
 }
