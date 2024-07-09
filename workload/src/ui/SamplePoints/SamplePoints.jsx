@@ -34,6 +34,7 @@ export function SamplePoints(props) {
       document.removeEventListener("click", handler);
     };
   }, []);
+
   const filteredData = [
     ...new Set(
       props.isSamplePointsData.filter((el) => {
@@ -48,10 +49,9 @@ export function SamplePoints(props) {
     if (a > b) return 1;
     return 0;
   });
+
   //! при нажатии на Input All
   const onAllChecked = () => {
-    console.log("props.isAllChecked", props.isAllChecked);
-
     let checked = [...props.isChecked];
     if (
       [...props.isChecked].filter((el) => el.itemKey === props.itemKey).length >
@@ -64,13 +64,11 @@ export function SamplePoints(props) {
       });
     }
     props.setIsChecked(checked);
-    console.log(checked);
     sessionStorage.setItem(props.sesionName, JSON.stringify([...checked]));
 
     // Фильтруем данные
-    const fdfix = FilteredSample(props.workloadData, checked, props.itemKey);
+    const fdfix = FilteredSample(props.workloadData, checked, props.sesionName);
     props.setWorkloadDataFix(fdfix);
-    console.log("props.isAllChecked", props.isAllChecked);
   };
 
   //! при нажатии на Input
@@ -88,10 +86,10 @@ export function SamplePoints(props) {
     props.setIsChecked(checked);
     sessionStorage.setItem(props.sesionName, JSON.stringify([...checked]));
     // Фильтруем данные
-    const fdfix = FilteredSample(props.workloadData, checked);
+    const fdfix = FilteredSample(props.workloadData, checked, props.sesionName);
+    console.log("fdfix", fdfix, props.sesionName);
     props.setWorkloadDataFix(fdfix);
   };
-  console.log("props.isChecked", props.isChecked, props.itemKey);
 
   return (
     <main className={styles.SamplePoints} ref={spRef}>

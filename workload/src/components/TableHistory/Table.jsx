@@ -124,6 +124,8 @@ function Table(props) {
                 item={item}
                 index={index}
                 modal={tabPar.spShow === index}
+                orighistoryData={props.orighistoryData}
+                sethistoryData={props.sethistoryData}
               />
             ))}
           </tr>
