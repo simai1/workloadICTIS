@@ -68,9 +68,22 @@
       display: flex;
       justify-content: center;
       cursor: pointer;
-
-      img {
-        padding: 0 6px;
+      .th_title {
+        display: flex;
+        max-width: 210px;
+      }
+      .th_inner_img {
+        display: flex;
+        flex-direction: row;
+        img {
+          margin: 0 6px;
+          display: flex;
+          justify-content: center;
+          width: 16px;
+        }
+        img:nth-child(2) {
+          margin-left: 0px;
+        }
       }
     }
 
@@ -172,6 +185,16 @@
     th[name="instituteManagementWorkload"],
     td[name="instituteManagementWorkload"] {
       @include customTd(150px);
+    }
+
+    th[name="typeOfEmployment"],
+    td[name="typeOfEmployment"] {
+      @include customTd(200px);
+    }
+
+    th[name="totalOidHours"],
+    td[name="totalOidHours"] {
+      @include customTd(200px);
     }
 
     th {
@@ -277,21 +300,21 @@
       top: 0;
     }
   }
-  .filterdClear{
+  .filterdClear {
     position: relative;
     left: -30px;
     top: 65px;
-    img{
-      &:hover{
+    img {
+      &:hover {
         opacity: 0.6;
-        cursor: pointer; 
+        cursor: pointer;
       }
     }
-    .BlockTextFilter{
-      .textFilter{
+    .BlockTextFilter {
+      .textFilter {
         position: absolute;
         left: 0px;
-        top:25px;
+        top: 25px;
         z-index: 9999;
         border-radius: 8px;
         width: 181px;
@@ -299,13 +322,12 @@
         background-color: #fff;
         box-shadow: 5px 0px 15px #b3b0b0;
       }
-      .triangle{
+      .triangle {
         @include triangle();
         left: 0px;
         top: 25px;
         z-index: 99999;
       }
-    
     }
   }
 }
