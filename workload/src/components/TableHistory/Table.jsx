@@ -16,12 +16,17 @@ function Table(props) {
 
   //! определение нижнего отступа таблицы
   const getBottomHeight = () => {
-    return (
+    const height =
       (props.historyData.length -
         visibleDataPar.startData -
         visibleDataPar.visibleData) *
-      visibleDataPar.heightTd
-    );
+      visibleDataPar.heightTd;
+
+    if (height <= 0) {
+      return 0;
+    } else {
+      return height;
+    }
   };
 
   //! клик правой кнопкой мыши на tr

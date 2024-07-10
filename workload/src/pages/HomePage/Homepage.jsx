@@ -479,7 +479,7 @@ function HomePage() {
                     <img className={styles.btnLeft} src="./img/export.svg" />
                     {popupExport && (
                       <ConfirmSaving
-                        title={"Вы уверены, что хотите отправить таблицу?"}
+                        title={`Вы уверены, что хотите отправить таблицу ${basicTabData.nameKaf}?`}
                         confirmClick={exportClick}
                         setShow={setPopupExport}
                       />

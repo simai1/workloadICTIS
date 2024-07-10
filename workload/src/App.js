@@ -54,7 +54,7 @@ function App() {
     ],
     DIRECTORATE: [
       1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
-      34, 35, 36, 38, 16, 40, 44, 47, 50,
+      34, 35, 36, 38, 16, 40, 44, 47, 49, 50,
     ],
     UNIT_ADMIN: [
       2, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
@@ -63,7 +63,7 @@ function App() {
     EDUCATOR: [15, 24, 41, 53, 51, 50],
     DEPUTY_DIRECTORATE: [
       1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
-      34, 35, 36, 38, 16, 40, 44, 47, 50,
+      34, 35, 36, 38, 16, 40, 44, 47, 49, 50,
     ],
     DEPUTY_DEPARTMENT_HEAD: [
       2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 20, 22, 23, 25, 26, 27, 30, 31,
@@ -88,7 +88,7 @@ function App() {
   const [selectedComponent, setSelectedComponent] = useState("Disciplines");
   const [loaderAction, setLoaderAction] = useState(false);
   const [universalPopupTitle, setUniversalPopupTitle] = useState(""); // если он не пустой, то открывается универсальный попап с данным title
-  const [hoursWorkloadSumma, setHoursWorkloadSumma] = useState([]);
+  const [hoursWorkloadSumma, setHoursWorkloadSumma] = useState([]); //! сумма часов в профиле
   const [sortParamByColumn, setSortParamByColumn] = useState(""); //! сортировка в колнке по возрастанию убыванию или без если ""
   const [popupErrorText, setPopupErrorText] = useState(""); //! если не пустой то в поап ерор будет текст который в состоянии
   const [popupGoodText, setPopupGoodText] = useState(""); //! если не пустой то в поап ерор будет текст который в состоянии
@@ -572,6 +572,19 @@ function App() {
       }
     }
   }, [tableDepartment, myProfile]);
+
+  useEffect(() => {
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 52)) {
+      getAllocatedAndUnallocatedWrokloadHours(
+        appData.myProfile?.educator.departmentId
+      ).then((resp) => {
+        if (resp.status === 200) {
+          setHoursWorkloadSumma(resp.data);
+          console.log("hoursWorkloadSumma", hoursWorkloadSumma);
+        }
+      });
+    }
+  }, [workloadData]);
 
   useEffect(() => {
     updateAlldata();

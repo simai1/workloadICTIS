@@ -198,74 +198,6 @@ $heightCell: 150px;
         padding: 5px 0px;
       }
     }
-    th[name="specialty"],
-    td[name="specialty"] {
-      @include customTd(200px);
-    }
-
-    th[name="core"],
-    td[name="core"] {
-      @include customTd(200px);
-    }
-
-    th[name="curriculumUnit"],
-    td[name="curriculumUnit"] {
-      @include customTd(200px);
-    }
-
-    th[name="curriculum"],
-    td[name="curriculum"] {
-      @include customTd(200px);
-      // @include customTdFixWidth;
-    }
-
-    // td[name="groups"] {
-    //   @include customTdFixWidth;
-    // }
-    // td[name="core"] {
-    //   // @include customTdFixWidth;
-    //   overflow: hidden;
-    //   text-overflow: ellipsis;
-    //   white-space: normal;
-    // }
-
-    th[name="period"],
-    td[name="period"] {
-      @include customTd(110px);
-    }
-
-    th[name="numberOfStudents"],
-    td[name="numberOfStudents"] {
-      @include customTd(120px);
-    }
-
-    th[name="hours"],
-    td[name="hours"] {
-      @include customTd(120px);
-    }
-
-    th[name="audienceHours"],
-    td[name="audienceHours"] {
-      @include customTd(120px);
-    }
-    td[name="workload"] {
-      &::after {
-        content: "";
-        position: absolute;
-        background-color: var(--td-bg);
-        box-shadow: 5px 0px 15px #b3b0b0;
-        opacity: 0.5;
-        width: 2px;
-        height: 100%;
-        right: 0;
-        top: 0;
-      }
-    }
-
-    th[name="ratingControlHours"],
-    td[name="ratingControlHours"] {
-      @include customTd(120px);
-    }
 
     th,
     td {
@@ -397,6 +329,80 @@ $heightCell: 150px;
       @include stickyTd(160px, 320px);
       background-color: var(--gray-color);
       z-index: 15;
+    }
+
+    th[name="discipline"],
+    td[name="discipline"] {
+      @include customTd(200px);
+    }
+
+    th[name="specialty"],
+    td[name="specialty"] {
+      @include customTd(230px);
+    }
+
+    th[name="core"],
+    td[name="core"] {
+      @include customTd(200px);
+    }
+
+    th[name="curriculumUnit"],
+    td[name="curriculumUnit"] {
+      @include customTd(230px);
+    }
+
+    th[name="curriculum"],
+    td[name="curriculum"] {
+      @include customTd(200px);
+      // @include customTdFixWidth;
+    }
+
+    // td[name="groups"] {
+    //   @include customTdFixWidth;
+    // }
+    // td[name="core"] {
+    //   // @include customTdFixWidth;
+    //   overflow: hidden;
+    //   text-overflow: ellipsis;
+    //   white-space: normal;
+    // }
+
+    th[name="period"],
+    td[name="period"] {
+      @include customTd(110px);
+    }
+
+    th[name="numberOfStudents"],
+    td[name="numberOfStudents"] {
+      @include customTd(120px);
+    }
+
+    th[name="hours"],
+    td[name="hours"] {
+      @include customTd(120px);
+    }
+
+    th[name="audienceHours"],
+    td[name="audienceHours"] {
+      @include customTd(120px);
+    }
+    td[name="workload"] {
+      &::after {
+        content: "";
+        position: absolute;
+        background-color: var(--td-bg);
+        box-shadow: 5px 0px 15px #b3b0b0;
+        opacity: 0.5;
+        width: 2px;
+        height: 100%;
+        right: 0;
+        top: 0;
+      }
+    }
+
+    th[name="ratingControlHours"],
+    td[name="ratingControlHours"] {
+      @include customTd(120px);
     }
   }
   .selectedTr {

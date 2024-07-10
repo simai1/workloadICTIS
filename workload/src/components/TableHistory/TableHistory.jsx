@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Table from "./Table";
 import styles from "./TableWorkload.module.scss";
 import {
@@ -8,6 +8,7 @@ import {
 } from "./Function";
 import DataContext from "../../context";
 import { apiCheckedUpdate, apiGetHistory } from "../../api/services/ApiRequest";
+import { FilteredSample } from "../../ui/SamplePoints/Function";
 
 function TableHistory(props) {
   const { tabPar, checkPar, visibleDataPar, basicTabData } =
@@ -49,13 +50,16 @@ function TableHistory(props) {
     );
   };
 
+  //! обновляем вертуальный скролл при переходе на другуюс таблицу
+  const containertableRef = useRef(null);
+
   //! фильтрация по поиску
   useEffect(() => {
     const hd = filteredWorkloadHistory(orighistoryData, props.searchTerm);
     sethistoryData(hd);
   }, [props.searchTerm]);
 
-  //! при нажатии правой кнопки мыши на таблицу открывает мню
+  //! при нажатии правой кнопки мыши на таблицу открывает меню
   const handleContextMenu = (e) => {
     e.preventDefault();
     let plusX = e.pageX + 256 > window.innerWidth ? -256 : 0;
@@ -73,7 +77,11 @@ function TableHistory(props) {
       );
       //! преобразуем историю для вывода
       const fixHistory = funHistoryFix(hd);
-      sethistoryData(fixHistory);
+      const ssIsChecked = JSON.parse(
+        sessionStorage.getItem("isCheckedHistory")
+      );
+      const fdfix = FilteredSample(fixHistory, ssIsChecked, "isCheckedHistory");
+      sethistoryData(fdfix);
       origsethistoryData(fixHistory);
 
       visibleDataPar.setStartData(0);
@@ -101,6 +109,7 @@ function TableHistory(props) {
       onContextMenu={handleContextMenu}
       className={styles.tabledisciplinesMain}
       onScroll={scrollTable}
+      ref={containertableRef}
     >
       {contextShow && (
         <div

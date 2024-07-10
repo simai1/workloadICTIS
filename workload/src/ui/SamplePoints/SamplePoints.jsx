@@ -63,11 +63,18 @@ export function SamplePoints(props) {
         checked.push({ value: item, itemKey: props.itemKey });
       });
     }
-    props.setIsChecked(checked);
-    sessionStorage.setItem(props.sesionName, JSON.stringify([...checked]));
+    const uniqueArray = [
+      ...new Set(checked.map((item) => JSON.stringify(item))),
+    ].map((item) => JSON.parse(item));
+    props.setIsChecked(uniqueArray);
+    sessionStorage.setItem(props.sesionName, JSON.stringify([...uniqueArray]));
 
     // Фильтруем данные
-    const fdfix = FilteredSample(props.workloadData, checked, props.sesionName);
+    const fdfix = FilteredSample(
+      props.workloadData,
+      uniqueArray,
+      props.sesionName
+    );
     props.setWorkloadDataFix(fdfix);
   };
 
@@ -83,10 +90,17 @@ export function SamplePoints(props) {
     } else {
       checked.push({ value: el, itemKey: props.itemKey });
     }
-    props.setIsChecked(checked);
-    sessionStorage.setItem(props.sesionName, JSON.stringify([...checked]));
+    const uniqueArray = [
+      ...new Set(checked.map((item) => JSON.stringify(item))),
+    ].map((item) => JSON.parse(item));
+    props.setIsChecked(uniqueArray);
+    sessionStorage.setItem(props.sesionName, JSON.stringify([...uniqueArray]));
     // Фильтруем данные
-    const fdfix = FilteredSample(props.workloadData, checked, props.sesionName);
+    const fdfix = FilteredSample(
+      props.workloadData,
+      uniqueArray,
+      props.sesionName
+    );
     console.log("fdfix", fdfix, props.sesionName);
     props.setWorkloadDataFix(fdfix);
   };
