@@ -121,6 +121,8 @@ function Table(props) {
               checked={tabPar.onCheckBoxAll}
               clickTr={clickTrAll}
               th={true}
+              orighistoryData={props.orighistoryData}
+              sethistoryData={props.sethistoryData}
             />
 
             {basicTabData.tableHeaders.map((item, index) => (
@@ -184,6 +186,8 @@ function Table(props) {
                   obj={item}
                   getConfirmation={getConfirmation(item.value.id)}
                   checked={tabPar.selectedTr.includes(item.value.objid)}
+                  orighistoryData={props.orighistoryData}
+                  sethistoryData={props.sethistoryData}
                 />
                 {basicTabData.tableHeaders.map((itemKey, ind) => (
                   <TableTd
