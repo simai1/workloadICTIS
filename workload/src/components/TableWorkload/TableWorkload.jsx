@@ -4,6 +4,7 @@ import styles from "./TableWorkload.module.scss";
 import { filteredWorkload, funfastenedDataSort } from "./Function";
 import DataContext from "../../context";
 import ContextMenu from "../../ui/ContextMenu/ContextMenu";
+import { FilteredSample } from "../../ui/SamplePoints/Function";
 
 function TableWorkload(props) {
   const { tabPar, visibleDataPar, basicTabData, checkPar } =
@@ -32,15 +33,19 @@ function TableWorkload(props) {
 
   //! фильтрация по поиску
   useEffect(() => {
-      if(props.searchTerm.length === 0){
-        basicTabData.setWorkloadDataFix(
-          funfastenedDataSort(basicTabData.workloadDataFix, tabPar.fastenedData)
-        );
-      }else{
-        const fd = filteredWorkload(basicTabData.workloadDataFix, props.searchTerm, tabPar.fastenedData);
-        const fixfd = basicTabData.funFilteredFilterSelected(fd);
-        basicTabData.setFiltredData(fixfd); 
-      }
+    if (props.searchTerm.length === 0) {
+      basicTabData.setWorkloadDataFix(
+        funfastenedDataSort(basicTabData.workloadDataFix, tabPar.fastenedData)
+      );
+    } else {
+      const fd = filteredWorkload(
+        basicTabData.workloadDataFix,
+        props.searchTerm,
+        tabPar.fastenedData
+      );
+      const fixfd = basicTabData.funFilteredFilterSelected(fd);
+      basicTabData.setFiltredData(fixfd);
+    }
   }, [props.searchTerm]);
 
   //! при нажатии правой кнопки мыши на таблицу открывает мню
@@ -54,11 +59,15 @@ function TableWorkload(props) {
 
   //! достаем и локал стореджа состояние фитрации по заголовку
   useEffect(() => {
-    const ssIsChecked = JSON.parse(sessionStorage.getItem("isCheckedWorkload")); //! сбросить
+    const ssIsChecked = JSON.parse(
+      sessionStorage.getItem(`isCheckedWorkload${basicTabData.nameKaf}`)
+    ); //! сбросить
     if (ssIsChecked && ssIsChecked !== null && ssIsChecked.length > 0) {
       checkPar.setIsChecked(ssIsChecked);
+    } else {
+      checkPar.setIsChecked([]);
     }
-  }, []);
+  }, [basicTabData.nameKaf]);
 
   return (
     <div

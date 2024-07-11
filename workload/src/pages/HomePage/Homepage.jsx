@@ -660,12 +660,14 @@ function HomePage() {
                     <EditInput
                       selectedComponent={appData.selectedComponent}
                       originalHeader={
-                        appData.selectedComponent === "Disciplines"
+                        appData.selectedComponent === "Disciplines" ||
+                        appData.selectedComponent === "History"
                           ? workloadTableHeaders
                           : educatorTableHeaders
                       }
                       ssname={
-                        appData.selectedComponent === "Disciplines"
+                        appData.selectedComponent === "Disciplines" ||
+                        appData.selectedComponent === "History"
                           ? "headerWorkload"
                           : "headerTeachers"
                       }

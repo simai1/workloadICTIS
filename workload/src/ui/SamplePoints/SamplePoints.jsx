@@ -6,7 +6,7 @@ import { FilteredSample } from "./Function";
 export function SamplePoints(props) {
   // const { basicTabData } = React.useContext(DataContext);
   const [searchText, setSearchText] = useState("");
-
+  console.log("sesionName", props.sesionName);
   const handleInputChange = (event) => {
     setSearchText(event.target.value);
   };

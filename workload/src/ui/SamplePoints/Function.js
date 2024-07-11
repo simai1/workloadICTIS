@@ -1,5 +1,5 @@
 //! функция фильтрующая данные
-export function FilteredSample(data, isChecked, sesionName) {
+export function FilteredSample(data, isChecked, sesionName = "") {
   if (isChecked.length === 0) {
     return [...data];
   }

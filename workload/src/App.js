@@ -364,6 +364,7 @@ function App() {
     //! функция прокида буффера для разделения соединения и удаления нагрузок
     const fdb = fixDataBuff(fixData, bufferAction);
     // зменяем массив преподавателя на его имя
+    console.log("isChecked", isChecked);
     const fdfix = FilteredSample(fdb, isChecked);
     setWorkloadData(fdb);
     setWorkloadDataFix(fdfix);
@@ -434,7 +435,7 @@ function App() {
     funUpdateTable(
       tableDepartment.find((el) => el.name === basicTabData?.nameKaf)?.id
     );
-  }, [sortParamByColumn]);
+  }, [sortParamByColumn, isChecked]);
 
   //!функция прокида буфера
   function UpdateWorkloadForBoofer(data) {
