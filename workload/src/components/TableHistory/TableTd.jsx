@@ -71,14 +71,7 @@ function TableTd(props) {
       onMouseEnter={() => setShowFullText(true)}
       onMouseLeave={() => setShowFullText(false)}
       name={props.itemKey.key}
-      key={
-        props.item.id +
-        "_" +
-        props.itemKey.key +
-        props.index +
-        "--" +
-        props.item.objid
-      }
+      key={props.innerKey}
       className={getClassNameTr()}
       style={
         showFullText && props.item[props.itemKey.key]?.length > lenSlice

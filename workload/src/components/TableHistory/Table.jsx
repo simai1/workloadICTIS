@@ -173,7 +173,7 @@ function Table(props) {
                 className={getClassNameTr(item)}
                 onClick={(e) => clickTr(e, item.value.objid)}
                 onContextMenu={(e) => clickTrContetx(e, item.value.objid)}
-                key={item.value.id + number + "tr"}
+                key={item.value.id + visibleDataPar.startData + number + "tr"}
                 name={item.number === 0 ? "bottomBorder" : null}
               >
                 <InputCheckbox
@@ -185,13 +185,27 @@ function Table(props) {
                   getConfirmation={getConfirmation(item.value.id)}
                   checked={tabPar.selectedTr.includes(item.value.objid)}
                 />
-                {basicTabData.tableHeaders.map((itemKey) => (
+                {basicTabData.tableHeaders.map((itemKey, ind) => (
                   <TableTd
-                    key={item.value.id + "td" + itemKey.key + number}
+                    key={
+                      "td" +
+                      itemKey.key +
+                      number +
+                      visibleDataPar.startData +
+                      item.value.objid
+                    }
+                    innerKey={
+                      "tdInner" +
+                      itemKey.key +
+                      number +
+                      visibleDataPar.startData +
+                      item.value.objid
+                    }
                     obj={item}
                     item={item.value}
                     itemKey={itemKey}
                     index={visibleDataPar.startData + number}
+                    ind={ind}
                   />
                 ))}
               </tr>

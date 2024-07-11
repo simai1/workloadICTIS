@@ -11,7 +11,7 @@ import { apiCheckedUpdate, apiGetHistory } from "../../api/services/ApiRequest";
 import { FilteredSample } from "../../ui/SamplePoints/Function";
 
 function TableHistory(props) {
-  const { tabPar, checkPar, visibleDataPar, basicTabData } =
+  const { tabPar, checkPar, visibleDataPar, basicTabData, appData } =
     useContext(DataContext);
   const [contextShow, setContetxShow] = useState(false);
   const [contextPosition, setContextPosition] = useState({ x: 0, y: 0 });
@@ -69,6 +69,7 @@ function TableHistory(props) {
   };
 
   useEffect(() => {
+    appData.setLoaderAction(true);
     apiGetHistory().then((req) => {
       const hd = req?.filter(
         (it) =>
@@ -85,6 +86,7 @@ function TableHistory(props) {
       origsethistoryData(fixHistory);
 
       visibleDataPar.setStartData(0);
+      appData.setLoaderAction(false);
     });
   }, [
     basicTabData.historyChanges,
