@@ -23,10 +23,10 @@ function TableHistory(props) {
     basicTabData.funUpdateHistory();
   }, []);
 
-  useEffect(() => {
-    console.log("historyData", historyData);
-    console.log("orighistoryData", orighistoryData);
-  }, [historyData, orighistoryData]);
+  // useEffect(() => {
+  //   console.log("historyData", historyData);
+  //   console.log("orighistoryData", orighistoryData);
+  // }, [historyData, orighistoryData]);
 
   //! достаем и локал стореджа состояние фитрации по заголовку
   useEffect(() => {
