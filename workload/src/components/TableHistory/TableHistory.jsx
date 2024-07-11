@@ -106,6 +106,20 @@ function TableHistory(props) {
     });
   };
 
+  const contextRef = useRef(null);
+  //! закрытие модального окна при нажати вне него
+  useEffect(() => {
+    const handler = (event) => {
+      if (contextRef.current && !contextRef.current.contains(event.target)) {
+        setContetxShow(false);
+      }
+    };
+    document.addEventListener("click", handler, true);
+    return () => {
+      document.removeEventListener("click", handler);
+    };
+  }, []);
+
   return (
     <div
       onContextMenu={handleContextMenu}
@@ -115,6 +129,7 @@ function TableHistory(props) {
     >
       {contextShow && (
         <div
+          ref={contextRef}
           style={{
             top: `${contextPosition.y}px`,
             left: `${contextPosition.x}px`,
