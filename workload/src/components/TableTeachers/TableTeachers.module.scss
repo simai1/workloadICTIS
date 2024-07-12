@@ -1,6 +1,46 @@
 @import "./../../style/colors.scss";
 @import "./../../style/mixin.scss";
 
+.NotData {
+  position: relative;
+
+  tr {
+    height: 150px;
+
+    .tdfix {
+      position: sticky;
+      left: 0px;
+      z-index: 200;
+      // background-color: #b3b0b0;
+      height: 150px;
+      &:after {
+        position: absolute;
+        display: flex;
+        content: "";
+        background-color: var(--bgraund);
+        height: 150px;
+        left: -64px;
+        top: 0;
+        width: 64px;
+      }
+    }
+    .tdfix {
+      position: sticky;
+      left: 0px;
+      z-index: 200;
+    }
+    width: 100%;
+    .notdatadiv {
+      position: absolute;
+      width: 100vw;
+      left: -100px;
+      font-size: 22px;
+      font-weight: 500;
+      transform: translateY(-15px);
+    }
+  }
+}
+
 .TableTeachers {
   padding-left: 64px;
   margin-right: 64px;
@@ -63,6 +103,7 @@
     width: 100%;
     border-collapse: collapse;
     font-size: 14px;
+    background-color: #fff;
 
     .th_inner {
       display: flex;
@@ -304,11 +345,15 @@
     position: relative;
     left: -30px;
     top: 65px;
-    img {
+    svg {
       &:hover {
         opacity: 0.6;
         cursor: pointer;
       }
+    }
+    .svgRed * {
+      fill: var(--blue-color);
+      transition: all 0.2s ease;
     }
     .BlockTextFilter {
       .textFilter {

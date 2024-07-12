@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import styles from "./../TableWorkload.module.scss";
 import DataContext from "../../../context";
-// import { FilteredSample } from "../../../ui/SamplePoints/Function";
+import { ReactComponent as ImgClearFilter } from "./../../../img/ClearFilter.svg";
+
 function InputCheckbox(props) {
   const { appData, checkPar } = React.useContext(DataContext);
   const [isHovered, setIsHovered] = useState(false);
@@ -26,8 +27,8 @@ function InputCheckbox(props) {
       {props.th ? (
         <th style={stylesTh} className={styles.InputCheckbox}>
           <div className={styles.bacground}>
-            <img
-              src="./img/ClearFilter.svg"
+            <ImgClearFilter
+              className={checkPar.isChecked.length > 0 ? styles.svgRed : null}
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
               onClick={refreshFilters}
