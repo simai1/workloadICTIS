@@ -32,7 +32,7 @@ function InputCheckbox(props) {
   const refreshFilters = () => {
     checkPar.setIsChecked([]);
     checkPar.setAllChecked([]);
-    sessionStorage.setItem("isCheckedWorkload", null);
+    sessionStorage.setItem(`isCheckedWorkload${basicTabData.nameKaf}`, null);
     const fdfix = FilteredSample(basicTabData.workloadData, [], "idasdasd");
     basicTabData.setWorkloadDataFix(fdfix);
     appData.setSortParamByColumn("");

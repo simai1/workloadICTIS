@@ -1,43 +1,40 @@
 import React, { useEffect, useState } from "react";
-import styles from "./TableWorkload.module.scss";
-import DataContext from "../../context";
+import styles from "./TableTeachers.module.scss";
+// import DataContext from "../../context";
 import { SamplePoints } from "../../ui/SamplePoints/SamplePoints";
 
 function TableTh(props) {
-  const { tabPar, basicTabData, checkPar, appData } =
-    React.useContext(DataContext);
+  // const { checkPar } = React.useContext(DataContext);
 
   const [sortImg, setSortImg] = useState(0);
 
   //! открытие модального окна фильтрации столбца
   const clickTh = () => {
-    if (tabPar.spShow === props.index) {
-      tabPar.setSpShow(null);
+    if (props.sampleShow === props.index) {
+      props.setSampleShow(null);
     } else {
-      const modalData = basicTabData.workloadData.map(
-        (item) => item[props.item.key]
-      );
-      tabPar.setSamplePointsData([...modalData]);
-      tabPar.setSpShow(props.index);
+      const modalData = props.updatedData.map((item) => item[props.item.key]);
+      props.setSampleData([...modalData]);
+      props.setSampleShow(props.index);
     }
   };
 
   //! сортируем по колонке в App вызывается useEfferc для обновления массива
   const funSortByColumn = () => {
     let par = "";
-    if (appData.sortParamByColumn === "") {
+    if (props.sortParamByColumn === "") {
       par = `col=${props.item.key}&type=${"asc"}`;
       setSortImg(1);
     } else {
       if (
-        appData.sortParamByColumn.includes(props.item.key) &&
-        appData.sortParamByColumn.includes("asc")
+        props.sortParamByColumn.includes(props.item.key) &&
+        props.sortParamByColumn.includes("asc")
       ) {
         par = `col=${props.item.key}&type=${"desc"}`;
         setSortImg(2);
       } else if (
-        appData.sortParamByColumn.includes(props.item.key) &&
-        appData.sortParamByColumn.includes("desc")
+        props.sortParamByColumn.includes(props.item.key) &&
+        props.sortParamByColumn.includes("desc")
       ) {
         par = "";
         setSortImg(0);
@@ -47,29 +44,38 @@ function TableTh(props) {
       }
     }
     console.log(par);
-    appData.setSortParamByColumn(par);
+    props.setSortParamByColumn(par);
   };
 
   useEffect(() => {
-    if (!appData.sortParamByColumn.includes(props.item.key)) {
+    if (!props.sortParamByColumn.includes(props.item.key)) {
       setSortImg(0);
     }
-  }, [appData.sortParamByColumn]);
+  }, [props.sortParamByColumn]);
 
   return (
-    <th name={props.item.key} key={props.item.key}>
+    <th name={props.item.key} key={props.item.key} className={styles.fixedTh}>
+      <div
+        style={
+          props.funSpanRow(props.item) === "Институтская нагрузка"
+            ? props.funGetStyle(true)
+            : props.funGetStyle(false)
+        }
+      >
+        {props.funSpanRow(props.item)}
+      </div>
       {props.modal && (
         <SamplePoints
           index={props.index}
           itemKey={props.item.key}
-          isSamplePointsData={tabPar.isSamplePointsData}
-          isAllChecked={checkPar.isAllChecked}
-          isChecked={checkPar.isChecked}
-          setIsChecked={checkPar.setIsChecked}
-          workloadData={basicTabData.workloadData}
-          setWorkloadDataFix={basicTabData.setWorkloadDataFix}
-          setSpShow={tabPar.setSpShow}
-          sesionName={`isCheckedWorkload${basicTabData.nameKaf}`}
+          isSamplePointsData={props.sampleData}
+          isAllChecked={props.isAllChecked}
+          isChecked={props.isChecked}
+          setIsChecked={props.setIsChecked}
+          workloadData={props.updatedData}
+          setWorkloadDataFix={props.setFilteredData}
+          setSpShow={props.setSampleShow}
+          sesionName={"isCheckedTeachers"}
         />
       )}
 
@@ -82,7 +88,7 @@ function TableTh(props) {
           {props.item.label}
         </div>
         <div className={styles.th_inner_img}>
-          {props.item.key !== "id" && props.item.key !== "educator" && (
+          {props.item.key !== "id" && (
             <img
               onClick={funSortByColumn}
               className={styles.trSort}
@@ -99,9 +105,7 @@ function TableTh(props) {
               }
             ></img>
           )}
-          {checkPar.isChecked.find(
-            (item) => item.itemKey === props.item.key
-          ) && (
+          {props.isChecked.find((item) => item.itemKey === props.item.key) && (
             <img
               src="./img/filterColumn.svg"
               alt=">"

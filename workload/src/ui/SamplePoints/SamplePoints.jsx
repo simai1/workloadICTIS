@@ -6,7 +6,7 @@ import { FilteredSample } from "./Function";
 export function SamplePoints(props) {
   // const { basicTabData } = React.useContext(DataContext);
   const [searchText, setSearchText] = useState("");
-
+  console.log("sesionName", props.sesionName);
   const handleInputChange = (event) => {
     setSearchText(event.target.value);
   };
@@ -34,6 +34,7 @@ export function SamplePoints(props) {
       document.removeEventListener("click", handler);
     };
   }, []);
+
   const filteredData = [
     ...new Set(
       props.isSamplePointsData.filter((el) => {
@@ -48,10 +49,9 @@ export function SamplePoints(props) {
     if (a > b) return 1;
     return 0;
   });
+
   //! при нажатии на Input All
   const onAllChecked = () => {
-    console.log("props.isAllChecked", props.isAllChecked);
-
     let checked = [...props.isChecked];
     if (
       [...props.isChecked].filter((el) => el.itemKey === props.itemKey).length >
@@ -63,14 +63,19 @@ export function SamplePoints(props) {
         checked.push({ value: item, itemKey: props.itemKey });
       });
     }
-    props.setIsChecked(checked);
-    console.log(checked);
-    sessionStorage.setItem(props.sesionName, JSON.stringify([...checked]));
+    const uniqueArray = [
+      ...new Set(checked.map((item) => JSON.stringify(item))),
+    ].map((item) => JSON.parse(item));
+    props.setIsChecked(uniqueArray);
+    sessionStorage.setItem(props.sesionName, JSON.stringify([...uniqueArray]));
 
     // Фильтруем данные
-    const fdfix = FilteredSample(props.workloadData, checked, props.itemKey);
+    const fdfix = FilteredSample(
+      props.workloadData,
+      uniqueArray,
+      props.sesionName
+    );
     props.setWorkloadDataFix(fdfix);
-    console.log("props.isAllChecked", props.isAllChecked);
   };
 
   //! при нажатии на Input
@@ -85,13 +90,20 @@ export function SamplePoints(props) {
     } else {
       checked.push({ value: el, itemKey: props.itemKey });
     }
-    props.setIsChecked(checked);
-    sessionStorage.setItem(props.sesionName, JSON.stringify([...checked]));
+    const uniqueArray = [
+      ...new Set(checked.map((item) => JSON.stringify(item))),
+    ].map((item) => JSON.parse(item));
+    props.setIsChecked(uniqueArray);
+    sessionStorage.setItem(props.sesionName, JSON.stringify([...uniqueArray]));
     // Фильтруем данные
-    const fdfix = FilteredSample(props.workloadData, checked);
+    const fdfix = FilteredSample(
+      props.workloadData,
+      uniqueArray,
+      props.sesionName
+    );
+    console.log("fdfix", fdfix, props.sesionName);
     props.setWorkloadDataFix(fdfix);
   };
-  console.log("props.isChecked", props.isChecked, props.itemKey);
 
   return (
     <main className={styles.SamplePoints} ref={spRef}>

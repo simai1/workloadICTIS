@@ -1,16 +1,14 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Table from "./Table";
 import styles from "./TableWorkload.module.scss";
-import {
-  filteredWorkload,
-  filteredWorkloadHistory,
-  funHistoryFix,
-} from "./Function";
+import { filteredWorkloadHistory, funHistoryFix } from "./Function";
 import DataContext from "../../context";
 import { apiCheckedUpdate, apiGetHistory } from "../../api/services/ApiRequest";
+import { FilteredSample } from "../../ui/SamplePoints/Function";
 
 function TableHistory(props) {
-  const { tabPar, visibleDataPar, basicTabData } = useContext(DataContext);
+  const { tabPar, checkPar, visibleDataPar, basicTabData, appData } =
+    useContext(DataContext);
   const [contextShow, setContetxShow] = useState(false);
   const [contextPosition, setContextPosition] = useState({ x: 0, y: 0 });
   const [historyData, sethistoryData] = useState([]);
@@ -20,6 +18,23 @@ function TableHistory(props) {
   useEffect(() => {
     basicTabData.funUpdateHistory();
   }, []);
+
+  // useEffect(() => {
+  //   console.log("historyData", historyData);
+  //   console.log("orighistoryData", orighistoryData);
+  // }, [historyData, orighistoryData]);
+
+  //! достаем и локал стореджа состояние фитрации по заголовку
+  useEffect(() => {
+    const ssIsChecked = JSON.parse(
+      sessionStorage.getItem(`isCheckedHistory${basicTabData.nameKaf}`)
+    ); //! сбросить
+    if (ssIsChecked && ssIsChecked !== null && ssIsChecked.length > 0) {
+      checkPar.setIsChecked(ssIsChecked);
+    } else {
+      checkPar.setIsChecked([]);
+    }
+  }, [basicTabData.nameKaf]);
 
   //! при событии скролл таблицы изменим индекс первого показываемого tr
   const scrollTable = (e) => {
@@ -35,13 +50,16 @@ function TableHistory(props) {
     );
   };
 
+  //! обновляем вертуальный скролл при переходе на другуюс таблицу
+  const containertableRef = useRef(null);
+
   //! фильтрация по поиску
   useEffect(() => {
     const hd = filteredWorkloadHistory(orighistoryData, props.searchTerm);
     sethistoryData(hd);
   }, [props.searchTerm]);
 
-  //! при нажатии правой кнопки мыши на таблицу открывает мню
+  //! при нажатии правой кнопки мыши на таблицу открывает меню
   const handleContextMenu = (e) => {
     e.preventDefault();
     let plusX = e.pageX + 256 > window.innerWidth ? -256 : 0;
@@ -51,6 +69,7 @@ function TableHistory(props) {
   };
 
   useEffect(() => {
+    appData.setLoaderAction(true);
     apiGetHistory().then((req) => {
       const hd = req?.filter(
         (it) =>
@@ -59,10 +78,19 @@ function TableHistory(props) {
       );
       //! преобразуем историю для вывода
       const fixHistory = funHistoryFix(hd);
-      sethistoryData(fixHistory);
+      const ssIsChecked = JSON.parse(
+        sessionStorage.getItem(`isCheckedHistory${basicTabData.nameKaf}`)
+      );
+      const fdfix = FilteredSample(
+        fixHistory,
+        ssIsChecked,
+        `isCheckedHistory${basicTabData.nameKaf}`
+      );
+      sethistoryData(fdfix);
       origsethistoryData(fixHistory);
 
       visibleDataPar.setStartData(0);
+      appData.setLoaderAction(false);
     });
   }, [
     basicTabData.historyChanges,
@@ -82,14 +110,30 @@ function TableHistory(props) {
     });
   };
 
+  const contextRef = useRef(null);
+  //! закрытие модального окна при нажати вне него
+  useEffect(() => {
+    const handler = (event) => {
+      if (contextRef.current && !contextRef.current.contains(event.target)) {
+        setContetxShow(false);
+      }
+    };
+    document.addEventListener("click", handler, true);
+    return () => {
+      document.removeEventListener("click", handler);
+    };
+  }, []);
+
   return (
     <div
       onContextMenu={handleContextMenu}
       className={styles.tabledisciplinesMain}
       onScroll={scrollTable}
+      ref={containertableRef}
     >
       {contextShow && (
         <div
+          ref={contextRef}
           style={{
             top: `${contextPosition.y}px`,
             left: `${contextPosition.x}px`,
@@ -106,6 +150,9 @@ function TableHistory(props) {
 
       <Table
         historyData={historyData}
+        orighistoryData={orighistoryData}
+        origsethistoryData={origsethistoryData}
+        sethistoryData={sethistoryData}
         setContetxShow={setContetxShow}
         contextShow={contextShow}
         contextPosition={contextPosition}

@@ -31,28 +31,28 @@ $heightCell: 150px;
     }
     width: 100%;
     .notdatadiv {
-      position: fixed;
-      width: 100%;
-      left: 0px;
+      position: absolute;
+      width: 100vw;
+      left: -100px;
       font-size: 22px;
       font-weight: 500;
       transform: translateY(-15px);
     }
   }
 }
+
 .DataGrid {
   display: flex;
-  width: 100%;
   height: 80vh;
   padding-left: 64px;
 }
 .tabledisciplinesMain {
-  display: flex;
-  // width: 100%;
+  // width: calc(100% + 14px);
   height: 76vh;
-  overflow: auto;
+  overflow-x: scroll;
   padding-left: 64px;
   margin-right: 52px;
+  box-sizing: border-box;
 
   &::after {
     content: "";
@@ -62,6 +62,7 @@ $heightCell: 150px;
     position: absolute;
     z-index: 1;
     left: 0px;
+    top: 0;
   }
 
   .contextShow {
@@ -74,7 +75,7 @@ $heightCell: 150px;
   }
 
   .table {
-    width: 100vw;
+    width: 100%;
     border-collapse: collapse;
     border-spacing: 0;
     margin: 0;
@@ -83,7 +84,6 @@ $heightCell: 150px;
     background-color: #fff;
     font-size: 14px;
     font-weight: 400;
-    // table-layout: fixed; /* Фиксированная ширина ячеек */
     position: relative; /* Относительное позиционирование для таблицы */
 
     //history
@@ -114,20 +114,6 @@ $heightCell: 150px;
       color: red;
       font-weight: 500;
     }
-    // .border1 {
-    //   border-top: 1px solid #000000;
-    //   border-left: 1px solid #000000;
-    //   border-right: 1px solid #000000;
-    // }
-    // .border2 {
-    //   border-left: 1px solid #000000;
-    //   border-right: 1px solid #000000;
-    // }
-    // .border3 {
-    //   border-bottom: 1px solid #000000;
-    //   border-left: 1px solid #000000;
-    //   border-right: 1px solid #000000;
-    // }
 
     .gettdInner {
       max-height: 300px;
@@ -151,8 +137,11 @@ $heightCell: 150px;
       top: 0;
       background-color: var(--gray-color);
       z-index: 11;
+      height: 100px;
+      // width: 100%;
     }
     td {
+      width: 100%;
       background-color: #fff;
       box-sizing: border-box;
       min-height: $heightCell;
@@ -185,8 +174,6 @@ $heightCell: 150px;
     tr:hover {
       position: relative;
       td {
-        // background-color: var(--tr-bg);
-        // background-color: inherit;
         box-shadow: inset 0 2px 0 0 #9fa1f4, inset 0 -2px 0 0 #9fa1f4;
       }
     }
@@ -198,80 +185,13 @@ $heightCell: 150px;
         padding: 5px 0px;
       }
     }
-    th[name="specialty"],
-    td[name="specialty"] {
-      @include customTd(200px);
-    }
-
-    th[name="core"],
-    td[name="core"] {
-      @include customTd(200px);
-    }
-
-    th[name="curriculumUnit"],
-    td[name="curriculumUnit"] {
-      @include customTd(200px);
-    }
-
-    th[name="curriculum"],
-    td[name="curriculum"] {
-      @include customTd(200px);
-      // @include customTdFixWidth;
-    }
-
-    // td[name="groups"] {
-    //   @include customTdFixWidth;
-    // }
-    // td[name="core"] {
-    //   // @include customTdFixWidth;
-    //   overflow: hidden;
-    //   text-overflow: ellipsis;
-    //   white-space: normal;
-    // }
-
-    th[name="period"],
-    td[name="period"] {
-      @include customTd(110px);
-    }
-
-    th[name="numberOfStudents"],
-    td[name="numberOfStudents"] {
-      @include customTd(120px);
-    }
-
-    th[name="hours"],
-    td[name="hours"] {
-      @include customTd(120px);
-    }
-
-    th[name="audienceHours"],
-    td[name="audienceHours"] {
-      @include customTd(120px);
-    }
-    td[name="workload"] {
-      &::after {
-        content: "";
-        position: absolute;
-        background-color: var(--td-bg);
-        box-shadow: 5px 0px 15px #b3b0b0;
-        opacity: 0.5;
-        width: 2px;
-        height: 100%;
-        right: 0;
-        top: 0;
-      }
-    }
-
-    th[name="ratingControlHours"],
-    td[name="ratingControlHours"] {
-      @include customTd(120px);
-    }
 
     th,
     td {
       // padding: 17px 20px;
       min-width: 160px;
       max-width: 160px;
+      width: auto;
       box-sizing: border-box;
       // border: 1px solid #a6a6a6;
     }
@@ -339,21 +259,21 @@ $heightCell: 150px;
       }
 
       tr[name="bottomBorder"] {
-        // border-bottom: 4px solid #3b28cc;
-        &::after {
-          content: "";
-          position: absolute;
-          background-color: #b3b0b0;
-          width: 100%;
-          height: 2px;
-          left: 0;
-        }
+        border-bottom: 4px solid #b3b0b0;
+        // &::after {
+        //   content: "";
+        //   position: absolute;
+        //   background-color: #b3b0b0;
+        //   width: 100%;
+        //   height: 2px;
+        //   left: 0;
+        // }
       }
 
       td {
         min-height: $heightCell;
         max-height: $heightCell;
-        width: $heightCell;
+        // width: $heightCell;
         // vertical-align: top;
         .fastenedImg {
           display: flex;
@@ -397,6 +317,81 @@ $heightCell: 150px;
       @include stickyTd(160px, 320px);
       background-color: var(--gray-color);
       z-index: 15;
+    }
+
+    th[name="discipline"],
+    td[name="discipline"] {
+      @include customTd(200px);
+    }
+
+    th[name="specialty"],
+    td[name="specialty"] {
+      @include customTd(230px);
+    }
+
+    th[name="core"],
+    td[name="core"] {
+      @include customTd(200px);
+    }
+
+    th[name="curriculumUnit"],
+    td[name="curriculumUnit"] {
+      @include customTd(230px);
+    }
+
+    th[name="curriculum"],
+    td[name="curriculum"] {
+      @include customTd(200px);
+      // @include customTdFixWidth;
+    }
+
+    // td[name="groups"] {
+    //   @include customTdFixWidth;
+    // }
+    // td[name="core"] {
+    //   // @include customTdFixWidth;
+    //   overflow: hidden;
+    //   text-overflow: ellipsis;
+    //   white-space: normal;
+    // }
+
+    th[name="period"],
+    td[name="period"] {
+      @include customTd(110px);
+    }
+
+    th[name="numberOfStudents"],
+    td[name="numberOfStudents"] {
+      @include customTd(120px);
+    }
+
+    th[name="hours"],
+    td[name="hours"] {
+      @include customTd(120px);
+    }
+
+    th[name="audienceHours"],
+    td[name="audienceHours"] {
+      @include customTd(120px);
+    }
+    th[name="workload"],
+    td[name="workload"] {
+      &::after {
+        content: "";
+        position: absolute;
+        background-color: var(--td-bg);
+        box-shadow: 5px 0px 15px #b3b0b0;
+        opacity: 0.5;
+        width: 2px;
+        height: 100%;
+        right: 0;
+        top: 0;
+      }
+    }
+
+    th[name="ratingControlHours"],
+    td[name="ratingControlHours"] {
+      @include customTd(120px);
     }
   }
   .selectedTr {
@@ -486,11 +481,42 @@ $heightCell: 150px;
       top: 0px;
       background-color: var(--bgraund);
       width: 64px;
-      height: 110%;
+      height: 100%;
+      img {
+        width: 18px;
+        height: 18px;
+        position: relative;
+        right: -38px;
+        top: -3px;
+        &:hover {
+          opacity: 0.6;
+          cursor: pointer;
+        }
+      }
+      .BlockTextFilter {
+        .textFilter {
+          position: absolute;
+          left: 25px;
+          top: 50px;
+          z-index: 20;
+          border-radius: 8px;
+          width: 181px;
+          padding: 12px 16px;
+          background-color: #fff;
+          box-shadow: 5px 0px 15px #b3b0b0;
+        }
+        .triangle {
+          @include triangle();
+          left: 34px;
+          top: 50px;
+          z-index: 100;
+        }
+      }
     }
-    .bacground:last-of-type {
-      height: 300%;
-    }
+    // .bacground:last-of-type {
+    //   height: 300%;
+    // }
+
     .Offers {
       display: flex;
       justify-content: center;
@@ -738,7 +764,7 @@ $heightCell: 150px;
 }
 .tabledisciplinesMain::-webkit-scrollbar-track {
   background: var(--bgraund); /* цвет дорожки */
-  margin-top: 70px;
+  margin-top: 100px;
   margin-left: 64px;
 }
 .tabledisciplinesMain::-webkit-scrollbar-thumb,

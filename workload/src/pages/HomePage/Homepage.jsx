@@ -479,7 +479,7 @@ function HomePage() {
                     <img className={styles.btnLeft} src="./img/export.svg" />
                     {popupExport && (
                       <ConfirmSaving
-                        title={"Вы уверены, что хотите отправить таблицу?"}
+                        title={`Вы уверены, что хотите отправить таблицу ${basicTabData.nameKaf}?`}
                         confirmClick={exportClick}
                         setShow={setPopupExport}
                       />
@@ -660,12 +660,14 @@ function HomePage() {
                     <EditInput
                       selectedComponent={appData.selectedComponent}
                       originalHeader={
-                        appData.selectedComponent === "Disciplines"
+                        appData.selectedComponent === "Disciplines" ||
+                        appData.selectedComponent === "History"
                           ? workloadTableHeaders
                           : educatorTableHeaders
                       }
                       ssname={
-                        appData.selectedComponent === "Disciplines"
+                        appData.selectedComponent === "Disciplines" ||
+                        appData.selectedComponent === "History"
                           ? "headerWorkload"
                           : "headerTeachers"
                       }

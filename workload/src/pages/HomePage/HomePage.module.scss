@@ -119,7 +119,7 @@ body {
         color: var(--blue-color);
         justify-content: space-between;
         position: relative;
-        .export__img{
+        .export__img {
           margin-right: 5px;
         }
         input::placeholder {
@@ -156,13 +156,13 @@ body {
           border-radius: 6px;
           align-items: center;
           justify-content: center;
-          &:hover{
+          &:hover {
             cursor: pointer;
           }
           p {
             color: var(--blue-color);
             font-size: 16px;
-            &:first-child{
+            &:first-child {
               margin-right: 8px;
             }
           }
@@ -322,5 +322,16 @@ body {
   .countSet {
     margin-left: 65px;
     margin-top: 5px;
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 50px;
+      width: 64px;
+      height: 14px;
+      z-index: 100;
+
+      background-color: var(--bgraund);
+    }
   }
 }
