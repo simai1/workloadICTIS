@@ -40,6 +40,7 @@ $heightCell: 150px;
     }
   }
 }
+
 .DataGrid {
   display: flex;
   height: 80vh;
@@ -52,6 +53,7 @@ $heightCell: 150px;
   padding-left: 64px;
   margin-right: 52px;
   box-sizing: border-box;
+
   &::after {
     content: "";
     background-color: var(--bgraund);
@@ -60,6 +62,7 @@ $heightCell: 150px;
     position: absolute;
     z-index: 1;
     left: 0px;
+    top: 0;
   }
 
   .contextShow {

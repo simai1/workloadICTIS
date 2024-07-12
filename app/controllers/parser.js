@@ -2,18 +2,14 @@ import XLSX from 'xlsx';
 import Educator from '../models/educator.js';
 import Workload from '../models/workload.js';
 import FullNameDepartments from '../config/full-name-departments.js';
-import SummaryWorkload from '../models/summary-workload.js';
-import departments from '../config/departments.js';
-import { sequelize } from '../models/index.js';
 import HeaderTranslation from '../config/header_translation.js';
 import HeaderTranslationEducators from '../config/header_translation_educators.js';
 import positions from '../config/position.js';
 import sendMail from '../services/email.js';
-import recommendHours from '../config/recommend-hours.js';
-import workloadController from '../controllers/workload.js';
 import fs from 'fs';
 import User from '../models/user.js';
 import { Op } from 'sequelize';
+import History from '../models/history.js';
 
 export default {
     async parseWorkload(req, res) {
@@ -54,7 +50,7 @@ export default {
             });
         }
 
-        const isOid = numberDepartment == 0;
+        const isOid = numberDepartment === 0;
         console.log('Total rows after slice:', sheetData.slice(1).length);
         for (const row of sheetData.slice(1, sheetData.length - 1)) {
             try {
@@ -126,6 +122,20 @@ export default {
             sendMail(process.env.EMAIL_RECIEVER, 'uploadedNewWorkload');
         }
 
+        await History.destroy({
+            where: { department: numberDepartment },
+            force: true,
+        });
+
+        await Workload.destroy({
+            where: {
+                department: numberDepartment,
+                deletedAt: { [Op.ne]: null },
+            },
+            paranoid: false,
+            force: true,
+        });
+
         return res.json({ status: 'ok' });
     },
 
@@ -167,7 +177,7 @@ export default {
                 if (!existEducator && validPositions.includes(newEducator.position) && newEducator.department) {
                     delete newEducator.undefined;
                     newEducator.position = positions[newEducator.position];
-                    let newRate = newEducator.rate.trim().split(' ');
+                    const newRate = newEducator.rate.trim().split(' ');
                     let numberPart = parseFloat(newRate[0].replace(',', '.'));
                     if (!Number(numberPart) || Number(numberPart) < 0.1) {
                         numberPart = 1;

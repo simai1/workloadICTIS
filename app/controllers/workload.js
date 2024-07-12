@@ -954,10 +954,10 @@ export default {
                 if (process.env.NODE_ENV === 'production') {
                     const methodists = await User.findAll({ where: { role: 1 } });
                     for (const methodist of methodists) {
-                        sendMail(methodist.login, 'blocking', `Нагрузка кафедры ${mapDepartments[department]}`);
+                        sendMail(methodist.login, 'blocking', `${mapDepartments[department]}`);
                     }
                 } else {
-                    sendMail(process.env.EMAIL_RECIEVER, 'blocking', `Нагрузка кафедры ${mapDepartments[department]}`);
+                    sendMail(process.env.EMAIL_RECIEVER, 'blocking', `${mapDepartments[department]}`);
                 }
             } catch (e) {
                 console.log('Email bad creditionals');
