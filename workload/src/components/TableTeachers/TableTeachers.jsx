@@ -15,6 +15,7 @@ import { PopUpEditTeacher } from "./PopUpEditTeacher/PopUpEditTeacher";
 import { FilteredSample } from "./SamplePoints/Function";
 // import { SamplePoints } from "../../ui/SamplePoints/SamplePoints";
 import TableTh from "./TableTh";
+import { ReactComponent as ImgClearFilter } from "./../../img/ClearFilter.svg";
 
 function TableTeachers(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]);
@@ -294,8 +295,8 @@ function TableTeachers(props) {
       )}
 
       <div className={styles.filterdClear}>
-        <img
-          src="./img/ClearFilter.svg"
+        <ImgClearFilter
+          className={isChecked.length > 0 ? styles.svgRed : null}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
           onClick={refreshFilters}
@@ -331,50 +332,18 @@ function TableTeachers(props) {
                   funSpanRow={funSpanRow}
                   funGetStyle={funGetStyle}
                 />
-                // <th
-                //   name={header.key}
-                //   onClick={() => clickTh(index, header.key)}
-                //   key={header.key}
-                //   className={styles.fixedTh}
-                // >
-                //   <div
-                //     style={
-                //       funSpanRow(header) === "Институтская нагрузка"
-                //         ? funGetStyle(true)
-                //         : funGetStyle(false)
-                //     }
-                //   >
-                //     {funSpanRow(header)}
-                //   </div>
-                //   {sampleShow === index && (
-                //     <SamplePoints
-                //       index={index}
-                //       itemKey={header.key}
-                //       isSamplePointsData={sampleData}
-                //       isAllChecked={isAllChecked}
-                //       isChecked={isChecked}
-                //       setIsChecked={setIsChecked}
-                //       workloadData={updatedData}
-                //       setWorkloadDataFix={setFilteredData}
-                //       setSpShow={setSampleShow}
-                //       sesionName={"isCheckedTeachers"}
-                //     />
-                //   )}
-
-                //   <div className={styles.th_inner} onClick={clickTh}>
-                //     {header.label}
-                //     <img
-                //       src={
-                //         isChecked.find((item) => item.itemKey === header.key)
-                //           ? "./img/filterColumn.svg"
-                //           : "./img/th_fight.svg"
-                //       }
-                //     ></img>
-                //   </div>
-                // </th>
               ))}
             </tr>
           </thead>
+          {filteredData.length === 0 && (
+            <tbody className={styles.NotData}>
+              <tr>
+                <td className={styles.tdfix} style={{ pointerEvents: "none" }}>
+                  <div className={styles.notdatadiv}>Нет данных</div>
+                </td>
+              </tr>
+            </tbody>
+          )}
           <tbody>
             {filteredData?.map((row, index) => (
               <tr
