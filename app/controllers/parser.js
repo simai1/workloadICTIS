@@ -14,6 +14,7 @@ import workloadController from '../controllers/workload.js';
 import fs from 'fs';
 import User from '../models/user.js';
 import { Op } from 'sequelize';
+import History from '../models/history.js';
 
 export default {
     async parseWorkload(req, res) {
@@ -125,6 +126,21 @@ export default {
         } else {
             sendMail(process.env.EMAIL_RECIEVER, 'uploadedNewWorkload');
         }
+
+        await History.destroy({
+            where: { department: numberDepartment },
+            force: true,
+        });
+
+        await Workload.destroy({
+            where: {
+                department: numberDepartment,
+                deletedAt: {[Op.ne]: null}
+            },
+            paranoid: false,
+            force: true,
+        })
+
 
         return res.json({ status: 'ok' });
     },
