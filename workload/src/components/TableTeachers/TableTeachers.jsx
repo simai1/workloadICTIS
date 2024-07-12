@@ -44,6 +44,8 @@ function TableTeachers(props) {
     const ssIsChecked = JSON.parse(sessionStorage.getItem("isCheckedTeachers"));
     if (ssIsChecked && ssIsChecked !== null && ssIsChecked.length > 0) {
       setIsChecked(ssIsChecked);
+    } else {
+      setIsChecked([]);
     }
   }, []);
 
@@ -73,8 +75,10 @@ function TableTeachers(props) {
       apiEducatorDepartment(par).then((res) => {
         if (res && res.status === 200) {
           appData.setEducator(res.data);
-          //! филтрация по samplePoints
-          const fdfix = FilteredSample(res.data, isChecked);
+          const ssIsChecked = JSON.parse(
+            sessionStorage.getItem("isCheckedTeachers")
+          );
+          const fdfix = FilteredSample(res.data, ssIsChecked);
           setFilteredData([...fdfix]);
           // setFilteredData(res.data);
           setUpdatedData(res.data);
@@ -88,7 +92,10 @@ function TableTeachers(props) {
       Educator(par).then((res) => {
         if (res && res.status === 200) {
           appData.setEducator(res.data);
-          const fdfix = FilteredSample(res.data, isChecked);
+          const ssIsChecked = JSON.parse(
+            sessionStorage.getItem("isCheckedTeachers")
+          );
+          const fdfix = FilteredSample(res.data, ssIsChecked);
           setFilteredData([...fdfix]);
           // setFilteredData(res.data);
           setUpdatedData(res.data);

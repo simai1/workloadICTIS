@@ -62,7 +62,7 @@ $heightCell: 150px;
   padding-left: 64px;
 }
 .tabledisciplinesMain {
-  display: flex;
+  // display: flex;
   // width: 96.5vw;
   height: 76vh;
   overflow: scroll;
@@ -91,7 +91,7 @@ $heightCell: 150px;
   }
 
   .table {
-    width: 100vw;
+    width: 100%;
     border-collapse: collapse;
     border-spacing: 0;
     margin: 0;

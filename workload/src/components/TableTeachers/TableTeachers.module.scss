@@ -36,7 +36,7 @@
     height: 74vh;
     width: calc(100% + 14px);
 
-    overflow-x: scroll;
+    overflow: scroll;
     position: relative;
     @include scrollTable(12px, 12px, #a6a6a6, 60px, 0);
     .TableTeachers {

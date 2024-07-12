@@ -15,8 +15,9 @@ function TableTh(props) {
       );
       tabPar.setSamplePointsData([...modalData]);
       tabPar.setSpShow(props.index);
-      console.log(" props.orighistoryData", props.orighistoryData);
+      console.log("props.orighistoryData", props.orighistoryData);
       console.log("props.item.key", props.item.key);
+      console.log("basicTabData.nameKaf", basicTabData.nameKaf);
     }
   };
 
@@ -33,7 +34,7 @@ function TableTh(props) {
           workloadData={props.orighistoryData}
           setWorkloadDataFix={props.sethistoryData}
           setSpShow={tabPar.setSpShow}
-          sesionName={"isCheckedHistory"}
+          sesionName={`isCheckedHistory${basicTabData.nameKaf}`}
         />
       )}
 

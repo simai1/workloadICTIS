@@ -322,7 +322,17 @@ function App() {
   //! функция обновления истории
   function funUpdateHistory() {
     apiGetHistory().then((req) => {
-      setHistoryChanges(req);
+      const ssIsChecked = JSON.parse(
+        sessionStorage.getItem(`isCheckedHistory${basicTabData.nameKaf}`)
+      );
+      console.log("isChecked", ssIsChecked);
+      const fdfix = FilteredSample(req, ssIsChecked);
+      setHistoryChanges(fdfix);
+      if (ssIsChecked && ssIsChecked !== null && ssIsChecked.length > 0) {
+        setIsChecked(ssIsChecked);
+      } else {
+        setIsChecked([]);
+      }
     });
   }
 
@@ -364,8 +374,11 @@ function App() {
     //! функция прокида буффера для разделения соединения и удаления нагрузок
     const fdb = fixDataBuff(fixData, bufferAction);
     // зменяем массив преподавателя на его имя
-    console.log("isChecked", isChecked);
-    const fdfix = FilteredSample(fdb, isChecked);
+    const ssIsChecked = JSON.parse(
+      sessionStorage.getItem(`isCheckedWorkload${basicTabData.nameKaf}`)
+    );
+    console.log("isChecked", ssIsChecked);
+    const fdfix = FilteredSample(fdb, ssIsChecked);
     setWorkloadData(fdb);
     setWorkloadDataFix(fdfix);
     setFiltredData(fdfix);
