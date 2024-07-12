@@ -57,7 +57,7 @@ $heightCell: 150px;
 }
 .DataGrid {
   display: flex;
-  width: 100%;
+  // width: 100%;
   height: 80vh;
   padding-left: 64px;
 }
@@ -78,6 +78,7 @@ $heightCell: 150px;
     position: absolute;
     z-index: 1;
     left: 0px;
+    top: 0;
   }
   &::before {
     content: "";
