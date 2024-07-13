@@ -124,5 +124,6 @@ router
         asyncRoute(eduController.getPositions)
     );
 router.route('/get/educatorsByDepartment').get(asyncRoute(eduController.getEducatorsByDepartment));
+router.route('/get/educatorsByInstitute').get(asyncRoute(eduController.getEducatorsByInstitute));
 
 export default router;

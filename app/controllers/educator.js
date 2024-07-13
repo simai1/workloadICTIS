@@ -10,6 +10,7 @@ import EducatorProfileDto from '../dtos/educator-profile-dto.js';
 import Workload from '../models/workload.js';
 import departments from '../config/departments.js';
 import WorkloadProfileDto from '../dtos/workload-profile-dto.js';
+import { instituteDepartments } from "../config/institutional-affiliations.js";
 
 const orderRule = [
     ['department', 'ASC'],
@@ -160,7 +161,7 @@ export default {
         if (!name && !position && !rate) throw new AppErrorMissing('body');
         if (!name) name = educator.name;
         if (!position) position = educator.position;
-        if (!rate && rate != 0) rate = educator.rate;
+        if (!rate && rate !== 0) rate = educator.rate;
         if (!email) email = educator.email;
         if (!department) department = educator.department;
         if (!typeOfEmployment) typeOfEmployment = educator.typeOfEmployment;
@@ -180,7 +181,7 @@ export default {
     async create({ body: { name, position, rate, email, department, typeOfEmployment }, user }, res) {
         if (!name) throw new AppErrorMissing('name');
         if (!position) throw new AppErrorMissing('position');
-        if (!rate && rate != 0) throw new AppErrorMissing('rate');
+        if (!rate && rate !== 0) throw new AppErrorMissing('rate');
         if (!email) throw new AppErrorMissing('email');
         if (!department) throw new AppErrorMissing('department');
         if (!typeOfEmployment) throw new AppErrorMissing('typeOfEmployment');
@@ -204,6 +205,7 @@ export default {
         }
         res.json(educatorDto);
     },
+
     async getPositions(params, res) {
         res.json(mapPositions);
     },
@@ -223,6 +225,7 @@ export default {
 
         res.status(200).json('Successfully deleted');
     },
+
     async getEducatorsByDepartment(req, res) {
         const userId = req.user;
         const educator = await Educator.findOne({
@@ -238,10 +241,7 @@ export default {
                         model: SummaryWorkload,
                     },
                 ],
-                order: [
-                    ['department', 'ASC'],
-                    ['name', 'ASC'],
-                ],
+                order: orderRule,
             });
         } else {
             const department = educator.department;
@@ -253,13 +253,31 @@ export default {
                         model: SummaryWorkload,
                     },
                 ],
-                order: [
-                    ['department', 'ASC'],
-                    ['name', 'ASC'],
-                ],
+                order: orderRule,
             });
         }
         const educatorsDto = educators.map(educator => new EducatorListDto(educator));
         res.json(educatorsDto);
     },
+
+    async getEducatorsByInstitute(req, res){
+        const userId = req.user;
+        const educator = await Educator.findOne({
+            where: { userId },
+            include: [{ model: User }],
+        });
+        const educators = await Educator.findAll({
+            where: { department: instituteDepartments[educator.User.institutionalAffiliation] },
+            include: [
+                {
+                    model: SummaryWorkload,
+                },
+            ],
+            order: [
+                ['name', 'ASC'],
+            ],
+        });
+        const educatorsDto = educators.map(educator => new EducatorListDto(educator));
+        res.json(educatorsDto);
+    }
 };
