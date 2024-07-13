@@ -46,7 +46,7 @@ $heightCell: 150px;
 }
 .tabledisciplinesMain::-webkit-scrollbar-track {
   background: var(--bgraund); /* цвет дорожки */
-  margin-top: 70px;
+  margin-top: 80px;
   margin-left: 64px;
 }
 .tabledisciplinesMain::-webkit-scrollbar-thumb,
@@ -84,7 +84,7 @@ $heightCell: 150px;
     content: "";
     background-color: var(--bgraund);
     width: 64px;
-    height: 70px;
+    height: 80px;
     position: absolute;
     top: 0;
     right: 0px;
@@ -502,7 +502,7 @@ $heightCell: 150px;
       background-color: var(--bgraund);
       width: 64px;
       height: 100%;
-      img {
+      svg {
         width: 18px;
         height: 18px;
         position: relative;
@@ -512,6 +512,10 @@ $heightCell: 150px;
           opacity: 0.6;
           cursor: pointer;
         }
+      }
+      .svgRed * {
+        fill: var(--blue-color);
+        transition: all 0.2s ease;
       }
 
       .BlockTextFilter {

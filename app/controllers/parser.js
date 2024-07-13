@@ -50,7 +50,7 @@ export default {
             });
         }
 
-        const isOid = numberDepartment === 0;
+        const isOid = Number(numberDepartment) === 0;
         console.log('Total rows after slice:', sheetData.slice(1).length);
         for (const row of sheetData.slice(1, sheetData.length - 1)) {
             try {

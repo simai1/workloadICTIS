@@ -12,7 +12,12 @@ import {
 } from "../../api/services/ApiRequest";
 import { Highlight } from "./Menu/Highlight";
 import MenuPop from "./Menu/MenuPop";
-import { combineData, addСhangedData, upDateEducators } from "./Function";
+import {
+  combineData,
+  addСhangedData,
+  upDateEducators,
+  combineDataIdentify,
+} from "./Function";
 import CommentsMenu from "./Menu/CommentsMenu";
 import PopupOffer from "./Menu/PopupOffer";
 import SplitByHoursMenu from "./Menu/SplitByHoursMenu";
@@ -190,6 +195,16 @@ const ContextMenu = () => {
 
     if (funData === null) {
       appData.seterrorPopUp(true);
+      const text = combineDataIdentify(
+        basicTabData.workloadDataFix,
+        tabPar.selectedTr,
+        action
+      );
+      if (text && text !== "Не совпадает: ") {
+        appData.setPopupErrorText(
+          `Извините, данную операцию невозможно выполнить. ${text}`
+        );
+      }
     } else {
       tabPar.setSelectedTr([]);
       basicTabData.setWorkloadDataFix(funData.newUpdatedData);

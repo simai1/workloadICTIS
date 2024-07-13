@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styles from "./../TableWorkload.module.scss";
 import DataContext from "../../../context";
 import OverlapWindow from "./OverlapWindow";
 import Comments from "./Comments";
 import Offers from "./Offers";
+import { ReactComponent as ImgClearFilter } from "./../../../img/ClearFilter.svg";
 import { FilteredSample } from "../../../ui/SamplePoints/Function";
 function InputCheckbox(props) {
   const { appData, tabPar, basicTabData, checkPar } =
@@ -43,8 +44,8 @@ function InputCheckbox(props) {
       {props.th ? (
         <th style={stylesTh} className={styles.InputCheckbox}>
           <div className={styles.bacground}>
-            <img
-              src="./img/ClearFilter.svg"
+            <ImgClearFilter
+              className={checkPar.isChecked.length > 0 ? styles.svgRed : null}
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
               onClick={refreshFilters}

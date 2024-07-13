@@ -111,6 +111,10 @@ export default class Workload extends Model {
                   type: DataTypes.BOOLEAN,
                   allowNull: false,
                   defaultValue: false,
+                },
+                notes: {
+                    type: DataTypes.STRING,
+                    allowNull: true,
                 }
             },
             {
