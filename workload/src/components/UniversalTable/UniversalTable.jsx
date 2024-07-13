@@ -1,12 +1,12 @@
 import React, { useContext, useEffect } from "react";
 import Table from "./Table";
-import styles from "./TableWorkload.module.scss";
+import styles from "./UniversalTable.module.scss";
 import { filteredWorkload, funfastenedDataSort } from "./Function";
 import DataContext from "../../context";
 import ContextMenu from "../../ui/ContextMenu/ContextMenu";
 // import { FilteredSample } from "../../ui/SamplePoints/Function";
 
-function TableWorkload(props) {
+function UniversalTable(props) {
   const { tabPar, visibleDataPar, basicTabData, checkPar } =
     useContext(DataContext);
   //! при событии скролл таблицы изменим индекс первого показываемого tr
@@ -84,4 +84,4 @@ function TableWorkload(props) {
   );
 }
 
-export default TableWorkload;
+export default UniversalTable;

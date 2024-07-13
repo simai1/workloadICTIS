@@ -19,6 +19,19 @@ export const Educator = async (par = "") => {
   }
 };
 
+//! получаем преподов по своему институту
+export const EducatorByInstitute = async () => {
+  try {
+    const response = await http.get(
+      `${server}/educator/get/educatorsByInstitute`
+    );
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};
+
 //! получаем преподов по кафедре
 export const apiEducatorDepartment = async (par = "") => {
   try {

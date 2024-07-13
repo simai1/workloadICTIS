@@ -8,7 +8,7 @@ import TableLks from "../../components/TableLks/TableLks";
 import Profile from "../../components/Profile/Profile";
 import EditInput from "../../components/EditInput/EditInput";
 import DataContext from "../../context";
-import { bufferRequestToApi } from "../../bufferFunction";
+// import { bufferRequestToApi } from "../../bufferFunction";
 import FiltredRows from "../../ui/FiltredRows/FiltredRows";
 import TableWorkload from "../../components/TableWorkload/TableWorkload";
 import {
@@ -18,7 +18,7 @@ import {
 } from "../../components/TableWorkload/Data";
 import { PopUpFile } from "../../ui/PopUpFile/PopUpFile";
 import { PopUpError } from "../../ui/PopUpError/PopUpError";
-import List from "../../ui/List/List";
+// import List from "../../ui/List/List";
 import ListKaf from "../../ui/ListKaf/ListKaf";
 import { PopUpCreateEmploy } from "../../ui/PopUpCreateEmploy/PopUpCreateEmploy";
 import {
@@ -38,10 +38,11 @@ import UnlockDepartment from "../../ui/UnlockDepartment/UnlockDepartment";
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
 import SplitByHoursPopup from "../../components/SplitByHoursPopup/SplitByHoursPopup";
-import { UniversalPopup } from "../../ui/UniversalPopup/UniversalPopup";
+// import { UniversalPopup } from "../../ui/UniversalPopup/UniversalPopup";
+import TableSchedule from "../../components/TableSchedule/TableSchedule";
 
 function HomePage() {
-  const { appData, tabPar, visibleDataPar, basicTabData, checkPar } =
+  const { appData, tabPar, visibleDataPar, basicTabData } =
     React.useContext(DataContext);
   //! заголовки таблиц
   const workloadTableHeaders = headers; // заголовок таблицы на главной странице
@@ -59,8 +60,8 @@ function HomePage() {
   const [popupUnblockTable, setPopupUnblockTable] = useState(false);
   const [popupExport, setPopupExport] = useState(false); // открыть/закрыть попап подтверждения блокировки таблицы
   const [departments, setdepartments] = useState([]);
-  const [kafedralIsOpen, setKafedralIsOpen] = useState(false);
-  const [cafedral, setCafedral] = useState(false);
+  // const [kafedralIsOpen, setKafedralIsOpen] = useState(false);
+  // const [cafedral, setCafedral] = useState(false);
   const [blockTable, setBlockTable] = useState(false);
   const handleButtonClick = () => {
     setEducatorIdforLk("");
@@ -79,7 +80,7 @@ function HomePage() {
         )?.id
       );
     }
-    setKafedralIsOpen(false);
+    // setKafedralIsOpen(false);
     tabPar.setSelectedFilter("Все дисциплины");
   };
 
@@ -133,7 +134,7 @@ function HomePage() {
   //! открыть попап
   const onSaveClick = () => {
     setPopupSaveAll(!popupSaveAll);
-    popupExport == true && setPopupExport(false);
+    popupExport === true && setPopupExport(false);
   };
   //! открыть попап
   const onUnblockClick = () => {
@@ -143,7 +144,7 @@ function HomePage() {
   //! открыть попап
   const onExportClick = () => {
     setPopupExport(!popupExport);
-    popupSaveAll == true && setPopupSaveAll(false);
+    popupSaveAll === true && setPopupSaveAll(false);
   };
 
   //! при нажатии на подтвердить сохранение изменений
@@ -165,7 +166,7 @@ function HomePage() {
         ) {
           const id = appData.myProfile.educator.departmentId;
           WorkloadBlocked(id).then((resp) => {
-            if (resp.status == 200) {
+            if (resp.status === 200) {
               basicTabData.funUpdateTable(99);
               appData.setgodPopUp(true);
             }
@@ -175,7 +176,7 @@ function HomePage() {
             (el) => el.name === basicTabData?.nameKaf
           ).id;
           WorkloadBlocked(idTable).then((resp) => {
-            if (resp.status == 200) {
+            if (resp.status === 200) {
               basicTabData.funUpdateTable(idTable);
               appData.setgodPopUp(true);
               basicTabData.funGetDepartment();
@@ -217,8 +218,8 @@ function HomePage() {
       return false;
     }
     if (
-      appData.selectedComponent != "History" ||
-      appData.selectedComponent != "Teachers"
+      appData.selectedComponent !== "History" ||
+      appData.selectedComponent !== "Teachers"
     ) {
       basicTabData.filtredData.every((el) =>
         el.isBlocked === true ? (blocked = true) : (blocked = false)
@@ -321,7 +322,7 @@ function HomePage() {
   };
 
   useEffect(() => {
-    setBlockTable(checkBlocked);
+    setBlockTable(checkBlocked());
   }, [
     basicTabData.tableDepartment,
     basicTabData.filtredData,
@@ -393,7 +394,7 @@ function HomePage() {
                   >
                     <div className={styles.text}>Отменить</div>
 
-                    <img src="./img/backBuffer.svg" />
+                    <img src="./img/backBuffer.svg" alt="i" />
                   </div>
                 )}
                 {appData.metodRole[appData.myProfile?.role]?.some(
@@ -409,6 +410,7 @@ function HomePage() {
                       <img
                         className={styles.btnLeft}
                         src="./img/saveButton.svg"
+                        alt="i"
                       />
                       {popupSaveAll && (
                         <ConfirmSaving
@@ -423,14 +425,18 @@ function HomePage() {
                   (el) => el === 48
                 ) &&
                   appData.selectedComponent === "Disciplines" &&
-                  basicTabData.nameKaf != "Все" &&
+                  basicTabData.nameKaf !== "Все" &&
                   blockTable && (
                     <div
                       className={styles.btnMenuBox}
                       onClick={onUnblockClick}
                       title="Разблокировать таблицу"
                     >
-                      <img className={styles.btnLeft} src="./img/unblock.svg" />
+                      <img
+                        className={styles.btnLeft}
+                        src="./img/unblock.svg"
+                        alt="i"
+                      />
                       {popupUnblockTable && (
                         <UnlockDepartment
                           title={`Вы уверены, что хотите разблокировать таблицу ${basicTabData.nameKaf} ?`}
@@ -449,7 +455,11 @@ function HomePage() {
                       onClick={onUnblockClick}
                       title="Попросить разблокировать таблицу"
                     >
-                      <img className={styles.btnLeft} src="./img/unblock.svg" />
+                      <img
+                        className={styles.btnLeft}
+                        src="./img/unblock.svg"
+                        alt="i"
+                      />
                       {popupUnblockTable && (
                         <UnlockDepartment
                           title={"Попросить разблокировать таблицу?"}
@@ -476,7 +486,11 @@ function HomePage() {
                     onClick={onExportClick}
                     title="Выгрузка таблицы для методистов"
                   >
-                    <img className={styles.btnLeft} src="./img/export.svg" />
+                    <img
+                      className={styles.btnLeft}
+                      src="./img/export.svg"
+                      alt="i"
+                    />
                     {popupExport && (
                       <ConfirmSaving
                         title={`Вы уверены, что хотите отправить таблицу ${basicTabData.nameKaf}?`}
@@ -510,7 +524,7 @@ function HomePage() {
                         : null
                     }
                   />
-                  <img src="./img/search.svg"></img>
+                  <img src="./img/search.svg" alt="i" />
                 </div>
               )}
             </div>
@@ -547,8 +561,7 @@ function HomePage() {
                       : "#efedf3"
                   }
                   textColot={
-                    appData.selectedComponent === "Disciplines" ||
-                    appData.selectedComponent === "History"
+                    appData.selectedComponent !== "Teachers"
                       ? "#000000"
                       : "#efedf3"
                   }
@@ -560,29 +573,28 @@ function HomePage() {
                   text="Преподаватели"
                 />
               )}
-              {/* {appData.metodRole[appData.myProfile?.role]?.some(
+              {appData.metodRole[appData.myProfile?.role]?.some(
                 (el) => el === 54
               ) && (
                 <Button
                   Bg={
-                    appData.selectedComponent === "Teachers"
+                    appData.selectedComponent === "ScheduleMaterials"
                       ? "#0040E5"
                       : "#efedf3"
                   }
                   textColot={
-                    appData.selectedComponent === "Disciplines" ||
-                    appData.selectedComponent === "History"
+                    appData.selectedComponent !== "ScheduleMaterials"
                       ? "#000000"
                       : "#efedf3"
                   }
                   onClick={() => {
-                    handleComponentChange("Teachers");
+                    handleComponentChange("ScheduleMaterials");
                     handleButtonClick();
                     basicTabData.setselectISOid(false);
                   }}
                   text="Материалы к расписанию"
                 />
-              )} */}
+              )}
               {appData.myProfile?.role === "GOD" && (
                 <Link to="../Admin">
                   <Button text="Админ панель" />
@@ -598,7 +610,7 @@ function HomePage() {
                     appData.setSelectedComponent("Teachers");
                     console.log("myProfilea", appData.myProfile.id);
                   }}
-                  Bg={educatorIdforLk.length != 0 ? "#0040E5" : "#efedf3"}
+                  Bg={educatorIdforLk.length !== 0 ? "#0040E5" : "#efedf3"}
                   textColot={
                     educatorIdforLk.length === 0 ? "#000000" : "#efedf3"
                   }
@@ -631,7 +643,7 @@ function HomePage() {
           {blockTable && (
             <div className={styles.blockedTextTable}>
               <div>
-                <img src="./img/errorTreangle.svg" />
+                <img src="./img/errorTreangle.svg" alt="i" />
               </div>
               <div>
                 <p>
@@ -770,6 +782,8 @@ function HomePage() {
               refProfile={refProfile}
               setOpenModalWind={setOpenModalWind}
             />
+          ) : appData.selectedComponent === "ScheduleMaterials" ? (
+            <TableSchedule />
           ) : null}
         </div>
         {!appData.metodRole[appData.myProfile?.role]?.some(

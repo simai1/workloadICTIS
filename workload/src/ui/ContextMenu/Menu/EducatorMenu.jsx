@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from "./../ContextMenu.module.scss";
 import {
   Educator,
+  EducatorByInstitute,
   apiEducatorDepartment,
 } from "../../../api/services/ApiRequest";
 import DataContext from "../../../context";
@@ -21,6 +22,12 @@ export function EducatorMenu(props) {
     }
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)) {
       Educator().then((req) => {
+        setEductor(req.data);
+        setFiltredData(req.data);
+      });
+    }
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1.1)) {
+      EducatorByInstitute().then((req) => {
         setEductor(req.data);
         setFiltredData(req.data);
       });
