@@ -560,6 +560,29 @@ function HomePage() {
                   text="Преподаватели"
                 />
               )}
+              {/* {appData.metodRole[appData.myProfile?.role]?.some(
+                (el) => el === 54
+              ) && (
+                <Button
+                  Bg={
+                    appData.selectedComponent === "Teachers"
+                      ? "#0040E5"
+                      : "#efedf3"
+                  }
+                  textColot={
+                    appData.selectedComponent === "Disciplines" ||
+                    appData.selectedComponent === "History"
+                      ? "#000000"
+                      : "#efedf3"
+                  }
+                  onClick={() => {
+                    handleComponentChange("Teachers");
+                    handleButtonClick();
+                    basicTabData.setselectISOid(false);
+                  }}
+                  text="Материалы к расписанию"
+                />
+              )} */}
               {appData.myProfile?.role === "GOD" && (
                 <Link to="../Admin">
                   <Button text="Админ панель" />
