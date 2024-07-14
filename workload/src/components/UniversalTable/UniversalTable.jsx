@@ -4,15 +4,15 @@ import styles from "./UniversalTable.module.scss";
 import { filteredWorkload, funfastenedDataSort } from "./Function";
 import DataContext from "../../context";
 import ContextMenu from "../../ui/ContextMenu/ContextMenu";
-// import { FilteredSample } from "../../ui/SamplePoints/Function";
 
 function UniversalTable(props) {
   const { tabPar, visibleDataPar, basicTabData, checkPar } =
     useContext(DataContext);
+
   //! при событии скролл таблицы изменим индекс первого показываемого tr
   const scrollTable = (e) => {
     const maxStartData =
-      basicTabData.filtredData.length - visibleDataPar.visibleData;
+      props.tabDat.filtredData.length - visibleDataPar.visibleData;
     visibleDataPar.setStartData(
       Math.max(
         0,
@@ -26,25 +26,25 @@ function UniversalTable(props) {
 
   //! закрепленные данные ставим в начало таблицы
   useEffect(() => {
-    basicTabData.setWorkloadDataFix(
-      funfastenedDataSort(basicTabData.workloadDataFix, tabPar.fastenedData)
+    props.tabDat.setTableDataFix(
+      funfastenedDataSort(props.tabDat.tableDataFix, tabPar.fastenedData)
     );
   }, [tabPar.fastenedData]);
 
   //! фильтрация по поиску
   useEffect(() => {
     if (props.searchTerm.length === 0) {
-      basicTabData.setWorkloadDataFix(
-        funfastenedDataSort(basicTabData.workloadDataFix, tabPar.fastenedData)
+      props.tabDat.setTableDataFix(
+        funfastenedDataSort(props.tabDat.tableDataFix, tabPar.fastenedData)
       );
     } else {
       const fd = filteredWorkload(
-        basicTabData.workloadDataFix,
+        props.tabDat.tableDataFix,
         props.searchTerm,
         tabPar.fastenedData
       );
       const fixfd = basicTabData.funFilteredFilterSelected(fd);
-      basicTabData.setFiltredData(fixfd);
+      props.tabDat.setFiltredData(fixfd);
     }
   }, [props.searchTerm]);
 
@@ -60,7 +60,7 @@ function UniversalTable(props) {
   //! достаем и локал стореджа состояние фитрации по заголовку
   useEffect(() => {
     const ssIsChecked = JSON.parse(
-      sessionStorage.getItem(`isCheckedWorkload${basicTabData.nameKaf}`)
+      sessionStorage.getItem(props.tabDat.ssIsChecked)
     ); //! сбросить
     if (ssIsChecked && ssIsChecked !== null && ssIsChecked.length > 0) {
       checkPar.setIsChecked(ssIsChecked);
@@ -76,10 +76,10 @@ function UniversalTable(props) {
       onScroll={scrollTable}
       ref={tabPar.tableRefWorkload}
     >
-      {tabPar.contextMenuShow && tabPar.selectedTr.length != 0 && (
-        <ContextMenu />
-      )}
-      <Table />
+      {tabPar.contextMenuShow &&
+        tabPar.selectedTr.length !== 0 &&
+        props.contextMenu === "TableWorkload" && <ContextMenu />}
+      <Table tabDat={props.tabDat} />
     </div>
   );
 }

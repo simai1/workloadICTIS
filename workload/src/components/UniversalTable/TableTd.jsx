@@ -66,14 +66,14 @@ function TableTd(props) {
       value: numberValue,
     };
     if (numberValue || textareaTd === "0") {
-      const updatedArray = basicTabData.workloadDataFix.map((item) => {
+      const updatedArray = props.tabDat.tableDataFix.map((item) => {
         if (item.id === props.item.id) {
           return { ...item, [props.itemKey.key]: numberValue };
         }
         return item;
       });
-      basicTabData.setWorkloadDataFix(updatedArray);
-      basicTabData.setFiltredData(updatedArray);
+      props.tabDat.setTableDataFix(updatedArray);
+      props.tabDat.setFiltredData(updatedArray);
       const workloadId = data.id;
       //! буфер
       appData.setBufferAction([
@@ -131,8 +131,6 @@ function TableTd(props) {
     }
   };
   const ClickName = () => {
-    console.log("Вот я");
-
     tabPar.setContextMenuShow(true);
   };
   //! функция определения класса td для открытия длинного текста в попап со скролом

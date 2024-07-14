@@ -70,7 +70,7 @@ function OverlapWindow(props) {
       appData.setBufferAction(
         [...buff].filter((el) => el.data?.ids?.length > 0)
       );
-      let wdf = [...basicTabData.workloadDataFix];
+      let wdf = [...props.tabDat.tableDataFix];
       let datMap = { ...dat };
       let f = true;
       const wdfNew = wdf
@@ -84,7 +84,7 @@ function OverlapWindow(props) {
         })
         .filter((el) => el !== undefined);
 
-      basicTabData.setWorkloadDataFix(wdfNew);
+      props.tabDat.setTableDataFix(wdfNew);
 
       let changed = { ...tabPar.changedData };
       changed.split = changed.split.filter(
@@ -95,16 +95,16 @@ function OverlapWindow(props) {
       //! отмена обьединения
       const bd = props.getConfirmation.data;
       // удаляем нагрузку которую обьеденили
-      const dataTable = [...basicTabData.workloadDataFix].filter(
+      const dataTable = [...props.tabDat.tableDataFix].filter(
         (item) => !bd.prevState.some((el) => el.id === item.id)
       );
       // сохраняем индекс удаленного элемента
-      const deletedIndex = basicTabData.workloadDataFix.findIndex((item) =>
+      const deletedIndex = props.tabDat.tableDataFix.findIndex((item) =>
         bd.prevState.some((el) => el.id === item.id)
       );
       const newArray = [...dataTable];
       newArray.splice(deletedIndex, 0, ...bd.prevState);
-      basicTabData.setWorkloadDataFix(newArray);
+      props.tabDat.setTableDataFix(newArray);
       // убираем заблокированные элементы
       let cd = { ...tabPar.changedData };
       let cdJoin = [...cd.join];
@@ -117,7 +117,7 @@ function OverlapWindow(props) {
     } else if (props.getConfirmation.type === 4) {
       //! если разделили по часам применяем эту отмену
       const dat = { ...props.getConfirmation.data };
-      let updatedData = [...basicTabData.workloadDataFix];
+      let updatedData = [...props.tabDat.setTableDataFix];
       updatedData = updatedData
         .map((item) => {
           const ind = dat.newIds.findIndex((e) => e === item.id);
@@ -130,7 +130,7 @@ function OverlapWindow(props) {
         .filter((el) => el !== undefined);
       console.log(updatedData);
 
-      basicTabData.setWorkloadDataFix(updatedData);
+      props.tabDat.setTableDataFix(updatedData);
 
       let changed = { ...tabPar.changedData };
       changed.split = changed.split.filter(
@@ -164,11 +164,11 @@ function OverlapWindow(props) {
             "deleteWorkload"
           ).buffer
         );
-        basicTabData.setWorkloadDataFix(
-          basicTabData.workloadDataFix.filter((item) => item.id !== props.itid)
+        props.tabDat.setTableDataFix(
+          props.tabDat.tableDataFix.filter((item) => item.id !== props.itid)
         );
-        basicTabData.setWorkloadData(
-          basicTabData.workloadData.filter((item) => item.id !== props.itid)
+        props.tabDat.setTableData(
+          props.tabDat.tableData.filter((item) => item.id !== props.itid)
         );
         let changed = { ...tabPar.changedData };
         changed.deleted = changed.deleted.filter((item) => item !== props.itid);

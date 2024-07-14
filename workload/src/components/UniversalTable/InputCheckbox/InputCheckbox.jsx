@@ -33,9 +33,9 @@ function InputCheckbox(props) {
   const refreshFilters = () => {
     checkPar.setIsChecked([]);
     checkPar.setAllChecked([]);
-    sessionStorage.setItem(`isCheckedWorkload${basicTabData.nameKaf}`, null);
-    const fdfix = FilteredSample(basicTabData.workloadData, [], "idasdasd");
-    basicTabData.setWorkloadDataFix(fdfix);
+    sessionStorage.setItem(props.tabDat.ssIsChecked, null);
+    const fdfix = FilteredSample(props.tabDat.tableData, [], "idasdasd");
+    props.tabDat.setTableDataFix(fdfix);
     appData.setSortParamByColumn("");
   };
 
@@ -77,6 +77,7 @@ function InputCheckbox(props) {
             <OverlapWindow
               getConfirmation={props.getConfirmation}
               itid={props.itid}
+              tabDat={props.tabDat}
             />
           )}
           {

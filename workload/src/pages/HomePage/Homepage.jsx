@@ -14,6 +14,7 @@ import TableWorkload from "../../components/TableWorkload/TableWorkload";
 import {
   headers,
   headersEducator,
+  scheduleHead,
   tableHeadersLks,
 } from "../../components/TableWorkload/Data";
 import { PopUpFile } from "../../ui/PopUpFile/PopUpFile";
@@ -48,6 +49,7 @@ function HomePage() {
   const workloadTableHeaders = headers; // заголовок таблицы на главной странице
   const educatorTableHeaders = headersEducator; // заголовок таблтиц преподавателей
   const educatorLkHeaders = tableHeadersLks; // заголовок страницы личного кабинета
+  const scheduleHeaders = scheduleHead;
   const [tableHeaders, setTableHeaders] = useState(workloadTableHeaders);
   const [filePopUp, setfilePopUp] = useState(false);
   // const [appData.selectedComponent, appData.setSelectedComponent] = useState("Disciplines");
@@ -114,6 +116,8 @@ function HomePage() {
       basicTabData.setTableHeaders(workloadTableHeaders);
     } else if (component === "Teachers") {
       basicTabData.setTableHeaders(educatorTableHeaders);
+    } else if (component === "ScheduleMaterials") {
+      basicTabData.setTableHeaders(scheduleHeaders);
     } else {
       basicTabData.setTableHeaders(educatorLkHeaders);
     }
@@ -698,13 +702,19 @@ function HomePage() {
                         appData.selectedComponent === "Disciplines" ||
                         appData.selectedComponent === "History"
                           ? workloadTableHeaders
-                          : educatorTableHeaders
+                          : appData.selectedComponent === "Teachers"
+                          ? educatorTableHeaders
+                          : appData.selectedComponent === "ScheduleMaterials" &&
+                            scheduleHeaders
                       }
                       ssname={
                         appData.selectedComponent === "Disciplines" ||
                         appData.selectedComponent === "History"
                           ? "headerWorkload"
-                          : "headerTeachers"
+                          : appData.selectedComponent === "Teachers"
+                          ? "headerTeachers"
+                          : appData.selectedComponent === "ScheduleMaterials" &&
+                            "headerSchedule"
                       }
                     />
                   )}
@@ -783,7 +793,14 @@ function HomePage() {
               setOpenModalWind={setOpenModalWind}
             />
           ) : appData.selectedComponent === "ScheduleMaterials" ? (
-            <TableSchedule />
+            <TableSchedule
+              tableMode={tableMode}
+              tableHeaders={tableHeaders}
+              searchTerm={basicTabData.searchTerm}
+              setSearchTerm={basicTabData.setSearchTerm}
+              refProfile={refProfile}
+              setOpenModalWind={setOpenModalWind}
+            />
           ) : null}
         </div>
         {!appData.metodRole[appData.myProfile?.role]?.some(
