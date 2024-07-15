@@ -1,18 +1,30 @@
 import React, { useState, useEffect, useRef } from "react";
 import styles from "./EditInput.module.scss";
 import arrow from "./../../img/arrow.svg";
-// import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 // import { actions } from "./../../store/filter/filter.slice";
 import DataContext from "../../context";
+import {
+  addAllCheckeds,
+  addChecked,
+  removeAllCheckeds,
+  removeChecked,
+} from "../../store/filter/editInputChecked.slice";
 // import { headers as hed } from "../TableDisciplines/Data";
 
 function EditInput({ selectedComponent, originalHeader, ssname }) {
-  const { basicTabData, appData } = React.useContext(DataContext);
+  const { basicTabData } = React.useContext(DataContext);
   const headers = [...basicTabData.tableHeaders];
   const [searchResults, setSearchResults] = useState(headers);
   const [isListOpen, setListOpen] = useState(false);
-  const jsoh = JSON.parse(sessionStorage.getItem(ssname));
-  const ssUpdatedHeader = jsoh && jsoh !== null ? jsoh : originalHeader;
+
+  const headerStore = useSelector(
+    (state) => state.editInputChecked.editInputCheckeds[ssname]
+  );
+  // const jsoh = JSON.parse(sessionStorage.getItem(ssname));
+  const ssUpdatedHeader = headerStore || originalHeader;
+
+  const dispatch = useDispatch();
 
   const [isAllChecked, setIsAllChecked] = useState(
     originalHeader?.length === ssUpdatedHeader?.length ? true : false
@@ -27,9 +39,8 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
           .filter((key) => !ssUpdatedHeader.some((item) => item.key === key))
       : []
   );
-
   useEffect(() => {
-    const ssuh = JSON.parse(sessionStorage.getItem(ssname));
+    const ssuh = headerStore;
     const ssuhfix = ssuh?.map((el) => el.key);
     const oh = originalHeader.map((item) => item.key);
     if (ssuh && ssuh !== null) {
@@ -39,7 +50,7 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
         originalHeader?.length === ssUpdatedHeader?.length ? true : false
       );
     }
-  }, [originalHeader]);
+  }, [originalHeader, selectedComponent]);
 
   useEffect(() => {
     setSearchResults(originalHeader.slice(3));
@@ -72,14 +83,18 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
       checked = checked.filter((item) => item !== value.key);
     } else {
       checked.push(value.key);
+      // dispatch(removeChecked({ key: value.key, tableName: ssname }));
     }
     setChecked([...checked]);
     // Фильтрация заголовков
     const filteredHeaders = originalHeader.filter(
       (header) => !checked.includes(header.key)
     );
+    dispatch(
+      addAllCheckeds({ checked: [...filteredHeaders], tableName: ssname })
+    );
     basicTabData.setTableHeaders(filteredHeaders);
-    sessionStorage.setItem(ssname, JSON.stringify(filteredHeaders));
+
     if (checked.length === 0) {
       setIsAllChecked(true);
     } else {
@@ -101,11 +116,6 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
       )
     );
     if (query === "") {
-      console.log(
-        originalHeader
-          .map((item, index) => index > 2 && item)
-          .filter((el) => el != null && el !== undefined && el !== "")
-      );
       setSearchResults(originalHeader.filter((_, index) => index > 2));
     }
   };
@@ -116,13 +126,22 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
     if (isChecked.length !== 0) {
       setChecked([]);
       basicTabData.setTableHeaders([...originalHeader]);
-      sessionStorage.setItem(ssname, JSON.stringify([...originalHeader]));
+      // sessionStorage.setItem(ssname, JSON.stringify([...originalHeader]));
+      dispatch(
+        addAllCheckeds({ tableName: ssname, checked: [...originalHeader] })
+      );
     } else {
       setChecked([...originalHeader.slice(3)].map((el) => el.key));
       basicTabData.setTableHeaders([...originalHeader].slice(0, 3));
-      sessionStorage.setItem(
-        ssname,
-        JSON.stringify([...originalHeader].slice(0, 3))
+      // sessionStorage.setItem(
+      //   ssname,
+      //   JSON.stringify([...originalHeader].slice(0, 3))
+      // );
+      dispatch(
+        addAllCheckeds({
+          checked: [...originalHeader].slice(0, 3),
+          tableName: ssname,
+        })
       );
     }
   }

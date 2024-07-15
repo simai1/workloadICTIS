@@ -89,7 +89,7 @@ function Table(props) {
 
   //определение каласса tr
   const getClassNameTr = (itemss) => {
-    const itemId = itemss.value.objid;
+    const itemId = itemss.value?.objid;
     let classText = null;
     classText = tabPar.selectedTr?.includes(itemId)
       ? `${styles.selectedTr}`
@@ -173,19 +173,19 @@ function Table(props) {
                 onMouseLeave={() => getBorder("")}
                 // выделяем цветом если выбранно для контекстного меню
                 className={getClassNameTr(item)}
-                onClick={(e) => clickTr(e, item.value.objid)}
-                onContextMenu={(e) => clickTrContetx(e, item.value.objid)}
-                key={item.value.id + visibleDataPar.startData + number + "tr"}
+                onClick={(e) => clickTr(e, item.value?.objid)}
+                onContextMenu={(e) => clickTrContetx(e, item.value?.objid)}
+                key={item.value?.id + visibleDataPar.startData + number + "tr"}
                 name={item.number === 0 ? "bottomBorder" : null}
               >
                 <InputCheckbox
                   clickTr={() => {}}
                   itemId={item.id + "checkBox"}
-                  itid={item.value.id}
+                  itid={item.value?.id}
                   number={number}
                   obj={item}
-                  getConfirmation={getConfirmation(item.value.id)}
-                  checked={tabPar.selectedTr.includes(item.value.objid)}
+                  getConfirmation={getConfirmation(item.value?.id)}
+                  checked={tabPar.selectedTr.includes(item.value?.objid)}
                   orighistoryData={props.orighistoryData}
                   sethistoryData={props.sethistoryData}
                 />
@@ -196,14 +196,14 @@ function Table(props) {
                       itemKey.key +
                       number +
                       visibleDataPar.startData +
-                      item.value.objid
+                      item.value?.objid
                     }
                     innerKey={
                       "tdInner" +
                       itemKey.key +
                       number +
                       visibleDataPar.startData +
-                      item.value.objid
+                      item.value?.objid
                     }
                     obj={item}
                     item={item.value}

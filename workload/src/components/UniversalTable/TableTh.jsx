@@ -4,8 +4,7 @@ import DataContext from "../../context";
 import { SamplePoints } from "../../ui/SamplePoints/SamplePoints";
 
 function TableTh(props) {
-  const { tabPar, basicTabData, checkPar, appData } =
-    React.useContext(DataContext);
+  const { tabPar, checkPar, appData } = React.useContext(DataContext);
 
   const [sortImg, setSortImg] = useState(0);
 
@@ -46,7 +45,6 @@ function TableTh(props) {
         setSortImg(1);
       }
     }
-    console.log(par);
     appData.setSortParamByColumn(par);
   };
 
@@ -55,7 +53,6 @@ function TableTh(props) {
       setSortImg(0);
     }
   }, [appData.sortParamByColumn]);
-  console.log("checkPar.isChecked", checkPar.isChecked);
   return (
     <th name={props.item.key} key={props.item.key}>
       {props.modal && (
