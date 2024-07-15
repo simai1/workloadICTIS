@@ -1,12 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./SamplePoints.module.scss";
-import DataContext from "../../context";
+// import DataContext from "../../context";
 import { FilteredSample } from "./Function";
+import { useDispatch } from "react-redux";
+import { addChecked, removeChecked } from "../../store/isChecked.slice";
 
 export function SamplePoints(props) {
-  const { tabPar, checkPar, basicTabData } = React.useContext(DataContext);
+  const dispatch = useDispatch();
+  // const { basicTabData } = React.useContext(DataContext);
   const [searchText, setSearchText] = useState("");
-
+  console.log("sesionName", props.sesionName);
   const handleInputChange = (event) => {
     setSearchText(event.target.value);
   };
@@ -26,7 +29,7 @@ export function SamplePoints(props) {
   useEffect(() => {
     const handler = (event) => {
       if (spRef.current && !spRef.current.contains(event.target)) {
-        tabPar.setSpShow("");
+        props.setSpShow("");
       }
     };
     document.addEventListener("click", handler, true);
@@ -37,60 +40,84 @@ export function SamplePoints(props) {
 
   const filteredData = [
     ...new Set(
-      tabPar.isSamplePointsData.filter((el) => {
+      props.isSamplePointsData.filter((el) => {
         // Преобразовываем el в строку, если он является числом
         const elString = typeof el === "number" ? el.toString() : el;
         return elString?.toLowerCase().includes(searchText?.toLowerCase());
       })
     ),
-  ];
+  ].sort((a, b) => {
+    // Сортируем отфильтрованные данные по возрастанию
+    if (a < b) return -1;
+    if (a > b) return 1;
+    return 0;
+  });
+
   //! при нажатии на Input All
   const onAllChecked = () => {
-    console.log("checkPar.isAllChecked", checkPar.isAllChecked);
-
-    let checked = [...checkPar.isChecked];
+    let checked = [...props.isChecked];
     if (
-      [...checkPar.isChecked].filter((el) => el.itemKey === props.itemKey)
-        .length > 0
+      [...props.isChecked].filter((el) => el.itemKey === props.itemKey).length >
+      0
     ) {
       checked = checked.filter((el) => el.itemKey !== props.itemKey);
     } else {
-      [...tabPar.isSamplePointsData].map((item) => {
+      [...props.isSamplePointsData].map((item) => {
         checked.push({ value: item, itemKey: props.itemKey });
       });
     }
-    checkPar.setIsChecked(checked);
-    sessionStorage.setItem("isCheckedWorkload", JSON.stringify([...checked]));
+    const uniqueArray = [
+      ...new Set(checked.map((item) => JSON.stringify(item))),
+    ].map((item) => JSON.parse(item));
+    props.setIsChecked(uniqueArray);
+    sessionStorage.setItem(props.sesionName, JSON.stringify([...uniqueArray]));
 
     // Фильтруем данные
     const fdfix = FilteredSample(
-      basicTabData.workloadData,
-      checked,
-      props.itemKey
+      props.workloadData,
+      uniqueArray,
+      props.sesionName
     );
-    basicTabData.setWorkloadDataFix(fdfix);
-    console.log("checkPar.isAllChecked", checkPar.isAllChecked);
+    props.setWorkloadDataFix(fdfix);
   };
 
   //! при нажатии на Input
   const onChecked = (el) => {
-    let checked = [...checkPar.isChecked]; // основной массив
-    if (checked.some((item) => item.value === el)) {
+    let checked = [...props.isChecked]; // основной массив
+    if (
+      checked.some(
+        (item) => item.value === el && props.itemKey === item.itemKey
+      )
+    ) {
       checked = checked.filter((item) => item.value !== el);
+      if (props.sesionName.includes("isCheckedSchedule")) {
+        dispatch(removeChecked({ value: el, itemKey: props.itemKey }));
+      }
     } else {
       checked.push({ value: el, itemKey: props.itemKey });
+      if (props.sesionName.includes("isCheckedSchedule")) {
+        dispatch(addChecked({ value: el, itemKey: props.itemKey }));
+      }
     }
-    checkPar.setIsChecked(checked);
-    sessionStorage.setItem("isCheckedWorkload", JSON.stringify([...checked]));
+    const uniqueArray = [
+      ...new Set(checked.map((item) => JSON.stringify(item))),
+    ].map((item) => JSON.parse(item));
+    props.setIsChecked(uniqueArray);
+    if (!props.sesionName.includes("isCheckedSchedule")) {
+      sessionStorage.setItem(
+        props.sesionName,
+        JSON.stringify([...uniqueArray])
+      );
+    }
     // Фильтруем данные
-    const fdfix = FilteredSample(basicTabData.workloadData, checked);
-    basicTabData.setWorkloadDataFix(fdfix);
-    console.log("checkPar.isChecked", checkPar.isChecked);
+    const fdfix = FilteredSample(
+      props.workloadData,
+      uniqueArray,
+      props.sesionName
+    );
+    console.log("fdfix", fdfix, props.sesionName);
+    props.setWorkloadDataFix(fdfix);
   };
-
-  useEffect(() => {
-    console.log("вот я да");
-  }, []);
 
   return (
     <main className={styles.SamplePoints} ref={spRef}>
@@ -110,7 +137,7 @@ export function SamplePoints(props) {
                 type="checkbox"
                 onChange={onAllChecked}
                 checked={
-                  ![...checkPar.isChecked].filter(
+                  ![...props.isChecked].filter(
                     (el) => el.itemKey === props.itemKey
                   ).length > 0
                 }
@@ -125,7 +152,10 @@ export function SamplePoints(props) {
                     type="checkbox"
                     onChange={() => onChecked(el)}
                     checked={
-                      !checkPar.isChecked.some((item) => item.value === el)
+                      !props.isChecked.some(
+                        (item) =>
+                          item.value === el && props.itemKey === item.itemKey
+                      )
                     }
                   />
                   <p>{props.index === 0 ? index + 1 : el === "" ? "__" : el}</p>

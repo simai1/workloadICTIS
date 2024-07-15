@@ -5,7 +5,7 @@ import SummaryWorkload from "../models/summary-workload.js";
 import checkHours from "../utils/notification.js";
 
 export default {
-  checkHours: new CronJob('*/30 * * * *', async () => {
+  checkHours: new CronJob('0 4 * * *', async () => {
     console.log('[CRON] Start checkHours');
     const educators = await Educator.findAll({
       include: { model: Workload },

@@ -3,7 +3,7 @@ import { AppErrorInvalid, AppErrorMissing, AppErrorNotExist } from '../utils/err
 import UserDto from '../dtos/user-dto.js';
 import Educator from '../models/educator.js';
 import departments from '../config/departments.js';
-import roles from '../config/roles.js';
+import roles, { map as mapRoles } from '../config/roles.js';
 import institutionalAffiliations from '../config/institutional-affiliations.js';
 
 export default {
@@ -12,7 +12,7 @@ export default {
         const user = await User.findByPk(req.user, { include: Educator });
         if (!user) throw new AppErrorNotExist('user');
         const userDto = new UserDto(user);
-        if(user.role !== 1){
+        if (user.role !== 1) {
             userDto.educator.departmentId = user.Educator.department;
         }
         res.json(userDto);
@@ -32,8 +32,8 @@ export default {
     },
 
     async updateUser(req, res) {
-        const { role, allowedDepartments, institutionalAffiliation } = req.body;
-        if (!role && !allowedDepartments && !institutionalAffiliation) throw new AppErrorMissing('body');
+        const { role, allowedDepartments, institutionalAffiliation, rate } = req.body;
+        if (!role && !allowedDepartments && !institutionalAffiliation && !rate) throw new AppErrorMissing('body');
         if (role && !Object.values(roles).includes(role)) throw new AppErrorInvalid('role');
         if (allowedDepartments && allowedDepartments.some(d => !Object.values(departments).includes(d))) {
             throw new AppErrorInvalid('allowedDepartments');
@@ -51,7 +51,8 @@ export default {
                 where: { id: req.params.id },
             }
         );
-        res.json({status: 'OK'});
+        await Educator.update({ rate }, { where: { userId: req.params.id } });
+        res.json({ status: 'OK' });
     },
 
     async getAll(req, res) {
@@ -59,4 +60,8 @@ export default {
         const usersDtos = users.map(user => new UserDto(user));
         res.json(usersDtos);
     },
+
+    async getRoles(req, res){
+        res.json(mapRoles);
+    }
 };

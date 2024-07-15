@@ -12,7 +12,7 @@ import {
 } from "../../../api/services/ApiRequest";
 
 export function PopUpEditTeacher(props) {
-  const { appData, basicTabData } = React.useContext(DataContext);
+  const { appData } = React.useContext(DataContext);
   const [selectedRowsId, setSelectedRowsId] = useState(props.IdRows);
   const [dataNewEdicator, setdataNewEdicator] = useState({
     name: props.selectRows?.name,
@@ -46,15 +46,17 @@ export function PopUpEditTeacher(props) {
   useEffect(() => {
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 46)) {
       GetAllDepartments().then((resp) => {
-        let newData = resp.data.filter(obj => obj.name !== "ОИД");
+        let newData = resp.data.filter((obj) => obj.name !== "ОИД");
         setDataKaf(newData);
       });
     } else {
       GetUsibleDepartment().then((resp) => {
-        if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 47)){
-          let newData = resp.data.filter(obj => obj.name !== "ОИД");
+        if (
+          appData.metodRole[appData.myProfile?.role]?.some((el) => el === 47)
+        ) {
+          let newData = resp.data.filter((obj) => obj.name !== "ОИД");
           setDataKaf(newData);
-        }else{
+        } else {
           setDataKaf(resp.data);
         }
       });
@@ -84,18 +86,26 @@ export function PopUpEditTeacher(props) {
     let depart;
     let position;
     let type;
-    if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 39)){
-        depart = appData.myProfile?.educator?.departmentId 
-      }else{
-        !Number(dataNewEdicator?.department)? depart =  dataKaf.find((el)=> el.name === dataNewEdicator?.department).id  : depart= dataNewEdicator?.department
-      }
-      
-      !Number(dataNewEdicator?.typeOfEmployment) ? type = ListTypeOfEmployment.find((el)=> el.name === dataNewEdicator?.typeOfEmployment).id : type = dataNewEdicator?.typeOfEmployment
-      !Number(dataNewEdicator?.position)? (position = dataListPosition.find((el) => el.name === dataNewEdicator?.position)?.id): (position = dataNewEdicator?.position);
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 39)) {
+      depart = appData.myProfile?.educator?.departmentId;
+    } else {
+      !Number(dataNewEdicator?.department)
+        ? (depart = dataKaf.find(
+            (el) => el.name === dataNewEdicator?.department
+          ).id)
+        : (depart = dataNewEdicator?.department);
+    }
 
-
-      
-
+    !Number(dataNewEdicator?.typeOfEmployment)
+      ? (type = ListTypeOfEmployment.find(
+          (el) => el.name === dataNewEdicator?.typeOfEmployment
+        ).id)
+      : (type = dataNewEdicator?.typeOfEmployment);
+    !Number(dataNewEdicator?.position)
+      ? (position = dataListPosition.find(
+          (el) => el.name === dataNewEdicator?.position
+        )?.id)
+      : (position = dataNewEdicator?.position);
 
     const data = {
       name: dataNewEdicator?.name,
@@ -107,8 +117,8 @@ export function PopUpEditTeacher(props) {
           : dataNewEdicator?.rate,
       department: depart,
     };
-    
-    console.log("data", data)
+
+    console.log("data", data);
     EditTeacher(selectedRowsId, data).then((resp) => {
       if (resp.status === 200) {
         props.updateTable();
@@ -142,12 +152,12 @@ export function PopUpEditTeacher(props) {
               value={dataNewEdicator.position}
             />
             <List
-                dataList={ListTypeOfEmployment}
-                Textlabel="Вид занятости"
-                defaultValue="Выберите вид занятости"
-                name={"typeOfEmployment"}
-                value={dataNewEdicator.typeOfEmployment}
-                handleInputList={handleInputList}
+              dataList={ListTypeOfEmployment}
+              Textlabel="Вид занятости"
+              defaultValue="Выберите вид занятости"
+              name={"typeOfEmployment"}
+              value={dataNewEdicator.typeOfEmployment}
+              handleInputList={handleInputList}
             />
             <Input
               Textlabel="Ставка"

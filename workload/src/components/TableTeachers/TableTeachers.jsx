@@ -5,14 +5,18 @@ import DataContext from "../../context";
 import { headersEducator } from "../TableWorkload/Data";
 import {
   Educator,
-  GetAllUsers,
+  EducatorByInstitute,
+  // GetAllUsers,
   apiEducatorDepartment,
 } from "../../api/services/ApiRequest";
 import Button from "../../ui/Button/Button";
-import { SamplePoints } from "./SamplePoints/SamplePoints";
+// import { SamplePoints } from "./SamplePoints/SamplePoints";
 import { ContextFunc } from "./ContextFunc/ContextFunc";
 import { PopUpEditTeacher } from "./PopUpEditTeacher/PopUpEditTeacher";
 import { FilteredSample } from "./SamplePoints/Function";
+// import { SamplePoints } from "../../ui/SamplePoints/SamplePoints";
+import TableTh from "./TableTh";
+import { ReactComponent as ImgClearFilter } from "./../../img/ClearFilter.svg";
 
 function TableTeachers(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]);
@@ -26,21 +30,24 @@ function TableTeachers(props) {
   const tableHeaders = headersEducator;
   const [positionMenu, setPositionMenu] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
+  const [sortParamByColumn, setSortParamByColumn] = useState("");
 
   const [isChecked, setIsChecked] = useState([]); // состояние инпутов в SamplePoints для преподавателей
   const [isAllChecked, setAllChecked] = useState(true); // инпут все в SamplePoints для преподавателей
-  const checkData = {
-    isChecked,
-    setIsChecked,
-    isAllChecked,
-    setAllChecked,
-  };
+  // const checkData = {
+  //   isChecked,
+  //   setIsChecked,
+  //   isAllChecked,
+  //   setAllChecked,
+  // };
 
   //! достаем и локал стореджа состояние фитрации по заголовку
   useEffect(() => {
     const ssIsChecked = JSON.parse(sessionStorage.getItem("isCheckedTeachers"));
     if (ssIsChecked && ssIsChecked !== null && ssIsChecked.length > 0) {
       setIsChecked(ssIsChecked);
+    } else {
+      setIsChecked([]);
     }
   }, []);
 
@@ -57,20 +64,27 @@ function TableTeachers(props) {
     props.changeInput();
   }, []);
 
-  //! открытие модального окна фильтрации столбца
-  const clickTh = (index, key) => {
-    setSampleShow(index);
-    const modalData = updatedData.map((item) => item[key]);
-    setSampleData([...modalData]);
-  };
+  // //! открытие модального окна фильтрации столбца
+  // const clickTh = (index, key) => {
+  //   setSampleShow(index);
+  //   const modalData = updatedData.map((item) => item[key]);
+  //   setSampleData([...modalData]);
+  // };
 
   const updateTable = () => {
-    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 2)) {
-      apiEducatorDepartment().then((res) => {
+    const par = sortParamByColumn !== "" ? `?${sortParamByColumn}` : "";
+    if (
+      appData.metodRole[appData.myProfile?.role]?.some(
+        (el) => el === 2 || el === 1.1
+      )
+    ) {
+      apiEducatorDepartment(par).then((res) => {
         if (res && res.status === 200) {
           appData.setEducator(res.data);
-          //! филтрация по samplePoints
-          const fdfix = FilteredSample(res.data, isChecked);
+          const ssIsChecked = JSON.parse(
+            sessionStorage.getItem("isCheckedTeachers")
+          );
+          const fdfix = FilteredSample(res.data, ssIsChecked);
           setFilteredData([...fdfix]);
           // setFilteredData(res.data);
           setUpdatedData(res.data);
@@ -80,10 +94,14 @@ function TableTeachers(props) {
     } else if (
       appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)
     ) {
-      Educator().then((res) => {
+      console.log("sortParamByColumn", par);
+      Educator(par).then((res) => {
         if (res && res.status === 200) {
           appData.setEducator(res.data);
-          const fdfix = FilteredSample(res.data, isChecked);
+          const ssIsChecked = JSON.parse(
+            sessionStorage.getItem("isCheckedTeachers")
+          );
+          const fdfix = FilteredSample(res.data, ssIsChecked);
           setFilteredData([...fdfix]);
           // setFilteredData(res.data);
           setUpdatedData(res.data);
@@ -104,12 +122,29 @@ function TableTeachers(props) {
       //   });
       // }
     }
+    // else if (
+    //   appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1.1)
+    // ) {
+    //   EducatorByInstitute().then((res) => {
+    //     if (res && res.status === 200) {
+    //       appData.setEducator(res.data);
+    //       const ssIsChecked = JSON.parse(
+    //         sessionStorage.getItem("isCheckedTeachers")
+    //       );
+    //       const fdfix = FilteredSample(res.data, ssIsChecked);
+    //       setFilteredData([...fdfix]);
+    //       // setFilteredData(res.data);
+    //       setUpdatedData(res.data);
+    //       setUpdatedHeader(tableHeaders);
+    //     }
+    //   });
+    // }
   };
 
   //! заносим данные о преподавателях в состояние
   useEffect(() => {
     updateTable();
-  }, [basicTabData.actionUpdTabTeach]);
+  }, [basicTabData.actionUpdTabTeach, sortParamByColumn]);
 
   useEffect(() => {
     //! филтрация по samplePoints
@@ -282,8 +317,8 @@ function TableTeachers(props) {
       )}
 
       <div className={styles.filterdClear}>
-        <img
-          src="./img/ClearFilter.svg"
+        <ImgClearFilter
+          className={isChecked.length > 0 ? styles.svgRed : null}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
           onClick={refreshFilters}
@@ -299,50 +334,38 @@ function TableTeachers(props) {
         <table className={styles.table}>
           <thead>
             <tr>
-              {updatedHeader?.map((header, index) => (
-                <th
-                  name={header.key}
-                  onClick={() => clickTh(index, header.key)}
-                  key={header.key}
-                  className={styles.fixedTh}
-                >
-                  <div
-                    style={
-                      funSpanRow(header) === "Институтская нагрузка"
-                        ? funGetStyle(true)
-                        : funGetStyle(false)
-                    }
-                  >
-                    {funSpanRow(header)}
-                  </div>
-                  {sampleShow === index && (
-                    <SamplePoints
-                      setSampleShow={setSampleShow}
-                      index={index}
-                      itemKey={header.key}
-                      filteredData={filteredData}
-                      setFiltredData={setFilteredData}
-                      setUpdatedData={setUpdatedData}
-                      updatedData={updatedData}
-                      isSamplePointsData={sampleData}
-                      checkPar={checkData}
-                    />
-                  )}
-
-                  <div className={styles.th_inner} onClick={clickTh}>
-                    {header.label}
-                    <img
-                      src={
-                        isChecked.find((item) => item.itemKey === header.key)
-                          ? "./img/filterColumn.svg"
-                          : "./img/th_fight.svg"
-                      }
-                    ></img>
-                  </div>
-                </th>
+              {updatedHeader?.map((item, index) => (
+                <TableTh
+                  key={item.key}
+                  item={item}
+                  index={index}
+                  modal={sampleShow === index}
+                  sampleShow={sampleShow}
+                  setSampleShow={setSampleShow}
+                  sampleData={sampleData}
+                  setSampleData={setSampleData}
+                  updatedData={updatedData}
+                  isAllChecked={isAllChecked}
+                  isChecked={isChecked}
+                  setIsChecked={setIsChecked}
+                  setFilteredData={setFilteredData}
+                  sortParamByColumn={sortParamByColumn}
+                  setSortParamByColumn={setSortParamByColumn}
+                  funSpanRow={funSpanRow}
+                  funGetStyle={funGetStyle}
+                />
               ))}
             </tr>
           </thead>
+          {filteredData.length === 0 && (
+            <tbody className={styles.NotData}>
+              <tr>
+                <td className={styles.tdfix} style={{ pointerEvents: "none" }}>
+                  <div className={styles.notdatadiv}>Нет данных</div>
+                </td>
+              </tr>
+            </tbody>
+          )}
           <tbody>
             {filteredData?.map((row, index) => (
               <tr

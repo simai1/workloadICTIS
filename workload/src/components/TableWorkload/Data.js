@@ -62,3 +62,30 @@ export const tableHeadersLks = [
   { key: "hoursSecondPeriod", label: "2 (весна)" },
   { key: "hoursWithoutPeriod", label: "Доп. нагрузка" },
 ];
+
+// ! заголовки
+export const scheduleHead = [
+  { key: "id", label: "№" },
+  { key: "discipline", label: "Дисциплина" },
+  { key: "workload", label: "Нагрузка" },
+  { key: "groups", label: "Группа" },
+  { key: "department", label: "Кафедра" },
+  { key: "block", label: "Блок" },
+  { key: "semester", label: "Семестр" },
+  { key: "period", label: "Период" },
+  { key: "curriculum", label: "Учебный план" },
+  { key: "curriculumUnit", label: "Подразделение учебного плана" },
+  { key: "formOfEducation", label: "Форма обучения" },
+  { key: "levelOfTraining", label: "Уровень подготовки" },
+  {
+    key: "specialty",
+    label: "Направление подготовки (специальность)",
+  },
+  { key: "core", label: "Профиль" },
+  { key: "numberOfStudents", label: "Количество студентов" },
+  { key: "hours", label: "Часы" },
+  { key: "audienceHours", label: "Аудиторные часы" },
+  { key: "ratingControlHours", label: "Часы рейтинг-контроль" },
+  { key: "educator", label: "Преподаватель" },
+  { key: "notes", label: "Аудитории, примечания" },
+];

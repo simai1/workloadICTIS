@@ -64,7 +64,17 @@ router
 router
     .route('/confirmOrReject/:offerId')
     .post(
-        asyncRoute(checkRole([role.GOD, role.GIGA_ADMIN, role.UNIT_ADMIN, role.DIRECTORATE, role.DEPUTY_DIRECTORATE])),
+        asyncRoute(
+            checkRole([
+                role.GOD,
+                role.GIGA_ADMIN,
+                role.DEPARTMENT_HEAD,
+                role.DEPUTY_DEPARTMENT_HEAD,
+                role.UNIT_ADMIN,
+                role.DIRECTORATE,
+                role.DEPUTY_DIRECTORATE,
+            ])
+        ),
         asyncRoute(offersController.confirmOrReject)
     );
 router

@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import DataContext from "../../../context";
-import { addСhangedData } from "../Function";
+import { addСhangedData, getStylePosition } from "../Function";
 
 function SplitByHoursMenu(props) {
   const { tabPar, basicTabData, appData } = React.useContext(DataContext);
@@ -151,22 +151,37 @@ function SplitByHoursMenu(props) {
     }
   };
 
+  //! переменная которая хранит ширину данного меню
+  const [menuWidth, setMenuWidth] = useState(155);
+  const menuRef = useRef(null);
+  useEffect(() => {
+    if (menuRef.current) {
+      setMenuWidth(menuRef.current.clientWidth);
+    }
+  }, [menuRef.current]);
   return (
     <div
       className={props.styles.SplitByHoursMenu}
-      style={
-        tabPar.contextPosition.x + 280 + 180 > window.innerWidth
-          ? {
-              position: "fixed",
-              top: tabPar.contextPosition.y,
-              left: tabPar.contextPosition.x - 150,
-            }
-          : {
-              position: "fixed",
-              top: tabPar.contextPosition.y,
-              left: tabPar.contextPosition.x + 280,
-            }
-      }
+      ref={menuRef}
+      style={getStylePosition(
+        tabPar.contextPosition,
+        window.innerWidth,
+        menuWidth,
+        props.conxextMenuRefBlock
+      )}
+      // style={
+      //   tabPar.contextPosition.x + 280 + 180 > window.innerWidth
+      //     ? {
+      //         position: "fixed",
+      //         top: tabPar.contextPosition.y,
+      //         left: tabPar.contextPosition.x - 150,
+      //       }
+      //     : {
+      //         position: "fixed",
+      //         top: tabPar.contextPosition.y,
+      //         left: tabPar.contextPosition.x + 280,
+      //       }
+      // }
     >
       <input
         type="number"

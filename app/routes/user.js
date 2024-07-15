@@ -20,5 +20,6 @@ router.route('/getAll').get(asyncRoute(checkRole([role.GOD, role.GIGA_ADMIN])), 
 router
     .route('/:id/update')
     .put(asyncRoute(checkRole([role.GOD, role.GIGA_ADMIN])), asyncRoute(userController.updateUser));
+router.route('/getRoles').get(asyncRoute(checkRole([role.GOD, role.GIGA_ADMIN])), asyncRoute(userController.getRoles))
 
 export default router;

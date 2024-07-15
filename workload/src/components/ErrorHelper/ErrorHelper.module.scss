@@ -63,6 +63,20 @@
     img {
       padding-left: 11px;
     }
+    .instruction {
+      display: flex;
+      flex-direction: row;
+      color: var(--blue-color);
+      align-items: center;
+      span {
+        padding-left: 6px;
+        cursor: pointer;
+      }
+      img {
+        cursor: pointer;
+        margin-left: 4px;
+      }
+    }
   }
   .triangle {
     position: absolute;

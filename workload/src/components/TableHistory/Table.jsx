@@ -16,12 +16,17 @@ function Table(props) {
 
   //! определение нижнего отступа таблицы
   const getBottomHeight = () => {
-    return (
+    const height =
       (props.historyData.length -
         visibleDataPar.startData -
         visibleDataPar.visibleData) *
-      visibleDataPar.heightTd
-    );
+      visibleDataPar.heightTd;
+
+    if (height <= 0) {
+      return 0;
+    } else {
+      return height;
+    }
   };
 
   //! клик правой кнопкой мыши на tr
@@ -116,6 +121,8 @@ function Table(props) {
               checked={tabPar.onCheckBoxAll}
               clickTr={clickTrAll}
               th={true}
+              orighistoryData={props.orighistoryData}
+              sethistoryData={props.sethistoryData}
             />
 
             {basicTabData.tableHeaders.map((item, index) => (
@@ -124,6 +131,8 @@ function Table(props) {
                 item={item}
                 index={index}
                 modal={tabPar.spShow === index}
+                orighistoryData={props.orighistoryData}
+                sethistoryData={props.sethistoryData}
               />
             ))}
           </tr>
@@ -166,7 +175,7 @@ function Table(props) {
                 className={getClassNameTr(item)}
                 onClick={(e) => clickTr(e, item.value.objid)}
                 onContextMenu={(e) => clickTrContetx(e, item.value.objid)}
-                key={item.value.id + number + "tr"}
+                key={item.value.id + visibleDataPar.startData + number + "tr"}
                 name={item.number === 0 ? "bottomBorder" : null}
               >
                 <InputCheckbox
@@ -177,14 +186,30 @@ function Table(props) {
                   obj={item}
                   getConfirmation={getConfirmation(item.value.id)}
                   checked={tabPar.selectedTr.includes(item.value.objid)}
+                  orighistoryData={props.orighistoryData}
+                  sethistoryData={props.sethistoryData}
                 />
-                {basicTabData.tableHeaders.map((itemKey) => (
+                {basicTabData.tableHeaders.map((itemKey, ind) => (
                   <TableTd
-                    key={item.value.id + "td" + itemKey.key + number}
+                    key={
+                      "td" +
+                      itemKey.key +
+                      number +
+                      visibleDataPar.startData +
+                      item.value.objid
+                    }
+                    innerKey={
+                      "tdInner" +
+                      itemKey.key +
+                      number +
+                      visibleDataPar.startData +
+                      item.value.objid
+                    }
                     obj={item}
                     item={item.value}
                     itemKey={itemKey}
                     index={visibleDataPar.startData + number}
+                    ind={ind}
                   />
                 ))}
               </tr>

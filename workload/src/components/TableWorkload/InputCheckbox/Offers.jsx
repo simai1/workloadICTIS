@@ -17,16 +17,16 @@ function Offers(props) {
   };
   //! функция отклонить
   const reject = (offerData) => {
-    //! отклоняем дирекцией, сделалть зависимость от роли
-    //! отклоняем от зк
-    if (appData.myProfile?.role === "DEPARTMENT_HEAD") {
-      const data = { id: offerData.offer.id, status: 3 };
-      AcceptOfferZK(data).then(() => {
-        basicTabData.funUpdateOffers();
-        setOfferWindowShow(false);
-      });
-    }
-    if (appData.myProfile?.role === "DIRECTORATE") {
+    // //! отклоняем дирекцией, сделалть зависимость от роли
+    // //! отклоняем от зк
+    // if (appData.myProfile?.role === "DEPARTMENT_HEAD") {
+    //   const data = { id: offerData.offer.id, status: 3 };
+    //   AcceptOfferZK(data).then(() => {
+    //     basicTabData.funUpdateOffers();
+    //     setOfferWindowShow(false);
+    //   });
+    // }
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 38)) {
       const data = { id: offerData.offer.id, status: 5 };
       AcceptOffer(data).then(() => {
         basicTabData.funUpdateOffers();
@@ -37,21 +37,21 @@ function Offers(props) {
   //! функция применить
   const accept = (offerData) => {
     //! принимаем от зк
-    if (appData.myProfile?.role === "DEPARTMENT_HEAD") {
-      const data = { id: offerData.offer.id, status: 2 };
-      AcceptOfferZK(data).then(() => {
-        setOfferWindowShow(false);
-        // обновляем данные таблицы и предложений
-        basicTabData.funUpdateOffers();
-        basicTabData.funUpdateTable(
-          basicTabData.tableDepartment.find(
-            (el) => el.name === basicTabData.nameKaf
-          )?.id
-        );
-      });
-    }
+    // if (appData.myProfile?.role === "DEPARTMENT_HEAD") {
+    //   const data = { id: offerData.offer.id, status: 2 };
+    //   AcceptOfferZK(data).then(() => {
+    //     setOfferWindowShow(false);
+    //     // обновляем данные таблицы и предложений
+    //     basicTabData.funUpdateOffers();
+    //     basicTabData.funUpdateTable(
+    //       basicTabData.tableDepartment.find(
+    //         (el) => el.name === basicTabData.nameKaf
+    //       )?.id
+    //     );
+    //   });
+    // }
     //! принимаем от дирекции
-    if (appData.myProfile?.role === "DIRECTORATE") {
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 38)) {
       const data = { id: offerData.offer.id, status: 4 };
       AcceptOffer(data).then(() => {
         setOfferWindowShow(false);

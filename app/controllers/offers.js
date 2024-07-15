@@ -166,7 +166,7 @@ export default {
         if (newStatus === status.confirmed) {
             await offer.update({ status: status.accepted });
             await WorkloadController.facultyEducator(
-                { body: { educatorId: offer.educatorId, workloadId: offer.workloadId } },
+                { body: { educatorId: offer.educatorId, workloadIds: [offer.workloadId] } },
                 res
             );
         } else if (newStatus === status.reject) {

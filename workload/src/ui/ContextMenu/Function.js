@@ -21,7 +21,7 @@ export function upDateEducators(data, ItemSelectedTr, name) {
   return { newData: updatedData, prevState };
 }
 
-export function splitWorkloadCount(data, selectedTr, count) {
+export function splitWorkloadCount(data, selectedTr, count, typeSplit) {
   let updatedData = [...data];
   const newIds = [];
   const blocked = [];
@@ -57,22 +57,46 @@ export function splitWorkloadCount(data, selectedTr, count) {
           workload?.audienceHours *
           (studentsPerGroup + (i < remainder ? 1 : 0)) *
           0.01;
-        const newWorkload = {
-          ...workload,
-          numberOfStudents: studentsPerGroup + (i < remainder ? 1 : 0),
-          educator: null,
-          id: `${workload.id}${i + 1}`,
-          isMerged: false,
-          isSplit: true,
-          ratingControlHours: rch.toFixed(2),
-          hours: (rch + workload?.audienceHours).toFixed(2),
-        };
-        const hoursDataObj = {
-          numberOfStudents: studentsPerGroup + (i < remainder ? 1 : 0),
-          hours: (rch + workload?.audienceHours).toFixed(2),
-          audienceHours: workload?.audienceHours,
-          ratingControlHours: rch,
-        };
+
+        let newWorkload = {};
+
+        let hoursDataObj = {};
+        if (typeSplit === "splitCandidatesExam") {
+          newWorkload = {
+            ...workload,
+            numberOfStudents: workload.numberOfStudents,
+            educator: null,
+            id: `${workload.id}${i + 1}`,
+            isMerged: false,
+            isSplit: true,
+            ratingControlHours: 0,
+            hours: workload.numberOfStudents,
+            audienceHours: workload.numberOfStudents,
+          };
+          hoursDataObj = {
+            numberOfStudents: workload.numberOfStudents,
+            hours: workload.numberOfStudents,
+            audienceHours: workload.numberOfStudents,
+            ratingControlHours: 0,
+          };
+        } else {
+          newWorkload = {
+            ...workload,
+            numberOfStudents: studentsPerGroup + (i < remainder ? 1 : 0),
+            educator: null,
+            id: `${workload.id}${i + 1}`,
+            isMerged: false,
+            isSplit: true,
+            ratingControlHours: rch.toFixed(2),
+            hours: (rch + workload?.audienceHours).toFixed(2),
+          };
+          hoursDataObj = {
+            numberOfStudents: studentsPerGroup + (i < remainder ? 1 : 0),
+            hours: (rch + workload?.audienceHours).toFixed(2),
+            audienceHours: workload?.audienceHours,
+            ratingControlHours: rch,
+          };
+        }
         workloadsData.push(hoursDataObj);
         newValue.push(newWorkload);
         newState.push(newWorkload);
@@ -95,6 +119,61 @@ export function splitWorkloadCount(data, selectedTr, count) {
   return { updatedData, newIds, blocked, newState, hoursData };
 }
 
+export function combineDataIdentify(data, selectedTr, action) {
+  const prevState = data.filter((item) =>
+    Object.values(selectedTr).includes(item.id)
+  );
+  let text = "Не совпадает: ";
+  if (!prevState.every((el) => el.discipline === prevState[0].discipline)) {
+    text = text + "дисциплина, ";
+  }
+  if (!prevState.every((el) => el.workload === prevState[0].workload)) {
+    text = text + "нагрузка, ";
+  }
+  if (!prevState.every((el) => el.period === prevState[0].period)) {
+    text = text + "период ";
+  }
+
+  if (action === "g") {
+    if (
+      !prevState.every((el) => el.audienceHours === prevState[0].audienceHours)
+    ) {
+      text = text + "аудиторные часы ";
+    }
+    return text;
+  } else if (action === "h") {
+    if (
+      !prevState.every(
+        (el) => el.numberOfStudents === prevState[0].numberOfStudents
+      )
+    ) {
+      text = text + "количество студентов ";
+    }
+    return text;
+  } else if (action === "vkr") {
+    if (
+      !prevState.every(
+        (el) => el.numberOfStudents === prevState[0].numberOfStudents
+      )
+    ) {
+      text = text + "количество студентов ";
+    }
+    return text;
+  }
+  // else if (action === "add") {
+  //   if (prevState.every((el) => el.period !== prevState[0].period)) {
+  //     text = text + "период, ";
+  //   }
+  //   return text;
+  // }
+  // else if (action === "candidatesExam") {
+  //   if (prevState.every((el) => el.period !== prevState[0].period)) {
+  //     text = text + "период, ";
+  //   }
+  //   return text;
+  // }
+}
+
 export function combineData(data, selectedTr, action = "") {
   let newState = null;
   const prevState = data.filter((item) =>
@@ -108,7 +187,7 @@ export function combineData(data, selectedTr, action = "") {
           item.workload === prevState[0].workload &&
           item.discipline === prevState[0].discipline &&
           item.audienceHours === prevState[0].audienceHours &&
-          item.semester === prevState[0].semester
+          item.period === prevState[0].period
       )) ||
     (action === "h" &&
       prevState.every(
@@ -117,7 +196,7 @@ export function combineData(data, selectedTr, action = "") {
           item.discipline === prevState[0].discipline &&
           item.numberOfStudents === prevState[0].numberOfStudents &&
           item.isSplit === true &&
-          item.semester === prevState[0].semester
+          item.period === prevState[0].period
       )) ||
     (action === "vkr" &&
       prevState.every(
@@ -125,14 +204,21 @@ export function combineData(data, selectedTr, action = "") {
           item.workload === prevState[0].workload &&
           item.discipline === prevState[0].discipline &&
           item.numberOfStudents === prevState[0].numberOfStudents &&
-          item.semester === prevState[0].semester
+          item.period === prevState[0].period
       )) ||
     (action === "add" &&
       prevState.every(
         (item) =>
           item.workload === prevState[0].workload &&
           item.discipline === prevState[0].discipline &&
-          item.semester === prevState[0].semester
+          item.period === prevState[0].period
+      )) ||
+    (action === "candidatesExam" &&
+      prevState.every(
+        (item) =>
+          item.workload === prevState[0].workload &&
+          item.discipline === prevState[0].discipline &&
+          item.period === prevState[0].period
       ))
   ) {
     const sumOfStudents = prevState.reduce(
@@ -183,9 +269,16 @@ export function combineData(data, selectedTr, action = "") {
               isMerged: true,
               educator: "___",
             }
-          : action === "add" && {
+          : action === "add"
+          ? {
               ...upData[index],
               numberOfStudents: sumOfStudents,
+              isSplit: false,
+              isMerged: true,
+              educator: "___",
+            }
+          : action === "candidatesExam" && {
+              ...upData[index],
               isSplit: false,
               isMerged: true,
               educator: "___",
@@ -229,6 +322,8 @@ export function combineData(data, selectedTr, action = "") {
           hours: h,
         };
         newState = updatedObjectFix;
+      } else if (action === "candidatesExam") {
+        newState = { ...updatedObject };
       }
 
       const newUpdatedData = [
@@ -261,4 +356,45 @@ export function delChangeData(changedData, dataKey, ids) {
     }
   });
   return cd;
+}
+
+//! применяется всместе с нижней функцией
+// const [menuWidth, setMenuWidth] = useState(300);
+// const menuRef = useRef(null);
+// useEffect(() => {
+//   if (menuRef.current) {
+//     setMenuWidth(menuRef.current.clientWidth);
+//   }
+// }, [menuRef.current]);
+
+// ref={menuRef}
+// style={getStylePosition(
+//   tabPar.contextPosition,
+//   window.innerWidth,
+//   menuWidth,
+//   props.conxextMenuRef
+// )}
+//! функция которая возвращает стиль для положения меню
+export function getStylePosition(
+  contextPosition,
+  innerWidth,
+  menuWidth,
+  conxextMenuRef
+) {
+  console.log("menuWidth", menuWidth);
+  console.log("clientWidth", conxextMenuRef);
+  const cmw = conxextMenuRef.current?.clientWidth + 20 || 280;
+  if (contextPosition?.x + cmw + menuWidth > innerWidth) {
+    return {
+      top: contextPosition?.y,
+      left: contextPosition?.x - menuWidth - 15,
+      transition: "all 0.15s ease",
+    };
+  } else {
+    return {
+      top: contextPosition?.y,
+      left: contextPosition?.x + cmw,
+      transition: "all 0.15s ease",
+    };
+  }
 }

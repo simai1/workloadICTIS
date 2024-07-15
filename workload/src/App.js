@@ -29,7 +29,7 @@ import {
 } from "./components/TableWorkload/Function";
 import { delChangeData } from "./ui/ContextMenu/Function";
 import { FilteredSample } from "./ui/SamplePoints/Function";
-import { horsTeacher } from "./components/TableTeachers/dataHoursForTeacher/HoursTicher";
+// import { horsTeacher } from "./components/TableTeachers/dataHoursForTeacher/HoursTicher";
 import AdminMenu from "./pages/AdminMenu/AdminMenu";
 
 function App() {
@@ -47,27 +47,27 @@ function App() {
       1, 3, 4, 8, 9, 10, 14, 17, 20, 21, 25, 26, 28, 29, 31, 34, 35, 36, 16, 40,
       47, 48, 50,
     ],
-    LECTURER: [2, 15, 17, 17.1, 18, 20, 22, 24, 34, 37, 41, 53, 51,50],
+    LECTURER: [1.1, 15, 17, 17.1, 18, 20, 22, 24, 34, 37, 41, 53, 51, 50],
     DEPARTMENT_HEAD: [
-      2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 20, 22, 23, 25, 26, 27, 30, 31,
-      32, 33, 34, 36, 16, 39, 40, 49, 50, 51, 52,
+      1.1, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 20, 22, 23, 25, 26, 27, 30,
+      31, 32, 33, 34, 36, 16, 38, 39, 40, 49, 50, 51, 52,
     ],
     DIRECTORATE: [
       1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
-      34, 35, 36, 38, 16, 40, 44, 47, 50,
+      34, 35, 36, 38, 16, 40, 44, 47, 49, 50,
     ],
     UNIT_ADMIN: [
       2, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
       34, 35, 36, 38, 16, 40, 48, 42, 50,
     ],
-    EDUCATOR: [15, 24, 41, 53, 51,50],
+    EDUCATOR: [15, 24, 41, 53, 51, 50],
     DEPUTY_DIRECTORATE: [
       1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
-      34, 35, 36, 38, 16, 40, 44, 47, 50,
+      34, 35, 36, 38, 16, 40, 44, 47, 49, 50,
     ],
     DEPUTY_DEPARTMENT_HEAD: [
-      2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 20, 22, 23, 25, 26, 27, 30, 31,
-      32, 33, 34, 36, 16, 39, 40, 49, 50, 51, 52,
+      1.1, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 20, 22, 23, 25, 26, 27, 30,
+      31, 32, 33, 34, 36, 16, 38, 39, 40, 49, 50, 51, 52,
     ],
     GIGA_ADMIN: [
       1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 29, 30,
@@ -75,7 +75,7 @@ function App() {
     ],
     GOD: [
       1, 3, 4, 8, 8.1, 9, 10, 11, 11.1, 12, 13, 14, 17, 18, 20, 21, 22, 23, 25,
-      26, 27, 28, 29, 30, 31, 34, 35, 36, 38, 16, 40, 44, 45, 46, 48, 50,
+      26, 27, 28, 29, 30, 31, 34, 35, 36, 38, 16, 40, 44, 45, 46, 48, 50, 54,
     ],
   };
   // appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)
@@ -88,7 +88,7 @@ function App() {
   const [selectedComponent, setSelectedComponent] = useState("Disciplines");
   const [loaderAction, setLoaderAction] = useState(false);
   const [universalPopupTitle, setUniversalPopupTitle] = useState(""); // если он не пустой, то открывается универсальный попап с данным title
-  const [hoursWorkloadSumma, setHoursWorkloadSumma] = useState([]);
+  const [hoursWorkloadSumma, setHoursWorkloadSumma] = useState([]); //! сумма часов в профиле
   const [sortParamByColumn, setSortParamByColumn] = useState(""); //! сортировка в колнке по возрастанию убыванию или без если ""
   const [popupErrorText, setPopupErrorText] = useState(""); //! если не пустой то в поап ерор будет текст который в состоянии
   const [popupGoodText, setPopupGoodText] = useState(""); //! если не пустой то в поап ерор будет текст который в состоянии
@@ -109,7 +109,6 @@ function App() {
     setAllWarningMessage,
     bufferAction,
     setBufferAction,
-    myProfile,
     fileData,
     setFileData,
     metodRole,
@@ -322,7 +321,17 @@ function App() {
   //! функция обновления истории
   function funUpdateHistory() {
     apiGetHistory().then((req) => {
-      setHistoryChanges(req);
+      const ssIsChecked = JSON.parse(
+        sessionStorage.getItem(`isCheckedHistory${basicTabData.nameKaf}`)
+      );
+      console.log("isChecked", ssIsChecked);
+      const fdfix = FilteredSample(req, ssIsChecked);
+      setHistoryChanges(fdfix);
+      if (ssIsChecked && ssIsChecked !== null && ssIsChecked.length > 0) {
+        setIsChecked(ssIsChecked);
+      } else {
+        setIsChecked([]);
+      }
     });
   }
 
@@ -355,7 +364,7 @@ function App() {
   //! функция которая принимает нагрузки из апи и записывает в состояния
   const funUpdTab = (data) => {
     const dataBd = [...data];
-    setWorkloadData(dataBd);
+    // setWorkloadData(dataBd);
     //! функция прокида буффера для преподавателей, часов, и колличества студентов
     const fixData = UpdateWorkloadForBoofer(
       funFixEducator(dataBd, bufferAction)
@@ -364,7 +373,11 @@ function App() {
     //! функция прокида буффера для разделения соединения и удаления нагрузок
     const fdb = fixDataBuff(fixData, bufferAction);
     // зменяем массив преподавателя на его имя
-    const fdfix = FilteredSample(fdb, isChecked);
+    const ssIsChecked = JSON.parse(
+      sessionStorage.getItem(`isCheckedWorkload${basicTabData.nameKaf}`)
+    );
+    console.log("isChecked", ssIsChecked);
+    const fdfix = FilteredSample(fdb, ssIsChecked);
     setWorkloadData(fdb);
     setWorkloadDataFix(fdfix);
     setFiltredData(fdfix);
@@ -395,8 +408,6 @@ function App() {
 
   //! функция обновления таблицы
   function funUpdateTable(param) {
- 
-    console.log("param", param)
     //param = tableDepartment[0]?.id
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
       const par = sortParamByColumn !== "" ? `?${sortParamByColumn}` : "";
@@ -408,16 +419,16 @@ function App() {
     }
     if (metodRole[myProfile?.role]?.some((el) => el === 14)) {
       let url = "";
-      if (param == 0) {
+      if (param === 0) {
         url = "?isOid=true";
       }
-      if (param == 99) {
+      if (param === 99) {
         if (sortParamByColumn !== "") {
           url = `?${sortParamByColumn}`;
         } else {
           url = "";
         }
-      } else if (param != 99 && param != 0) {
+      } else if (param !== 99 && param !== 0) {
         url = `?department=${param}&${sortParamByColumn}`;
       }
       Workload(url).then((data) => {
@@ -436,7 +447,7 @@ function App() {
     funUpdateTable(
       tableDepartment.find((el) => el.name === basicTabData?.nameKaf)?.id
     );
-  }, [sortParamByColumn]);
+  }, [sortParamByColumn, isChecked]);
 
   //!функция прокида буфера
   function UpdateWorkloadForBoofer(data) {
@@ -536,12 +547,9 @@ function App() {
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 53)) {
       funUpdateTable(99);
     } else {
-      const idTable = tableDepartment.find(
-        (el) => el.name === nameKaf
-      )?.id;
+      const idTable = tableDepartment.find((el) => el.name === nameKaf)?.id;
       idTable && funUpdateTable(idTable);
     }
-
 
     if (
       appData.metodRole[appData.myProfile?.role]?.some(
@@ -578,10 +586,23 @@ function App() {
     }
   }, [tableDepartment, myProfile]);
 
-  useEffect(()=>{
+  useEffect(() => {
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 52)) {
+      getAllocatedAndUnallocatedWrokloadHours(
+        appData.myProfile?.educator.departmentId
+      ).then((resp) => {
+        if (resp.status === 200) {
+          setHoursWorkloadSumma(resp.data);
+          console.log("hoursWorkloadSumma", hoursWorkloadSumma);
+        }
+      });
+    }
+  }, [workloadData]);
+
+  useEffect(() => {
     updateAlldata();
-  },[tableDepartment, nameKaf])
-  
+  }, [tableDepartment, nameKaf]);
+
   function funFilteredFilterSelected(splitData = [...workloadDataFix]) {
     return funFilterSelected(
       splitData,
