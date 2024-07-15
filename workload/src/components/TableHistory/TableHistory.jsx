@@ -5,36 +5,38 @@ import { filteredWorkloadHistory, funHistoryFix } from "./Function";
 import DataContext from "../../context";
 import { apiCheckedUpdate, apiGetHistory } from "../../api/services/ApiRequest";
 import { FilteredSample } from "../../ui/SamplePoints/Function";
+import { useSelector } from "react-redux";
 
 function TableHistory(props) {
   const { tabPar, checkPar, visibleDataPar, basicTabData, appData } =
     useContext(DataContext);
+  const isCheckedStore = useSelector((state) => state.isCheckedSlice.isChecked);
   const [contextShow, setContetxShow] = useState(false);
   const [contextPosition, setContextPosition] = useState({ x: 0, y: 0 });
   const [historyData, sethistoryData] = useState([]);
   const [orighistoryData, origsethistoryData] = useState([]);
-
+  const ssname = `isCheckedHistory${basicTabData.nameKaf}`;
   //! получаем данные с апи по истории
   useEffect(() => {
     basicTabData.funUpdateHistory();
   }, []);
 
+  // //! достаем и локал стореджа состояние фитрации по заголовку
   // useEffect(() => {
-  //   console.log("historyData", historyData);
-  //   console.log("orighistoryData", orighistoryData);
-  // }, [historyData, orighistoryData]);
-
-  //! достаем и локал стореджа состояние фитрации по заголовку
+  //   const ssIsChecked = JSON.parse(
+  //     sessionStorage.getItem(`isCheckedHistory${basicTabData.nameKaf}`)
+  //   ); //! сбросить
+  //   if (ssIsChecked && ssIsChecked !== null && ssIsChecked.length > 0) {
+  //     checkPar.setIsChecked(ssIsChecked);
+  //   } else {
+  //     checkPar.setIsChecked([]);
+  //   }
+  // }, [basicTabData.nameKaf]);
+  //! достаем из стореджа состояние фитрации по заголовку
   useEffect(() => {
-    const ssIsChecked = JSON.parse(
-      sessionStorage.getItem(`isCheckedHistory${basicTabData.nameKaf}`)
-    ); //! сбросить
-    if (ssIsChecked && ssIsChecked !== null && ssIsChecked.length > 0) {
-      checkPar.setIsChecked(ssIsChecked);
-    } else {
-      checkPar.setIsChecked([]);
-    }
-  }, [basicTabData.nameKaf]);
+    const checks = isCheckedStore[ssname];
+    checkPar.setIsChecked(checks || []);
+  }, [basicTabData.nameKaf, isCheckedStore]);
 
   //! при событии скролл таблицы изменим индекс первого показываемого tr
   const scrollTable = (e) => {
@@ -78,14 +80,11 @@ function TableHistory(props) {
       );
       //! преобразуем историю для вывода
       const fixHistory = funHistoryFix(hd);
-      const ssIsChecked = JSON.parse(
-        sessionStorage.getItem(`isCheckedHistory${basicTabData.nameKaf}`)
-      );
-      const fdfix = FilteredSample(
-        fixHistory,
-        ssIsChecked,
-        `isCheckedHistory${basicTabData.nameKaf}`
-      );
+      // const ssIsChecked = JSON.parse(
+      //   sessionStorage.getItem(ssname)
+      // );
+      const checks = isCheckedStore[ssname];
+      const fdfix = FilteredSample(fixHistory, checks, ssname);
       sethistoryData(fdfix);
       origsethistoryData(fixHistory);
 

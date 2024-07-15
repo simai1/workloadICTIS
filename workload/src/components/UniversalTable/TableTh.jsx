@@ -55,7 +55,7 @@ function TableTh(props) {
       setSortImg(0);
     }
   }, [appData.sortParamByColumn]);
-
+  console.log("checkPar.isChecked", checkPar.isChecked);
   return (
     <th name={props.item.key} key={props.item.key}>
       {props.modal && (
@@ -99,15 +99,16 @@ function TableTh(props) {
               }
             ></img>
           )}
-          {checkPar.isChecked.find(
-            (item) => item.itemKey === props.item.key
-          ) && (
-            <img
-              src="./img/filterColumn.svg"
-              alt=">"
-              title="К колонке применен фильтр"
-            ></img>
-          )}
+          {checkPar.isChecked &&
+            checkPar.isChecked.find(
+              (item) => item.itemKey === props.item.key
+            ) && (
+              <img
+                src="./img/filterColumn.svg"
+                alt=">"
+                title="К колонке применен фильтр"
+              ></img>
+            )}
         </div>
       </div>
     </th>

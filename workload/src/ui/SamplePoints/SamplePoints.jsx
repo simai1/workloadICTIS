@@ -3,7 +3,12 @@ import styles from "./SamplePoints.module.scss";
 // import DataContext from "../../context";
 import { FilteredSample } from "./Function";
 import { useDispatch } from "react-redux";
-import { addChecked, removeChecked } from "../../store/isChecked.slice";
+import {
+  addAllCheckeds,
+  addChecked,
+  removeAllCheckeds,
+  removeChecked,
+} from "../../store/filter/isChecked.slice";
 
 export function SamplePoints(props) {
   const dispatch = useDispatch();
@@ -61,16 +66,49 @@ export function SamplePoints(props) {
       0
     ) {
       checked = checked.filter((el) => el.itemKey !== props.itemKey);
+      // if (props.sesionName.includes("isCheckedSchedule")) {
+      dispatch(
+        removeAllCheckeds({
+          itemKey: props.itemKey,
+          tableName: props.sesionName,
+        })
+      );
+      // }
     } else {
-      [...props.isSamplePointsData].map((item) => {
-        checked.push({ value: item, itemKey: props.itemKey });
+      // [...props.isSamplePointsData].map((item) => {
+      //   checked.push({ value: item, itemKey: props.itemKey });
+      // });
+      //! записываем уникальные
+      const uniqueItems = new Set();
+      [...props.isSamplePointsData].forEach((item) => {
+        const itemKey = {
+          value: item,
+          itemKey: props.itemKey,
+        };
+        if (!uniqueItems.has(JSON.stringify(itemKey))) {
+          uniqueItems.add(JSON.stringify(itemKey));
+          checked.push(itemKey);
+        }
       });
+      console.log("checked", checked);
+
+      dispatch(
+        addAllCheckeds({
+          checked: checked,
+          tableName: props.sesionName,
+        })
+      );
     }
     const uniqueArray = [
       ...new Set(checked.map((item) => JSON.stringify(item))),
     ].map((item) => JSON.parse(item));
     props.setIsChecked(uniqueArray);
-    sessionStorage.setItem(props.sesionName, JSON.stringify([...uniqueArray]));
+    // if (!props.sesionName.includes("isCheckedSchedule")) {
+    //   sessionStorage.setItem(
+    //     props.sesionName,
+    //     JSON.stringify([...uniqueArray])
+    //   );
+    // }
 
     // Фильтруем данные
     const fdfix = FilteredSample(
@@ -90,32 +128,43 @@ export function SamplePoints(props) {
       )
     ) {
       checked = checked.filter((item) => item.value !== el);
-      if (props.sesionName.includes("isCheckedSchedule")) {
-        dispatch(removeChecked({ value: el, itemKey: props.itemKey }));
-      }
+      // if (props.sesionName.includes("isCheckedSchedule")) {
+      dispatch(
+        removeChecked({
+          value: el,
+          itemKey: props.itemKey,
+          tableName: props.sesionName,
+        })
+      );
+      // }
     } else {
       checked.push({ value: el, itemKey: props.itemKey });
-      if (props.sesionName.includes("isCheckedSchedule")) {
-        dispatch(addChecked({ value: el, itemKey: props.itemKey }));
-      }
+      // if (props.sesionName.includes("isCheckedSchedule")) {
+      dispatch(
+        addChecked({
+          value: el,
+          itemKey: props.itemKey,
+          tableName: props.sesionName,
+        })
+      );
+      // }
     }
     const uniqueArray = [
       ...new Set(checked.map((item) => JSON.stringify(item))),
     ].map((item) => JSON.parse(item));
     props.setIsChecked(uniqueArray);
-    if (!props.sesionName.includes("isCheckedSchedule")) {
-      sessionStorage.setItem(
-        props.sesionName,
-        JSON.stringify([...uniqueArray])
-      );
-    }
+    // if (!props.sesionName.includes("isCheckedSchedule")) {
+    //   sessionStorage.setItem(
+    //     props.sesionName,
+    //     JSON.stringify([...uniqueArray])
+    //   );
+    // }
     // Фильтруем данные
     const fdfix = FilteredSample(
       props.workloadData,
       uniqueArray,
       props.sesionName
     );
-    console.log("fdfix", fdfix, props.sesionName);
     props.setWorkloadDataFix(fdfix);
   };
 

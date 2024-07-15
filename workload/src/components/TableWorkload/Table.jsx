@@ -143,6 +143,7 @@ function Table(props) {
               checked={tabPar.onCheckBoxAll}
               clickTr={clickTrAll}
               th={true}
+              ssname={props.ssname}
             />
 
             {tableHeaders.map((item, index) => (
