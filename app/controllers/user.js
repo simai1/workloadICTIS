@@ -3,8 +3,7 @@ import { AppErrorInvalid, AppErrorMissing, AppErrorNotExist } from '../utils/err
 import UserDto from '../dtos/user-dto.js';
 import Educator from '../models/educator.js';
 import departments from '../config/departments.js';
-import roles from '../config/roles.js';
-import { map as mapRoles } from "../config/roles.js";
+import roles, { map as mapRoles } from '../config/roles.js';
 import institutionalAffiliations from '../config/institutional-affiliations.js';
 
 export default {
