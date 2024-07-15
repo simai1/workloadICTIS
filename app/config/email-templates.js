@@ -34,7 +34,8 @@ export default {
   guideAppears: {
     subject: 'Уведомление workload.sfedu.ru',
     template: () =>
-      `<p>Руководство по пользованию системой уже доступно!<br>
-          Вы можете ознакомиться с ним нажав на кнопку с восклицательным знаком в правом верхнем углу страницы.</p>`
+      `<p>Руководство по пользованию <a href="https://workload.sfedu.ru/client/">системой распределения нагрузки</a> уже доступно!<br>
+          Для ознакомления нажмите на кнопку с вопросительным знаком в правом верхнем углу страницы.</p>
+      <img src="https://sun9-4.userapi.com/impg/44Y9O0iDKcvlBf6PtG0qrHWWkfC7eTdJ0XrkWA/k6Mzq20H5bc.jpg?size=352x186&quality=96&sign=8f4188ae2fc9379c1461708f5693f697&type=album" alt="1">`
   }
 };
