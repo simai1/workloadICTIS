@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styles from "./Popup.module.scss";
 import { roles, tableHeaderPopup, dataListPosition } from "../AdminData";
 import {
@@ -26,44 +26,103 @@ function Popup(props) {
   );
   const [rate, setRate] = useState(props.data.rate);
 
-  /* */
+  const [isVisiblePosition, setIsVisiblePosition] = useState(false);
+  const [isVisibleRole, setIsVisibleRole] = useState(false);
 
-  // const 
-  console.log(
-    role,
-    login,
-    maxHours,
-    minHours,
-    recommendedMaxHours,
-    position,
-    department,
-    name,
-    institutionalAffiliation,
-    allowedDepartments
-  );
+  const [allPosition, setAllPosition] = useState(dataListPosition);
+  const [allRole, setAllRole] = useState({
+    1: "METHODIST",
+    2: "LECTURER",
+    3: "DEPARTMENT_HEAD",
+    4: "DIRECTORATE",
+    5: "EDUCATOR",
+    6: "UNIT_ADMIN",
+    7: "DEPUTY_DIRECTORATE",
+    8: "DEPUTY_DEPARTMENT_HEAD",
+    9: "GIGA_ADMIN",
+    10: "GOD",
+  });
 
+  // Object.keys(allRole).map(key => console.log(key, allRole[key]))
+
+  const timeoutId = useRef(null);
+
+  // console.log(
+  //   role,
+  //   login,
+  //   maxHours,
+  //   minHours,
+  //   recommendedMaxHours,
+  //   position,
+  //   department,
+  //   name,
+  //   institutionalAffiliation,
+  //   allowedDepartments
+  // );
+
+  const fnShowListPosition = () => {
+    setIsVisiblePosition(!isVisiblePosition);
+  };
+
+  const fnShowListRole = () => {
+    setIsVisibleRole(!isVisibleRole);
+  };
+
+  const chooseClickPosition = (pos) => {
+    setPosition(pos.name);
+    setIsVisiblePosition(false);
+    const data = {
+      id: props.data.id,
+      key: "position",
+      value: pos.key,
+    };
+    console.log(data.id, data.key, data.value);
+    apiAdminUpdata(data);
+  };
+
+  const chooseClickRole = (key, value) => {
+    console.log(key,value);
+    setRole(value);
+    setIsVisibleRole(false)
+    const data = {id: props.data.id, key: "role", value: key}
+    apiAdminUpdata(data)
+  };
+
+  const updateInputField = (key, value) => {
+    clearTimeout(timeoutId.current);
+    timeoutId.current = setTimeout(() => {
+      const data = { id: props.data.id, key, value };
+      apiAdminUpdata(data);
+    }, 5000);
+  };
   const inputNameChange = (event) => {
     setName(event.target.value);
+    updateInputField("name", event.target.value);
   };
 
   const inputLoginChange = (event) => {
     setLogin(event.target.value);
+    updateInputField("login", event.target.value);
   };
 
   const inputRateChange = (event) => {
     setRate(event.target.value);
+    updateInputField("rate", event.target.value);
   };
 
   const inputrecommendedMaxHoursChange = (event) => {
-    setRecommendedMaxHours(event.target.value)
-  }
+    setRecommendedMaxHours(event.target.value);
+    updateInputField("recommendedMaxHours", event.target.value);
+  };
 
   const inputMinHoursChange = (event) => {
     setMinHours(event.target.value);
+    updateInputField("minHours", event.target.value);
   };
 
   const inputMaxHoursChange = (event) => {
     setMaxHours(event.target.value);
+    updateInputField("maxHours", event.target.value);
   };
 
   return (
@@ -71,37 +130,6 @@ function Popup(props) {
       <div className={styles.Popup}>
         <div className={styles.PopupBox}>
           <div className={styles.box_scroll}>
-            {/* {tableHeaderPopup.map((keys) => (
-              <>
-                <div key={keys.key} className={styles.PopupBody}>
-                  <div className={styles.left}>{keys.name}</div>
-                  <input
-                    onClick={() => inpClick(keys.key)}
-                    value={popupData && popupData[keys.key]}
-                    placeholder="___"
-                    className={styles.rigth}
-                    onChange={handleChange}
-                  />
-                  {listShow === keys.key && (
-                    <div className={styles.list}>
-                      <div
-                        style={{ top: "-6px", left: "9px" }}
-                        className={styles.left}
-                      >
-                        {keys.name}
-                      </div>
-                      <ul>
-                        {listData.map((item) => (
-                          <li onClick={() => liClick(item, keys.key)}>
-                            {item.name}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              </>
-            ))} */}
             <div className={styles.PopupBody}>
               <div className={styles.left}>ФИО</div>
               <input
@@ -120,24 +148,32 @@ function Popup(props) {
                 onChange={inputLoginChange}
               ></input>
             </div>
-             {/* <div className={styles.PopupBody}>
+            <div className={styles.PopupBody}>
               <div className={styles.left}>Роль</div>
-              <div className={styles.list}>
-                <div
-                  style={{ top: "-6px", left: "9px" }}
-                  className={styles.left}
-                >
-                  {keys.name}
-                </div>
-                <ul>
-                  {listData.map((item) => (
-                    <li>{item.name}</li>
-                  ))}
-                </ul>
+              <div className={styles.rigth} onClick={fnShowListRole}>
+                {role}
               </div>
-            </div> */}
-  
-  {/*          <div className={styles.PopupBody}>
+              {isVisibleRole && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "3.4vw",
+                    borderTop: "none",
+                  }}
+                  className={styles.list}
+                >
+                  <ul>
+                    {Object.keys(allRole).map((key) => (
+                      <li key={key} onClick={() => chooseClickRole(key, allRole[key])}>
+                        {allRole[key]}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+
+            {/*          <div className={styles.PopupBody}>
               <div className={styles.left}>Институт</div>
               <div className={styles.list}>
                 <div
@@ -185,6 +221,33 @@ function Popup(props) {
                 </ul>
               </div>
             </div> */}
+            <div className={styles.PopupBody}>
+              <div className={styles.left}>Должность</div>
+              <div className={styles.rigth} onClick={fnShowListPosition}>
+                {position}
+              </div>
+              {isVisiblePosition && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "3.4vw",
+                    borderTop: "none",
+                  }}
+                  className={styles.list}
+                >
+                  <ul>
+                    {allPosition.map((pos) => (
+                      <li
+                        key={pos.key}
+                        onClick={() => chooseClickPosition(pos)}
+                      >
+                        {pos.name}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
             <div className={styles.PopupBody}>
               <div className={styles.left}>Ставка</div>
               <input
