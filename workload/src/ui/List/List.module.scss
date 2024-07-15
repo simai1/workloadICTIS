@@ -23,6 +23,7 @@
   }
   .inputList {
     position: relative;
+    display: flex;
   }
   .inputList::placeholder {
     color: #adadad;

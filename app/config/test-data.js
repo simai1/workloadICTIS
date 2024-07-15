@@ -277,7 +277,7 @@ export const educators = [
     {
         name: 'Сиверин Никита Александрович',
         department: 11,
-        email: 'corasks@yandex.ru',
+        email: 'siverin@sfedu.ru',
         position: 5,
         rate: 0.5,
     },

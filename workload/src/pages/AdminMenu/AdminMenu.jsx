@@ -14,14 +14,7 @@ function AdminMenu() {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [popup, setPopup] = useState(false);
 
-  //! при клике на поле в контекстном меню
-  const closeClick = () => {
-    setPopup(false);
-  };
-
-  //   apiAdminUpdata
-
-  useEffect(() => {
+  const updateAllUsers = () => {
     if (appData.myProfile?.role === "GOD") {
       GetAllUserss().then((req) => {
         if (req?.status === 200) {
@@ -46,6 +39,16 @@ function AdminMenu() {
         }
       });
     }
+  }
+
+  //! при клике на поле в контекстном меню
+  const closeClick = () => {
+    setPopup(false);
+  };
+
+  //   apiAdminUpdata
+  useEffect(() => {
+    updateAllUsers()
   }, []);
 
   //! При клике на строку
@@ -81,6 +84,7 @@ function AdminMenu() {
             <Popup
               data={tableData.find((el) => el.id === selectedTr)}
               closeClick={closeClick}
+              updateAllUsers={updateAllUsers}
             />
           )}
 
