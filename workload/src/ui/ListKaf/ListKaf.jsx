@@ -35,7 +35,9 @@ function ListKaf({
     setopenLists("");
     setTableMode("cathedrals");
     tabPar.setSelectedFilter("Все Дисциплины");
-    appData.setSelectedComponent("Disciplines");
+    if (appData.selectedComponent !== "ScheduleMaterials") {
+      appData.setSelectedComponent("Disciplines");
+    }
   };
 
   const refDiv = useRef(null);

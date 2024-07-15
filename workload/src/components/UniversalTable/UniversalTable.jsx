@@ -57,18 +57,6 @@ function UniversalTable(props) {
     tabPar.setContextMenuShow(!tabPar.contextMenuShow);
   };
 
-  //! достаем и локал стореджа состояние фитрации по заголовку
-  useEffect(() => {
-    const ssIsChecked = JSON.parse(
-      sessionStorage.getItem(props.tabDat.ssIsChecked)
-    ); //! сбросить
-    if (ssIsChecked && ssIsChecked !== null && ssIsChecked.length > 0) {
-      checkPar.setIsChecked(ssIsChecked);
-    } else {
-      checkPar.setIsChecked([]);
-    }
-  }, [basicTabData.nameKaf]);
-
   return (
     <div
       onContextMenu={handleContextMenu}

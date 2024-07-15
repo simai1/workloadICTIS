@@ -5,6 +5,7 @@ import { headers, testData } from "./ScheduleData";
 import DataContext from "../../context";
 import { funFixEducator } from "../TableWorkload/Function";
 import { FilteredSample } from "../../ui/SamplePoints/Function";
+import { useSelector } from "react-redux";
 
 function TableSchedule(props) {
   const { tabPar, visibleDataPar, basicTabData, checkPar } =
@@ -30,23 +31,21 @@ function TableSchedule(props) {
     ssHeader,
   };
 
-  useEffect(() => {
-    const dataBd = [...testData];
-    const ssIsChec = JSON.parse(sessionStorage.getItem(ssIsChecked));
-    const fixEducator = funFixEducator(dataBd);
-    const fdfix = FilteredSample(fixEducator, ssIsChec);
-    console.log("fdfix", fdfix);
-    setTableData(dataBd);
-    setTableDataFix(fixEducator);
-    setFiltredData(fixEducator);
-  }, [basicTabData.nameKaf]);
+  //! достаем данные из редакса
+  const isCheckedStore = useSelector((state) => state.isCheckedSlice.isChecked);
 
   useEffect(() => {
-    console.log("tableHeader", tableHeader);
-    console.log("tableData", tableData);
-    console.log("tableDataFix", tableDataFix);
-    console.log("filtredData", filtredData);
-  }, [tableHeader, tableData, tableDataFix, filtredData]);
+    const dataBd = [...testData];
+    const fixEducator = funFixEducator(dataBd);
+    const fdfix = FilteredSample(fixEducator, isCheckedStore);
+    console.log("fdfix", fdfix);
+    setTableData(dataBd);
+    setTableDataFix(fdfix);
+    setFiltredData(fdfix);
+    console.log("isCheckedStore", isCheckedStore);
+    checkPar.setIsChecked(isCheckedStore || []);
+  }, [basicTabData.nameKaf, isCheckedStore]);
+
   return (
     <div className={styles.TableSchedule}>
       <UniversalTable

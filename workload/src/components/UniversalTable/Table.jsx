@@ -11,8 +11,6 @@ function Table(props) {
     useContext(DataContext);
 
   const [tableHeaders, setTableHeaders] = useState([]);
-  console.log("hed", tableHeaders);
-  console.log("data", props.tabDat.filtredData);
   //! заголово таблицы хранится в sessionStorage, есть он есть то применяем к таблице
   useEffect(() => {
     const ssUpdatedHeader = JSON.parse(

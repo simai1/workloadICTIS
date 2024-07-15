@@ -665,7 +665,8 @@ function HomePage() {
                   (el) => el === 28
                 ) &&
                   (appData.selectedComponent === "Disciplines" ||
-                    appData.selectedComponent === "History") && (
+                    appData.selectedComponent === "History" ||
+                    appData.selectedComponent === "ScheduleMaterials") && (
                     <>
                       <ListKaf
                         dataList={departments}

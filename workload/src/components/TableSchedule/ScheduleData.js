@@ -7,10 +7,10 @@ export const testData = [
     curriculum:
       "000166033, 000166656, 000169019, 000169048, 000169071, 000169425, 000169472, 000169508, 000169568, 000169666, 000169778",
     curriculumUnit: "Институт радиотехнических систем и управления",
-    department: "ИАСБ",
+    department: "БИТ",
     discipline: "Интеллектуальные информационные системы",
     educator: {
-      department: "ИАСБ",
+      department: "БИТ",
       id: "6081ac8f-84ca-4e42-96b7-10d360f4cac1",
       maxHours: 900,
       minHours: 150,
@@ -40,7 +40,7 @@ export const testData = [
     notes: "Г-123",
   },
   {
-    audienceHours: 36,
+    audienceHours: 30,
     block: "Б1.В.ЭД.02 МУАМ",
     comment: null,
     core: "Электрооборудование современных производств и транспорта",
@@ -80,7 +80,7 @@ export const testData = [
     notes: "Д-123",
   },
   {
-    audienceHours: 36,
+    audienceHours: 20,
     block: "Б1.В.ЭД.02 МУАМ",
     comment: null,
     core: "Электрооборудование современных производств и транспорта",
@@ -111,10 +111,10 @@ export const testData = [
     isSplit: false,
     levelOfTraining: "Бакалавр",
     notes: null,
-    numberOfStudents: 17,
+    numberOfStudents: 12,
     period: 1,
     ratingControlHours: 6.12,
-    semester: "Пятый семестр",
+    semester: "Первый семестр",
     specialty: "Электроэнергетика и электротехника",
     workload: "Лекционные",
     notes: "Г-123",
