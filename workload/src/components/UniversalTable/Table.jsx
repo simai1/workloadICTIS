@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import TableTh from "./TableTh";
 import TableTd from "./TableTd";
-import styles from "./TableWorkload.module.scss";
+import styles from "./UniversalTable.module.scss";
 import DataContext from "../../context";
 import InputCheckbox from "./InputCheckbox/InputCheckbox";
 import { funGetConfirmation, getTextForNotData } from "./Function";
@@ -11,18 +11,17 @@ function Table(props) {
     useContext(DataContext);
 
   const [tableHeaders, setTableHeaders] = useState([]);
-
   //! заголово таблицы хранится в sessionStorage, есть он есть то применяем к таблице
   useEffect(() => {
     const ssUpdatedHeader = JSON.parse(
-      sessionStorage.getItem("headerWorkload")
+      sessionStorage.getItem(props.tabDat.ssHeader)
     );
     if (ssUpdatedHeader) {
       setTableHeaders(ssUpdatedHeader);
     } else {
-      setTableHeaders(basicTabData.tableHeaders);
+      setTableHeaders(props.tabDat.tableHeader);
     }
-  }, [basicTabData.tableHeaders]);
+  }, [props.tabDat.tableHeader]);
 
   //! определение верхнего отступа таблицы
   const getTopHeight = () => {
@@ -32,7 +31,7 @@ function Table(props) {
   //! определение нижнего отступа таблицы
   const getBottomHeight = () => {
     return (
-      (basicTabData.filtredData.length -
+      (props.tabDat.filtredData.length -
         visibleDataPar.startData -
         visibleDataPar.visibleData) *
       visibleDataPar.heightTd
@@ -79,7 +78,7 @@ function Table(props) {
           return [...prev, itemId];
         }
       });
-      if (basicTabData.filtredData.length === len) {
+      if (props.tabDat.filtredData.length === len) {
         tabPar.setOnCheckBoxAll(true);
       } else {
         tabPar.setOnCheckBoxAll(false);
@@ -89,8 +88,8 @@ function Table(props) {
 
   const clickTrAll = () => {
     let ids = [];
-    if (basicTabData.filtredData.length !== tabPar.selectedTr.length) {
-      basicTabData.filtredData.map((item) => {
+    if (props.tabDat.filtredData.length !== tabPar.selectedTr.length) {
+      props.tabDat.filtredData.map((item) => {
         ids.push(item.id);
       });
       tabPar.setOnCheckBoxAll(true);
@@ -105,24 +104,21 @@ function Table(props) {
   const getClassNameTr = (items) => {
     const itemId = items.id;
     let classText = null;
-    if (tabPar.selectedTr?.includes(itemId)) {
-      classText = `${styles.selectedTr}`;
-    }
+    classText = tabPar.selectedTr?.includes(itemId)
+      ? `${styles.selectedTr}`
+      : null;
     const item = tabPar.coloredData?.find((el) => el.workloadId === itemId);
     const colored = item ? `colored${item.color}` : null;
-    if (item) {
-      classText = `${classText} ${styles[colored]}`;
-    }
-    if (tabPar.changedData.deleted?.find((el) => el === itemId)) {
-      classText = `${classText} ${styles.trDeleted}`;
-    }
-    if (
+    classText = item ? `${classText} ${styles[colored]}` : classText;
+    classText = tabPar.changedData.deleted?.find((el) => el === itemId)
+      ? `${classText} ${styles.trDeleted}`
+      : classText;
+    classText =
       tabPar.changedData.split?.find((el) => el === itemId) ||
       tabPar.changedData.join?.find((el) => el === itemId) ||
       items.isBlocked
-    ) {
-      classText = `${classText} ${styles.trBlocked}`;
-    }
+        ? `${classText} ${styles.trBlocked}`
+        : classText;
 
     return classText;
   };
@@ -143,6 +139,7 @@ function Table(props) {
               checked={tabPar.onCheckBoxAll}
               clickTr={clickTrAll}
               th={true}
+              tabDat={props.tabDat}
             />
 
             {tableHeaders.map((item, index) => (
@@ -151,11 +148,12 @@ function Table(props) {
                 item={item}
                 index={index}
                 modal={tabPar.spShow === index}
+                tabDat={props.tabDat}
               />
             ))}
           </tr>
         </thead>
-        {basicTabData.filtredData.length === 0 && (
+        {props.tabDat.filtredData.length === 0 && (
           // если нет данных то выводим нет данных
           <tbody className={styles.NotData}>
             <tr>
@@ -181,7 +179,7 @@ function Table(props) {
             style={{ height: getTopHeight() }}
           ></tr>
 
-          {basicTabData.filtredData
+          {props.tabDat.filtredData
             .slice(
               visibleDataPar.startData,
               visibleDataPar.startData + visibleDataPar.visibleData
@@ -210,6 +208,7 @@ function Table(props) {
                   number={number}
                   getConfirmation={getConfirmation(item.id)}
                   checked={tabPar.selectedTr.includes(item.id)}
+                  tabDat={props.tabDat}
                 />
                 {tableHeaders.map((itemKey, index) => (
                   <TableTd
@@ -218,6 +217,7 @@ function Table(props) {
                     itemKey={itemKey}
                     ind={index}
                     index={visibleDataPar.startData + number}
+                    tabDat={props.tabDat}
                   />
                 ))}
               </tr>

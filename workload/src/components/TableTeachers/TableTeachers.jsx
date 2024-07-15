@@ -5,6 +5,7 @@ import DataContext from "../../context";
 import { headersEducator } from "../TableWorkload/Data";
 import {
   Educator,
+  EducatorByInstitute,
   // GetAllUsers,
   apiEducatorDepartment,
 } from "../../api/services/ApiRequest";
@@ -72,7 +73,11 @@ function TableTeachers(props) {
 
   const updateTable = () => {
     const par = sortParamByColumn !== "" ? `?${sortParamByColumn}` : "";
-    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 2)) {
+    if (
+      appData.metodRole[appData.myProfile?.role]?.some(
+        (el) => el === 2 || el === 1.1
+      )
+    ) {
       apiEducatorDepartment(par).then((res) => {
         if (res && res.status === 200) {
           appData.setEducator(res.data);
@@ -117,6 +122,23 @@ function TableTeachers(props) {
       //   });
       // }
     }
+    // else if (
+    //   appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1.1)
+    // ) {
+    //   EducatorByInstitute().then((res) => {
+    //     if (res && res.status === 200) {
+    //       appData.setEducator(res.data);
+    //       const ssIsChecked = JSON.parse(
+    //         sessionStorage.getItem("isCheckedTeachers")
+    //       );
+    //       const fdfix = FilteredSample(res.data, ssIsChecked);
+    //       setFilteredData([...fdfix]);
+    //       // setFilteredData(res.data);
+    //       setUpdatedData(res.data);
+    //       setUpdatedHeader(tableHeaders);
+    //     }
+    //   });
+    // }
   };
 
   //! заносим данные о преподавателях в состояние

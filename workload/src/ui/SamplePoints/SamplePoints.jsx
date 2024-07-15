@@ -2,8 +2,11 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from "./SamplePoints.module.scss";
 // import DataContext from "../../context";
 import { FilteredSample } from "./Function";
+import { useDispatch } from "react-redux";
+import { addChecked, removeChecked } from "../../store/isChecked.slice";
 
 export function SamplePoints(props) {
+  const dispatch = useDispatch();
   // const { basicTabData } = React.useContext(DataContext);
   const [searchText, setSearchText] = useState("");
   console.log("sesionName", props.sesionName);
@@ -87,14 +90,25 @@ export function SamplePoints(props) {
       )
     ) {
       checked = checked.filter((item) => item.value !== el);
+      if (props.sesionName.includes("isCheckedSchedule")) {
+        dispatch(removeChecked({ value: el, itemKey: props.itemKey }));
+      }
     } else {
       checked.push({ value: el, itemKey: props.itemKey });
+      if (props.sesionName.includes("isCheckedSchedule")) {
+        dispatch(addChecked({ value: el, itemKey: props.itemKey }));
+      }
     }
     const uniqueArray = [
       ...new Set(checked.map((item) => JSON.stringify(item))),
     ].map((item) => JSON.parse(item));
     props.setIsChecked(uniqueArray);
-    sessionStorage.setItem(props.sesionName, JSON.stringify([...uniqueArray]));
+    if (!props.sesionName.includes("isCheckedSchedule")) {
+      sessionStorage.setItem(
+        props.sesionName,
+        JSON.stringify([...uniqueArray])
+      );
+    }
     // Фильтруем данные
     const fdfix = FilteredSample(
       props.workloadData,
