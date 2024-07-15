@@ -30,6 +30,7 @@ import historyRoute from './routes/history.js';
 import roleRoute from './routes/role.js';
 import cors from 'cors';
 import { eventEmitter } from './utils/notification.js';
+import sendMail from './services/email.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -71,13 +72,14 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 // app.use(corsMiddleware);
-app.use(cors({
-    credentials: true,
-    origin: true,
-    exposedHeaders: ['*'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-}));
-
+app.use(
+    cors({
+        credentials: true,
+        origin: true,
+        exposedHeaders: ['*'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
+    })
+);
 
 cronService.checkHours.start();
 // cronService.reminderPractice.start();

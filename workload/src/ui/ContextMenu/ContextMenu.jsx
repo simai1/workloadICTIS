@@ -12,7 +12,12 @@ import {
 } from "../../api/services/ApiRequest";
 import { Highlight } from "./Menu/Highlight";
 import MenuPop from "./Menu/MenuPop";
-import { combineData, addСhangedData, upDateEducators } from "./Function";
+import {
+  combineData,
+  addСhangedData,
+  upDateEducators,
+  combineDataIdentify,
+} from "./Function";
 import CommentsMenu from "./Menu/CommentsMenu";
 import PopupOffer from "./Menu/PopupOffer";
 import SplitByHoursMenu from "./Menu/SplitByHoursMenu";
@@ -26,6 +31,7 @@ const ContextMenu = () => {
   const [popupOffer, setPopupOffer] = useState(null);
   const [popupComment, setPopupComment] = useState(false);
   const [popupCommentAction, setPopupCommentAction] = useState(null);
+  const conxextMenuRefBlock = useRef(null);
 
   const handleContextMenu = (e) => {
     e.preventDefault();
@@ -66,6 +72,13 @@ const ContextMenu = () => {
       tabPar.setTypeSplit(type);
     }
     setMenuShow(menuShow === "splitByHoursMenu" ? "" : "splitByHoursMenu");
+  };
+
+  //! разделение кандидатского экзамена
+  const funSplitCandidatesExam = () => {
+    setMenuShow(
+      menuShow === "splitCandidatesExam" ? "" : "splitCandidatesExam"
+    );
   };
 
   //! нажатие на добавить преподавателя
@@ -148,6 +161,7 @@ const ContextMenu = () => {
             basicTabData.funUpdateOffersLecturer();
         });
       });
+      tabPar.setContextMenuShow(false);
     } else {
       setPopupOffer(null);
       tabPar.setContextMenuShow(false);
@@ -181,6 +195,16 @@ const ContextMenu = () => {
 
     if (funData === null) {
       appData.seterrorPopUp(true);
+      const text = combineDataIdentify(
+        basicTabData.workloadDataFix,
+        tabPar.selectedTr,
+        action
+      );
+      if (text && text !== "Не совпадает: ") {
+        appData.setPopupErrorText(
+          `Извините, данную операцию невозможно выполнить. ${text}`
+        );
+      }
     } else {
       tabPar.setSelectedTr([]);
       basicTabData.setWorkloadDataFix(funData.newUpdatedData);
@@ -192,7 +216,7 @@ const ContextMenu = () => {
         audienceHours: funData.newState.audienceHours,
       };
 
-      if (action === "add") {
+      if (action === "add" || action === "candidatesExam") {
         data = {
           ids: tabPar.selectedTr,
           workloadData: hoursData,
@@ -208,7 +232,7 @@ const ContextMenu = () => {
           hoursData: hoursData,
           newState: funData.newState,
           prevState: funData.prevState,
-          action: `?type=${action}`,
+          action: action === "candidatesExam" ? `?type=add` : `?type=${action}`,
         },
         ...appData.bufferAction,
       ]);
@@ -313,6 +337,7 @@ const ContextMenu = () => {
 
   //! закрытие модального окна при нажати вне него
   const conxextMenuRef = useRef(null);
+
   useEffect(() => {
     const handler = (event) => {
       if (
@@ -346,19 +371,19 @@ const ContextMenu = () => {
 
   //! функция для определения разделения доп нагрузки
   function funGetSplitDopWorkload() {
-    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 11)) {
-      if (
-        basicTabData.workloadDataFix
-          .filter((item) => tabPar.selectedTr.some((el) => el === item.id))
-          .every(
-            (it) =>
-              it.isSplit === false &&
-              addWorkload.some((el) => el.name === it.workload)
-          )
-      ) {
-        return true;
-      } else return false;
+    // if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 11)) {
+    if (
+      basicTabData.workloadDataFix
+        .filter((item) => tabPar.selectedTr.some((el) => el === item.id))
+        .every(
+          (it) =>
+            it.isSplit === false &&
+            addWorkload.some((el) => el.name === it.workload)
+        )
+    ) {
+      return true;
     } else return false;
+    // } else return false;
   }
   //! функция для определения обьединения доп нагрузки
   function funGetJoinDopWorkload() {
@@ -373,26 +398,229 @@ const ContextMenu = () => {
     } else return false;
   }
 
+  //! функция которая определяет какое разделене выводить
+  function getSplitMenuPopup(
+    metodRole,
+    myProfile,
+    funGetSplitDopWorkload,
+    workloadDataFix,
+    selectedTr
+  ) {
+    let massMenuPop = [];
+
+    const wdFix = workloadDataFix.filter((item) =>
+      selectedTr.some((el) => el === item.id)
+    );
+
+    if (metodRole[myProfile?.role]?.some((el) => el === 11)) {
+      //!
+      if (
+        !funGetSplitDopWorkload() &&
+        wdFix.every(
+          (it) =>
+            it.isSplit === false &&
+            it.workload !== "Защита ВКР" &&
+            !it.workload.toLowerCase().includes("экзамен") &&
+            !it.workload.toLowerCase().includes("практика")
+        )
+      ) {
+        massMenuPop.push(
+          <MenuPop
+            btnText={"Разделить по подгруппам"}
+            func={handleMouseClickPop}
+            menuShow={menuShow === "subMenu"}
+            img={true}
+          />
+        );
+      }
+
+      //!
+      if (
+        !funGetSplitDopWorkload() &&
+        wdFix.every(
+          (it) =>
+            it.isSplit === false &&
+            it.workload !== "Защита ВКР" &&
+            it.workload !== "Кандидатский экзамен"
+        )
+      ) {
+        massMenuPop.push(
+          <MenuPop
+            btnText={"Разделить по часам"}
+            func={splitByHoursFun}
+            menuShow={menuShow === "splitByHoursMenu"}
+            img={true}
+          />
+        );
+      }
+
+      //!
+      if (funGetSplit()) {
+        massMenuPop.push(
+          <MenuPop
+            btnText={"Разделить"}
+            func={splitVKR}
+            menuShow={menuShow === "splitVKR"}
+            img={true}
+          />
+        );
+      }
+
+      //!
+      if (selectedTr.length === 1 && funGetSplitDopWorkload()) {
+        massMenuPop.push(
+          <MenuPop
+            btnText={"Разделить"}
+            func={splitAddModal}
+            menuShow={menuShow === "splitByHoursMenu"}
+            img={true}
+          />
+        );
+      }
+
+      if (
+        wdFix.every(
+          (it) => it.isSplit === false && it.workload === "Кандидатский экзамен"
+        )
+      ) {
+        massMenuPop.push(
+          <MenuPop
+            btnText={"Разделить"}
+            func={funSplitCandidatesExam}
+            menuShow={menuShow === "splitCandidatesExam"}
+            img={true}
+          />
+        );
+      }
+    }
+
+    console.log("massMenuPop", massMenuPop);
+    return massMenuPop;
+  }
+
+  //! функция которая определяет какое объединение выводить
+  function getJoinMenuPopup(
+    metodRole,
+    myProfile,
+    funGetJoinDopWorkload,
+    workloadDataFix,
+    selectedTr
+  ) {
+    let massMenuPop = [];
+    const wdFix = workloadDataFix.filter((item) =>
+      selectedTr.some((el) => el === item.id)
+    );
+    if (
+      metodRole[myProfile?.role]?.some((el) => el === 12) &&
+      selectedTr.length > 1
+    ) {
+      //!
+      if (
+        !funGetJoinDopWorkload() &&
+        wdFix.every(
+          (it) =>
+            it.workload !== "Защита ВКР" &&
+            !it.workload.toLowerCase().includes("экзамен") &&
+            !it.workload.toLowerCase().includes("практика")
+        )
+      ) {
+        massMenuPop.push(
+          <MenuPop
+            btnText={"объединить по подгруппам"}
+            func={() => handleJoinWorkloads("g")}
+            img={false}
+          />
+        );
+      }
+
+      //!
+      if (
+        !funGetJoinDopWorkload() &&
+        wdFix.every(
+          (it) =>
+            it.isSplit === true &&
+            it.workload !== "Защита ВКР" &&
+            it.workload !== "Кандидатский экзамен"
+        )
+      ) {
+        massMenuPop.push(
+          <MenuPop
+            btnText={"объединить по часам"}
+            func={() => handleJoinWorkloads("h")}
+            img={false}
+          />
+        );
+      }
+
+      //!
+      if (
+        !funGetJoinDopWorkload() &&
+        wdFix.every((it) => it.workload === "Защита ВКР")
+      ) {
+        massMenuPop.push(
+          <MenuPop
+            btnText={"объединить"}
+            func={() => handleJoinWorkloads("vkr")}
+            img={false}
+          />
+        );
+      }
+
+      //!
+      if (
+        funGetJoinDopWorkload() &&
+        wdFix.every((it) => it.workload !== "Защита ВКР")
+      ) {
+        massMenuPop.push(
+          <MenuPop
+            btnText={"объединить"}
+            func={() => handleJoinWorkloads("add")}
+            img={false}
+          />
+        );
+      }
+
+      //!
+      if (wdFix.every((it) => it.workload === "Кандидатский экзамен")) {
+        massMenuPop.push(
+          <MenuPop
+            btnText={"объединить"}
+            func={() => handleJoinWorkloads("candidatesExam")}
+            img={false}
+          />
+        );
+      }
+    }
+
+    console.log("joinmassMenuPop", massMenuPop);
+    return massMenuPop;
+  }
+
   return (
     <div
-      // ref={props.refContextMenu}
       ref={conxextMenuRef}
       onContextMenu={handleContextMenu}
       className={styles.ContextMenu}
     >
       {popupOffer && (
         <PopupOffer
+          conxextMenuRefBlock={conxextMenuRefBlock}
           onClickOfferPopup={onClickOfferPopup}
           title={"Вы уверенны что хотите отправить предложение?"}
         />
       )}
       {popupComment && (
         <PopupOffer
+          conxextMenuRefBlock={conxextMenuRefBlock}
           onClickOfferPopup={onClickCommentPopup}
           title={"Вы уверенны что хотите отправить комментарий?"}
         />
       )}
-      <div style={positStyle} className={styles.blockMenu}>
+      <div
+        style={positStyle}
+        className={styles.blockMenu}
+        ref={conxextMenuRefBlock}
+      >
         {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 9) && (
           <MenuPop
             btnText={"Добавить преподавателя"}
@@ -411,58 +639,12 @@ const ContextMenu = () => {
           )}
         <MenuPop btnText={"Закрепить"} func={pinaCell} img={false} />
         <MenuPop btnText={"Открепить"} func={unPinaCell} img={false} />
-        {appData.metodRole[appData.myProfile?.role]?.some(
-          (el) =>
-            el === 11 &&
-            !funGetSplitDopWorkload() &&
-            basicTabData.workloadDataFix
-              .filter((item) => tabPar.selectedTr.some((el) => el === item.id))
-              .every(
-                (it) => it.isSplit === false && it.workload !== "Защита ВКР"
-              )
-        ) && (
-          <MenuPop
-            btnText={"Разделить по подгруппам"}
-            func={handleMouseClickPop}
-            menuShow={menuShow === "subMenu"}
-            img={true}
-          />
-        )}
-
-        {appData.metodRole[appData.myProfile?.role]?.some(
-          (el) =>
-            el === 11 &&
-            !funGetSplitDopWorkload() &&
-            basicTabData.workloadDataFix
-              .filter((item) => tabPar.selectedTr.some((el) => el === item.id))
-              .every(
-                (it) => it.isSplit === false && it.workload !== "Защита ВКР"
-              )
-        ) && (
-          <MenuPop
-            btnText={"Разделить по часам"}
-            func={splitByHoursFun}
-            menuShow={menuShow === "splitByHoursMenu"}
-            img={true}
-          />
-        )}
-
-        {funGetSplit() && (
-          <MenuPop
-            btnText={"Разделить"}
-            func={splitVKR}
-            menuShow={menuShow === "splitVKR"}
-            img={true}
-          />
-        )}
-
-        {tabPar.selectedTr.length === 1 && funGetSplitDopWorkload() && (
-          <MenuPop
-            btnText={"Разделить"}
-            func={splitAddModal}
-            menuShow={menuShow === "splitByHoursMenu"}
-            img={true}
-          />
+        {getSplitMenuPopup(
+          appData.metodRole,
+          appData.myProfile,
+          funGetSplitDopWorkload,
+          basicTabData.workloadDataFix,
+          tabPar.selectedTr
         )}
 
         {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 22) &&
@@ -474,57 +656,14 @@ const ContextMenu = () => {
               img={true}
             />
           )}
-        {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 12) &&
-          tabPar.selectedTr.length > 1 &&
-          !funGetJoinDopWorkload() &&
-          basicTabData.workloadDataFix
-            .filter((item) => tabPar.selectedTr.some((el) => el === item.id))
-            .every((it) => it.workload !== "Защита ВКР") && (
-            <MenuPop
-              btnText={"Объеденить по подгруппам"}
-              func={() => handleJoinWorkloads("g")}
-              img={false}
-            />
-          )}
-        {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 12) &&
-          tabPar.selectedTr.length > 1 &&
-          !funGetJoinDopWorkload() &&
-          basicTabData.workloadDataFix
-            .filter((item) => tabPar.selectedTr.some((el) => el === item.id))
-            .every(
-              (it) => it.isSplit === true && it.workload !== "Защита ВКР"
-            ) && (
-            <MenuPop
-              btnText={"Объеденить по часам"}
-              func={() => handleJoinWorkloads("h")}
-              img={false}
-            />
-          )}
-        {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 12) &&
-          tabPar.selectedTr.length > 1 &&
-          !funGetJoinDopWorkload() &&
-          basicTabData.workloadDataFix
-            .filter((item) => tabPar.selectedTr.some((el) => el === item.id))
-            .every((it) => it.workload === "Защита ВКР") && (
-            <MenuPop
-              btnText={"Объеденить"}
-              func={() => handleJoinWorkloads("vkr")}
-              img={false}
-            />
-          )}
 
-        {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 12) &&
-          tabPar.selectedTr.length > 1 &&
-          funGetJoinDopWorkload() &&
-          basicTabData.workloadDataFix
-            .filter((item) => tabPar.selectedTr.some((el) => el === item.id))
-            .every((it) => it.workload !== "Защита ВКР") && (
-            <MenuPop
-              btnText={"Объеденить"}
-              func={() => handleJoinWorkloads("add")}
-              img={false}
-            />
-          )}
+        {getJoinMenuPopup(
+          appData.metodRole,
+          appData.myProfile,
+          funGetJoinDopWorkload,
+          basicTabData.workloadDataFix,
+          tabPar.selectedTr
+        )}
 
         {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 18) &&
           tabPar.selectedTr.length === 1 && (
@@ -551,13 +690,24 @@ const ContextMenu = () => {
       {menuShow === "subMenu" && (
         // разделение нагрузки
         <SubMenu
+          conxextMenuRefBlock={conxextMenuRefBlock}
           setMenuShow={setMenuShow}
           contextPosition={tabPar.contextPosition}
+          typeSplit={menuShow}
+        />
+      )}
+      {menuShow === "splitCandidatesExam" && (
+        <SubMenu
+          conxextMenuRefBlock={conxextMenuRefBlock}
+          setMenuShow={setMenuShow}
+          contextPosition={tabPar.contextPosition}
+          typeSplit={menuShow}
         />
       )}
       {(menuShow === "educator" || menuShow === "propose") && (
         // меню с выбором преподавалетля
         <EducatorMenu
+          conxextMenuRefBlock={conxextMenuRefBlock}
           propose={menuShow === "propose"}
           contextPosition={tabPar.contextPosition}
           selectedEducator={selectedEducator}
@@ -565,10 +715,11 @@ const ContextMenu = () => {
       )}
       {menuShow === "highlight" && (
         // выделение нагрузки
-        <Highlight />
+        <Highlight conxextMenuRefBlock={conxextMenuRefBlock} />
       )}
       {menuShow === "commentsMenu" && (
         <CommentsMenu
+          conxextMenuRefBlock={conxextMenuRefBlock}
           setMenuShow={setMenuShow}
           setPopupComment={setPopupComment}
           popupCommentAction={popupCommentAction}
@@ -577,6 +728,7 @@ const ContextMenu = () => {
       )}
       {menuShow === "splitByHoursMenu" && (
         <SplitByHoursMenu
+          conxextMenuRefBlock={conxextMenuRefBlock}
           styles={styles}
           setMenuShow={setMenuShow}
           typeMenu={"splitByHoursMenu"}
@@ -584,6 +736,7 @@ const ContextMenu = () => {
       )}
       {menuShow === "splitVKR" && (
         <SplitByHoursMenu
+          conxextMenuRefBlock={conxextMenuRefBlock}
           styles={styles}
           setMenuShow={setMenuShow}
           typeMenu={"splitVKR"}
@@ -591,6 +744,7 @@ const ContextMenu = () => {
       )}
       {menuShow === "splitByHoursMenu" && (
         <SplitByHoursMenu
+          conxextMenuRefBlock={conxextMenuRefBlock}
           styles={styles}
           setMenuShow={setMenuShow}
           typeMenu={"splitByHoursMenu"}

@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./../ContextMenu.module.scss";
 import DataContext from "../../../context";
-import { addСhangedData, splitWorkloadCount } from "../Function";
+import {
+  addСhangedData,
+  getStylePosition,
+  splitWorkloadCount,
+} from "../Function";
 
 export function SubMenu(props) {
   const { tabPar, basicTabData, appData } = React.useContext(DataContext);
@@ -20,7 +24,12 @@ export function SubMenu(props) {
 
     // Создаем новый массив для измененных данных
     let updatedData = [...basicTabData.workloadDataFix];
-    const funData = splitWorkloadCount(updatedData, tabPar.selectedTr, count);
+    const funData = splitWorkloadCount(
+      updatedData,
+      tabPar.selectedTr,
+      count,
+      props.typeSplit
+    );
     basicTabData.setWorkloadDataFix(funData.updatedData);
     console.log(funData.blocked);
     tabPar.setChangedData(
@@ -50,24 +59,25 @@ export function SubMenu(props) {
     props.setMenuShow("");
   };
 
+  //! переменная которая хранит ширину данного меню
+  const [menuWidth, setMenuWidth] = useState(136);
+  const menuRef = useRef(null);
+  useEffect(() => {
+    if (menuRef.current) {
+      setMenuWidth(menuRef.current.clientWidth);
+    }
+  }, [menuRef.current]);
+
   return (
     <div
+      ref={menuRef}
       className={styles.blockMenuRight}
-      style={
-        tabPar.contextPosition.x + 280 + 180 > window.innerWidth
-          ? {
-              position: "fixed",
-              top: tabPar.contextPosition.y,
-              left: tabPar.contextPosition.x - 150,
-            }
-          : {
-              position: "fixed",
-              top: tabPar.contextPosition.y,
-              left: tabPar.contextPosition.x + 280,
-            }
-      }
-      // onMouseEnter={handleMouseEnter}
-      // onMouseLeave={handleMouseLeave}
+      style={getStylePosition(
+        tabPar.contextPosition,
+        window.innerWidth,
+        menuWidth,
+        props.conxextMenuRefBlock
+      )}
     >
       <div>
         <button
@@ -85,14 +95,16 @@ export function SubMenu(props) {
           На 3 потока
         </button>
       </div>
-      <div>
-        <button
-          className={styles.activeStylePointer}
-          onClick={() => handleSplitWorkload("4")}
-        >
-          На 4 потока
-        </button>
-      </div>
+      {props.typeSplit !== "splitCandidatesExam" && (
+        <div>
+          <button
+            className={styles.activeStylePointer}
+            onClick={() => handleSplitWorkload("4")}
+          >
+            На 4 потока
+          </button>
+        </div>
+      )}
     </div>
   );
 }

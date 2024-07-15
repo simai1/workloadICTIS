@@ -59,7 +59,18 @@ function TableTh(props) {
   return (
     <th name={props.item.key} key={props.item.key}>
       {props.modal && (
-        <SamplePoints index={props.index} itemKey={props.item.key} />
+        <SamplePoints
+          index={props.index}
+          itemKey={props.item.key}
+          isSamplePointsData={tabPar.isSamplePointsData}
+          isAllChecked={checkPar.isAllChecked}
+          isChecked={checkPar.isChecked}
+          setIsChecked={checkPar.setIsChecked}
+          workloadData={basicTabData.workloadData}
+          setWorkloadDataFix={basicTabData.setWorkloadDataFix}
+          setSpShow={tabPar.setSpShow}
+          sesionName={`isCheckedWorkload${basicTabData.nameKaf}`}
+        />
       )}
 
       <div className={styles.th_inner}>

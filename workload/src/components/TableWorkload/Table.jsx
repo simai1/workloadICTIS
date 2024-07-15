@@ -105,21 +105,24 @@ function Table(props) {
   const getClassNameTr = (items) => {
     const itemId = items.id;
     let classText = null;
-    classText = tabPar.selectedTr?.includes(itemId)
-      ? `${styles.selectedTr}`
-      : null;
+    if (tabPar.selectedTr?.includes(itemId)) {
+      classText = `${styles.selectedTr}`;
+    }
     const item = tabPar.coloredData?.find((el) => el.workloadId === itemId);
     const colored = item ? `colored${item.color}` : null;
-    classText = item ? `${classText} ${styles[colored]}` : classText;
-    classText = tabPar.changedData.deleted?.find((el) => el === itemId)
-      ? `${classText} ${styles.trDeleted}`
-      : classText;
-    classText =
+    if (item) {
+      classText = `${classText} ${styles[colored]}`;
+    }
+    if (tabPar.changedData.deleted?.find((el) => el === itemId)) {
+      classText = `${classText} ${styles.trDeleted}`;
+    }
+    if (
       tabPar.changedData.split?.find((el) => el === itemId) ||
       tabPar.changedData.join?.find((el) => el === itemId) ||
       items.isBlocked
-        ? `${classText} ${styles.trBlocked}`
-        : classText;
+    ) {
+      classText = `${classText} ${styles.trBlocked}`;
+    }
 
     return classText;
   };

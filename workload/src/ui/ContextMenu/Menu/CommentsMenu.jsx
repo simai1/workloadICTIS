@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./../ContextMenu.module.scss";
 import DataContext from "../../../context";
+import { getStylePosition } from "../Function";
 function CommentsMenu(props) {
   const { appData, tabPar } = React.useContext(DataContext);
   const [isError, setError] = useState(false);
@@ -27,21 +28,24 @@ function CommentsMenu(props) {
     setTextAreaValue(e.target.value);
     setError(false);
   };
+
+  //! переменная которая хранит ширину данного меню
+  const [menuWidth, setMenuWidth] = useState(230);
+  const menuRef = useRef(null);
+  useEffect(() => {
+    if (menuRef.current) {
+      setMenuWidth(menuRef.current.clientWidth);
+    }
+  }, [menuRef.current]);
   return (
     <div
-      style={
-        tabPar.contextPosition.x + 280 + 180 > window.innerWidth
-          ? {
-              position: "fixed",
-              top: tabPar.contextPosition.y - 5,
-              left: tabPar.contextPosition.x - 150,
-            }
-          : {
-              position: "fixed",
-              top: tabPar.contextPosition.y - 5,
-              left: tabPar.contextPosition.x + 280,
-            }
-      }
+      ref={menuRef}
+      style={getStylePosition(
+        tabPar.contextPosition,
+        window.innerWidth,
+        menuWidth,
+        props.conxextMenuRefBlock
+      )}
       className={styles.CommentsMenu}
     >
       <div className={styles.textAreaBox}>

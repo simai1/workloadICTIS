@@ -26,6 +26,7 @@ export default class WorkloadDto {
     isMerged;
     isBlocked;
     educator;
+    notes;
 
     constructor(model) {
         this.id = model.id;
@@ -52,5 +53,6 @@ export default class WorkloadDto {
         this.isMerged = model.isMerged;
         this.isBlocked = model.isBlocked;
         this.educator = model.Educator ? new EducatorDto(model.Educator) : null;
+        this.notes = model.notes;
     }
 }

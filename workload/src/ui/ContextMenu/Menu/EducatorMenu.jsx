@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./../ContextMenu.module.scss";
 import {
   Educator,
+  EducatorByInstitute,
   apiEducatorDepartment,
 } from "../../../api/services/ApiRequest";
 import DataContext from "../../../context";
+import { getStylePosition } from "../Function";
 
 export function EducatorMenu(props) {
   const [educator, setEductor] = useState([]); //преподы с бд
@@ -24,6 +26,12 @@ export function EducatorMenu(props) {
         setFiltredData(req.data);
       });
     }
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1.1)) {
+      EducatorByInstitute().then((req) => {
+        setEductor(req.data);
+        setFiltredData(req.data);
+      });
+    }
   }, [appData.myProfile]);
 
   //! поиск
@@ -34,22 +42,25 @@ export function EducatorMenu(props) {
     setFiltredData(fd);
   };
 
+  //! переменная которая хранит ширину данного меню
+  const [menuWidth, setMenuWidth] = useState(240);
+  const menuRef = useRef(null);
+  useEffect(() => {
+    if (menuRef.current) {
+      setMenuWidth(menuRef.current.clientWidth);
+    }
+  }, [menuRef.current]);
+
   return (
     <div
       className={styles.EducatorMenu}
-      style={
-        tabPar.contextPosition.x + 280 + 180 > window.innerWidth
-          ? {
-              position: "fixed",
-              top: tabPar.contextPosition.y,
-              left: tabPar.contextPosition.x - 200,
-            }
-          : {
-              position: "fixed",
-              top: tabPar.contextPosition.y,
-              left: tabPar.contextPosition.x + 280,
-            }
-      }
+      ref={menuRef}
+      style={getStylePosition(
+        tabPar.contextPosition,
+        window.innerWidth,
+        menuWidth,
+        props.conxextMenuRefBlock
+      )}
     >
       <input
         type="text"

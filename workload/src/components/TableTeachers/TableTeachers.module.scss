@@ -1,6 +1,46 @@
 @import "./../../style/colors.scss";
 @import "./../../style/mixin.scss";
 
+.NotData {
+  position: relative;
+
+  tr {
+    height: 150px;
+
+    .tdfix {
+      position: sticky;
+      left: 0px;
+      z-index: 200;
+      // background-color: #b3b0b0;
+      height: 150px;
+      &:after {
+        position: absolute;
+        display: flex;
+        content: "";
+        background-color: var(--bgraund);
+        height: 150px;
+        left: -64px;
+        top: 0;
+        width: 64px;
+      }
+    }
+    .tdfix {
+      position: sticky;
+      left: 0px;
+      z-index: 200;
+    }
+    width: 100%;
+    .notdatadiv {
+      position: absolute;
+      width: 100vw;
+      left: -100px;
+      font-size: 22px;
+      font-weight: 500;
+      transform: translateY(-15px);
+    }
+  }
+}
+
 .TableTeachers {
   padding-left: 64px;
   margin-right: 64px;
@@ -36,7 +76,7 @@
     height: 74vh;
     width: calc(100% + 14px);
 
-    overflow-x: scroll;
+    overflow: scroll;
     position: relative;
     @include scrollTable(12px, 12px, #a6a6a6, 60px, 0);
     .TableTeachers {
@@ -63,14 +103,28 @@
     width: 100%;
     border-collapse: collapse;
     font-size: 14px;
+    background-color: #fff;
 
     .th_inner {
       display: flex;
       justify-content: center;
       cursor: pointer;
-
-      img {
-        padding: 0 6px;
+      .th_title {
+        display: flex;
+        max-width: 210px;
+      }
+      .th_inner_img {
+        display: flex;
+        flex-direction: row;
+        img {
+          margin: 0 6px;
+          display: flex;
+          justify-content: center;
+          width: 16px;
+        }
+        img:nth-child(2) {
+          margin-left: 0px;
+        }
       }
     }
 
@@ -172,6 +226,16 @@
     th[name="instituteManagementWorkload"],
     td[name="instituteManagementWorkload"] {
       @include customTd(150px);
+    }
+
+    th[name="typeOfEmployment"],
+    td[name="typeOfEmployment"] {
+      @include customTd(200px);
+    }
+
+    th[name="totalOidHours"],
+    td[name="totalOidHours"] {
+      @include customTd(200px);
     }
 
     th {
@@ -277,21 +341,25 @@
       top: 0;
     }
   }
-  .filterdClear{
+  .filterdClear {
     position: relative;
     left: -30px;
     top: 65px;
-    img{
-      &:hover{
+    svg {
+      &:hover {
         opacity: 0.6;
-        cursor: pointer; 
+        cursor: pointer;
       }
     }
-    .BlockTextFilter{
-      .textFilter{
+    .svgRed * {
+      fill: var(--blue-color);
+      transition: all 0.2s ease;
+    }
+    .BlockTextFilter {
+      .textFilter {
         position: absolute;
         left: 0px;
-        top:25px;
+        top: 25px;
         z-index: 9999;
         border-radius: 8px;
         width: 181px;
@@ -299,13 +367,12 @@
         background-color: #fff;
         box-shadow: 5px 0px 15px #b3b0b0;
       }
-      .triangle{
+      .triangle {
         @include triangle();
         left: 0px;
         top: 25px;
         z-index: 99999;
       }
-    
     }
   }
 }

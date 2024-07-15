@@ -8,7 +8,6 @@ import DataContext from "../../context";
 
 function EditInput({ selectedComponent, originalHeader, ssname }) {
   const { basicTabData, appData } = React.useContext(DataContext);
-
   const headers = [...basicTabData.tableHeaders];
   const [searchResults, setSearchResults] = useState(headers);
   const [isListOpen, setListOpen] = useState(false);

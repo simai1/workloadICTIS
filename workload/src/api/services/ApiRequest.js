@@ -8,10 +8,10 @@ const http = axios.create({
 });
 
 //! получаем преподов
-export const Educator = async () => {
+export const Educator = async (par = "") => {
   try {
     // console.log(`${server}/workload`)
-    const response = await http.get(`${server}/educator`);
+    const response = await http.get(`${server}/educator${par}`);
     return response;
   } catch (error) {
     console.error("Error:", error, `${server}/workload`);
@@ -19,11 +19,24 @@ export const Educator = async () => {
   }
 };
 
-//! получаем преподов по кафедре
-export const apiEducatorDepartment = async () => {
+//! получаем преподов по своему институту
+export const EducatorByInstitute = async () => {
   try {
     const response = await http.get(
-      `${server}/educator/get/educatorsByDepartment`
+      `${server}/educator/get/educatorsByInstitute`
+    );
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};
+
+//! получаем преподов по кафедре
+export const apiEducatorDepartment = async (par = "") => {
+  try {
+    const response = await http.get(
+      `${server}/educator/get/educatorsByDepartment${par}`
     );
     return response;
   } catch (error) {

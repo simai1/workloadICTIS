@@ -20,7 +20,6 @@
 .TableLks {
   width: 100%;
   box-sizing: border-box;
-
   // position: relative;
   // top: -75px;
   .ButtonCaf_gen {
@@ -57,32 +56,32 @@
     }
   }
   .TableLks__inner {
-    overflow: auto;
-    width: 92vw;
+    width: 94vw;
+    overflow: scroll;
     height: 60vh;
     background-color: var(--bgraund);
     border-radius: 8px;
     margin: 16px 64px 0px 64px;
-    
+
     // height: 60vh;
     .tbody {
-      overflow: auto;
       width: 100%;
       height: 80vh;
-      overflow: hidden;
+      // overflow: hidden;
       position: relative;
     }
   }
 
   table {
-    width: 100%;
+    width: 100vw;
     background-color: var(--bgraund);
     position: relative;
     border-collapse: collapse;
     font-size: 14px;
-    table-layout: fixed;
+
+    // table-layout: fixed;
     border-spacing: 0;
-    
+
     .gettdInner {
       max-height: 300px;
       overflow-y: auto;
@@ -108,9 +107,16 @@
       max-height: 150px;
       vertical-align: middle;
       padding: 10px 8px;
+      max-width: 250px;
     }
     .tdInner {
       position: relative;
+    }
+    .notdatadiv {
+      width: 100%;
+      -webkit-hyphens: auto;
+      -ms-hyphens: auto;
+      hyphens: auto;
     }
     th {
       background-color: var(--gray-color);
@@ -164,7 +170,7 @@
     }
     th[name="curriculumUnit"],
     td[name="curriculumUnit"] {
-      @include customTd(286px);
+      @include customTd(300px);
     }
     th[name="specialty"],
     td[name="specialty"] {
@@ -177,7 +183,7 @@
 
     th[name="department"],
     td[name="department"] {
-      @include customTd(80px);
+      @include customTd(200px);
     }
 
     th[name="id"],
@@ -189,6 +195,13 @@
       @include customTd(100px);
     }
   }
+
+  // @media (max-width: 1680px) {
+  //   .table {
+  //     width: max-content;
+  //     table-layout: auto;
+  //   }
+  // }
 
   .buttonBack {
     margin-left: 64px;
@@ -232,7 +245,7 @@
       .DataLksHead {
         display: flex;
         justify-content: space-between;
-      
+
         h1 {
           font-size: 24px;
           margin: 0;
@@ -322,8 +335,8 @@
     justify-content: center;
     text-align: center;
   }
-  .blockTwo{
-    .textFirstBlockTwo{
+  .blockTwo {
+    .textFirstBlockTwo {
       margin-left: 5px;
       margin-right: 5px;
     }

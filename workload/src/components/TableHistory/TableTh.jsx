@@ -10,18 +10,32 @@ function TableTh(props) {
     if (tabPar.spShow === props.index) {
       tabPar.setSpShow(null);
     } else {
-      const modalData = basicTabData.workloadData.map(
-        (item) => item[props.item.key]
+      const modalData = props.orighistoryData.map(
+        (item) => item.value[props.item.key]
       );
       tabPar.setSamplePointsData([...modalData]);
       tabPar.setSpShow(props.index);
+      console.log("props.orighistoryData", props.orighistoryData);
+      console.log("props.item.key", props.item.key);
+      console.log("basicTabData.nameKaf", basicTabData.nameKaf);
     }
   };
 
   return (
     <th name={props.item.key} key={props.item.key}>
       {props.modal && (
-        <SamplePoints index={props.index} itemKey={props.item.key} />
+        <SamplePoints
+          index={props.index}
+          itemKey={props.item.key}
+          isSamplePointsData={tabPar.isSamplePointsData}
+          isAllChecked={checkPar.isAllChecked}
+          isChecked={checkPar.isChecked}
+          setIsChecked={checkPar.setIsChecked}
+          workloadData={props.orighistoryData}
+          setWorkloadDataFix={props.sethistoryData}
+          setSpShow={tabPar.setSpShow}
+          sesionName={`isCheckedHistory${basicTabData.nameKaf}`}
+        />
       )}
 
       <div className={styles.th_inner} onClick={clickTh}>

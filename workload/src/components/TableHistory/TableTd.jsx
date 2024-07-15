@@ -1,11 +1,9 @@
 import React, { useState } from "react";
 import styles from "./TableWorkload.module.scss";
 import DataContext from "../../context";
-import { ReactComponent as SvgChackmark } from "./../../img/checkmark.svg";
-import { ReactComponent as SvgCross } from "./../../img/cross.svg";
 
 function TableTd(props) {
-  const { tabPar, basicTabData, appData } = React.useContext(DataContext);
+  const { tabPar } = React.useContext(DataContext);
 
   //определение каласса td
   const getClassNameTr = () => {
@@ -73,7 +71,7 @@ function TableTd(props) {
       onMouseEnter={() => setShowFullText(true)}
       onMouseLeave={() => setShowFullText(false)}
       name={props.itemKey.key}
-      key={props.item.id + "_" + props.itemKey.key + props.index}
+      key={props.innerKey}
       className={getClassNameTr()}
       style={
         showFullText && props.item[props.itemKey.key]?.length > lenSlice

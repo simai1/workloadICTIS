@@ -26,8 +26,8 @@ export function PopUpFile(props) {
       });
     }
   }, []);
- const fileInputRef = useRef(null);
-
+  
+  const fileInputRef = useRef(null);
   const closeMenuPopFile = () => {
     appData.setFileData(null);
     props.setfilePopUp(false);
