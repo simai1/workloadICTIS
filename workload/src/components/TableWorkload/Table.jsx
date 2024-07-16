@@ -5,24 +5,20 @@ import styles from "./TableWorkload.module.scss";
 import DataContext from "../../context";
 import InputCheckbox from "./InputCheckbox/InputCheckbox";
 import { funGetConfirmation, getTextForNotData } from "./Function";
+import { useSelector } from "react-redux";
 
 function Table(props) {
   const { tabPar, visibleDataPar, basicTabData, appData } =
     useContext(DataContext);
-
+  const ssheader = "headerWorkload";
   const [tableHeaders, setTableHeaders] = useState([]);
-
+  const isCheckedStore = useSelector(
+    (state) => state.editInputChecked.editInputCheckeds[ssheader]
+  );
   //! заголово таблицы хранится в sessionStorage, есть он есть то применяем к таблице
   useEffect(() => {
-    const ssUpdatedHeader = JSON.parse(
-      sessionStorage.getItem("headerWorkload")
-    );
-    if (ssUpdatedHeader) {
-      setTableHeaders(ssUpdatedHeader);
-    } else {
-      setTableHeaders(basicTabData.tableHeaders);
-    }
-  }, [basicTabData.tableHeaders]);
+    setTableHeaders(isCheckedStore || basicTabData.tableHeaders);
+  }, [basicTabData.tableHeaders, isCheckedStore]);
 
   //! определение верхнего отступа таблицы
   const getTopHeight = () => {
@@ -143,6 +139,7 @@ function Table(props) {
               checked={tabPar.onCheckBoxAll}
               clickTr={clickTrAll}
               th={true}
+              ssname={props.ssname}
             />
 
             {tableHeaders.map((item, index) => (

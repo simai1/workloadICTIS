@@ -5,23 +5,21 @@ import styles from "./UniversalTable.module.scss";
 import DataContext from "../../context";
 import InputCheckbox from "./InputCheckbox/InputCheckbox";
 import { funGetConfirmation, getTextForNotData } from "./Function";
+import { useSelector } from "react-redux";
 
 function Table(props) {
   const { tabPar, visibleDataPar, basicTabData, appData } =
     useContext(DataContext);
 
+  const headerStore = useSelector(
+    (state) => state.editInputChecked.editInputCheckeds[props.tabDat.ssHeader]
+  );
+
   const [tableHeaders, setTableHeaders] = useState([]);
   //! заголово таблицы хранится в sessionStorage, есть он есть то применяем к таблице
   useEffect(() => {
-    const ssUpdatedHeader = JSON.parse(
-      sessionStorage.getItem(props.tabDat.ssHeader)
-    );
-    if (ssUpdatedHeader) {
-      setTableHeaders(ssUpdatedHeader);
-    } else {
-      setTableHeaders(props.tabDat.tableHeader);
-    }
-  }, [props.tabDat.tableHeader]);
+    setTableHeaders(headerStore || props.tabDat.tableHeader);
+  }, [props.tabDat.tableHeader, headerStore]);
 
   //! определение верхнего отступа таблицы
   const getTopHeight = () => {
@@ -59,9 +57,7 @@ function Table(props) {
   //! при клике на tr выделяем его
   const clickTr = (el, itemId) => {
     // el.stopProgretions();
-    console.log("clickTr");
     const a = el.target.nodeName;
-    console.log(el.target.getAttribute("name"));
     if (
       a === "TD" ||
       a === "INPUT" ||

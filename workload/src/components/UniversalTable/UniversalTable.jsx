@@ -6,8 +6,7 @@ import DataContext from "../../context";
 import ContextMenu from "../../ui/ContextMenu/ContextMenu";
 
 function UniversalTable(props) {
-  const { tabPar, visibleDataPar, basicTabData, checkPar } =
-    useContext(DataContext);
+  const { tabPar, visibleDataPar, basicTabData } = useContext(DataContext);
 
   //! при событии скролл таблицы изменим индекс первого показываемого tr
   const scrollTable = (e) => {

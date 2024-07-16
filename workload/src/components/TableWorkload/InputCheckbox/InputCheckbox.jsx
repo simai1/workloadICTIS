@@ -6,6 +6,8 @@ import Comments from "./Comments";
 import Offers from "./Offers";
 import { ReactComponent as ImgClearFilter } from "./../../../img/ClearFilter.svg";
 import { FilteredSample } from "../../../ui/SamplePoints/Function";
+import { useDispatch } from "react-redux";
+import { removeTableCheckeds } from "../../../store/filter/isChecked.slice";
 function InputCheckbox(props) {
   const { appData, tabPar, basicTabData, checkPar } =
     React.useContext(DataContext);
@@ -28,12 +30,17 @@ function InputCheckbox(props) {
     zIndex: `${10 - props.number}`,
     backgroundColor: props.bgColor,
   };
-
+  const dispatch = useDispatch();
   //!функция сброса фильтров
   const refreshFilters = () => {
     checkPar.setIsChecked([]);
     checkPar.setAllChecked([]);
-    sessionStorage.setItem(`isCheckedWorkload${basicTabData.nameKaf}`, null);
+    // sessionStorage.setItem(`isCheckedWorkload${basicTabData.nameKaf}`, null);
+    dispatch(
+      removeTableCheckeds({
+        tableName: props.ssname,
+      })
+    );
     const fdfix = FilteredSample(basicTabData.workloadData, [], "idasdasd");
     basicTabData.setWorkloadDataFix(fdfix);
     appData.setSortParamByColumn("");

@@ -31,6 +31,7 @@ import { delChangeData } from "./ui/ContextMenu/Function";
 import { FilteredSample } from "./ui/SamplePoints/Function";
 // import { horsTeacher } from "./components/TableTeachers/dataHoursForTeacher/HoursTicher";
 import AdminMenu from "./pages/AdminMenu/AdminMenu";
+import { useSelector } from "react-redux";
 
 function App() {
   const [educator, setEducator] = useState([]); // преподаватели
@@ -213,6 +214,7 @@ function App() {
   };
   // храним id и ключь измененных td для подсвечивания
   const [changedData, setChangedData] = useState(changedDataObj);
+  const isCheckedStore = useSelector((state) => state.isCheckedSlice.isChecked);
   const [isChecked, setIsChecked] = useState([]); // состояние инпутов в SamplePoints //! сбросить
   const [isAllChecked, setAllChecked] = useState([]); // инпут все в SamplePoints //! сбросить
   const checkPar = {
@@ -321,17 +323,11 @@ function App() {
   //! функция обновления истории
   function funUpdateHistory() {
     apiGetHistory().then((req) => {
-      const ssIsChecked = JSON.parse(
-        sessionStorage.getItem(`isCheckedHistory${basicTabData.nameKaf}`)
-      );
-      console.log("isChecked", ssIsChecked);
-      const fdfix = FilteredSample(req, ssIsChecked);
+      const ssname = `isCheckedHistory${basicTabData.nameKaf}`;
+      const checks = isCheckedStore[ssname];
+      const fdfix = FilteredSample(req, checks);
       setHistoryChanges(fdfix);
-      if (ssIsChecked && ssIsChecked !== null && ssIsChecked.length > 0) {
-        setIsChecked(ssIsChecked);
-      } else {
-        setIsChecked([]);
-      }
+      checkPar.setIsChecked(checks || []);
     });
   }
 
@@ -373,11 +369,9 @@ function App() {
     //! функция прокида буффера для разделения соединения и удаления нагрузок
     const fdb = fixDataBuff(fixData, bufferAction);
     // зменяем массив преподавателя на его имя
-    const ssIsChecked = JSON.parse(
-      sessionStorage.getItem(`isCheckedWorkload${basicTabData.nameKaf}`)
-    );
-    console.log("isChecked", ssIsChecked);
-    const fdfix = FilteredSample(fdb, ssIsChecked);
+    const ssname = `isCheckedWorkload${basicTabData.nameKaf}`;
+    const checks = isCheckedStore[ssname];
+    const fdfix = FilteredSample(fdb, checks);
     setWorkloadData(fdb);
     setWorkloadDataFix(fdfix);
     setFiltredData(fdfix);

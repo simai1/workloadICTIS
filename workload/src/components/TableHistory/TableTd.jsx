@@ -101,7 +101,7 @@ function TableTd(props) {
       >
         <div
           style={
-            props.obj.keys.some((el) => el === props.itemKey.key)
+            props.obj?.keys?.some((el) => el === props.itemKey.key)
               ? props.obj.action === "after"
                 ? {
                     backgroundColor: "rgba(232, 20, 20, 0.25)",

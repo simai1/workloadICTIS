@@ -36,8 +36,6 @@ const ContextMenu = () => {
   const handleContextMenu = (e) => {
     e.preventDefault();
   };
-  console.log("bufferAction", appData.bufferAction);
-
   //! нажатие на разделить
   const handleMouseClickPop = () => {
     setMenuShow(menuShow === "subMenu" ? "" : "subMenu");
@@ -67,6 +65,7 @@ const ContextMenu = () => {
     const itname = basicTabData.workloadDataFix.filter((item) =>
       tabPar.selectedTr.some((el) => el === item.id)
     )[0].workload;
+    console.log("itname", itname);
     const type = addWorkload.find((el) => el.name === itname);
     if (type) {
       tabPar.setTypeSplit(type);
@@ -108,7 +107,6 @@ const ContextMenu = () => {
       workloadIds: tabPar.selectedTr,
       educatorId: id,
     };
-    console.log(data);
     if (menuShow === "educator") {
       EducatorLK(id).then((dataReq) => {
         const { newData, prevState } = upDateEducators(
@@ -372,13 +370,25 @@ const ContextMenu = () => {
   //! функция для определения разделения доп нагрузки
   function funGetSplitDopWorkload() {
     // if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 11)) {
+    const a = basicTabData.workloadDataFix.find((item) =>
+      tabPar.selectedTr.some((el) => el === item.id)
+    ).workload;
+    console.log(
+      "addWorkload? ",
+      addWorkload.find(
+        (e) => e.name.replace(/\s/g, "") === a.replace(/\s/g, "")
+      )
+    );
     if (
       basicTabData.workloadDataFix
         .filter((item) => tabPar.selectedTr.some((el) => el === item.id))
         .every(
           (it) =>
             it.isSplit === false &&
-            addWorkload.some((el) => el.name === it.workload)
+            addWorkload.some(
+              (el) =>
+                el.name.replace(/\s/g, "") === it.workload.replace(/\s/g, "")
+            )
         )
     ) {
       return true;
@@ -494,7 +504,6 @@ const ContextMenu = () => {
       }
     }
 
-    console.log("massMenuPop", massMenuPop);
     return massMenuPop;
   }
 
@@ -592,7 +601,6 @@ const ContextMenu = () => {
       }
     }
 
-    console.log("joinmassMenuPop", massMenuPop);
     return massMenuPop;
   }
 

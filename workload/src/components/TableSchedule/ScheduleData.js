@@ -7,10 +7,10 @@ export const testData = [
     curriculum:
       "000166033, 000166656, 000169019, 000169048, 000169071, 000169425, 000169472, 000169508, 000169568, 000169666, 000169778",
     curriculumUnit: "Институт радиотехнических систем и управления",
-    department: "БИТ",
+    department: "ИАСБ",
     discipline: "Интеллектуальные информационные системы",
     educator: {
-      department: "БИТ",
+      department: "ИАСБ",
       id: "6081ac8f-84ca-4e42-96b7-10d360f4cac1",
       maxHours: 900,
       minHours: 150,
@@ -36,7 +36,7 @@ export const testData = [
     ratingControlHours: 6.12,
     semester: "Пятый семестр",
     specialty: "Электроэнергетика и электротехника",
-    workload: "Лекционные",
+    workload: "Практические",
     notes: "Г-123",
   },
   {
@@ -116,7 +116,7 @@ export const testData = [
     ratingControlHours: 6.12,
     semester: "Первый семестр",
     specialty: "Электроэнергетика и электротехника",
-    workload: "Лекционные",
+    workload: "Экзамен",
     notes: "Г-123",
   },
 ];
