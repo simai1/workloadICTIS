@@ -242,6 +242,7 @@ function App() {
   const [buffDataHoursPopup, setBuffDataHoursPopup] = useState(null);
   const [inputEditValue, setInputEditValue] = useState([]);
   const [typeSplit, setTypeSplit] = useState(""); //! тип деления для контекст меню для доп нагрузки
+  const [parametrFilter, setParametrFilter] = useState(""); //! параметр для истории
 
   const tabPar = {
     selectedTable,
@@ -286,6 +287,8 @@ function App() {
     setInputEditValue,
     typeSplit,
     setTypeSplit,
+    parametrFilter,
+    setParametrFilter,
   };
 
   //! функция обновления комментаривев

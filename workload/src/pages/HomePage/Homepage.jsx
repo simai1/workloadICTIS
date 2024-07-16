@@ -351,6 +351,15 @@ function HomePage() {
     }
   };
 
+  //! параметр для фильтрации меняем
+  const setParam = () => {
+    if (tabPar.parametrFilter === "") {
+      tabPar.setParametrFilter("?type=final");
+    } else {
+      tabPar.setParametrFilter("");
+    }
+  };
+
   return (
     <Layout>
       <div className={styles.HomePage}>
@@ -685,6 +694,15 @@ function HomePage() {
                             {!tabPar.perenesenAction
                               ? "Не перенесенные"
                               : "Перенесенные"}
+                          </button>
+
+                          <button
+                            className={styles.histParRig}
+                            onClick={setParam}
+                          >
+                            {tabPar.parametrFilter === ""
+                              ? "Показать последние изменения"
+                              : "Показать все"}
                           </button>
                         </div>
                       )}
