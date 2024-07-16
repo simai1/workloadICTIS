@@ -32,8 +32,8 @@ export default {
     },
 
     async updateUser(req, res) {
-        const { role, allowedDepartments, institutionalAffiliation, rate } = req.body;
-        if (!role && !allowedDepartments && !institutionalAffiliation && !rate) throw new AppErrorMissing('body');
+        const { role, allowedDepartments, institutionalAffiliation, rate, position, department } = req.body;
+        if (!role && !allowedDepartments && !institutionalAffiliation && !rate && !position && !department) throw new AppErrorMissing('body');
         if (role && !Object.values(roles).includes(role)) throw new AppErrorInvalid('role');
         if (allowedDepartments && allowedDepartments.some(d => !Object.values(departments).includes(d))) {
             throw new AppErrorInvalid('allowedDepartments');
@@ -51,7 +51,7 @@ export default {
                 where: { id: req.params.id },
             }
         );
-        await Educator.update({ rate }, { where: { userId: req.params.id } });
+        await Educator.update({ rate, position, department }, { where: { userId: req.params.id } });
         res.json({ status: 'OK' });
     },
 
