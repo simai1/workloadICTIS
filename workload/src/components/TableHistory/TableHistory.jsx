@@ -18,21 +18,30 @@ function TableHistory(props) {
   const [orighistoryData, origsethistoryData] = useState([]);
   const ssname = `isCheckedHistory${basicTabData.nameKaf}`;
   const ssheader = "headerHistory";
-
+  const [parametrFilter, setParametrFilter] = useState("");
   const headerStore = useSelector(
     (state) => state.editInputChecked.editInputCheckeds[ssheader]
   );
 
   //! получаем данные с апи по истории
   useEffect(() => {
-    basicTabData.funUpdateHistory();
-  }, []);
+    basicTabData.funUpdateHistory(parametrFilter);
+  }, [parametrFilter]);
 
   //! достаем из стореджа состояние фитрации по заголовку
   useEffect(() => {
     const checks = isCheckedStore[ssname];
     checkPar.setIsChecked(checks || []);
   }, [basicTabData.nameKaf, isCheckedStore]);
+
+  //! параметр для фильтрации меняем
+  const setParam = () => {
+    if (parametrFilter === "") {
+      setParametrFilter("?type=final");
+    } else {
+      setParametrFilter("");
+    }
+  };
 
   //! при событии скролл таблицы изменим индекс первого показываемого tr
   const scrollTable = (e) => {
@@ -88,7 +97,7 @@ function TableHistory(props) {
 
   useEffect(() => {
     appData.setLoaderAction(true);
-    apiGetHistory().then((req) => {
+    apiGetHistory(parametrFilter).then((req) => {
       const hd = req?.filter(
         (it) =>
           it.checked === tabPar.perenesenAction &&
@@ -107,6 +116,7 @@ function TableHistory(props) {
     basicTabData.historyChanges,
     tabPar.perenesenAction,
     basicTabData.nameKaf,
+    parametrFilter,
   ]);
 
   //! функция контекстного меню для перекидывания перенесенных нагрузок
@@ -117,7 +127,7 @@ function TableHistory(props) {
     apiCheckedUpdate(data).then((res) => {
       tabPar.setSelectedTr([]);
       setContetxShow(false);
-      basicTabData.funUpdateHistory();
+      basicTabData.funUpdateHistory(parametrFilter);
     });
   };
 
@@ -158,7 +168,7 @@ function TableHistory(props) {
           </div>
         </div>
       )}
-
+      <button onClick={setParam}>Param</button>
       <Table
         historyData={historyData}
         orighistoryData={orighistoryData}

@@ -321,8 +321,8 @@ function App() {
   }
 
   //! функция обновления истории
-  function funUpdateHistory() {
-    apiGetHistory().then((req) => {
+  function funUpdateHistory(par = "") {
+    apiGetHistory(par).then((req) => {
       const ssname = `isCheckedHistory${basicTabData.nameKaf}`;
       const checks = isCheckedStore[ssname];
       const fdfix = FilteredSample(req, checks);
