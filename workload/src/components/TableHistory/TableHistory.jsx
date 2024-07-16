@@ -168,7 +168,7 @@ function TableHistory(props) {
           </div>
         </div>
       )}
-      <button onClick={setParam}>Param</button>
+      {/* <button onClick={setParam}>Param</button> */}
       <Table
         historyData={historyData}
         orighistoryData={orighistoryData}
