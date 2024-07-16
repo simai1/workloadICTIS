@@ -29,7 +29,7 @@ const orderRule = [
 
 export default {
     // Получение нагрузки
-    async getAllWorkload({ query: { isOid, department, col, type}, user }, res) {
+    async getAllWorkload({ query: { isOid, department, col, type }, user }, res) {
         const _user = await User.findByPk(user, { include: Educator });
         let workloadsDto;
         try {
@@ -42,13 +42,13 @@ export default {
                             educatorId: _user.Educator.id,
                         },
                         include: { model: Educator },
-                        order: (col && type)? [[col, type.toUpperCase()]] : orderRule,
+                        order: col && type ? [[col, type.toUpperCase()]] : orderRule,
                     });
                 } else {
                     workloads = await Workload.findAll({
                         where: { isOid },
                         include: { model: Educator },
-                        order: (col && type)? [[col, type.toUpperCase()]] : orderRule,
+                        order: col && type ? [[col, type.toUpperCase()]] : orderRule,
                     });
                 }
                 workloadsDto = workloads.map(workload => new WorkloadDto(workload));
@@ -61,7 +61,7 @@ export default {
                             educatorId: _user.Educator.id,
                         },
                         include: { model: Educator },
-                        order: (col && type)? [[col, type.toUpperCase()]] : orderRule,
+                        order: col && type ? [[col, type.toUpperCase()]] : orderRule,
                     });
                 } else if (_user.role === 2) {
                     workloads = await Workload.findAll({
@@ -70,7 +70,7 @@ export default {
                             department,
                         },
                         include: { model: Educator },
-                        order: (col && type)? [[col, type.toUpperCase()]] : orderRule,
+                        order: col && type ? [[col, type.toUpperCase()]] : orderRule,
                     });
                 } else {
                     workloads = await Workload.findAll({
@@ -79,7 +79,7 @@ export default {
                             department,
                         },
                         include: { model: Educator },
-                        order: (col && type)? [[col, type.toUpperCase()]] : orderRule,
+                        order: col && type ? [[col, type.toUpperCase()]] : orderRule,
                     });
                 }
                 workloadsDto = workloads.map(workload => new WorkloadDto(workload));
@@ -90,7 +90,7 @@ export default {
                             educatorId: _user.Educator.id,
                         },
                         include: { model: Educator },
-                        order: (col && type)? [[col, type.toUpperCase()]] : orderRule,
+                        order: col && type ? [[col, type.toUpperCase()]] : orderRule,
                     });
                 } else if (_user.role === 2) {
                     // LECTURER HANDLER
@@ -103,7 +103,7 @@ export default {
                                 model: Educator,
                             },
                         ],
-                        order: (col && type)? [[col, type.toUpperCase()]] : orderRule,
+                        order: col && type ? [[col, type.toUpperCase()]] : orderRule,
                     });
 
                     const disciplines = [];
@@ -120,7 +120,7 @@ export default {
                                 workload: { [Op.in]: ['Лабораторные', 'Практические'] },
                             },
                             include: { model: Educator },
-                            order: (col && type)? [[col, type.toUpperCase()]] : orderRule,
+                            order: col && type ? [[col, type.toUpperCase()]] : orderRule,
                         })),
                         ...ownWorkloads,
                     ];
@@ -130,7 +130,7 @@ export default {
                             department: _user.Educator.department,
                         },
                         include: { model: Educator },
-                        order: (col && type)? [[col, type.toUpperCase()]] : orderRule,
+                        order: col && type ? [[col, type.toUpperCase()]] : orderRule,
                     });
                 } else if (_user.role === 6) {
                     // UNIT_ADMIN HANDLER
@@ -139,7 +139,7 @@ export default {
                             department: _user.allowedDepartments,
                         },
                         include: { model: Educator },
-                        order: (col && type)? [[col, type.toUpperCase()]] : orderRule,
+                        order: col && type ? [[col, type.toUpperCase()]] : orderRule,
                     });
                 } else if (_user.role === 4 || _user.role === 7) {
                     if (!_user.institutionalAffiliation) {
@@ -162,7 +162,7 @@ export default {
                             isBlocked: false,
                         },
                         include: { model: Educator },
-                        order: (col && type)? [[col, type.toUpperCase()]] : orderRule,
+                        order: col && type ? [[col, type.toUpperCase()]] : orderRule,
                     });
                 } else {
                     workloads = await Workload.findAll({
@@ -171,7 +171,7 @@ export default {
                             isOid: false,
                         },
                         include: { model: Educator },
-                        order: (col && type)? [[col, type.toUpperCase()]] : orderRule,
+                        order: col && type ? [[col, type.toUpperCase()]] : orderRule,
                     });
                 }
                 workloadsDto = workloads.map(workload => new WorkloadDto(workload));
@@ -498,7 +498,7 @@ export default {
         res.json({ status: 'OK' });
     },
 
-    async merge(req, res){
+    async merge(req, res) {
         const { ids } = req.body;
         const { type } = req.query;
         if (!ids) throw new AppErrorMissing('ids');
@@ -507,9 +507,12 @@ export default {
         const numberOfStudents = workloads[0].numberOfStudents;
         const first = workloads[0];
         let newWorkloadData;
-        if (type === 'g' && workloads.every(w => w.audienceHours === audienceHours)){
+        if (type === 'g' && workloads.every(w => w.audienceHours === audienceHours)) {
             // Объединение по подгруппам
-            const newNumberOfStudents = workloads.reduce((accumulator, currentValue) => accumulator + currentValue.numberOfStudents, 0);
+            const newNumberOfStudents = workloads.reduce(
+                (accumulator, currentValue) => accumulator + currentValue.numberOfStudents,
+                0
+            );
             newWorkloadData = {
                 department: first.department,
                 discipline: first.discipline,
@@ -527,15 +530,15 @@ export default {
                 numberOfStudents: newNumberOfStudents,
                 hours: Math.round((newNumberOfStudents * first.audienceHours * 0.01 + first.audienceHours) * 100) / 100,
                 audienceHours: first.audienceHours,
-                ratingControlHours: Math.round((newNumberOfStudents * first.audienceHours * 0.01) * 100) / 100,
+                ratingControlHours: Math.round(newNumberOfStudents * first.audienceHours * 0.01 * 100) / 100,
                 comment: first.comment ? first.comment : null,
                 isSplit: false,
                 isMerged: true,
                 originalId: null,
                 educatorId: null,
                 isOid: first.isOid,
-            }
-        } else if (type === 'h' && workloads.every(w => (w.numberOfStudents === numberOfStudents) && w.isSplit)){
+            };
+        } else if (type === 'h' && workloads.every(w => w.numberOfStudents === numberOfStudents && w.isSplit)) {
             // Объединение по часам
             newWorkloadData = {
                 department: first.department,
@@ -553,16 +556,22 @@ export default {
                 core: first.core,
                 numberOfStudents: first.numberOfStudents,
                 hours: workloads.reduce((accumulator, currentValue) => accumulator + currentValue.hours, 0),
-                audienceHours: workloads.reduce((accumulator, currentValue) => accumulator + currentValue.audienceHours, 0),
-                ratingControlHours: workloads.reduce((accumulator, currentValue) => accumulator + currentValue.ratingControlHours, 0),
+                audienceHours: workloads.reduce(
+                    (accumulator, currentValue) => accumulator + currentValue.audienceHours,
+                    0
+                ),
+                ratingControlHours: workloads.reduce(
+                    (accumulator, currentValue) => accumulator + currentValue.ratingControlHours,
+                    0
+                ),
                 comment: first.comment ? first.comment : null,
                 isSplit: false,
                 isMerged: true,
                 originalId: null,
                 educatorId: null,
                 isOid: first.isOid,
-            }
-        } else if (type==='vkr'){
+            };
+        } else if (type === 'vkr') {
             newWorkloadData = {
                 department: first.department,
                 discipline: first.discipline,
@@ -588,7 +597,9 @@ export default {
                 educatorId: null,
                 isOid: first.isOid,
             };
-        } else throw new AppErrorInvalid('type');
+        } else {
+            throw new AppErrorInvalid('type');
+        }
         const newWorkload = await Workload.create(newWorkloadData);
         workloads.reduce((chain, workload) => {
             return chain.then(() => workload.destroy());
@@ -598,16 +609,16 @@ export default {
             type: 2,
             department: first.department,
             before: ids,
-            after: [newWorkload.id,],
+            after: [newWorkload.id],
         });
 
         res.json({
             id: newWorkloadData.id,
             ...newWorkload,
-        })
+        });
     },
 
-    async mergeReadyData({ body: { workloadData, ids } }, res){
+    async mergeReadyData({ body: { workloadData, ids } }, res) {
         if (!ids) throw new AppErrorMissing('ids');
         if (!workloadData) throw new AppErrorMissing('workloadData');
         const workloads = await Workload.findAll({ where: { id: ids } });
@@ -627,9 +638,9 @@ export default {
             specialty: first.specialty,
             core: first.core,
             numberOfStudents: workloadData.numberOfStudents,
-            hours: Math.round((workloadData.hours) * 100) / 100,
+            hours: Math.round(workloadData.hours * 100) / 100,
             audienceHours: workloadData.audienceHours,
-            ratingControlHours: Math.round((workloadData.ratingControlHours) * 100) / 100,
+            ratingControlHours: Math.round(workloadData.ratingControlHours * 100) / 100,
             comment: first.comment ? first.comment : null,
             isSplit: false,
             isMerged: true,
@@ -646,13 +657,13 @@ export default {
             type: 2,
             department: first.department,
             before: ids,
-            after: [newWorkload.id,],
+            after: [newWorkload.id],
         });
 
         res.json({
             id: newWorkloadData.id,
             ...newWorkload,
-        })
+        });
     },
 
     // async mapRow({ body: { ids }, user }, res) {
@@ -1202,21 +1213,21 @@ export default {
         const educators = await Educator.findAll({
             where: {
                 name: {
-                  [Sequelize.Op.like]: '%Вакансия%'
+                    [Sequelize.Op.like]: '%Вакансия%',
                 },
                 department: department,
-              }
-        })
+            },
+        });
         let hoursWorkloadWithoutEducators = 0;
         let hoursAllWorkload = 0;
-        if(educators.length > 0 ){
-            for(const educator of educators){
+        if (educators.length > 0) {
+            for (const educator of educators) {
                 const workloadWithoutEducators = await Workload.findAll({
-                    where:{
+                    where: {
                         educatorId: educator.id,
-                    }
+                    },
                 });
-                for(const workload of workloadWithoutEducators){
+                for (const workload of workloadWithoutEducators) {
                     hoursWorkloadWithoutEducators += workload.hours;
                 }
             }

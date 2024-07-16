@@ -29,6 +29,10 @@ export default class History extends Model {
           type: DataTypes.BOOLEAN,
           defaultValue: false,
         },
+        final: {
+          type: DataTypes.BOOLEAN,
+          defaultValue: true,
+        },
         before: {
           type: DataTypes.ARRAY(DataTypes.UUID),
           allowNull: false,
