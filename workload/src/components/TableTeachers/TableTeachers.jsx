@@ -17,6 +17,8 @@ import { FilteredSample } from "./SamplePoints/Function";
 // import { SamplePoints } from "../../ui/SamplePoints/SamplePoints";
 import TableTh from "./TableTh";
 import { ReactComponent as ImgClearFilter } from "./../../img/ClearFilter.svg";
+import { useDispatch, useSelector } from "react-redux";
+import { removeTableCheckeds } from "../../store/filter/isChecked.slice";
 
 function TableTeachers(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]);
@@ -34,32 +36,22 @@ function TableTeachers(props) {
 
   const [isChecked, setIsChecked] = useState([]); // состояние инпутов в SamplePoints для преподавателей
   const [isAllChecked, setAllChecked] = useState(true); // инпут все в SamplePoints для преподавателей
-  // const checkData = {
-  //   isChecked,
-  //   setIsChecked,
-  //   isAllChecked,
-  //   setAllChecked,
-  // };
+  const ssname = "isCheckedTeachers";
+  const ssheader = "headerTeachers";
 
-  //! достаем и локал стореджа состояние фитрации по заголовку
-  useEffect(() => {
-    const ssIsChecked = JSON.parse(sessionStorage.getItem("isCheckedTeachers"));
-    if (ssIsChecked && ssIsChecked !== null && ssIsChecked.length > 0) {
-      setIsChecked(ssIsChecked);
-    } else {
-      setIsChecked([]);
-    }
-  }, []);
+  const isCheckedStore = useSelector((state) => state.isCheckedSlice.isChecked);
+
+  const headerStore = useSelector(
+    (state) => state.editInputChecked.editInputCheckeds[ssheader]
+  );
 
   //! достаем из sessionStorage заголовок для редактирования полей
   useEffect(() => {
-    const ssUpdatedHeader = JSON.parse(
-      sessionStorage.getItem("headerTeachers")
-    );
-    if (ssUpdatedHeader && ssUpdatedHeader !== null) {
-      setUpdatedHeader(ssUpdatedHeader);
+    if (headerStore) {
+      setUpdatedHeader(headerStore);
     }
-  }, [sessionStorage.getItem("headerTeachers")]);
+  }, [headerStore, appData.selectedComponent]);
+
   useEffect(() => {
     props.changeInput();
   }, []);
@@ -81,12 +73,10 @@ function TableTeachers(props) {
       apiEducatorDepartment(par).then((res) => {
         if (res && res.status === 200) {
           appData.setEducator(res.data);
-          const ssIsChecked = JSON.parse(
-            sessionStorage.getItem("isCheckedTeachers")
-          );
-          const fdfix = FilteredSample(res.data, ssIsChecked);
+          const checks = isCheckedStore[ssname];
+          setIsChecked(checks || []);
+          const fdfix = FilteredSample(res.data, checks);
           setFilteredData([...fdfix]);
-          // setFilteredData(res.data);
           setUpdatedData(res.data);
           setUpdatedHeader(tableHeaders);
         }
@@ -94,16 +84,13 @@ function TableTeachers(props) {
     } else if (
       appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)
     ) {
-      console.log("sortParamByColumn", par);
       Educator(par).then((res) => {
         if (res && res.status === 200) {
           appData.setEducator(res.data);
-          const ssIsChecked = JSON.parse(
-            sessionStorage.getItem("isCheckedTeachers")
-          );
-          const fdfix = FilteredSample(res.data, ssIsChecked);
+          const checks = isCheckedStore[ssname];
+          setIsChecked(checks || []);
+          const fdfix = FilteredSample(res.data, checks);
           setFilteredData([...fdfix]);
-          // setFilteredData(res.data);
           setUpdatedData(res.data);
           setUpdatedHeader(tableHeaders);
         }
@@ -129,7 +116,7 @@ function TableTeachers(props) {
     //     if (res && res.status === 200) {
     //       appData.setEducator(res.data);
     //       const ssIsChecked = JSON.parse(
-    //         sessionStorage.getItem("isCheckedTeachers")
+    //         sessionStorage.getItem(ssname)
     //       );
     //       const fdfix = FilteredSample(res.data, ssIsChecked);
     //       setFilteredData([...fdfix]);
@@ -176,17 +163,9 @@ function TableTeachers(props) {
 
   //! фильтрация по редактированию полей
   useEffect(() => {
-    const ssUpdatedHeader = JSON.parse(
-      sessionStorage.getItem("headerTeachers")
-    );
-    let uh = null;
-    if (ssUpdatedHeader && ssUpdatedHeader !== null) {
-      uh = ssUpdatedHeader;
-    } else {
-      uh = tableHeaders;
-    }
+    let uh = headerStore || tableHeaders;
     addHeadersTable(uh, appData.educator);
-  }, [basicTabData.tableHeaders, appData.educator]);
+  }, [basicTabData.tableHeaders, appData.educator, headerStore]);
 
   //! поиск
   useEffect(() => {
@@ -270,15 +249,19 @@ function TableTeachers(props) {
       return "Кафедральная нагрузка";
     } else return "";
   };
+  const dispatch = useDispatch();
 
   //!функция сброса фильтров
   const refreshFilters = () => {
     setIsChecked([]);
     setAllChecked([]);
-    sessionStorage.setItem("isCheckedTeachers", null);
-    const fdfix = FilteredSample(updatedData, [], "idasdasd");
+    dispatch(
+      removeTableCheckeds({
+        tableName: ssname,
+      })
+    );
+    const fdfix = FilteredSample(updatedData, [], "");
     setFilteredData(fdfix);
-    console.log("click");
   };
 
   const funGetStyle = (action) => {
@@ -353,6 +336,7 @@ function TableTeachers(props) {
                   setSortParamByColumn={setSortParamByColumn}
                   funSpanRow={funSpanRow}
                   funGetStyle={funGetStyle}
+                  ssname={ssname}
                 />
               ))}
             </tr>

@@ -17,6 +17,8 @@ function TableSchedule(props) {
   const ssIsChecked = `isCheckedSchedule${basicTabData.nameKaf}`;
   // const ssHeader = `TableScheduleHeader${basicTabData.nameKaf}`;
   const ssHeader = `headerSchedule`;
+  //! достаем данные из редакса
+  const isCheckedStore = useSelector((state) => state.isCheckedSlice.isChecked);
 
   const tabDat = {
     tableHeader,
@@ -29,21 +31,18 @@ function TableSchedule(props) {
     setFiltredData,
     ssIsChecked,
     ssHeader,
+    isCheckedStore,
   };
-
-  //! достаем данные из редакса
-  const isCheckedStore = useSelector((state) => state.isCheckedSlice.isChecked);
 
   useEffect(() => {
     const dataBd = [...testData];
     const fixEducator = funFixEducator(dataBd);
-    const fdfix = FilteredSample(fixEducator, isCheckedStore);
-    console.log("fdfix", fdfix);
+    const checks = isCheckedStore[ssIsChecked];
+    const fdfix = FilteredSample(fixEducator, checks);
     setTableData(dataBd);
     setTableDataFix(fdfix);
     setFiltredData(fdfix);
-    console.log("isCheckedStore", isCheckedStore);
-    checkPar.setIsChecked(isCheckedStore || []);
+    checkPar.setIsChecked(checks || []);
   }, [basicTabData.nameKaf, isCheckedStore]);
 
   return (

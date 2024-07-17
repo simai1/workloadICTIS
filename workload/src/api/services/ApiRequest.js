@@ -83,9 +83,12 @@ export const EducatorKard = async (data) => {
 };
 
 //! получаем историю блокированных таблиц
-export const apiGetHistory = async () => {
+export const apiGetHistory = async (par, department) => {
+  console.log("par", par);
   try {
-    const response = await http.get(`${server}/history/getAll`);
+    const response = await http.get(
+      `${server}/history/getAll${par}${department}`
+    );
     console.log("история", response);
     return response.data;
   } catch (error) {

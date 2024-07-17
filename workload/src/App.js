@@ -31,6 +31,7 @@ import { delChangeData } from "./ui/ContextMenu/Function";
 import { FilteredSample } from "./ui/SamplePoints/Function";
 // import { horsTeacher } from "./components/TableTeachers/dataHoursForTeacher/HoursTicher";
 import AdminMenu from "./pages/AdminMenu/AdminMenu";
+import { useSelector } from "react-redux";
 
 function App() {
   const [educator, setEducator] = useState([]); // преподаватели
@@ -187,7 +188,7 @@ function App() {
     selectISOid,
     historyChanges,
     setHistoryChanges,
-    funUpdateHistory,
+    // funUpdateHistory,
   };
 
   const [coloredData, setColoredData] = useState([]); // выделенные цветом
@@ -213,6 +214,7 @@ function App() {
   };
   // храним id и ключь измененных td для подсвечивания
   const [changedData, setChangedData] = useState(changedDataObj);
+  const isCheckedStore = useSelector((state) => state.isCheckedSlice.isChecked);
   const [isChecked, setIsChecked] = useState([]); // состояние инпутов в SamplePoints //! сбросить
   const [isAllChecked, setAllChecked] = useState([]); // инпут все в SamplePoints //! сбросить
   const checkPar = {
@@ -240,6 +242,7 @@ function App() {
   const [buffDataHoursPopup, setBuffDataHoursPopup] = useState(null);
   const [inputEditValue, setInputEditValue] = useState([]);
   const [typeSplit, setTypeSplit] = useState(""); //! тип деления для контекст меню для доп нагрузки
+  const [parametrFilter, setParametrFilter] = useState("?"); //! параметр для истории
 
   const tabPar = {
     selectedTable,
@@ -284,6 +287,8 @@ function App() {
     setInputEditValue,
     typeSplit,
     setTypeSplit,
+    parametrFilter,
+    setParametrFilter,
   };
 
   //! функция обновления комментаривев
@@ -318,22 +323,16 @@ function App() {
     }
   }
 
-  //! функция обновления истории
-  function funUpdateHistory() {
-    apiGetHistory().then((req) => {
-      const ssIsChecked = JSON.parse(
-        sessionStorage.getItem(`isCheckedHistory${basicTabData.nameKaf}`)
-      );
-      console.log("isChecked", ssIsChecked);
-      const fdfix = FilteredSample(req, ssIsChecked);
-      setHistoryChanges(fdfix);
-      if (ssIsChecked && ssIsChecked !== null && ssIsChecked.length > 0) {
-        setIsChecked(ssIsChecked);
-      } else {
-        setIsChecked([]);
-      }
-    });
-  }
+  // //! функция обновления истории
+  // function funUpdateHistory(par = "") {
+  //   apiGetHistory(par).then((req) => {
+  //     const ssname = `isCheckedHistory${basicTabData.nameKaf}`;
+  //     const checks = isCheckedStore[ssname];
+  //     const fdfix = FilteredSample(req, checks);
+  //     setHistoryChanges(fdfix);
+  //     checkPar.setIsChecked(checks || []);
+  //   });
+  // }
 
   //! функция получения закрепленных строк
   function funUpdateFastenedData() {
@@ -373,11 +372,9 @@ function App() {
     //! функция прокида буффера для разделения соединения и удаления нагрузок
     const fdb = fixDataBuff(fixData, bufferAction);
     // зменяем массив преподавателя на его имя
-    const ssIsChecked = JSON.parse(
-      sessionStorage.getItem(`isCheckedWorkload${basicTabData.nameKaf}`)
-    );
-    console.log("isChecked", ssIsChecked);
-    const fdfix = FilteredSample(fdb, ssIsChecked);
+    const ssname = `isCheckedWorkload${basicTabData.nameKaf}`;
+    const checks = isCheckedStore[ssname];
+    const fdfix = FilteredSample(fdb, checks);
     setWorkloadData(fdb);
     setWorkloadDataFix(fdfix);
     setFiltredData(fdfix);

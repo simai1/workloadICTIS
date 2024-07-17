@@ -4,11 +4,16 @@ import styles from "./TableWorkload.module.scss";
 import { filteredWorkload, funfastenedDataSort } from "./Function";
 import DataContext from "../../context";
 import ContextMenu from "../../ui/ContextMenu/ContextMenu";
+import { useSelector } from "react-redux";
 // import { FilteredSample } from "../../ui/SamplePoints/Function";
 
 function TableWorkload(props) {
   const { tabPar, visibleDataPar, basicTabData, checkPar } =
     useContext(DataContext);
+  const ssname = `isCheckedWorkload${basicTabData.nameKaf}`;
+
+  //! достаем данные из редакса
+  const isCheckedStore = useSelector((state) => state.isCheckedSlice.isChecked);
   //! при событии скролл таблицы изменим индекс первого показываемого tr
   const scrollTable = (e) => {
     const maxStartData =
@@ -57,17 +62,11 @@ function TableWorkload(props) {
     tabPar.setContextMenuShow(!tabPar.contextMenuShow);
   };
 
-  //! достаем и локал стореджа состояние фитрации по заголовку
+  //! достаем из стореджа состояние фитрации по заголовку
   useEffect(() => {
-    const ssIsChecked = JSON.parse(
-      sessionStorage.getItem(`isCheckedWorkload${basicTabData.nameKaf}`)
-    ); //! сбросить
-    if (ssIsChecked && ssIsChecked !== null && ssIsChecked.length > 0) {
-      checkPar.setIsChecked(ssIsChecked);
-    } else {
-      checkPar.setIsChecked([]);
-    }
-  }, [basicTabData.nameKaf]);
+    const checks = isCheckedStore[ssname];
+    checkPar.setIsChecked(checks || []);
+  }, [basicTabData.nameKaf, isCheckedStore]);
 
   return (
     <div
@@ -79,7 +78,7 @@ function TableWorkload(props) {
       {tabPar.contextMenuShow && tabPar.selectedTr.length != 0 && (
         <ContextMenu />
       )}
-      <Table />
+      <Table ssname={ssname} />
     </div>
   );
 }

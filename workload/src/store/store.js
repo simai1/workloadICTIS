@@ -1,6 +1,6 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import { reducer as filtersReducer } from "./filter/filter.slice";
-import isCheckedSlice from "./isChecked.slice.js";
+import isCheckedSlice from "./filter/isChecked.slice.js";
+import editInputChecked from "./filter/editInputChecked.slice.js";
 
 import {
   persistStore,
@@ -15,15 +15,15 @@ import {
 import storage from "redux-persist/lib/storage";
 
 const rootReducer = combineReducers({
-  filters: filtersReducer,
   isCheckedSlice: isCheckedSlice,
+  editInputChecked: editInputChecked,
 });
 
 const persistConfig = {
   key: "root",
   storage,
-  // whitelist: ["todos"],
-  // blacklist: ["todos"],
+  whitelist: ["isCheckedSlice", "editInputChecked"],
+  // blacklist: ["isCheckedSlice"],
 };
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 

@@ -43,7 +43,6 @@ function TableTh(props) {
         setSortImg(1);
       }
     }
-    console.log(par);
     props.setSortParamByColumn(par);
   };
 

@@ -114,6 +114,8 @@ function HomePage() {
     tabPar.setSelectedTable(component);
     if (component === "Disciplines") {
       basicTabData.setTableHeaders(workloadTableHeaders);
+    } else if (component === "History") {
+      basicTabData.setTableHeaders(workloadTableHeaders);
     } else if (component === "Teachers") {
       basicTabData.setTableHeaders(educatorTableHeaders);
     } else if (component === "ScheduleMaterials") {
@@ -254,7 +256,6 @@ function HomePage() {
       url = `?department=${idTableUnlock}`;
     }
     Workload(url).then((resp) => {
-      console.log("workloadExport", resp);
       generateAndDownloadExcel(resp, nameDepartment);
     });
   };
@@ -347,6 +348,15 @@ function HomePage() {
       } else return true;
     } else {
       return true;
+    }
+  };
+
+  //! параметр для фильтрации меняем
+  const setParam = () => {
+    if (tabPar.parametrFilter === "?") {
+      tabPar.setParametrFilter("?type=final&");
+    } else {
+      tabPar.setParametrFilter("?");
     }
   };
 
@@ -685,6 +695,15 @@ function HomePage() {
                               ? "Не перенесенные"
                               : "Перенесенные"}
                           </button>
+
+                          <button
+                            className={styles.histParRig}
+                            onClick={setParam}
+                          >
+                            {tabPar.parametrFilter === "?"
+                              ? "Показать последние изменения"
+                              : "Показать все"}
+                          </button>
                         </div>
                       )}
                     </>
@@ -709,9 +728,10 @@ function HomePage() {
                             scheduleHeaders
                       }
                       ssname={
-                        appData.selectedComponent === "Disciplines" ||
-                        appData.selectedComponent === "History"
+                        appData.selectedComponent === "Disciplines"
                           ? "headerWorkload"
+                          : appData.selectedComponent === "History"
+                          ? "headerHistory"
                           : appData.selectedComponent === "Teachers"
                           ? "headerTeachers"
                           : appData.selectedComponent === "ScheduleMaterials" &&
@@ -758,6 +778,7 @@ function HomePage() {
             <TableWorkload
               tableMode={tableMode}
               tableHeaders={tableHeaders}
+              setTableHeaders={setTableHeaders}
               searchTerm={basicTabData.searchTerm}
               setSearchTerm={basicTabData.setSearchTerm}
               refProfile={refProfile}
@@ -768,8 +789,8 @@ function HomePage() {
             <TableTeachers
               setEducatorIdforLk={setEducatorIdforLk}
               changeInput={changeInput}
-              setTableHeaders={setTableHeaders}
               tableHeaders={tableHeaders}
+              setTableHeaders={setTableHeaders}
               searchTerm={basicTabData.searchTerm}
               setSearchTerm={basicTabData.setSearchTerm}
               setEducatorData={setEducatorData}
@@ -788,6 +809,7 @@ function HomePage() {
             <TableHistory
               tableMode={tableMode}
               tableHeaders={tableHeaders}
+              setTableHeaders={setTableHeaders}
               searchTerm={basicTabData.searchTerm}
               setSearchTerm={basicTabData.setSearchTerm}
               refProfile={refProfile}
