@@ -18,14 +18,21 @@ function TableHistory(props) {
   const [orighistoryData, origsethistoryData] = useState([]);
   const ssname = `isCheckedHistory${basicTabData.nameKaf}`;
   const ssheader = "headerHistory";
+
+  const dep = basicTabData.tableDepartment.find(
+    (el) => el.name === basicTabData?.nameKaf
+  )?.id;
+  console.log(dep);
+  const departmentForQery = `&department=${dep}`;
+
   const headerStore = useSelector(
     (state) => state.editInputChecked.editInputCheckeds[ssheader]
   );
 
-  //! получаем данные с апи по истории
-  useEffect(() => {
-    basicTabData.funUpdateHistory(tabPar.parametrFilter);
-  }, [tabPar.parametrFilter]);
+  // //! получаем данные с апи по истории
+  // useEffect(() => {
+  //   basicTabData.funUpdateHistory(tabPar.parametrFilter);
+  // }, [tabPar.parametrFilter]);
 
   //! достаем из стореджа состояние фитрации по заголовку
   useEffect(() => {
@@ -87,7 +94,7 @@ function TableHistory(props) {
 
   useEffect(() => {
     appData.setLoaderAction(true);
-    apiGetHistory(tabPar.parametrFilter).then((req) => {
+    apiGetHistory(tabPar.parametrFilter, departmentForQery).then((req) => {
       const hd = req?.filter(
         (it) =>
           it.checked === tabPar.perenesenAction &&
