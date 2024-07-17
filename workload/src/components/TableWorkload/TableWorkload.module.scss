@@ -107,8 +107,10 @@ $heightCell: 150px;
     .gettdInner {
       max-height: 300px;
       overflow-wrap: break-word;
-      word-break: break-all;
+      // word-break: break-all;
       hyphens: auto;
+      -webkit-hyphens: auto;
+      -ms-hyphens: auto;
       overflow-x: hidden;
       overflow-y: auto;
       position: absolute;
