@@ -94,11 +94,7 @@ function TableHistory(props) {
   useEffect(() => {
     appData.setLoaderAction(true);
     apiGetHistory(tabPar.parametrFilter, departmentForQery).then((req) => {
-      const hd = req?.filter(
-        (it) =>
-          it.checked === tabPar.perenesenAction &&
-          it.department === basicTabData.nameKaf
-      );
+      const hd = req?.filter((it) => it.checked === tabPar.perenesenAction);
       //! преобразуем историю для вывода
       const fixHistory = funHistoryFix(hd);
       const checks = isCheckedStore[ssname];
