@@ -88,11 +88,25 @@ function InputCheckbox(props) {
           )}
           {
             //! определяем разделенная ли нагрузка
-            props.workload?.isSplit === true && (
-              <div className={styles.isSplit}>
-                <span>Разделенная</span>
-              </div>
-            )
+            props.workload?.isSplit === true &&
+              !appData.metodRole[appData.myProfile?.role]?.some(
+                (el) => el === 33.2
+              ) && (
+                <div className={styles.isSplit}>
+                  <span>Разделенная</span>
+                </div>
+              )
+          }
+          {
+            //! определяем разделенная ли нагрузка
+            props.workload?.isBlocked === true &&
+              appData.metodRole[appData.myProfile?.role]?.some(
+                (el) => el === 33.2
+              ) && (
+                <div className={styles.isSplit}>
+                  <span>Заблокирована</span>
+                </div>
+              )
           }
           {
             //! после резделения или обьединения исходную помечаем
@@ -105,9 +119,10 @@ function InputCheckbox(props) {
           }
           {
             //! определяем разделенная ли нагрузка
-            props.workload?.isMerged === true && (
-              <div className={styles.isSplit}>Объединенная</div>
-            )
+            props.workload?.isMerged === true &&
+              !appData.metodRole[appData.myProfile?.role]?.some(
+                (el) => el === 33.2
+              ) && <div className={styles.isSplit}>Объединенная</div>
           }
           <div className={styles.bacground}>
             {getComment().length > 0 &&

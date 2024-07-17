@@ -408,6 +408,29 @@ const ContextMenu = () => {
     } else return false;
   }
 
+  function determineIsBlocked() {
+    return basicTabData.workloadDataFix
+      .filter((item) => tabPar.selectedTr.some((el) => el === item.id))
+      .every((el) => !el.isBlocked);
+  }
+  function determineIsBlockedNot() {
+    return basicTabData.workloadDataFix
+      .filter((item) => tabPar.selectedTr.some((el) => el === item.id))
+      .every((el) => el.isBlocked);
+  }
+
+  const funHeightIsBloced = () => {
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 33.2)) {
+      return true;
+    } else {
+      if (determineIsBlockedNot()) {
+        return false;
+      } else if (determineIsBlocked()) {
+        return true;
+      }
+    }
+  };
+
   //! функция которая определяет какое разделене выводить
   function getSplitMenuPopup(
     metodRole,
@@ -629,16 +652,18 @@ const ContextMenu = () => {
         className={styles.blockMenu}
         ref={conxextMenuRefBlock}
       >
-        {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 9) && (
-          <MenuPop
-            btnText={"Добавить преподавателя"}
-            func={addEducator}
-            menuShow={menuShow === "educator"}
-            img={true}
-          />
-        )}
+        {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 9) &&
+          determineIsBlocked() && (
+            <MenuPop
+              btnText={"Добавить преподавателя"}
+              func={addEducator}
+              menuShow={menuShow === "educator"}
+              img={true}
+            />
+          )}
         {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 10) &&
-          new Set(tabPar.selectedTr).size < 10 && (
+          new Set(tabPar.selectedTr).size < 10 &&
+          determineIsBlocked() && (
             <MenuPop
               btnText={"Удалить преподавателя"}
               func={removeEducator}
@@ -647,16 +672,18 @@ const ContextMenu = () => {
           )}
         <MenuPop btnText={"Закрепить"} func={pinaCell} img={false} />
         <MenuPop btnText={"Открепить"} func={unPinaCell} img={false} />
-        {getSplitMenuPopup(
-          appData.metodRole,
-          appData.myProfile,
-          funGetSplitDopWorkload,
-          basicTabData.workloadDataFix,
-          tabPar.selectedTr
-        )}
+        {determineIsBlocked() &&
+          getSplitMenuPopup(
+            appData.metodRole,
+            appData.myProfile,
+            funGetSplitDopWorkload,
+            basicTabData.workloadDataFix,
+            tabPar.selectedTr
+          )}
 
         {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 22) &&
-          tabPar.selectedTr.length === 1 && (
+          tabPar.selectedTr.length === 1 &&
+          determineIsBlocked() && (
             <MenuPop
               btnText={"Оставить комментарий"}
               func={onAddComment}
@@ -674,7 +701,8 @@ const ContextMenu = () => {
         )}
 
         {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 18) &&
-          tabPar.selectedTr.length === 1 && (
+          tabPar.selectedTr.length === 1 &&
+          determineIsBlocked() && (
             <MenuPop
               btnText={"Предложить"}
               func={onClickPropose}
@@ -682,17 +710,22 @@ const ContextMenu = () => {
               img={true}
             />
           )}
-        {appData.metodRole[appData.myProfile?.role]?.some(
-          (el) => el === 13
-        ) && (
-          <MenuPop btnText={"Удалить"} func={handleDeletWorkload} img={false} />
+        {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 13) &&
+          determineIsBlocked() && (
+            <MenuPop
+              btnText={"Удалить"}
+              func={handleDeletWorkload}
+              img={false}
+            />
+          )}
+        {funHeightIsBloced() && (
+          <MenuPop
+            btnText={"Выделить"}
+            func={ClickHighlightshov}
+            menuShow={menuShow === "highlight"}
+            img={true}
+          />
         )}
-        <MenuPop
-          btnText={"Выделить"}
-          func={ClickHighlightshov}
-          menuShow={menuShow === "highlight"}
-          img={true}
-        />
       </div>
 
       {menuShow === "subMenu" && (

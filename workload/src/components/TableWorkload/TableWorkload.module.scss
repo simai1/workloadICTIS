@@ -281,6 +281,12 @@ $heightCell: 150px;
       pointer-events: none;
     }
 
+    .trIsBloced {
+      td {
+        background-color: var(--color--blockedBg);
+      }
+    }
+
     .trDeleted {
       td {
         background-color: var(--color--deletedBg);
