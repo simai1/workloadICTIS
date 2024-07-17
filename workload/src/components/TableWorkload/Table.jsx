@@ -114,10 +114,15 @@ function Table(props) {
     }
     if (
       tabPar.changedData.split?.find((el) => el === itemId) ||
-      tabPar.changedData.join?.find((el) => el === itemId) ||
-      items.isBlocked
+      tabPar.changedData.join?.find((el) => el === itemId)
     ) {
       classText = `${classText} ${styles.trBlocked}`;
+    }
+    if (
+      items.isBlocked &&
+      appData.metodRole[appData.myProfile?.role]?.some((el) => el === 33.1)
+    ) {
+      classText = `${classText} ${styles.trIsBloced}`;
     }
 
     return classText;
