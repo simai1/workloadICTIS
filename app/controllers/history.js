@@ -16,10 +16,20 @@ const convertToDto = workloads => {
 };
 export default {
     async getAll(req, res) {
-        const { type } = req.query;
-        const histories = await History.findAll({
-            order: [['createdAt', 'ASC']],
-        });
+        const { type, department } = req.query;
+        let histories;
+        if(!department){
+            histories = await History.findAll({
+                order: [['createdAt', 'ASC']],
+            });
+        } else{
+            histories = await History.findAll({
+                where:{
+                    department: department,
+                },
+                order: [['createdAt', 'ASC']],
+            });
+        }
         const resArr = [];
         let f;
         let checkWorkload;
