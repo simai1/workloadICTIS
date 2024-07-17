@@ -22,7 +22,6 @@ function TableHistory(props) {
   const dep = basicTabData.tableDepartment.find(
     (el) => el.name === basicTabData?.nameKaf
   )?.id;
-  console.log(dep);
   const departmentForQery = `&department=${dep}`;
 
   const headerStore = useSelector(

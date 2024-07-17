@@ -353,10 +353,10 @@ function HomePage() {
 
   //! параметр для фильтрации меняем
   const setParam = () => {
-    if (tabPar.parametrFilter === "") {
-      tabPar.setParametrFilter("?type=final");
+    if (tabPar.parametrFilter === "?") {
+      tabPar.setParametrFilter("?type=final&");
     } else {
-      tabPar.setParametrFilter("");
+      tabPar.setParametrFilter("?");
     }
   };
 
@@ -700,7 +700,7 @@ function HomePage() {
                             className={styles.histParRig}
                             onClick={setParam}
                           >
-                            {tabPar.parametrFilter === ""
+                            {tabPar.parametrFilter === "?"
                               ? "Показать последние изменения"
                               : "Показать все"}
                           </button>

@@ -188,7 +188,7 @@ function App() {
     selectISOid,
     historyChanges,
     setHistoryChanges,
-    funUpdateHistory,
+    // funUpdateHistory,
   };
 
   const [coloredData, setColoredData] = useState([]); // выделенные цветом
@@ -242,7 +242,7 @@ function App() {
   const [buffDataHoursPopup, setBuffDataHoursPopup] = useState(null);
   const [inputEditValue, setInputEditValue] = useState([]);
   const [typeSplit, setTypeSplit] = useState(""); //! тип деления для контекст меню для доп нагрузки
-  const [parametrFilter, setParametrFilter] = useState(""); //! параметр для истории
+  const [parametrFilter, setParametrFilter] = useState("?"); //! параметр для истории
 
   const tabPar = {
     selectedTable,
@@ -323,16 +323,16 @@ function App() {
     }
   }
 
-  //! функция обновления истории
-  function funUpdateHistory(par = "") {
-    apiGetHistory(par).then((req) => {
-      const ssname = `isCheckedHistory${basicTabData.nameKaf}`;
-      const checks = isCheckedStore[ssname];
-      const fdfix = FilteredSample(req, checks);
-      setHistoryChanges(fdfix);
-      checkPar.setIsChecked(checks || []);
-    });
-  }
+  // //! функция обновления истории
+  // function funUpdateHistory(par = "") {
+  //   apiGetHistory(par).then((req) => {
+  //     const ssname = `isCheckedHistory${basicTabData.nameKaf}`;
+  //     const checks = isCheckedStore[ssname];
+  //     const fdfix = FilteredSample(req, checks);
+  //     setHistoryChanges(fdfix);
+  //     checkPar.setIsChecked(checks || []);
+  //   });
+  // }
 
   //! функция получения закрепленных строк
   function funUpdateFastenedData() {
