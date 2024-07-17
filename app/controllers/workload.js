@@ -444,6 +444,16 @@ export default {
             return chain.then(() => workload.update({ educatorId }));
         }, Promise.resolve());
 
+        // email section
+        if (checkWorkloads[0].workload === 'Лекционные' && checkWorkloads[0].department === 0) {
+            const educator = await Educator.findOne({
+                where: { id: educatorId },
+                include: [{ model: User }],
+            });
+            if (!educator.User) sendMail(educator.email, 'lectorInvite');
+        }
+
+        // history creation section
         const historyData = [];
         for (let i = 0; i < workloadIds.length; i++) {
             historyData.push({
