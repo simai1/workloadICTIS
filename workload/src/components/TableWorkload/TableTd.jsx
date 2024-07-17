@@ -147,6 +147,25 @@ function TableTd(props) {
     return text;
   };
 
+  //! получаем стили для td текст которого не вмещается в ячейку
+  const getStylesBigText = () => {
+    let top = `${10}%`;
+    console.log(props.index);
+    if (basicTabData.filtredData.length - 2 <= props.index) {
+      top = `${-100}%`;
+    }
+    const style = {
+      position: "absolute",
+      backgroundColor: "inherit",
+      width: "90%",
+      top: top,
+      padding: "4px",
+      boxShadow: "0px 3px 18px rgba(0, 0, 0, 0.15)",
+      zIndex: "10",
+    };
+    return style;
+  };
+
   return (
     <td
       onMouseEnter={() => setShowFullText(true)}
@@ -171,15 +190,7 @@ function TableTd(props) {
         onDoubleClick={funDubleClick}
         style={
           showFullText && props.item[props.itemKey.key]?.length > lenSlice
-            ? {
-                position: "absolute",
-                backgroundColor: "inherit",
-                width: "90%",
-                top: "10px",
-                padding: "4px",
-                boxShadow: "0px 3px 18px rgba(0, 0, 0, 0.15)",
-                zIndex: "10",
-              }
+            ? getStylesBigText()
             : null
         }
       >
