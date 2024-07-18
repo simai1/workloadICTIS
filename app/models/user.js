@@ -2,6 +2,7 @@ import { DataTypes, Model, SMALLINT } from 'sequelize';
 import EnumRoles from '../config/roles.js';
 import EnumInstitutionalAffiliation from '../config/institutional-affiliations.js';
 import associateEducator from '../utils/associate-educator.js';
+import associateInstAffiliation from '../utils/associate-inst-affilation.js';
 
 export default class User extends Model {
     static initialize(sequelize) {
@@ -54,6 +55,9 @@ export default class User extends Model {
         );
         User.afterCreate(async user => {
             await associateEducator(user);
+        });
+        User.afterCreate(async user => {
+            associateInstAffiliation(user);
         });
     }
 }
