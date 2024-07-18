@@ -67,6 +67,7 @@ function SplitByHoursPopup() {
     tabPar.setInputEditValue([]);
     tabPar.setBuffDataHoursPopup(null);
     tabPar.setPopupShareShow(false);
+    tabPar.setTypeSplit("");
   };
 
   //! сохранить введенные изменения кнопка сохранить
@@ -114,6 +115,7 @@ function SplitByHoursPopup() {
     tabPar.setInputEditValue([]);
     tabPar.setPopupShareShow(false);
     tabPar.setBuffDataHoursPopup(null);
+    tabPar.setTypeSplit("");
   };
 
   //! функция расчета часов
