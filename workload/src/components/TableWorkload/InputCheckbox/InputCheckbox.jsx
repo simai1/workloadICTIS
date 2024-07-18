@@ -52,7 +52,11 @@ function InputCheckbox(props) {
         <th style={stylesTh} className={styles.InputCheckbox}>
           <div className={styles.bacground}>
             <ImgClearFilter
-              className={checkPar.isChecked.length > 0 ? styles.svgRed : null}
+              className={
+                checkPar.isChecked.length > 0
+                  ? styles.svgRed
+                  : styles.bacgroundsvgRed
+              }
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
               onClick={refreshFilters}
