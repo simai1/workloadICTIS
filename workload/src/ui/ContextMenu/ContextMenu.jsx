@@ -360,7 +360,7 @@ const ContextMenu = () => {
       if (
         basicTabData.workloadDataFix
           .filter((item) => tabPar.selectedTr.some((el) => el === item.id))
-          .every((it) => it.isSplit === false && it.workload === "Защита ВКР")
+          .every((it) => it.workload === "Защита ВКР")
       ) {
         return true;
       } else return false;
@@ -382,13 +382,11 @@ const ContextMenu = () => {
     if (
       basicTabData.workloadDataFix
         .filter((item) => tabPar.selectedTr.some((el) => el === item.id))
-        .every(
-          (it) =>
-            it.isSplit === false &&
-            addWorkload.some(
-              (el) =>
-                el.name.replace(/\s/g, "") === it.workload.replace(/\s/g, "")
-            )
+        .every((it) =>
+          addWorkload.some(
+            (el) =>
+              el.name.replace(/\s/g, "") === it.workload.replace(/\s/g, "")
+          )
         )
     ) {
       return true;
@@ -451,7 +449,6 @@ const ContextMenu = () => {
         !funGetSplitDopWorkload() &&
         wdFix.every(
           (it) =>
-            it.isSplit === false &&
             it.workload !== "Защита ВКР" &&
             !it.workload.toLowerCase().includes("экзамен") &&
             !it.workload.toLowerCase().includes("практика")
@@ -472,7 +469,6 @@ const ContextMenu = () => {
         !funGetSplitDopWorkload() &&
         wdFix.every(
           (it) =>
-            it.isSplit === false &&
             it.workload !== "Защита ВКР" &&
             it.workload !== "Кандидатский экзамен"
         )
@@ -511,11 +507,7 @@ const ContextMenu = () => {
         );
       }
 
-      if (
-        wdFix.every(
-          (it) => it.isSplit === false && it.workload === "Кандидатский экзамен"
-        )
-      ) {
+      if (wdFix.every((it) => it.workload === "Кандидатский экзамен")) {
         massMenuPop.push(
           <MenuPop
             btnText={"Разделить"}
