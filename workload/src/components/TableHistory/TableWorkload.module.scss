@@ -73,6 +73,19 @@ $heightCell: 150px;
     padding: 10px 20px;
     cursor: pointer;
   }
+  .psevdoElem {
+    &::before {
+      content: "";
+      background-color: var(--bgraund);
+      // background-color: red;
+      width: 64px;
+      height: 11px;
+      position: absolute;
+      bottom: 0;
+      right: 0px;
+      z-index: 1;
+    }
+  }
 
   .table {
     width: 100%;

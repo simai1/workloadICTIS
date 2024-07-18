@@ -63,6 +63,8 @@ function UniversalTable(props) {
       onScroll={scrollTable}
       ref={tabPar.tableRefWorkload}
     >
+      <div className={styles.psevdoElem}></div>
+
       {tabPar.contextMenuShow &&
         tabPar.selectedTr.length !== 0 &&
         props.contextMenu === "TableWorkload" && <ContextMenu />}

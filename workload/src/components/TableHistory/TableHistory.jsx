@@ -144,6 +144,7 @@ function TableHistory(props) {
       onScroll={scrollTable}
       ref={containertableRef}
     >
+      <div className={styles.psevdoElem}></div>
       {contextShow && (
         <div
           ref={contextRef}
