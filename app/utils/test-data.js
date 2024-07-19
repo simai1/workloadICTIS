@@ -55,7 +55,6 @@ async function fillEducators() {
                 position: x.position,
                 email: x.email || null,
                 department: x.department,
-                typeOfEmployment: x.typeOfEmployment,
                 rate: x.rate,
                 maxHours: x.maxHours,
                 recommendedMaxHours: x.recommendedMaxHours,

@@ -1,7 +1,7 @@
 export const tableHeader = [
   {
     key: "id",
-    name: "id",
+    name: "ID пользователя",
   },
   {
     key: "name",
@@ -24,8 +24,8 @@ export const tableHeader = [
     name: "Разрешенные кафедры",
   },
   {
-    key: "id",
-    name: "educatorId",
+    key: "educatorId",
+    name: "ID преподавателя",
   },
   {
     key: "department",
@@ -114,3 +114,17 @@ export const roles = {
   GIGA_ADMIN: "Администратор системы",
   GOD: "БОГ",
 };
+
+
+export const dataListPosition = [
+  { key: 1, name: "Ассистент" },
+  { key: 2, name: "Ведущий научный сотрудник" },
+  { key: 3, name: "Главный научный сотрудник" },
+  { key: 5, name: "Доцент" },
+  { key: 6, name: "Научный сотрудник" },
+  { key: 7, name: "Профессор" },
+  { key: 8, name: "Старший научный сотрудник" },
+  { key: 9, name: "Старший преподаватель" },
+  { key: 10, name: "Преподаватель" },
+  { key: 11, name: "Заведующий кафедрой" },
+];
