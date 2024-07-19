@@ -25,7 +25,7 @@ function Table(props) {
               >
                 {tableHeader.map((keys, index) => (
                   <td key={keys.key + index}>
-                    {item[keys.key].length === 0 ? "__" : item[keys.key]}
+                    {item[keys.key]?.length === 0 ? "__" : item[keys.key]}
                   </td>
                 ))}
               </tr>

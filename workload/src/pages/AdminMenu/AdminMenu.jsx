@@ -26,7 +26,11 @@ function AdminMenu() {
             Object.keys(item).map((key) => {
               if (key === "educator") {
                 Object.keys(item.educator).forEach((k) => {
-                  fixedItem[k] = item.educator[k];
+                  // console.log(item.educator[k])
+                  if (k === "id") {
+                    fixedItem['educatorId'] = item.educator[k]
+                  } else { fixedItem[k] = item.educator[k]; }
+                  // console.log(item.educator[k])
                 });
               } else {
                 fixedItem[key] = item[key];
@@ -39,7 +43,7 @@ function AdminMenu() {
         }
       });
     }
-  }
+  };
 
   //! при клике на поле в контекстном меню
   const closeClick = () => {
@@ -48,7 +52,7 @@ function AdminMenu() {
 
   //   apiAdminUpdata
   useEffect(() => {
-    updateAllUsers()
+    updateAllUsers();
   }, []);
 
   //! При клике на строку

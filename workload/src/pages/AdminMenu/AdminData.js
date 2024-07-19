@@ -1,7 +1,7 @@
 export const tableHeader = [
   {
     key: "id",
-    name: "id",
+    name: "ID пользователя",
   },
   {
     key: "name",
@@ -24,8 +24,8 @@ export const tableHeader = [
     name: "Разрешенные кафедры",
   },
   {
-    key: "id",
-    name: "educatorId",
+    key: "educatorId",
+    name: "ID преподавателя",
   },
   {
     key: "department",
