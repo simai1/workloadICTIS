@@ -34,7 +34,6 @@ function TableTd(props) {
 
   const onChangeTextareaTd = (e) => {
     const query = e.target.value;
-    console.log(Number(query));
     if (query === "") {
       setTextareaTd(query);
     } else if (query === "0") {
@@ -86,7 +85,6 @@ function TableTd(props) {
         ...appData.bufferAction,
       ]);
       let cd = { ...tabPar.changedData };
-      console.log("props.itemKey.key", cd);
       cd[props.itemKey.key] = [...cd[props.itemKey.key], props.item.id];
       tabPar.setChangedData(cd);
       setOnTextArea(false);
@@ -131,8 +129,6 @@ function TableTd(props) {
     }
   };
   const ClickName = () => {
-    console.log("Вот я");
-
     tabPar.setContextMenuShow(true);
   };
   //! функция определения класса td для открытия длинного текста в попап со скролом
@@ -150,7 +146,6 @@ function TableTd(props) {
   //! получаем стили для td текст которого не вмещается в ячейку
   const getStylesBigText = () => {
     let top = `${10}%`;
-    console.log(props.index);
     if (basicTabData.filtredData.length - 2 <= props.index) {
       top = `${-100}%`;
     }

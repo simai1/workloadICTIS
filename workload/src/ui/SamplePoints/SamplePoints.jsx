@@ -17,6 +17,7 @@ export function SamplePoints(props) {
   const handleInputChange = (event) => {
     setSearchText(event.target.value);
   };
+  const [filteredData, setFilteredData] = useState([]);
 
   //! чтобы SamplePoints не выходил за пределы таблицы
   const spRef = useRef(null);
@@ -42,20 +43,31 @@ export function SamplePoints(props) {
     };
   }, []);
 
-  const filteredData = [
-    ...new Set(
-      props.isSamplePointsData.filter((el) => {
-        // Преобразовываем el в строку, если он является числом
-        const elString = typeof el === "number" ? el.toString() : el;
-        return elString?.toLowerCase().includes(searchText?.toLowerCase());
-      })
-    ),
-  ].sort((a, b) => {
-    // Сортируем отфильтрованные данные по возрастанию
-    if (a < b) return -1;
-    if (a > b) return 1;
-    return 0;
-  });
+  useEffect(() => {
+    const fd = [
+      ...new Set(
+        props.isSamplePointsData.filter((el) => {
+          // Преобразовываем el в строку, если он является числом
+          const elString = typeof el === "number" ? el.toString() : el;
+          return elString?.toLowerCase().includes(searchText?.toLowerCase());
+        })
+      ),
+      ...new Set(
+        props.isChecked
+          .filter((el) => el.itemKey === props.itemKey)
+          .map((el) => el.value)
+      ),
+    ].sort((a, b) => {
+      // Сортируем отфильтрованные данные по возрастанию
+      if (a < b) return -1;
+      if (a > b) return 1;
+      return 0;
+    });
+    setFilteredData(fd);
+
+    console.log("filteredData", filteredData);
+    console.log("props.isChecked", props.isChecked);
+  }, [props.isSamplePointsData]);
 
   //! при нажатии на Input All
   const onAllChecked = () => {
@@ -84,7 +96,7 @@ export function SamplePoints(props) {
           checked.push(itemKey);
         }
       });
-
+      console.log("checked", checked);
       dispatch(
         addAllCheckeds({
           checked: checked,
@@ -113,6 +125,7 @@ export function SamplePoints(props) {
         (item) => item.value === el && props.itemKey === item.itemKey
       )
     ) {
+      console.log("фильтруем");
       checked = checked.filter((item) => item.value !== el);
       dispatch(
         removeChecked({

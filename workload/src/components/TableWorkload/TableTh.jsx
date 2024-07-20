@@ -14,7 +14,7 @@ function TableTh(props) {
     if (tabPar.spShow === props.index) {
       tabPar.setSpShow(null);
     } else {
-      const modalData = basicTabData.workloadData.map(
+      const modalData = basicTabData.workloadDataFix.map(
         (item) => item[props.item.key]
       );
       tabPar.setSamplePointsData([...modalData]);
@@ -67,6 +67,7 @@ function TableTh(props) {
           isChecked={checkPar.isChecked}
           setIsChecked={checkPar.setIsChecked}
           workloadData={basicTabData.workloadData}
+          // workloadDataFix={basicTabData.workloadDataFix}
           setWorkloadDataFix={basicTabData.setWorkloadDataFix}
           setSpShow={tabPar.setSpShow}
           sesionName={`isCheckedWorkload${basicTabData.nameKaf}`}

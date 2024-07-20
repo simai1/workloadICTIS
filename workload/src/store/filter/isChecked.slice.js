@@ -36,7 +36,7 @@ const isCheckedSlice = createSlice({
       if (!state.isChecked[tableName]) {
         state.isChecked[tableName] = [];
       }
-      state.isChecked[tableName] = [...state.isChecked[tableName], ...checked];
+      state.isChecked[tableName] = [...checked];
     },
 
     //! удаление по ключу для all
