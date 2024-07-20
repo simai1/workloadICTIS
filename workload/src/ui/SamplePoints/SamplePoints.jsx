@@ -44,6 +44,8 @@ export function SamplePoints(props) {
   }, []);
 
   useEffect(() => {
+    //! isSamplePointsData это массив в котором текстовые елементы, взятые из столбца
+    //! в fd храним все строки из столбца, и добавляем к ним те которые отфильтрованны (строки из redux)
     const fd = [
       ...props.isSamplePointsData.filter((el) => {
         // Преобразовываем el в строку, если он является числом
@@ -59,6 +61,7 @@ export function SamplePoints(props) {
       if (a > b) return 1;
       return 0;
     });
+    //! записываем только уникальные значения
     setFilteredData([...new Set(fd)]);
   }, [props.isSamplePointsData]);
 

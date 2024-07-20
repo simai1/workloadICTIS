@@ -250,7 +250,7 @@ function TableTeachers(props) {
   };
   const dispatch = useDispatch();
 
-  //!функция сброса фильтров
+  //! функция сброса фильтров
   const refreshFilters = () => {
     setIsChecked([]);
     setAllChecked([]);

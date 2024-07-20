@@ -91,8 +91,7 @@ function TableHistory(props) {
     basicTabData.setTableHeaders(headerStore || headers);
   }, [basicTabData.tableHeaders, headerStore]);
 
-  useEffect(() => {
-    appData.setLoaderAction(true);
+  function funUpdateHistory() {
     apiGetHistory(tabPar.parametrFilter, departmentForQery).then((req) => {
       const hd = req?.filter((it) => it.checked === tabPar.perenesenAction);
       //! преобразуем историю для вывода
@@ -104,6 +103,11 @@ function TableHistory(props) {
       visibleDataPar.setStartData(0);
       appData.setLoaderAction(false);
     });
+  }
+
+  useEffect(() => {
+    appData.setLoaderAction(true);
+    funUpdateHistory();
   }, [
     basicTabData.historyChanges,
     tabPar.perenesenAction,
@@ -119,7 +123,7 @@ function TableHistory(props) {
     apiCheckedUpdate(data).then((res) => {
       tabPar.setSelectedTr([]);
       setContetxShow(false);
-      basicTabData.funUpdateHistory(tabPar.parametrFilter);
+      funUpdateHistory(tabPar.parametrFilter);
     });
   };
 
