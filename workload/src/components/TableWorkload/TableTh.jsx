@@ -46,7 +46,6 @@ function TableTh(props) {
         setSortImg(1);
       }
     }
-    console.log(par);
     appData.setSortParamByColumn(par);
   };
 

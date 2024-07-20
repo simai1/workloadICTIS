@@ -10,14 +10,11 @@ function TableTh(props) {
     if (tabPar.spShow === props.index) {
       tabPar.setSpShow(null);
     } else {
-      const modalData = props.orighistoryData.map(
+      const modalData = props.historyData.map(
         (item) => item.value[props.item.key]
       );
       tabPar.setSamplePointsData([...modalData]);
       tabPar.setSpShow(props.index);
-      console.log("props.orighistoryData", props.orighistoryData);
-      console.log("props.item.key", props.item.key);
-      console.log("basicTabData.nameKaf", basicTabData.nameKaf);
     }
   };
 
@@ -34,6 +31,7 @@ function TableTh(props) {
           workloadData={props.orighistoryData}
           setWorkloadDataFix={props.sethistoryData}
           setSpShow={tabPar.setSpShow}
+          spShow={tabPar.spShow}
           sesionName={`isCheckedHistory${basicTabData.nameKaf}`}
         />
       )}

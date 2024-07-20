@@ -97,7 +97,6 @@ function TableTeachers(props) {
       });
       // else if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 45)){
       //   GetAllUse.then((res) => {
-      //     console.log("teatcher ", res);
       //     if (res && res.status === 200) {
       //       appData.setEducator(res.data);
       //       const fdfix = FilteredSample(res.data, isChecked);
@@ -331,6 +330,7 @@ function TableTeachers(props) {
                   isAllChecked={isAllChecked}
                   isChecked={isChecked}
                   setIsChecked={setIsChecked}
+                  filteredData={filteredData}
                   setFilteredData={setFilteredData}
                   sortParamByColumn={sortParamByColumn}
                   setSortParamByColumn={setSortParamByColumn}

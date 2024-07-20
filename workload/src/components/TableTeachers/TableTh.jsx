@@ -13,7 +13,7 @@ function TableTh(props) {
     if (props.sampleShow === props.index) {
       props.setSampleShow(null);
     } else {
-      const modalData = props.updatedData.map((item) => item[props.item.key]);
+      const modalData = props.filteredData.map((item) => item[props.item.key]);
       props.setSampleData([...modalData]);
       props.setSampleShow(props.index);
     }
