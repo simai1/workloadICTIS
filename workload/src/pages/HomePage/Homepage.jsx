@@ -42,6 +42,7 @@ import * as XLSX from "xlsx";
 import SplitByHoursPopup from "../../components/SplitByHoursPopup/SplitByHoursPopup";
 // import { UniversalPopup } from "../../ui/UniversalPopup/UniversalPopup";
 import TableSchedule from "../../components/TableSchedule/TableSchedule";
+import MyWorkload from "../../components/MyWorkload/MyWorkload";
 
 function HomePage() {
   const { appData, tabPar, visibleDataPar, basicTabData } =
@@ -113,7 +114,7 @@ function HomePage() {
   const handleComponentChange = (component) => {
     appData.setSelectedComponent(component);
     tabPar.setSelectedTable(component);
-    if (component === "Disciplines") {
+    if (component === "Disciplines" || component === "MyWorkload") {
       basicTabData.setTableHeaders(workloadTableHeaders);
     } else if (component === "History") {
       basicTabData.setTableHeaders(workloadTableHeaders);
@@ -597,6 +598,30 @@ function HomePage() {
                   text="Преподаватели"
                 />
               )}
+
+              {appData.metodRole[appData.myProfile?.role]?.some(
+                (el) => el === 56
+              ) && (
+                <Button
+                  Bg={
+                    appData.selectedComponent === "MyWorkload"
+                      ? "#0040E5"
+                      : "#efedf3"
+                  }
+                  textColot={
+                    appData.selectedComponent !== "MyWorkload"
+                      ? "#000000"
+                      : "#efedf3"
+                  }
+                  onClick={() => {
+                    handleComponentChange("MyWorkload");
+                    // handleButtonClick();
+                    // basicTabData.setselectISOid(false);
+                  }}
+                  text="Моя нагрузка"
+                />
+              )}
+
               {appData.metodRole[appData.myProfile?.role]?.some(
                 (el) => el === 54
               ) && (
@@ -735,7 +760,8 @@ function HomePage() {
                       selectedComponent={appData.selectedComponent}
                       originalHeader={
                         appData.selectedComponent === "Disciplines" ||
-                        appData.selectedComponent === "History"
+                        appData.selectedComponent === "History" ||
+                        appData.selectedComponent === "MyWorkload"
                           ? workloadTableHeaders
                           : appData.selectedComponent === "Teachers"
                           ? educatorTableHeaders
@@ -832,6 +858,16 @@ function HomePage() {
             />
           ) : appData.selectedComponent === "ScheduleMaterials" ? (
             <TableSchedule
+              tableMode={tableMode}
+              tableHeaders={tableHeaders}
+              setTableHeaders={setTableHeaders}
+              searchTerm={basicTabData.searchTerm}
+              setSearchTerm={basicTabData.setSearchTerm}
+              refProfile={refProfile}
+              setOpenModalWind={setOpenModalWind}
+            />
+          ) : appData.selectedComponent === "MyWorkload" ? (
+            <MyWorkload
               tableMode={tableMode}
               tableHeaders={tableHeaders}
               setTableHeaders={setTableHeaders}

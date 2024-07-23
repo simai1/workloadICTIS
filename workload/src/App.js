@@ -41,7 +41,6 @@ function App() {
   const [individualCheckboxes, setIndividualCheckboxes] = useState([]); //чекбоксы таблицы
   const [fileData, setFileData] = useState(null);
   const [myProfile, setMyProfile] = useState(null);
-
   //! в файле RoleMetods можно посмотреть назание метода и их id
   const metodRole = {
     METHODIST: [
@@ -53,7 +52,7 @@ function App() {
     ],
     DEPARTMENT_HEAD: [
       2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 20, 22, 23, 25, 26, 27, 30, 31,
-      32, 33, 33.1, 34, 36, 16, 38, 39, 40, 49, 50, 51, 52,
+      32, 33, 33.1, 34, 36, 16, 38, 39, 40, 49, 50, 51, 52, 56,
     ],
     DIRECTORATE: [
       1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
@@ -70,7 +69,7 @@ function App() {
     ],
     DEPUTY_DEPARTMENT_HEAD: [
       2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 20, 22, 23, 25, 26, 27, 30, 31,
-      32, 33, 33.1, 34, 36, 16, 38, 39, 40, 49, 50, 51, 52,
+      32, 33, 33.1, 34, 36, 16, 38, 39, 40, 49, 50, 51, 52, 56,
     ],
     GIGA_ADMIN: [
       1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 29, 30,
