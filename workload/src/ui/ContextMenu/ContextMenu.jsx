@@ -550,7 +550,7 @@ const ContextMenu = () => {
       ) {
         massMenuPop.push(
           <MenuPop
-            btnText={"объединить по подгруппам"}
+            btnText={"Объединить по подгруппам"}
             func={() => handleJoinWorkloads("g")}
             img={false}
           />
@@ -569,7 +569,7 @@ const ContextMenu = () => {
       ) {
         massMenuPop.push(
           <MenuPop
-            btnText={"объединить по часам"}
+            btnText={"Объединить по часам"}
             func={() => handleJoinWorkloads("h")}
             img={false}
           />
@@ -583,7 +583,7 @@ const ContextMenu = () => {
       ) {
         massMenuPop.push(
           <MenuPop
-            btnText={"объединить"}
+            btnText={"Объединить"}
             func={() => handleJoinWorkloads("vkr")}
             img={false}
           />
@@ -597,7 +597,7 @@ const ContextMenu = () => {
       ) {
         massMenuPop.push(
           <MenuPop
-            btnText={"объединить"}
+            btnText={"Объединить"}
             func={() => handleJoinWorkloads("add")}
             img={false}
           />
@@ -608,7 +608,7 @@ const ContextMenu = () => {
       if (wdFix.every((it) => it.workload === "Кандидатский экзамен")) {
         massMenuPop.push(
           <MenuPop
-            btnText={"объединить"}
+            btnText={"Объединить"}
             func={() => handleJoinWorkloads("candidatesExam")}
             img={false}
           />

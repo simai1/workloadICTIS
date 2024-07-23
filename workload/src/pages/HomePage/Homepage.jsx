@@ -24,6 +24,7 @@ import ListKaf from "../../ui/ListKaf/ListKaf";
 import { PopUpCreateEmploy } from "../../ui/PopUpCreateEmploy/PopUpCreateEmploy";
 import {
   GetDepartment,
+  SyncTable,
   Workload,
   WorkloadBlocked,
   apiGetUser,
@@ -340,6 +341,13 @@ function HomePage() {
     basicTabData.setSearchTerm("");
   }, [appData.selectedComponent]);
 
+  const sync = ()=>{
+    SyncTable().then((resp) => {
+      if (resp.status === 200) {
+        appData.setgodPopUp(true);
+      }
+    })
+  }
   //! функция определения выводить ли посик
   const funGetSherch = () => {
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 41)) {
@@ -682,6 +690,11 @@ function HomePage() {
                         dataList={departments}
                         setTableMode={setTableMode}
                       />
+                      {
+                        (appData.selectedComponent === "ScheduleMaterials") && (
+                          <button onClick={sync}>Sync</button>
+                        )
+                      }
                       {appData.selectedComponent === "History" && (
                         <div className={styles.perenesen}>
                           <button

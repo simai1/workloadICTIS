@@ -47,6 +47,7 @@ function TableTh(props) {
       }
     }
     appData.setSortParamByColumn(par);
+    basicTabData.funUpdateTable(basicTabData?.tableDepartment.find((el) => el.name === basicTabData?.nameKaf)?.id);
   };
 
   useEffect(() => {
