@@ -342,8 +342,10 @@ function HomePage() {
   }, [appData.selectedComponent]);
 
   const sync = ()=>{
+    appData.setLoaderAction(true);
     SyncTable().then((resp) => {
       if (resp.status === 200) {
+        appData.setLoaderAction(false);
         appData.setgodPopUp(true);
       }
     })
@@ -692,7 +694,7 @@ function HomePage() {
                       />
                       {
                         (appData.selectedComponent === "ScheduleMaterials") && (
-                          <button onClick={sync}>Sync</button>
+                          <button onClick={sync}   className={styles.buttonSync}>Синхронизация</button>
                         )
                       }
                       {appData.selectedComponent === "History" && (
