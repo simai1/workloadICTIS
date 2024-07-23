@@ -1,0 +1,84 @@
+@import "./../../style/colors.scss";
+@import "./../../style/mixin.scss";
+
+.ListSchedule {
+  display: flex;
+  justify-content: center;
+  z-index: 120;
+  margin-top: -4px;
+  margin-right: 12px;
+  input {
+    @include input-text(225px, 8px);
+    margin-bottom: 18px;
+    height: 44px;
+    font-size: 16px;
+    color: #ffffff;
+    background-color: var(--blue-color);
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  span {
+    cursor: pointer;
+  }
+  .inputList::placeholder {
+    color: #adadad;
+  }
+  .ListCont {
+    position: relative;
+    color: #ffffff;
+    span,
+    img {
+      pointer-events: none;
+    }
+    input,
+    img {
+      &:hover {
+        cursor: pointer;
+        opacity: 0.75;
+        transition: all 0.2s ease;
+      }
+    }
+  }
+  .arrowBot img {
+    position: absolute;
+    right: 16px;
+    top: 22px;
+    transform: rotate(-90deg);
+    z-index: 150;
+    width: 14px;
+  }
+  .ListData {
+    max-height: 400px;
+    position: relative;
+    top: -62px;
+    padding: 10px;
+    padding-left: 10px;
+    border-radius: 8px;
+    box-shadow: 4px 4px 20px 0px rgba(0, 0, 0, 0.1490196078);
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid rgb(168, 167, 167);
+    overflow-y: scroll;
+    // background-color: #fff;
+    p {
+      border-left: #dddddd 1px solid;
+      margin: 0px;
+      font-size: 18px;
+      padding-left: 15px;
+      transition: 0.15s linear all;
+      &:hover{
+        color: var(--blue-color);
+        cursor: pointer;
+      }
+    }
+  
+  }
+  .inner_scroll {
+    max-height: 35vh;
+    overflow: auto;
+
+    @include scrollStyle(8px, 4px);
+  }
+}

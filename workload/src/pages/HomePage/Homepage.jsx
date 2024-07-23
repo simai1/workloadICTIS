@@ -42,6 +42,7 @@ import * as XLSX from "xlsx";
 import SplitByHoursPopup from "../../components/SplitByHoursPopup/SplitByHoursPopup";
 // import { UniversalPopup } from "../../ui/UniversalPopup/UniversalPopup";
 import TableSchedule from "../../components/TableSchedule/TableSchedule";
+import ListSchedule from "../../ui/ListSchedule/ListSchedule";
 
 function HomePage() {
   const { appData, tabPar, visibleDataPar, basicTabData } =
@@ -74,7 +75,6 @@ function HomePage() {
           (el) => el.name === basicTabData?.nameKaf
         )?.id
       );
-      // basicTabData.setnameKaf("ОИД");
     }
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 42)) {
       basicTabData.funUpdateTable(
@@ -83,7 +83,6 @@ function HomePage() {
         )?.id
       );
     }
-    // setKafedralIsOpen(false);
     tabPar.setSelectedFilter("Все дисциплины");
   };
 
@@ -114,14 +113,19 @@ function HomePage() {
     appData.setSelectedComponent(component);
     tabPar.setSelectedTable(component);
     if (component === "Disciplines") {
+      console.log("1")
       basicTabData.setTableHeaders(workloadTableHeaders);
     } else if (component === "History") {
+      console.log("2")
       basicTabData.setTableHeaders(workloadTableHeaders);
     } else if (component === "Teachers") {
+      console.log("3")
       basicTabData.setTableHeaders(educatorTableHeaders);
     } else if (component === "ScheduleMaterials") {
+      console.log("4")
       basicTabData.setTableHeaders(scheduleHeaders);
     } else {
+      console.log("5")
       basicTabData.setTableHeaders(educatorLkHeaders);
     }
   };
@@ -591,7 +595,6 @@ function HomePage() {
                   }
                   onClick={() => {
                     handleComponentChange("Teachers");
-                    handleButtonClick();
                     basicTabData.setselectISOid(false);
                   }}
                   text="Преподаватели"
@@ -613,10 +616,6 @@ function HomePage() {
                   }
                   onClick={() => {
                     handleComponentChange("ScheduleMaterials");
-                    basicTabData.setTableHeaders(scheduleHeaders);
-                    handleButtonClick();
-                    basicTabData.setselectISOid(false);
-                    
                   }}
                   text="Материалы к расписанию"
                 />
@@ -690,15 +689,21 @@ function HomePage() {
                     appData.selectedComponent === "History" ||
                     appData.selectedComponent === "ScheduleMaterials") && (
                     <>
-                      <ListKaf
-                        dataList={departments}
-                        setTableMode={setTableMode}
-                      />
-                      {
-                        (appData.selectedComponent === "ScheduleMaterials") && (
-                          <button onClick={sync}   className={styles.buttonSync}>Синхронизация</button>
+                      { (appData.selectedComponent != "ScheduleMaterials") ? (
+                        <ListKaf
+                          dataList={departments}
+                          setTableMode={setTableMode}
+                        />
+                        ): (
+                          <>
+                            <ListSchedule
+                              dataList={departments}
+                            />
+                              <button onClick={sync}  className={styles.buttonSync}>Синхронизация</button>
+                            </>
                         )
                       }
+                      
                       {appData.selectedComponent === "History" && (
                         <div className={styles.perenesen}>
                           <button
@@ -835,7 +840,7 @@ function HomePage() {
           ) : appData.selectedComponent === "ScheduleMaterials" ? (
             <TableSchedule
               tableMode={tableMode}
-              tableHeaders={tableHeaders}
+              tableHeaders={scheduleHead}
               searchTerm={basicTabData.searchTerm}
               setSearchTerm={basicTabData.setSearchTerm}
               refProfile={refProfile}

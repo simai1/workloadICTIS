@@ -37,11 +37,11 @@ console.log("tableHeader", tableHeader)
   useEffect(() => {
     let dataBd = [];
     let url = "";
-    if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 57)){
-      if(basicTabData.nameKaf != "Все"){
-        const depart = basicTabData.tableDepartment.find((el) => el.name === basicTabData.nameKaf)?.id
+    if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 55)){
+      if(basicTabData.selectTableSchedle != "Все"){
+        const depart = basicTabData.tableDepartment.find((el) => el.name === basicTabData.selectTableSchedle)?.id
         url = `?department=${depart}`;
-      }else if(basicTabData.nameKaf === "Все"){
+      }else if(basicTabData.selectTableSchedle === "Все"){
         url = "";
       }
     }else{
@@ -62,7 +62,7 @@ console.log("tableHeader", tableHeader)
     })
   
    
-  }, [basicTabData.nameKaf, isCheckedStore]);
+  }, [basicTabData.selectTableSchedle, isCheckedStore]);
 
   return (
     <div className={styles.TableSchedule}>
