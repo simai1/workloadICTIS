@@ -613,8 +613,10 @@ function HomePage() {
                   }
                   onClick={() => {
                     handleComponentChange("ScheduleMaterials");
+                    basicTabData.setTableHeaders(scheduleHeaders);
                     handleButtonClick();
                     basicTabData.setselectISOid(false);
+                    
                   }}
                   text="Материалы к расписанию"
                 />
