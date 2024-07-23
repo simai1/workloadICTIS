@@ -341,15 +341,15 @@ function HomePage() {
     basicTabData.setSearchTerm("");
   }, [appData.selectedComponent]);
 
-  const sync = ()=>{
+  const sync = () => {
     appData.setLoaderAction(true);
     SyncTable().then((resp) => {
       if (resp.status === 200) {
         appData.setLoaderAction(false);
         appData.setgodPopUp(true);
       }
-    })
-  }
+    });
+  };
   //! функция определения выводить ли посик
   const funGetSherch = () => {
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 41)) {
@@ -613,10 +613,8 @@ function HomePage() {
                   }
                   onClick={() => {
                     handleComponentChange("ScheduleMaterials");
-                    basicTabData.setTableHeaders(scheduleHeaders);
-                    handleButtonClick();
-                    basicTabData.setselectISOid(false);
-                    
+                    // handleButtonClick();
+                    // basicTabData.setselectISOid(true);
                   }}
                   text="Материалы к расписанию"
                 />
@@ -694,11 +692,11 @@ function HomePage() {
                         dataList={departments}
                         setTableMode={setTableMode}
                       />
-                      {
-                        (appData.selectedComponent === "ScheduleMaterials") && (
-                          <button onClick={sync}   className={styles.buttonSync}>Синхронизация</button>
-                        )
-                      }
+                      {appData.selectedComponent === "ScheduleMaterials" && (
+                        <button onClick={sync} className={styles.buttonSync}>
+                          Синхронизация
+                        </button>
+                      )}
                       {appData.selectedComponent === "History" && (
                         <div className={styles.perenesen}>
                           <button
@@ -836,6 +834,7 @@ function HomePage() {
             <TableSchedule
               tableMode={tableMode}
               tableHeaders={tableHeaders}
+              setTableHeaders={setTableHeaders}
               searchTerm={basicTabData.searchTerm}
               setSearchTerm={basicTabData.setSearchTerm}
               refProfile={refProfile}

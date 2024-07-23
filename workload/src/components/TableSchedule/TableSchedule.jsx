@@ -19,7 +19,11 @@ function TableSchedule(props) {
   const ssHeader = `headerSchedule`;
   //! достаем данные из редакса
   const isCheckedStore = useSelector((state) => state.isCheckedSlice.isChecked);
-console.log("tableHeader", tableHeader)
+
+  useEffect(() => {
+    console.log("props.tableHeaders", props.tableHeaders);
+  }, [props.tableHeaders]);
+
   const tabDat = {
     tableHeader,
     setTableHeader,
@@ -36,10 +40,10 @@ console.log("tableHeader", tableHeader)
 
   useEffect(() => {
     let dataBd = [];
-    getSchedule().then((resp)=>{
-      console.log("RESP", resp)
-      if(resp.status === 200){
-        dataBd = [... resp.data]
+    getSchedule().then((resp) => {
+      console.log("RESP", resp);
+      if (resp.status === 200) {
+        dataBd = [...resp.data];
         const fixEducator = funFixEducator(dataBd);
         const checks = isCheckedStore[ssIsChecked];
         const fdfix = FilteredSample(fixEducator, checks);
@@ -48,9 +52,7 @@ console.log("tableHeader", tableHeader)
         setFiltredData(fdfix);
         checkPar.setIsChecked(checks || []);
       }
-    })
-  
-   
+    });
   }, [basicTabData.nameKaf, isCheckedStore]);
 
   return (

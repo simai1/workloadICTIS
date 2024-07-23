@@ -145,6 +145,10 @@ function App() {
 
   //! параметры таблицы
   const [tableHeaders, setTableHeaders] = useState(headers);
+  useEffect(() => {
+    console.log("tableHeaders", tableHeaders);
+  }, [tableHeaders]);
+
   const [workloadData, setWorkloadData] = useState([]); // данные с бд нагрузок
   const [workloadDataFix, setWorkloadDataFix] = useState([]); //данные с убранным массиовм преподавателя
   const [filtredData, setFiltredData] = useState([]); // фильтрованные данные

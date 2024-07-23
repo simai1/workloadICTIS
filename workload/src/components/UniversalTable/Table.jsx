@@ -14,10 +14,11 @@ function Table(props) {
   const headerStore = useSelector(
     (state) => state.editInputChecked.editInputCheckeds[props.tabDat.ssHeader]
   );
-  
+
   const [tableHeaders, setTableHeaders] = useState([]);
   //! заголово таблицы хранится в sessionStorage, есть он есть то применяем к таблице
   useEffect(() => {
+    console.log("headerStore", headerStore || props.tabDat.tableHeader);
     setTableHeaders(headerStore || props.tabDat.tableHeader);
   }, [props.tabDat.tableHeader, headerStore]);
 
