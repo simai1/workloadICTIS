@@ -40,7 +40,7 @@ function TableSchedule(props) {
     getSchedule().then((resp)=>{
       console.log("RESP", resp)
       if(resp.status === 200){
-        dataBd = (resp.data)
+        dataBd = [...resp.data]
       }
     })
    
