@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "./Authorization.module.scss";
 import Input from "../../ui/Input/Input";
+import { AuthTest } from "../../api/services/ApiRequest";
 
 function Authorization() {
   const [formData, setFormData] = useState({ login: '', password: '' });
+  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -15,8 +17,14 @@ function Authorization() {
   }
 
   const handleSubmit = () => {
-    // Use the formData object as needed, for example, send it to an API endpoint
-    console.log(formData);
+    console.log('formData', formData)
+    AuthTest(formData).then((resp)=>{
+      if(resp.status === 200){
+        navigate('/HomePage')//!то что нужно вставить
+      }else{
+        alert("Неверный логин или пароль!")
+      }
+    }) 
   }
 
   return (
