@@ -170,6 +170,11 @@ body {
       }
     }
   }
+  .buttonSync{
+    @include button(var(--blue-color), #fff, 10px, 25px);
+    border: none;
+    font-size: 18px;
+  }
   width: 100%;
   //отступ снизу страницы
   padding-bottom: 10px;

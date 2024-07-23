@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import styles from "./TableSchedule.module.scss";
 import UniversalTable from "../UniversalTable/UniversalTable";
-import { headers, testData } from "./ScheduleData";
 import DataContext from "../../context";
 import { funFixEducator } from "../TableWorkload/Function";
 import { FilteredSample } from "../../ui/SamplePoints/Function";
@@ -20,7 +19,7 @@ function TableSchedule(props) {
   const ssHeader = `headerSchedule`;
   //! достаем данные из редакса
   const isCheckedStore = useSelector((state) => state.isCheckedSlice.isChecked);
-
+console.log("tableHeader", tableHeader)
   const tabDat = {
     tableHeader,
     setTableHeader,
@@ -36,21 +35,22 @@ function TableSchedule(props) {
   };
 
   useEffect(() => {
-    const dataBd = [];
+    let dataBd = [];
     getSchedule().then((resp)=>{
       console.log("RESP", resp)
       if(resp.status === 200){
-        dataBd = (resp.data)
+        dataBd = [... resp.data]
+        const fixEducator = funFixEducator(dataBd);
+        const checks = isCheckedStore[ssIsChecked];
+        const fdfix = FilteredSample(fixEducator, checks);
+        setTableData(dataBd);
+        setTableDataFix(fdfix);
+        setFiltredData(fdfix);
+        checkPar.setIsChecked(checks || []);
       }
     })
+  
    
-    const fixEducator = funFixEducator(dataBd);
-    const checks = isCheckedStore[ssIsChecked];
-    const fdfix = FilteredSample(fixEducator, checks);
-    setTableData(dataBd);
-    setTableDataFix(fdfix);
-    setFiltredData(fdfix);
-    checkPar.setIsChecked(checks || []);
   }, [basicTabData.nameKaf, isCheckedStore]);
 
   return (
