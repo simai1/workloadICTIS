@@ -4,6 +4,7 @@ import Educator from '../models/educator.js';
 import MaterialsDto from '../dtos/materials-dto.js';
 import Materials from '../models/materials.js';
 import { AppErrorMissing } from '../utils/errors.js';
+import MaterialsModelDto from "../dtos/materialModel-dto.js";
 
 export default {
     async sync(req, res) {
@@ -75,7 +76,8 @@ export default {
                 attributes: { exclude: ['fields'] },
             });
         }
-        res.json(materials);
+        const materialsDto = materials.map(m => new MaterialsModelDto(m));
+        res.json(materialsDto);
     },
 
     async setNote(req, res) {
