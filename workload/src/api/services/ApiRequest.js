@@ -655,3 +655,15 @@ export const UnblockTablePlease = async (indexDepartment) => {
     //throw error;
   }
 };
+
+
+//! Авторизация для теста
+export const AuthTest = async (data) => {
+  try {
+    const response = await http.post(`${server}/auth/loginForTest`, data);
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};
