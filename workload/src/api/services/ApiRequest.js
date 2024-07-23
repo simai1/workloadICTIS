@@ -655,3 +655,32 @@ export const UnblockTablePlease = async (indexDepartment) => {
     //throw error;
   }
 };
+
+//! Получение Данных для таблицы раасписания к материалам
+export const getSchedule = async (numberKaf) => {
+  let param = "?departments="
+  if(numberKaf === undefined){
+     param = "";
+  }else{
+    param = param+numberKaf;
+  }
+ 
+  try {
+    const response = await http.get(`${server}/materials${param}`);
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};
+
+//! синхронизация
+export const SyncTable = async () => {
+  try {
+    const response = await http.get(`${server}/materials/sync`);
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};

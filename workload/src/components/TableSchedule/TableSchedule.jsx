@@ -6,6 +6,7 @@ import DataContext from "../../context";
 import { funFixEducator } from "../TableWorkload/Function";
 import { FilteredSample } from "../../ui/SamplePoints/Function";
 import { useSelector } from "react-redux";
+import { getSchedule } from "../../api/services/ApiRequest";
 
 function TableSchedule(props) {
   const { tabPar, visibleDataPar, basicTabData, checkPar } =
@@ -35,7 +36,14 @@ function TableSchedule(props) {
   };
 
   useEffect(() => {
-    const dataBd = [...testData];
+    const dataBd = [];
+    getSchedule().then((resp)=>{
+      console.log("RESP", resp)
+      if(resp.status === 200){
+        dataBd = (resp.data)
+      }
+    })
+   
     const fixEducator = funFixEducator(dataBd);
     const checks = isCheckedStore[ssIsChecked];
     const fdfix = FilteredSample(fixEducator, checks);
