@@ -657,14 +657,7 @@ export const UnblockTablePlease = async (indexDepartment) => {
 };
 
 //! Получение Данных для таблицы раасписания к материалам
-export const getSchedule = async (numberKaf) => {
-  let param = "?departments="
-  if(numberKaf === undefined){
-     param = "";
-  }else{
-    param = param+numberKaf;
-  }
- 
+export const getSchedule = async (param) => {
   try {
     const response = await http.get(`${server}/materials${param}`);
     return response;

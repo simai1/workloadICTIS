@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 import { getSchedule } from "../../api/services/ApiRequest";
 
 function TableSchedule(props) {
-  const { tabPar, visibleDataPar, basicTabData, checkPar } =
+  const { tabPar, visibleDataPar, basicTabData, checkPar, appData } =
     useContext(DataContext);
   const [tableHeader, setTableHeader] = useState([...props.tableHeaders]);
   const [tableData, setTableData] = useState([]);
@@ -36,7 +36,18 @@ console.log("tableHeader", tableHeader)
 
   useEffect(() => {
     let dataBd = [];
-    getSchedule().then((resp)=>{
+    let url = "";
+    if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 57)){
+      if(basicTabData.nameKaf != "Все"){
+        const depart = basicTabData.tableDepartment.find((el) => el.name === basicTabData.nameKaf)?.id
+        url = `?department=${depart}`;
+      }else if(basicTabData.nameKaf === "Все"){
+        url = "";
+      }
+    }else{
+      url = "";
+    }
+    getSchedule(url).then((resp)=>{
       console.log("RESP", resp)
       if(resp.status === 200){
         dataBd = [... resp.data]
