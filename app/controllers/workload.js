@@ -1218,7 +1218,22 @@ export default {
         }
         res.json({ status: 'OK' });
     },
-
+    async getWorkloadOwnForDepartHead({ query: { col, type }, user }, res){
+        try{
+            const _user = await User.findByPk(user, { include: Educator });
+            const workloads = await Workload.findAll({
+                where: {
+                    educatorId: _user.Educator.id,
+                },
+                include: { model: Educator },
+                order: col && type ? [[col, type.toUpperCase()]] : orderRule,
+            });
+            const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
+            res.json(workloadsDto);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    },
     async getAllocatedAndUnallocatedWrokloadHours({ params: { department } }, res) {
         const educators = await Educator.findAll({
             where: {
