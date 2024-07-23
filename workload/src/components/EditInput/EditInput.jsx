@@ -30,8 +30,10 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
     originalHeader?.length === ssUpdatedHeader?.length ? true : false
   );
   const [checkedItems, setCheckedItems] = useState(
-    Array(originalHeader.slice(3).length).fill(true)
+    Array(originalHeader?.slice(3).length).fill(true)
   );
+  console.log("originalHeader", originalHeader);
+
   const [isChecked, setChecked] = useState(
     ssUpdatedHeader && originalHeader
       ? originalHeader

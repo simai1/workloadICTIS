@@ -1218,7 +1218,45 @@ export default {
         }
         res.json({ status: 'OK' });
     },
+    async getWorkloadOwnForDepartHead({ query: { col, type }, user }, res){
+        try{
+            const _user = await User.findByPk(user, { include: Educator });
+            const ownWorkloads = await Workload.findAll({
+                where: {
+                    educatorId: _user.Educator.id,
+                },
+                include: [
+                    {
+                        model: Educator,
+                    },
+                ],
+                order: col && type ? [[col, type.toUpperCase()]] : orderRule,
+            });
 
+            const disciplines = [];
+            for (const wrkld of ownWorkloads) {
+                if (!Object.values(disciplines).includes(wrkld.discipline) && wrkld.workload === 'Лекционные') {
+                    disciplines.push(wrkld.discipline);
+                }
+            }
+
+            const workloads = [
+                ...(await Workload.findAll({
+                    where: {
+                        discipline: disciplines,
+                        workload: { [Op.in]: ['Лабораторные', 'Практические'] },
+                    },
+                    include: { model: Educator },
+                    order: col && type ? [[col, type.toUpperCase()]] : orderRule,
+                })),
+                ...ownWorkloads,
+            ];
+            const workloadsDto = workloads.map(workload => new WorkloadDto(workload));
+            res.json(workloadsDto);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    },
     async getAllocatedAndUnallocatedWrokloadHours({ params: { department } }, res) {
         const educators = await Educator.findAll({
             where: {

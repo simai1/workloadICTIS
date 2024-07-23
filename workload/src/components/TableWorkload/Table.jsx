@@ -56,9 +56,7 @@ function Table(props) {
   //! при клике на tr выделяем его
   const clickTr = (el, itemId) => {
     // el.stopProgretions();
-    console.log("clickTr");
     const a = el.target.nodeName;
-    console.log(el.target.getAttribute("name"));
     if (
       a === "TD" ||
       a === "INPUT" ||

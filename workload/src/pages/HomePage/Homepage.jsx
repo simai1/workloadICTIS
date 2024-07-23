@@ -42,7 +42,7 @@ import * as XLSX from "xlsx";
 import SplitByHoursPopup from "../../components/SplitByHoursPopup/SplitByHoursPopup";
 // import { UniversalPopup } from "../../ui/UniversalPopup/UniversalPopup";
 import TableSchedule from "../../components/TableSchedule/TableSchedule";
-import ListSchedule from "../../ui/ListSchedule/ListSchedule";
+import MyWorkload from "../../components/MyWorkload/MyWorkload";
 
 function HomePage() {
   const { appData, tabPar, visibleDataPar, basicTabData } =
@@ -112,7 +112,7 @@ function HomePage() {
   const handleComponentChange = (component) => {
     appData.setSelectedComponent(component);
     tabPar.setSelectedTable(component);
-    if (component === "Disciplines") {
+    if (component === "Disciplines" || component === "MyWorkload") {
       basicTabData.setTableHeaders(workloadTableHeaders);
     } else if (component === "History") {
       basicTabData.setTableHeaders(workloadTableHeaders);
@@ -340,15 +340,15 @@ function HomePage() {
     basicTabData.setSearchTerm("");
   }, [appData.selectedComponent]);
 
-  const sync = ()=>{
+  const sync = () => {
     appData.setLoaderAction(true);
     SyncTable().then((resp) => {
       if (resp.status === 200) {
         appData.setLoaderAction(false);
         appData.setgodPopUp(true);
       }
-    })
-  }
+    });
+  };
   //! функция определения выводить ли посик
   const funGetSherch = () => {
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 41)) {
@@ -573,6 +573,28 @@ function HomePage() {
                 }}
                 text="Дисциплины"
               />
+              {appData.metodRole[appData.myProfile?.role]?.some(
+                (el) => el === 56
+              ) && (
+                <Button
+                  Bg={
+                    appData.selectedComponent === "MyWorkload"
+                      ? "#0040E5"
+                      : "#efedf3"
+                  }
+                  textColot={
+                    appData.selectedComponent !== "MyWorkload"
+                      ? "#000000"
+                      : "#efedf3"
+                  }
+                  onClick={() => {
+                    handleComponentChange("MyWorkload");
+                    // handleButtonClick();
+                    // basicTabData.setselectISOid(false);
+                  }}
+                  text="Моя нагрузка"
+                />
+              )}
 
               {appData.metodRole[appData.myProfile?.role]?.some(
                 (el) => el === 3
@@ -595,6 +617,7 @@ function HomePage() {
                   text="Преподаватели"
                 />
               )}
+
               {appData.metodRole[appData.myProfile?.role]?.some(
                 (el) => el === 54
               ) && (
@@ -611,6 +634,8 @@ function HomePage() {
                   }
                   onClick={() => {
                     handleComponentChange("ScheduleMaterials");
+                    // handleButtonClick();
+                    // basicTabData.setselectISOid(true);
                   }}
                   text="Материалы к расписанию"
                 />
@@ -628,7 +653,6 @@ function HomePage() {
                   onClick={() => {
                     setEducatorIdforLk(appData.myProfile.educator.id);
                     appData.setSelectedComponent("Teachers");
-                    console.log("myProfilea", appData.myProfile.id);
                   }}
                   Bg={educatorIdforLk.length !== 0 ? "#0040E5" : "#efedf3"}
                   textColot={
@@ -684,21 +708,20 @@ function HomePage() {
                     appData.selectedComponent === "History" ||
                     appData.selectedComponent === "ScheduleMaterials") && (
                     <>
-                      { (appData.selectedComponent != "ScheduleMaterials") ? (
+                      {appData.selectedComponent != "ScheduleMaterials" ? (
                         <ListKaf
                           dataList={departments}
                           setTableMode={setTableMode}
                         />
-                        ): (
-                          <>
-                            <ListSchedule
-                              dataList={departments}
-                            />
-                              <button onClick={sync}  className={styles.buttonSync}>Синхронизация</button>
-                            </>
-                        )
-                      }
-                      
+                      ) : (
+                        <>
+                          <ListSchedule dataList={departments} />
+                          <button onClick={sync} className={styles.buttonSync}>
+                            Синхронизация
+                          </button>
+                        </>
+                      )}
+
                       {appData.selectedComponent === "History" && (
                         <div className={styles.perenesen}>
                           <button
@@ -737,7 +760,8 @@ function HomePage() {
                       selectedComponent={appData.selectedComponent}
                       originalHeader={
                         appData.selectedComponent === "Disciplines" ||
-                        appData.selectedComponent === "History"
+                        appData.selectedComponent === "History" ||
+                        appData.selectedComponent === "MyWorkload"
                           ? workloadTableHeaders
                           : appData.selectedComponent === "Teachers"
                           ? educatorTableHeaders
@@ -751,8 +775,10 @@ function HomePage() {
                           ? "headerHistory"
                           : appData.selectedComponent === "Teachers"
                           ? "headerTeachers"
-                          : appData.selectedComponent === "ScheduleMaterials" &&
-                            "headerSchedule"
+                          : appData.selectedComponent === "ScheduleMaterials"
+                          ? "headerSchedule"
+                          : appData.selectedComponent === "MyWorkload" &&
+                            "headerMyWorkload"
                       }
                     />
                   )}
@@ -835,8 +861,18 @@ function HomePage() {
           ) : appData.selectedComponent === "ScheduleMaterials" ? (
             <TableSchedule
               tableMode={tableMode}
-              tableHeaders={scheduleHead}
-              // tableHeaders={tableHeaders}
+              tableHeaders={tableHeaders}
+              setTableHeaders={setTableHeaders}
+              searchTerm={basicTabData.searchTerm}
+              setSearchTerm={basicTabData.setSearchTerm}
+              refProfile={refProfile}
+              setOpenModalWind={setOpenModalWind}
+            />
+          ) : appData.selectedComponent === "MyWorkload" ? (
+            <MyWorkload
+              tableMode={tableMode}
+              tableHeaders={tableHeaders}
+              setTableHeaders={setTableHeaders}
               searchTerm={basicTabData.searchTerm}
               setSearchTerm={basicTabData.setSearchTerm}
               refProfile={refProfile}

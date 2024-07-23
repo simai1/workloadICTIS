@@ -6,11 +6,13 @@ import { funFixEducator } from "../TableWorkload/Function";
 import { FilteredSample } from "../../ui/SamplePoints/Function";
 import { useSelector } from "react-redux";
 import { getSchedule } from "../../api/services/ApiRequest";
+import { scheduleHead } from "../TableWorkload/Data";
 
 function TableSchedule(props) {
   const { tabPar, visibleDataPar, basicTabData, checkPar, appData } =
     useContext(DataContext);
-  const [tableHeader, setTableHeader] = useState([...props.tableHeaders]);
+  // const [tableHeader, setTableHeader] = useState([...props.tableHeaders]);
+  const [tableHeader, setTableHeader] = useState(scheduleHead);
   const [tableData, setTableData] = useState([]);
   const [tableDataFix, setTableDataFix] = useState([]);
   const [filtredData, setFiltredData] = useState([]);
@@ -19,7 +21,7 @@ function TableSchedule(props) {
   const ssHeader = `headerSchedule`;
   //! достаем данные из редакса
   const isCheckedStore = useSelector((state) => state.isCheckedSlice.isChecked);
-console.log("tableHeader", tableHeader)
+
   const tabDat = {
     tableHeader,
     setTableHeader,
@@ -32,26 +34,30 @@ console.log("tableHeader", tableHeader)
     ssIsChecked,
     ssHeader,
     isCheckedStore,
+    isSorted: true, //! показать или скрыть сортировку
+    isBlocked: false, //! показывать или скрывать блокированные
   };
 
   useEffect(() => {
     appData.setLoaderAction(true);
     let dataBd = [];
     let url = "";
-    if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 55)){
-      if(basicTabData.selectTableSchedle != "Все"){
-        const depart = basicTabData.tableDepartment.find((el) => el.name === basicTabData.selectTableSchedle)?.id
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 55)) {
+      if (basicTabData.selectTableSchedle != "Все") {
+        const depart = basicTabData.tableDepartment.find(
+          (el) => el.name === basicTabData.selectTableSchedle
+        )?.id;
         url = `?departments=${depart}`;
-      }else if(basicTabData.selectTableSchedle === "Все"){
+      } else if (basicTabData.selectTableSchedle === "Все") {
         url = "";
       }
-    }else{
+    } else {
       url = "";
     }
-    getSchedule(url).then((resp)=>{
-      console.log("RESP", resp)
-      if(resp.status === 200){
-        dataBd = [... resp.data]
+    getSchedule(url).then((resp) => {
+      console.log("RESP", resp);
+      if (resp.status === 200) {
+        dataBd = [...resp.data];
         const fixEducator = funFixEducator(dataBd);
         const checks = isCheckedStore[ssIsChecked];
         const fdfix = FilteredSample(fixEducator, checks);
@@ -61,9 +67,7 @@ console.log("tableHeader", tableHeader)
         checkPar.setIsChecked(checks || []);
         appData.setLoaderAction(false);
       }
-    })
-  
-   
+    });
   }, [basicTabData.selectTableSchedle, isCheckedStore]);
 
   return (

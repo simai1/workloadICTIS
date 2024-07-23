@@ -139,6 +139,17 @@ export const Workload = async (param) => {
   }
 };
 
+//! получаем нагрузки для зк в роли лектора
+export const apiOwnDepartHead = async () => {
+  try {
+    const response = await http.get(`${server}/workload/get/ownDepartHead`);
+    return response;
+  } catch (error) {
+    console.error("Error:", error, `${server}/workload`);
+    return [];
+  }
+};
+
 //! получаем нагрузки по кафедре
 export const apiGetWorkloadDepartment = async () => {
   try {

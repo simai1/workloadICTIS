@@ -5,6 +5,23 @@ import { filteredWorkload, funfastenedDataSort } from "./Function";
 import DataContext from "../../context";
 import ContextMenu from "../../ui/ContextMenu/ContextMenu";
 
+//! обязательные параметры
+// const tabDat = {
+//   tableHeader,
+//   setTableHeader,
+//   tableData,
+//   setTableData,
+//   tableDataFix,
+//   setTableDataFix,
+//   filtredData,
+//   setFiltredData,
+//   ssIsChecked,
+//   ssHeader,
+//   isCheckedStore,
+//   isSorted: false, //! показать или скрыть сортировку (в заголовке таблицы)
+//   isBlocked: true, //! показывать или скрывать блокированные, (для лектора, чтобы он мог выделять цветом)
+// };
+
 function UniversalTable(props) {
   const { tabPar, visibleDataPar, basicTabData } = useContext(DataContext);
 
@@ -67,7 +84,20 @@ function UniversalTable(props) {
 
       {tabPar.contextMenuShow &&
         tabPar.selectedTr.length !== 0 &&
-        props.contextMenu === "TableWorkload" && <ContextMenu />}
+        (props.contextMenu === "TableWorkload" ||
+          props.contextMenu === "MyWorkload") && (
+          <ContextMenu
+            setTableDataFix={props.tabDat.setTableDataFix}
+            tableDataFix={props.tabDat.tableDataFix}
+            allowedMenus={[
+              "Закрепить",
+              "Открепить",
+              "comments",
+              "Предложить",
+              "Выделить",
+            ]}
+          />
+        )}
       <Table tabDat={props.tabDat} />
     </div>
   );
