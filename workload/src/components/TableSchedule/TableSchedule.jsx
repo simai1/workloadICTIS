@@ -6,11 +6,13 @@ import { funFixEducator } from "../TableWorkload/Function";
 import { FilteredSample } from "../../ui/SamplePoints/Function";
 import { useSelector } from "react-redux";
 import { getSchedule } from "../../api/services/ApiRequest";
+import { scheduleHead } from "../TableWorkload/Data";
 
 function TableSchedule(props) {
   const { tabPar, visibleDataPar, basicTabData, checkPar } =
     useContext(DataContext);
-  const [tableHeader, setTableHeader] = useState([...props.tableHeaders]);
+  // const [tableHeader, setTableHeader] = useState([...props.tableHeaders]);
+  const [tableHeader, setTableHeader] = useState(scheduleHead);
   const [tableData, setTableData] = useState([]);
   const [tableDataFix, setTableDataFix] = useState([]);
   const [filtredData, setFiltredData] = useState([]);
