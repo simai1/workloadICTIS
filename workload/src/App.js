@@ -139,7 +139,6 @@ function App() {
 
   useEffect(() => {
     console.log("myProfile", myProfile);
-    // setLoaderAction(true);
   }, [myProfile]);
 
   //! параметры таблицы
@@ -407,6 +406,7 @@ function App() {
 
   //! функция обновления таблицы
   function funUpdateTable(param) {
+    setLoaderAction(true);
     console.log("обновление таблицы ");
     //param = tableDepartment[0]?.id
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
@@ -433,6 +433,7 @@ function App() {
       }
       Workload(url).then((data) => {
         funUpdTab(data);
+        setLoaderAction(false);
       });
     }
 
@@ -545,8 +546,6 @@ function App() {
 
   //! функция обновления всех данных
   function updateAlldata() {
-    console.log("updateAlldata");
-
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 53)) {
       funUpdateTable(99);
     } else {
