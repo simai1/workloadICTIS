@@ -52,6 +52,7 @@ const io = new Server(server, {
         if (process.env.NODE_ENV === 'development') {
             // await testUtils.fillWorkload();
             await testUtils.fillEducators();
+            await testUtils.fillUsers();
         }
     } catch (e) {
         console.log(e);
