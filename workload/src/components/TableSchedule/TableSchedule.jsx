@@ -35,12 +35,13 @@ console.log("tableHeader", tableHeader)
   };
 
   useEffect(() => {
+    appData.setLoaderAction(true);
     let dataBd = [];
     let url = "";
     if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 55)){
       if(basicTabData.selectTableSchedle != "Все"){
         const depart = basicTabData.tableDepartment.find((el) => el.name === basicTabData.selectTableSchedle)?.id
-        url = `?department=${depart}`;
+        url = `?departments=${depart}`;
       }else if(basicTabData.selectTableSchedle === "Все"){
         url = "";
       }
@@ -58,6 +59,7 @@ console.log("tableHeader", tableHeader)
         setTableDataFix(fdfix);
         setFiltredData(fdfix);
         checkPar.setIsChecked(checks || []);
+        appData.setLoaderAction(false);
       }
     })
   

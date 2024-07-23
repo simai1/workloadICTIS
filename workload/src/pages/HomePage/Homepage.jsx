@@ -113,19 +113,14 @@ function HomePage() {
     appData.setSelectedComponent(component);
     tabPar.setSelectedTable(component);
     if (component === "Disciplines") {
-      console.log("1")
       basicTabData.setTableHeaders(workloadTableHeaders);
     } else if (component === "History") {
-      console.log("2")
       basicTabData.setTableHeaders(workloadTableHeaders);
     } else if (component === "Teachers") {
-      console.log("3")
       basicTabData.setTableHeaders(educatorTableHeaders);
     } else if (component === "ScheduleMaterials") {
-      console.log("4")
       basicTabData.setTableHeaders(scheduleHeaders);
     } else {
-      console.log("5")
       basicTabData.setTableHeaders(educatorLkHeaders);
     }
   };
@@ -841,6 +836,7 @@ function HomePage() {
             <TableSchedule
               tableMode={tableMode}
               tableHeaders={scheduleHead}
+              // tableHeaders={tableHeaders}
               searchTerm={basicTabData.searchTerm}
               setSearchTerm={basicTabData.setSearchTerm}
               refProfile={refProfile}
