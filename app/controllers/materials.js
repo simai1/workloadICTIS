@@ -65,12 +65,12 @@ export default {
 
     async getAll(req, res) {
         let { departments } = req.query;
-        departments = departments.split(',').map(d => parseInt(d));
         let materials;
-        if (!departments) {
-            materials = await Materials.findAll();
-        } else {
-            materials = await Materials.findAll({
+      if (!departments) {
+        materials = await Materials.findAll();
+      } else {
+        departments = departments.split(',').map(d => parseInt(d));
+        materials = await Materials.findAll({
                 where: { department: departments },
                 attributes: { exclude: ['fields'] },
             });
