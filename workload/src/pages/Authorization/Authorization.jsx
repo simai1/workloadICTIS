@@ -19,7 +19,7 @@ function Authorization() {
   const handleSubmit = () => {
     console.log('formData', formData)
     AuthTest(formData).then((resp)=>{
-      if(resp.status === 200){
+      if(resp?.status === 200){
         navigate('/HomePage')//!то что нужно вставить
       }else{
         alert("Неверный логин или пароль!")
