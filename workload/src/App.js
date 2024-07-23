@@ -139,6 +139,7 @@ function App() {
 
   useEffect(() => {
     console.log("myProfile", myProfile);
+    // setLoaderAction(true);
   }, [myProfile]);
 
   //! параметры таблицы
@@ -406,6 +407,7 @@ function App() {
 
   //! функция обновления таблицы
   function funUpdateTable(param) {
+    console.log("обновление таблицы ");
     //param = tableDepartment[0]?.id
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
       const par = sortParamByColumn !== "" ? `?${sortParamByColumn}` : "";
@@ -440,12 +442,13 @@ function App() {
     // ?department={номер кафедры} - нагрузка одной кафедры
   }
 
-  //! вызываем функцию для обновления массива данных при сортировке через tableTh
-  useEffect(() => {
-    funUpdateTable(
-      tableDepartment.find((el) => el.name === basicTabData?.nameKaf)?.id
-    );
-  }, [sortParamByColumn, isChecked]);
+  // //! вызываем функцию для обновления массива данных при сортировке через tableTh
+  // useEffect(() => {
+  //   console.log("обновление таблицы еще в одном месте ");
+  //   funUpdateTable(
+  //     tableDepartment.find((el) => el.name === basicTabData?.nameKaf)?.id
+  //   );
+  // }, [sortParamByColumn, isChecked]);
 
   //!функция прокида буфера
   function UpdateWorkloadForBoofer(data) {
@@ -542,6 +545,8 @@ function App() {
 
   //! функция обновления всех данных
   function updateAlldata() {
+    console.log("updateAlldata");
+
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 53)) {
       funUpdateTable(99);
     } else {
@@ -565,6 +570,7 @@ function App() {
     funUpdateFastenedData();
     // получение выделенных строк
     funUpdateAllColors();
+    
   }
 
   //! получаем данные нагрузок с бд
