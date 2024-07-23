@@ -33,6 +33,7 @@ router
         asyncRoute(
             checkRole([
                 role.GOD,
+                role.LECTURER,
                 role.GIGA_ADMIN,
                 role.UNIT_ADMIN,
                 role.DEPARTMENT_HEAD,
