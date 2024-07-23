@@ -285,12 +285,17 @@ $heightCell: 150px;
       max-width: 160px;
       box-sizing: border-box;
     }
-
     .trBlocked {
       td {
         background-color: var(--color--blockedBg);
       }
       pointer-events: none;
+    }
+
+    .trIsBloced {
+      td {
+        background-color: var(--color--blockedBg);
+      }
     }
 
     .trDeleted {
@@ -516,7 +521,18 @@ $heightCell: 150px;
       background-color: var(--bgraund);
       width: 64px;
       height: 100%;
-      svg {
+      .bacgroundsvgRed {
+        width: 18px;
+        height: 18px;
+        position: relative;
+        right: -38px;
+        top: -3px;
+        &:hover {
+          opacity: 0.6;
+          cursor: pointer;
+        }
+      }
+      .svgRed {
         width: 18px;
         height: 18px;
         position: relative;

@@ -35,10 +35,9 @@ function InputCheckbox(props) {
   const refreshFilters = () => {
     checkPar.setIsChecked([]);
     checkPar.setAllChecked([]);
-    // sessionStorage.setItem(props.tabDat.ssIsChecked, null);
     dispatch(
       removeTableCheckeds({
-        tableName: props.ssname,
+        tableName: props.tabDat.ssIsChecked,
       })
     );
     const fdfix = FilteredSample(props.tabDat.tableData, [], "");
@@ -52,7 +51,11 @@ function InputCheckbox(props) {
         <th style={stylesTh} className={styles.InputCheckbox}>
           <div className={styles.bacground}>
             <ImgClearFilter
-              className={checkPar.isChecked.length > 0 ? styles.svgRed : null}
+              className={
+                checkPar.isChecked.length > 0
+                  ? styles.svgRed
+                  : styles.bacgroundsvgRed
+              }
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
               onClick={refreshFilters}
@@ -89,9 +92,17 @@ function InputCheckbox(props) {
           )}
           {
             //! определяем разделенная ли нагрузка
-            props.workload?.isSplit === true && (
+            props.workload?.isSplit === true && !props.tabDat.isBlocked && (
               <div className={styles.isSplit}>
                 <span>Разделенная</span>
+              </div>
+            )
+          }
+          {
+            //! определяем разделенная ли нагрузка
+            props.workload?.isBlocked === true && props.tabDat.isBlocked && (
+              <div className={styles.isSplit}>
+                <span>Заблокирована</span>
               </div>
             )
           }
@@ -106,7 +117,7 @@ function InputCheckbox(props) {
           }
           {
             //! определяем разделенная ли нагрузка
-            props.workload?.isMerged === true && (
+            props.workload?.isMerged === true && !props.tabDat.isBlocked && (
               <div className={styles.isSplit}>Объединенная</div>
             )
           }

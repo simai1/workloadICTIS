@@ -22,10 +22,6 @@ function TableSchedule(props) {
   //! достаем данные из редакса
   const isCheckedStore = useSelector((state) => state.isCheckedSlice.isChecked);
 
-  useEffect(() => {
-    console.log("props.tableHeaders", props.tableHeaders);
-  }, [props.tableHeaders]);
-
   const tabDat = {
     tableHeader,
     setTableHeader,
@@ -38,12 +34,13 @@ function TableSchedule(props) {
     ssIsChecked,
     ssHeader,
     isCheckedStore,
+    isSorted: true, //! показать или скрыть сортировку
+    isBlocked: false, //! показывать или скрывать блокированные
   };
 
   useEffect(() => {
     let dataBd = [];
     getSchedule().then((resp) => {
-      console.log("RESP", resp);
       if (resp.status === 200) {
         dataBd = [...resp.data];
         const fixEducator = funFixEducator(dataBd);

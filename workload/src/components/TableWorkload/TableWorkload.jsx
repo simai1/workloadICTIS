@@ -77,7 +77,10 @@ function TableWorkload(props) {
     >
       <div className={styles.psevdoElem}></div>
       {tabPar.contextMenuShow && tabPar.selectedTr.length != 0 && (
-        <ContextMenu />
+        <ContextMenu
+          tableDataFix={basicTabData?.workloadDataFix}
+          setTableDataFix={basicTabData?.setWorkloadDataFix}
+        />
       )}
       <Table ssname={ssname} />
     </div>

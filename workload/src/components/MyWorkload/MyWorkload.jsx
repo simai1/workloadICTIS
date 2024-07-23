@@ -5,26 +5,18 @@ import DataContext from "../../context";
 import { funFixEducator } from "../TableWorkload/Function";
 import { FilteredSample } from "../../ui/SamplePoints/Function";
 import { useSelector } from "react-redux";
-import { getSchedule } from "../../api/services/ApiRequest";
-import { headers } from "../TableWorkload/Data";
+import { apiOwnDepartHead, getSchedule } from "../../api/services/ApiRequest";
 
 function MyWorkload(props) {
-  const { tabPar, visibleDataPar, basicTabData, checkPar } =
-    useContext(DataContext);
-  // const [tableHeader, setTableHeader] = useState([...props.tableHeaders]);
+  const { appData, basicTabData, checkPar } = useContext(DataContext);
   const [tableHeader, setTableHeader] = useState(props.tableHeaders);
   const [tableData, setTableData] = useState([]);
   const [tableDataFix, setTableDataFix] = useState([]);
   const [filtredData, setFiltredData] = useState([]);
-  const ssIsChecked = `isCheckedMyWorkload${basicTabData.nameKaf}`;
-  // const ssHeader = `MyWorkloadHeader${basicTabData.nameKaf}`;
+  const ssIsChecked = `isCheckedMyWorkload`;
   const ssHeader = `headerMyWorkload`;
   //! достаем данные из редакса
   const isCheckedStore = useSelector((state) => state.isCheckedSlice.isChecked);
-
-  useEffect(() => {
-    console.log("props.tableHeaders", props.tableHeaders);
-  }, [props.tableHeaders]);
 
   const tabDat = {
     tableHeader,
@@ -38,24 +30,33 @@ function MyWorkload(props) {
     ssIsChecked,
     ssHeader,
     isCheckedStore,
+    isSorted: false, //! показать или скрыть сортировку
+    isBlocked: true, //! показывать или скрывать блокированные
   };
 
   useEffect(() => {
-    let dataBd = [];
-    const fixEducator = funFixEducator(dataBd);
-    const checks = isCheckedStore[ssIsChecked];
-    const fdfix = FilteredSample(fixEducator, checks);
-    setTableData(dataBd);
-    setTableDataFix(fdfix);
-    setFiltredData(fdfix);
-    checkPar.setIsChecked(checks || []);
+    appData.setLoaderAction(true);
+    apiOwnDepartHead().then((req) => {
+      let data = [];
+      if (req.status === 200) {
+        data = [...req.data];
+      }
+      const fixEducator = funFixEducator(data);
+      const checks = isCheckedStore[ssIsChecked];
+      const fdfix = FilteredSample(fixEducator, checks);
+      setTableData(data);
+      setTableDataFix(fdfix);
+      setFiltredData(fdfix);
+      checkPar.setIsChecked(checks || []);
+      appData.setLoaderAction(false);
+    });
   }, [isCheckedStore]);
 
   return (
     <div className={styles.MyWorkload}>
       <UniversalTable
         searchTerm={props.searchTerm}
-        contextMenu={""}
+        contextMenu={"MyWorkload"}
         tabDat={tabDat}
       />
     </div>

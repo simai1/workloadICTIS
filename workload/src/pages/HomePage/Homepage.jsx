@@ -575,6 +575,28 @@ function HomePage() {
                 }}
                 text="Дисциплины"
               />
+              {appData.metodRole[appData.myProfile?.role]?.some(
+                (el) => el === 56
+              ) && (
+                <Button
+                  Bg={
+                    appData.selectedComponent === "MyWorkload"
+                      ? "#0040E5"
+                      : "#efedf3"
+                  }
+                  textColot={
+                    appData.selectedComponent !== "MyWorkload"
+                      ? "#000000"
+                      : "#efedf3"
+                  }
+                  onClick={() => {
+                    handleComponentChange("MyWorkload");
+                    // handleButtonClick();
+                    // basicTabData.setselectISOid(false);
+                  }}
+                  text="Моя нагрузка"
+                />
+              )}
 
               {appData.metodRole[appData.myProfile?.role]?.some(
                 (el) => el === 3
@@ -596,29 +618,6 @@ function HomePage() {
                     basicTabData.setselectISOid(false);
                   }}
                   text="Преподаватели"
-                />
-              )}
-
-              {appData.metodRole[appData.myProfile?.role]?.some(
-                (el) => el === 56
-              ) && (
-                <Button
-                  Bg={
-                    appData.selectedComponent === "MyWorkload"
-                      ? "#0040E5"
-                      : "#efedf3"
-                  }
-                  textColot={
-                    appData.selectedComponent !== "MyWorkload"
-                      ? "#000000"
-                      : "#efedf3"
-                  }
-                  onClick={() => {
-                    handleComponentChange("MyWorkload");
-                    // handleButtonClick();
-                    // basicTabData.setselectISOid(false);
-                  }}
-                  text="Моя нагрузка"
                 />
               )}
 
@@ -657,7 +656,6 @@ function HomePage() {
                   onClick={() => {
                     setEducatorIdforLk(appData.myProfile.educator.id);
                     appData.setSelectedComponent("Teachers");
-                    console.log("myProfilea", appData.myProfile.id);
                   }}
                   Bg={educatorIdforLk.length !== 0 ? "#0040E5" : "#efedf3"}
                   textColot={
@@ -775,8 +773,10 @@ function HomePage() {
                           ? "headerHistory"
                           : appData.selectedComponent === "Teachers"
                           ? "headerTeachers"
-                          : appData.selectedComponent === "ScheduleMaterials" &&
-                            "headerSchedule"
+                          : appData.selectedComponent === "ScheduleMaterials"
+                          ? "headerSchedule"
+                          : appData.selectedComponent === "MyWorkload" &&
+                            "headerMyWorkload"
                       }
                     />
                   )}

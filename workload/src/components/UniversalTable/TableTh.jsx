@@ -13,7 +13,7 @@ function TableTh(props) {
     if (tabPar.spShow === props.index) {
       tabPar.setSpShow(null);
     } else {
-      const modalData = props.tabDat.tableData.map(
+      const modalData = props.tabDat.tableDataFix.map(
         (item) => item[props.item.key]
       );
       tabPar.setSamplePointsData([...modalData]);
@@ -79,23 +79,25 @@ function TableTh(props) {
           {props.item.label}
         </div>
         <div className={styles.th_inner_img}>
-          {props.item.key !== "id" && props.item.key !== "educator" && (
-            <img
-              onClick={funSortByColumn}
-              className={styles.trSort}
-              src={sortImg === 0 ? "./img/=.svg" : "./img/sort.svg"}
-              title="Сортировать колонку"
-              alt=">"
-              style={
-                sortImg !== 1
-                  ? {
-                      transform: "rotate(-180deg)",
-                      transition: "all 0.2s ease",
-                    }
-                  : { transition: "all 0.2s ease" }
-              }
-            ></img>
-          )}
+          {props.tabDat.isSorted &&
+            props.item.key !== "id" &&
+            props.item.key !== "educator" && (
+              <img
+                onClick={funSortByColumn}
+                className={styles.trSort}
+                src={sortImg === 0 ? "./img/=.svg" : "./img/sort.svg"}
+                title="Сортировать колонку"
+                alt=">"
+                style={
+                  sortImg !== 1
+                    ? {
+                        transform: "rotate(-180deg)",
+                        transition: "all 0.2s ease",
+                      }
+                    : { transition: "all 0.2s ease" }
+                }
+              ></img>
+            )}
           {checkPar.isChecked &&
             checkPar.isChecked.find(
               (item) => item.itemKey === props.item.key
