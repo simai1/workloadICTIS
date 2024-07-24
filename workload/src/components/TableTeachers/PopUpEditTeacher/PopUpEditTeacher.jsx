@@ -51,12 +51,7 @@ export function PopUpEditTeacher(props) {
       });
     } else {
       GetUsibleDepartment().then((resp) => {
-        if (
-          appData.metodRole[appData.myProfile?.role]?.some((el) => el === 47)
-        ) {
-          let newData = resp.data.filter((obj) => obj.name !== "ОИД");
-          setDataKaf(newData);
-        } else {
+        if(resp){
           setDataKaf(resp.data);
         }
       });
