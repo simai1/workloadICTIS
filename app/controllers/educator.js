@@ -138,7 +138,6 @@ export default {
         let flag;
         for (const workload of workloads) {
             flag = true;
-            console.log("wor", workload.dataValues)
             for (const workloadDto of workloadsDto) {
                 if (
                     departments[workloadDto.department] === workload.department &&

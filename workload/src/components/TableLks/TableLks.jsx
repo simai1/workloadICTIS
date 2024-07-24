@@ -167,7 +167,7 @@ function TableLks(props) {
               </p>
               <p>
                 <span className={styles.pTop}>
-                  Кафедральные часы:{" "}
+                  Дополнительные часы:{" "}
                   <strong>{EducatorLkData?.kafedralAdditionalWorkload}</strong>
                 </span>
               </p>
