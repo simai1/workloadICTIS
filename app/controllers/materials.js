@@ -60,7 +60,7 @@ export default {
                     notes: w.notes,
                 })
             ),
-            { ignoreDuplicates: true, individualHooks: true }
+            { ignoreDuplicates: true }
         );
         res.json({ status: 'OK' });
     },
