@@ -25,17 +25,16 @@ function TableTh(props) {
   //! сортируем по колонке в App вызывается useEfferc для обновления массива
   const funSortByColumn = () => {
     let par = "";
-    console.log(appData.sortParamByColumn)
     if (appData.sortParamByColumn === "") {
       par = `col=${props.item.key}&type=${"asc"}`;
-      setSortImg(1);
+      setSortImg(2);
     } else {
       if (
         appData.sortParamByColumn.includes(props.item.key) &&
         appData.sortParamByColumn.includes("asc")
       ) {
         par = `col=${props.item.key}&type=${"desc"}`;
-        setSortImg(2);
+        setSortImg(1);
       } else if (
         appData.sortParamByColumn.includes(props.item.key) &&
         appData.sortParamByColumn.includes("desc")
@@ -44,11 +43,17 @@ function TableTh(props) {
         setSortImg(0);
       } else {
         par = `col=${props.item.key}&type=${"asc"}`;
-        setSortImg(1);
+        setSortImg(2);
       }
     }
     appData.setSortParamByColumn(par);
-    basicTabData.funUpdateTable(basicTabData?.tableDepartment.find((el) => el.name === basicTabData?.nameKaf)?.id);
+
+    basicTabData.funUpdateTable(
+      basicTabData?.tableDepartment.find(
+        (el) => el.name === basicTabData?.nameKaf
+      )?.id,
+      par
+    );
   };
 
   useEffect(() => {
@@ -94,10 +99,11 @@ function TableTh(props) {
               style={
                 sortImg !== 1
                   ? {
-                      transform: "rotate(-180deg)",
                       transition: "all 0.2s ease",
+                      transform: "rotate(-180deg)",
                     }
-                  : { transition: "all 0.2s ease" }
+                  : {   transition: "all 0.2s ease",
+                         }
               }
             ></img>
           )}
