@@ -10,7 +10,7 @@ import EducatorProfileDto from '../dtos/educator-profile-dto.js';
 import Workload from '../models/workload.js';
 import departments from '../config/departments.js';
 import WorkloadProfileDto from '../dtos/workload-profile-dto.js';
-import { instituteDepartments } from "../config/institutional-affiliations.js";
+import { instituteDepartments } from '../config/institutional-affiliations.js';
 
 const orderRule = [
     ['department', 'ASC'],
@@ -20,11 +20,12 @@ const orderRule = [
 export default {
     async getAll(req, res) {
         const _user = await User.findByPk(req.user);
-        const {col, type} = req.query;
+        const { col, type } = req.query;
         let educators;
         if (_user.role === 4 || _user.role === 7) {
-            if (!_user.institutionalAffiliation)
+            if (!_user.institutionalAffiliation) {
                 throw new Error('Нет привязки (institutionalAffiliation) к институту у директора');
+            }
             const allowedDepartments = [];
 
             const start = _user.institutionalAffiliation === 1 ? 0 : _user.institutionalAffiliation === 2 ? 13 : 17;
@@ -42,7 +43,6 @@ export default {
                         model: SummaryWorkload,
                     },
                 ],
-                order: (col && type)? [[col, type.toUpperCase()]] : orderRule,
             });
         } else if (_user.role === 6) {
             educators = await Educator.findAll({
@@ -54,7 +54,6 @@ export default {
                         model: SummaryWorkload,
                     },
                 ],
-                order: (col && type)? [[col, type.toUpperCase()]] : orderRule,
             });
         } else {
             const allowedDepartments = [];
@@ -74,14 +73,26 @@ export default {
                         model: SummaryWorkload,
                     },
                 ],
-                order: (col && type)? [[col, type.toUpperCase()]] : orderRule,
             });
         }
+
         const educatorDtos = [];
         for (const educator of educators) {
             const educatorDto = new EducatorListDto(educator);
             educatorDtos.push(educatorDto);
         }
+
+        if (col && type) {
+            educatorDtos.sort((a, b) => {
+                if (a[col] > b[col]) {
+                    return type === 'asc' ? 1 : -1;
+                } else if (a[col] < b[col]) {
+                    return type === 'asc' ? -1 : 1;
+                }
+                return 0;
+            });
+        }
+
         if (!educatorDtos.length) {
             // Если нет преподавателей, отправляем 404 и выходим из функции
             return res.status(404).json('Educator not found');
@@ -168,7 +179,7 @@ export default {
         if (!email) email = educator.email;
         if (!department) department = educator.department;
         if (!typeOfEmployment) typeOfEmployment = educator.typeOfEmployment;
-        console.log(rate)
+        console.log(rate);
         await educator.update({
             name,
             position,
@@ -263,7 +274,7 @@ export default {
         res.json(educatorsDto);
     },
 
-    async getEducatorsByInstitute(req, res){
+    async getEducatorsByInstitute(req, res) {
         const userId = req.user;
         const educator = await Educator.findOne({
             where: { userId },
@@ -276,11 +287,9 @@ export default {
                     model: SummaryWorkload,
                 },
             ],
-            order: [
-                ['name', 'ASC'],
-            ],
+            order: [['name', 'ASC']],
         });
         const educatorsDto = educators.map(educator => new EducatorListDto(educator));
         res.json(educatorsDto);
-    }
+    },
 };
