@@ -24,6 +24,7 @@ import ListKaf from "../../ui/ListKaf/ListKaf";
 import { PopUpCreateEmploy } from "../../ui/PopUpCreateEmploy/PopUpCreateEmploy";
 import {
   GetDepartment,
+  GetDepartmentsMaterials,
   SyncTable,
   Workload,
   WorkloadBlocked,
@@ -64,6 +65,8 @@ function HomePage() {
   const [popupUnblockTable, setPopupUnblockTable] = useState(false);
   const [popupExport, setPopupExport] = useState(false); // открыть/закрыть попап подтверждения блокировки таблицы
   const [departments, setdepartments] = useState([]);
+  const [departmentsMaterials, setDepartmentsMaterials] = useState([]);
+
   // const [kafedralIsOpen, setKafedralIsOpen] = useState(false);
   // const [cafedral, setCafedral] = useState(false);
   const [blockTable, setBlockTable] = useState(false);
@@ -106,6 +109,9 @@ function HomePage() {
   useEffect(() => {
     apiGetUser().then((data) => {
       appData.setMyProfile(data);
+    });
+    GetDepartmentsMaterials().then((resp) => {
+      setDepartmentsMaterials([{ id: 99, name: "Все" }, ...resp.data]);
     });
   }, []);
 
@@ -410,7 +416,7 @@ function HomePage() {
             <div className={styles.header_top_save_search}>
               <div className={styles.saveBuffre}>
                 {appData.metodRole[appData.myProfile?.role]?.some(
-                  (el) => el === 25 && appData.selectedComponent !== "Teachers"
+                  (el) => el === 25 && appData.selectedComponent !== "Teachers" && appData.selectedComponent !== "ScheduleMaterials"
                 ) && (
                   <div
                     title="Отмена действия"
@@ -717,7 +723,7 @@ function HomePage() {
                         />
                       ) : (
                         <>
-                          <ListSchedule dataList={departments} />
+                          <ListSchedule dataList={departmentsMaterials} />
                           <button onClick={sync} className={styles.buttonSync}>
                             Синхронизация
                           </button>
