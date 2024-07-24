@@ -46,8 +46,7 @@ export function PopUpEditTeacher(props) {
   useEffect(() => {
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 46)) {
       GetAllDepartments().then((resp) => {
-        let newData = resp.data.filter((obj) => obj.name !== "ОИД");
-        setDataKaf(newData);
+        setDataKaf(resp.data);
       });
     } else {
       GetUsibleDepartment().then((resp) => {
@@ -57,6 +56,10 @@ export function PopUpEditTeacher(props) {
       });
     }
   }, []);
+
+  useEffect(()=>{
+    console.log("dataNewEdicator",dataNewEdicator)
+  },[dataNewEdicator])
 
   const handleInputChange = (name, value) => {
     if (name === "rate") {
@@ -84,10 +87,11 @@ export function PopUpEditTeacher(props) {
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 39)) {
       depart = appData.myProfile?.educator?.departmentId;
     } else {
+      console.log('dataNewEdicator?.department', dataNewEdicator?.department)
       !Number(dataNewEdicator?.department)
         ? (depart = dataKaf.find(
             (el) => el.name === dataNewEdicator?.department
-          ).id)
+          )?.id)
         : (depart = dataNewEdicator?.department);
     }
 
@@ -101,7 +105,6 @@ export function PopUpEditTeacher(props) {
           (el) => el.name === dataNewEdicator?.position
         )?.id)
       : (position = dataNewEdicator?.position);
-
     const data = {
       name: dataNewEdicator?.name,
       position: position,
@@ -110,7 +113,7 @@ export function PopUpEditTeacher(props) {
         typeof dataNewEdicator?.rate === "string"
           ? Number(dataNewEdicator?.rate.replace(",", "."))
           : dataNewEdicator?.rate,
-      department: depart,
+      department: depart === undefined ? 0 : depart,
     };
 
     console.log("data", data);
@@ -201,7 +204,7 @@ export function PopUpEditTeacher(props) {
                 !dataNewEdicator.name ||
                 !dataNewEdicator.position ||
                 !dataNewEdicator.rate ||
-                !dataNewEdicator.department
+                !dataNewEdicator.department === undefined 
               }
               style={{
                 backgroundColor:
@@ -209,7 +212,7 @@ export function PopUpEditTeacher(props) {
                   !dataNewEdicator.name ||
                   !dataNewEdicator.position ||
                   !dataNewEdicator.rate ||
-                  !dataNewEdicator.department
+                  !dataNewEdicator.department === undefined 
                     ? "#b9b9ba"
                     : "#3b28cc",
                 cursor:
@@ -217,7 +220,7 @@ export function PopUpEditTeacher(props) {
                   !dataNewEdicator.name ||
                   !dataNewEdicator.position ||
                   !dataNewEdicator.rate ||
-                  !dataNewEdicator.department
+                  !dataNewEdicator.department === undefined 
                     ? "not-allowed"
                     : "pointer",
                 color: "#fff",
