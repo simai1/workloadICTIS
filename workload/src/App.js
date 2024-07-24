@@ -95,7 +95,7 @@ function App() {
   const [sortParamByColumn, setSortParamByColumn] = useState(""); //! сортировка в колнке по возрастанию убыванию или без если ""
   const [popupErrorText, setPopupErrorText] = useState(""); //! если не пустой то в поап ерор будет текст который в состоянии
   const [popupGoodText, setPopupGoodText] = useState(""); //! если не пустой то в поап ерор будет текст который в состоянии
-  const [dataUpdated, setDataUpdated] = useState(false);//!индикатор что данные обновлены
+  const [dataUpdated, setDataUpdated] = useState(false); //!индикатор что данные обновлены
 
   const appData = {
     popupGoodText,
@@ -140,8 +140,6 @@ function App() {
     setDataUpdated,
     dataUpdated,
   };
-
-
 
   //! параметры таблицы
   const [tableHeaders, setTableHeaders] = useState(headers);
@@ -312,7 +310,6 @@ function App() {
     }
   }
 
-  
   //! функция обновления предложений преподавателей
   function funUpdateOffers() {
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 17.1)) {
@@ -375,7 +372,7 @@ function App() {
     const fixData = UpdateWorkloadForBoofer(
       funFixEducator(dataBd, bufferAction)
     );
-   
+
     //! функция прокида буффера для разделения соединения и удаления нагрузок
     const fdb = fixDataBuff(fixData, bufferAction);
     // зменяем массив преподавателя на его имя
@@ -411,11 +408,16 @@ function App() {
   }
 
   //! функция обновления таблицы
-  function funUpdateTable(param) {
+  function funUpdateTable(param, par = null) {
     setLoaderAction(true);
+    let sp = sortParamByColumn;
+    if (par || par === "") {
+      sp = par;
+    }
+    console.log(sp);
     //param = tableDepartment[0]?.id
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
-      const par = sortParamByColumn !== "" ? `?${sortParamByColumn}` : "";
+      const par = sp !== "" ? `?${sp}` : "";
       Workload(par).then((data) => {
         if (data) {
           funUpdTab(data);
@@ -429,13 +431,13 @@ function App() {
         url = "?isOid=true";
       }
       if (param === 99) {
-        if (sortParamByColumn !== "") {
-          url = `?${sortParamByColumn}`;
+        if (sp !== "") {
+          url = `?${sp}`;
         } else {
           url = "";
         }
       } else if (param !== 99 && param !== 0) {
-        url = `?department=${param}&${sortParamByColumn}`;
+        url = `?department=${param}&${sp}`;
       }
       Workload(url).then((data) => {
         funUpdTab(data);
@@ -524,7 +526,6 @@ function App() {
             }
             obj.push(o);
           }
-         
         }
       });
       return data.map((item) => {
@@ -645,7 +646,6 @@ function App() {
     appData.setLoaderAction(true);
     bufferRequestToApi(bufferAction)
       .then((action) => {
-       
         if (action) {
           setBufferAction([0]);
           updateAlldata();

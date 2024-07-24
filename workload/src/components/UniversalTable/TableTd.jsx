@@ -75,9 +75,9 @@ function TableTd(props) {
   //! сохраниени примечаний
   const onClicNotic = () => {
     const data = {
-      notes: textareaTd,
+      notes: textareaTd.trim() || "",
     };
-    console.log("props.item", props.item.id);
+    console.log("data", data);
     apiNotecAddMaterials(props.item?.id, data).then((req) => {
       console.log(req);
       if (req.status === 200) {
@@ -192,7 +192,7 @@ function TableTd(props) {
             : { position: "relative" }
           : null
       }
-      onClick={props.itemKey.key === "educator" ? ClickName : null}
+      // onClick={props.itemKey.key === "educator" ? ClickName : null}
     >
       <div
         name={props.itemKey.key}

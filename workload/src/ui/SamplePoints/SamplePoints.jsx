@@ -13,6 +13,8 @@ import {
 export function SamplePoints(props) {
   const dispatch = useDispatch();
   // const { basicTabData } = React.useContext(DataContext);
+
+  //! поиск
   const [searchText, setSearchText] = useState("");
   const handleInputChange = (event) => {
     setSearchText(event.target.value);
@@ -63,7 +65,7 @@ export function SamplePoints(props) {
     });
     //! записываем только уникальные значения
     setFilteredData([...new Set(fd)]);
-  }, [props.isSamplePointsData]);
+  }, [props.isSamplePointsData, searchText]);
 
   //! при нажатии на Input All
   const onAllChecked = () => {
