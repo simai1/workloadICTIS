@@ -5,7 +5,15 @@ import MaterialsDto from '../dtos/materials-dto.js';
 import Materials from '../models/materials.js';
 import departments, { map as mapDepartments } from '../config/departments.js';
 import { AppErrorMissing } from '../utils/errors.js';
-import MaterialsModelDto from "../dtos/materialModel-dto.js";
+import MaterialsModelDto from '../dtos/materialModel-dto.js';
+
+const orderRule = [
+    // ['department', 'ASC'],
+    // ['discipline', 'ASC'],
+    // ['workload', 'ASC'],
+    // ['notes', 'ASC'],
+    ['number', "ASC"]
+];
 
 export default {
     async sync(req, res) {
@@ -53,7 +61,7 @@ export default {
                     notes: w.notes,
                 })
             ),
-            { ignoreDuplicates: true }
+            { ignoreDuplicates: true, individualHooks: true }
         );
         res.json({ status: 'OK' });
     },
@@ -68,13 +76,14 @@ export default {
     async getAll(req, res) {
         let { departments } = req.query;
         let materials;
-      if (!departments) {
-        materials = await Materials.findAll();
-      } else {
-        departments = departments.split(',').map(d => parseInt(d));
-        materials = await Materials.findAll({
+        if (!departments) {
+            materials = await Materials.findAll();
+        } else {
+            departments = departments.split(',').map(d => parseInt(d));
+            materials = await Materials.findAll({
                 where: { department: departments },
                 attributes: { exclude: ['fields'] },
+                order: orderRule,
             });
         }
         const materialsDto = materials.map(m => new MaterialsModelDto(m));

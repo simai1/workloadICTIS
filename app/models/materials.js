@@ -11,6 +11,11 @@ export default class Materials extends Model {
           allowNull: false,
           primaryKey: true,
         },
+        number: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          unique: true,
+        },
         fields: {
           type: DataTypes.STRING(4096),
           allowNull: false,
@@ -113,5 +118,15 @@ export default class Materials extends Model {
         paranoid: false,
       },
     );
+    Materials.beforeBulkCreate(async (models) => {
+      let maxNumber = await Materials.max('number');
+      models.forEach(model => {
+        if (!maxNumber || maxNumber === 0) model.set('number', 1);
+        else {
+          model.set('number', maxNumber + 1);
+        }
+        maxNumber++;
+      });
+    });
   }
 }
