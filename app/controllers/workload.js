@@ -927,6 +927,7 @@ export default {
             for (const usableDepartment of departments) {
                 const department = mapDepartments[usableDepartment.department];
                 const workload = await Workload.findOne({ where: { department: usableDepartment.department } });
+                console.log('id', department, 'name', mapDepartments[department])
                 if (workload.isBlocked === true) {
                     usableDepartments.push({
                         id: usableDepartment.department,

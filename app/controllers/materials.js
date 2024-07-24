@@ -1,11 +1,12 @@
 import Workload from '../models/workload.js';
-import { Op } from 'sequelize';
+import { Sequelize, Op } from 'sequelize';
 import Educator from '../models/educator.js';
 import MaterialsDto from '../dtos/materials-dto.js';
 import Materials from '../models/materials.js';
 import departments, { map as mapDepartments } from '../config/departments.js';
 import { AppErrorMissing } from '../utils/errors.js';
 import MaterialsModelDto from '../dtos/materialModel-dto.js';
+import User from '../models/user.js';
 
 const orderRule = [
     // ['department', 'ASC'],
@@ -101,6 +102,7 @@ export default {
 
     async getUsableDepartments(req, res) {
         const userId = req.user;
+        console.log(userId)
         const checkUser = await User.findByPk(userId);
         if (!checkUser) throw new AppErrorNotExist('User');
         const role = checkUser.role;
@@ -128,8 +130,8 @@ export default {
                     const materials = await Materials.findOne({ where: { department: usableDepartment.department } });
                     if (materials) {
                         usableDepartments.push({
-                            id: department,
-                            name: mapDepartments[department],
+                            id: usableDepartment.department,
+                            name: department,
                         });
                     }
                 }
@@ -174,8 +176,8 @@ export default {
                 const materials = await Materials.findOne({ where: { department: usableDepartment.department } });
                 if (materials) {
                     usableDepartments.push({
-                        id: department,
-                        name: mapDepartments[department],
+                        id: usableDepartment.department,
+                        name: department,
                     });
                 }
             }
@@ -184,13 +186,15 @@ export default {
                 attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('department')), 'department']],
                 order: [['department', 'ASC']],
             });
+            console.log(departments.length)
             for (const usableDepartment of departments) {
                 const department = mapDepartments[usableDepartment.department];
                 const materials = await Materials.findOne({ where: { department: usableDepartment.department } });
+                console.log('id', department, 'name', mapDepartments[department])
                 if (materials) {
                     usableDepartments.push({
-                        id: department,
-                        name: mapDepartments[department],
+                        id: usableDepartment.department,
+                        name: department,
                     });
                 }
             }
