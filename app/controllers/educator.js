@@ -166,7 +166,7 @@ export default {
         if (!position) position = educator.position;
         if (!rate && rate !== 0) rate = educator.rate;
         if (!email) email = educator.email;
-        if (!department) department = educator.department;
+        if (!department && department !== 0) department = educator.department;
         if (!typeOfEmployment) typeOfEmployment = educator.typeOfEmployment;
         console.log(rate)
         await educator.update({
