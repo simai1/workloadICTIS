@@ -77,10 +77,7 @@ export const scheduleHead = [
   { key: "curriculumUnit", label: "Подразделение учебного плана" },
   { key: "formOfEducation", label: "Форма обучения" },
   { key: "levelOfTraining", label: "Уровень подготовки" },
-  {
-    key: "specialty",
-    label: "Направление подготовки (специальность)",
-  },
+  { key: "specialty",label: "Направление подготовки (специальность)",},
   { key: "core", label: "Профиль" },
   { key: "numberOfStudents", label: "Количество студентов" },
   { key: "hours", label: "Часы" },

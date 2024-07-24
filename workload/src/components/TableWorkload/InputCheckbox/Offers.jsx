@@ -26,7 +26,10 @@ function Offers(props) {
     //     setOfferWindowShow(false);
     //   });
     // }
-    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 38)) {
+    if (
+      appData.metodRole[appData.myProfile?.role]?.some((el) => el === 38) ||
+      appData.metodRole[appData.myProfile?.role]?.some((el) => el === 38.2)
+    ) {
       const data = { id: offerData.offer.id, status: 5 };
       AcceptOffer(data).then(() => {
         basicTabData.funUpdateOffers();
@@ -82,6 +85,18 @@ function Offers(props) {
             </button>
             <button className={styles.rigth} onClick={() => accept(offerData)}>
               Принять
+            </button>
+          </div>
+        )}
+        {appData.metodRole[appData.myProfile?.role]?.some(
+          (el) => el === 38.2
+        ) && (
+          <div
+            className={styles.offerButton}
+            style={{ display: "flex", justifyContent: "end" }}
+          >
+            <button className={styles.left} onClick={() => reject(offerData)}>
+              Отменить
             </button>
           </div>
         )}
