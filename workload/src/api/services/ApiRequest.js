@@ -702,3 +702,25 @@ export const SyncTable = async () => {
     //throw error;
   }
 };
+
+//!удаление по Id строки из материалов 
+export const DeleteMaterials = async (materialId) => {
+  try {
+    const response = await http.delete(`${server}/materials/${materialId}`);
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};
+
+//! получение кафедр к материалам 
+export const GetDepartmentsMaterials = async () => {
+  try {
+    const response = await http.get(`${server}/materials/getUsableDepartments`);
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};

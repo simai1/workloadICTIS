@@ -4,6 +4,7 @@ import DataContext from "../../../context";
 import styles from "./../UniversalTable.module.scss";
 import React from "react";
 import {
+  DeleteMaterials,
   apiSplitByHours,
   deleteWorkload,
   joinAddWorkloads,
@@ -155,25 +156,53 @@ function OverlapWindow(props) {
 
   const confirmChanges = () => {
     //! удаляем нагрузку
+   
     if (props.getConfirmation.type === 1) {
-      deleteWorkload({ ids: [props.itid] }).then(() => {
-        appData.setBufferAction(
-          deleteItemBuffer(
-            [...appData.bufferAction],
-            props.itid,
-            "deleteWorkload"
-          ).buffer
-        );
-        props.tabDat.setTableDataFix(
-          props.tabDat.tableDataFix.filter((item) => item.id !== props.itid)
-        );
-        props.tabDat.setTableData(
-          props.tabDat.tableData.filter((item) => item.id !== props.itid)
-        );
-        let changed = { ...tabPar.changedData };
-        changed.deleted = changed.deleted.filter((item) => item !== props.itid);
-        tabPar.setChangedData(changed);
-      });
+      if(appData.selectedComponent === "ScheduleMaterials"){
+        console.log(props.itid)
+        DeleteMaterials(props.itid).then((resp) => {
+          if(resp?.status === 200){
+            appData.setBufferAction(
+              deleteItemBuffer(
+                [...appData.bufferAction],
+                props.itid,
+                "deleteWorkload"
+              ).buffer
+            );
+            props.tabDat.setTableDataFix(
+              props.tabDat.tableDataFix.filter((item) => item.id !== props.itid)
+            );
+            props.tabDat.setTableData(
+              props.tabDat.tableData.filter((item) => item.id !== props.itid)
+            );
+            let changed = { ...tabPar.changedData };
+            changed.deleted = changed.deleted.filter((item) => item !== props.itid);
+            tabPar.setChangedData(changed);
+            appData.setDataUpdated(true);
+          }
+        })
+      }else{
+        deleteWorkload({ ids: [props.itid] }).then(() => {
+          appData.setBufferAction(
+            deleteItemBuffer(
+              [...appData.bufferAction],
+              props.itid,
+              "deleteWorkload"
+            ).buffer
+          );
+          props.tabDat.setTableDataFix(
+            props.tabDat.tableDataFix.filter((item) => item.id !== props.itid)
+          );
+          props.tabDat.setTableData(
+            props.tabDat.tableData.filter((item) => item.id !== props.itid)
+          );
+          let changed = { ...tabPar.changedData };
+          changed.deleted = changed.deleted.filter((item) => item !== props.itid);
+          tabPar.setChangedData(changed);
+        });
+      }
+     
+
     } else if (props.getConfirmation.type === 2) {
       //! подтверждение разделить нагрузку по подгруппам
       console.log("props.getConfirmation", props.getConfirmation);

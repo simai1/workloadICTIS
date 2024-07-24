@@ -95,6 +95,7 @@ function App() {
   const [sortParamByColumn, setSortParamByColumn] = useState(""); //! сортировка в колнке по возрастанию убыванию или без если ""
   const [popupErrorText, setPopupErrorText] = useState(""); //! если не пустой то в поап ерор будет текст который в состоянии
   const [popupGoodText, setPopupGoodText] = useState(""); //! если не пустой то в поап ерор будет текст который в состоянии
+  const [dataUpdated, setDataUpdated] = useState(false);//!индикатор что данные обновлены
 
   const appData = {
     popupGoodText,
@@ -136,18 +137,14 @@ function App() {
     setPopupErrorText,
     sortParamByColumn,
     setSortParamByColumn,
+    setDataUpdated,
+    dataUpdated,
   };
 
-  useEffect(() => {
-    console.log("myProfile", myProfile);
-  }, [myProfile]);
+
 
   //! параметры таблицы
   const [tableHeaders, setTableHeaders] = useState(headers);
-  useEffect(() => {
-    console.log("tableHeaders", tableHeaders);
-  }, [tableHeaders]);
-
   const [workloadData, setWorkloadData] = useState([]); // данные с бд нагрузок
   const [workloadDataFix, setWorkloadDataFix] = useState([]); //данные с убранным массиовм преподавателя
   const [filtredData, setFiltredData] = useState([]); // фильтрованные данные
@@ -315,6 +312,7 @@ function App() {
     }
   }
 
+  
   //! функция обновления предложений преподавателей
   function funUpdateOffers() {
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 17.1)) {
@@ -377,7 +375,7 @@ function App() {
     const fixData = UpdateWorkloadForBoofer(
       funFixEducator(dataBd, bufferAction)
     );
-
+   
     //! функция прокида буффера для разделения соединения и удаления нагрузок
     const fdb = fixDataBuff(fixData, bufferAction);
     // зменяем массив преподавателя на его имя
@@ -415,7 +413,6 @@ function App() {
   //! функция обновления таблицы
   function funUpdateTable(param) {
     setLoaderAction(true);
-    console.log("обновление таблицы ");
     //param = tableDepartment[0]?.id
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
       const par = sortParamByColumn !== "" ? `?${sortParamByColumn}` : "";
@@ -527,7 +524,7 @@ function App() {
             }
             obj.push(o);
           }
-          console.log(obj);
+         
         }
       });
       return data.map((item) => {
@@ -590,7 +587,6 @@ function App() {
         ).then((resp) => {
           if (resp.status === 200) {
             setHoursWorkloadSumma(resp.data);
-            console.log("hoursWorkloadSumma", hoursWorkloadSumma);
           }
         });
       }
@@ -604,7 +600,6 @@ function App() {
       ).then((resp) => {
         if (resp.status === 200) {
           setHoursWorkloadSumma(resp.data);
-          console.log("hoursWorkloadSumma", hoursWorkloadSumma);
         }
       });
     }
@@ -650,7 +645,7 @@ function App() {
     appData.setLoaderAction(true);
     bufferRequestToApi(bufferAction)
       .then((action) => {
-        console.log(action);
+       
         if (action) {
           setBufferAction([0]);
           updateAlldata();
@@ -664,7 +659,6 @@ function App() {
 
     setSelectedTr([]);
     setChangedData(changedDataObj);
-    console.log("выполнено и очищено", bufferAction);
     setBufferAction([0]);
   }
 

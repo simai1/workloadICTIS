@@ -25,6 +25,7 @@ function TableTh(props) {
   //! сортируем по колонке в App вызывается useEfferc для обновления массива
   const funSortByColumn = () => {
     let par = "";
+    console.log(appData.sortParamByColumn)
     if (appData.sortParamByColumn === "") {
       par = `col=${props.item.key}&type=${"asc"}`;
       setSortImg(1);

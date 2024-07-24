@@ -3,6 +3,7 @@ import { map as departmentsMap } from '../config/departments.js';
 
 export default class MaterialsModelDto {
   id;
+  number;
   fields;
   department;
   discipline;
@@ -28,7 +29,7 @@ export default class MaterialsModelDto {
 
   constructor(model) {
     this.id = model.id;
-    this.fields = model.fields;
+    this.number = model.number;
     this.department = departmentsMap[model.department];
     this.discipline = model.discipline;
     this.workload = model.workload;
