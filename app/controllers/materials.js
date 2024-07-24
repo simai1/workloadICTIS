@@ -8,23 +8,31 @@ import { AppErrorMissing, AppErrorNotExist } from '../utils/errors.js';
 import MaterialsModelDto from '../dtos/materialModel-dto.js';
 import User from '../models/user.js';
 
-const orderRule = [
-    // ['department', 'ASC'],
-    // ['discipline', 'ASC'],
-    // ['workload', 'ASC'],
-    // ['notes', 'ASC'],
-    ['number', 'ASC'],
-];
+const orderRule = [['number', 'ASC']];
 
 export default {
     async sync(req, res) {
-        const workloads = await Workload.findAll({
-            where: {
-                audienceHours: { [Op.ne]: 0 },
-                educatorId: { [Op.ne]: null },
-            },
-            include: [{ model: Educator }],
-        });
+        let { departments } = req.query;
+        let workloads;
+        if (!departments) {
+            workloads = await Workload.findAll({
+                where: {
+                    audienceHours: { [Op.ne]: 0 },
+                    educatorId: { [Op.ne]: null },
+                },
+                include: [{ model: Educator }],
+            });
+        } else {
+            departments = departments.split(',').map(d => parseInt(d));
+            workloads = await Workload.findAll({
+                where: {
+                    audienceHours: { [Op.ne]: 0 },
+                    educatorId: { [Op.ne]: null },
+                    department: departments,
+                },
+                include: [{ model: Educator }],
+            });
+        }
         const materials = [...new Set(workloads.map(w => JSON.stringify(new MaterialsDto(w))))];
         const uniqueWorkloads = [];
         let wmat;
