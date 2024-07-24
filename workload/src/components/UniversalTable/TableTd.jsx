@@ -192,7 +192,7 @@ function TableTd(props) {
             : { position: "relative" }
           : null
       }
-      onClick={props.itemKey.key === "educator" ? ClickName : null}
+      // onClick={props.itemKey.key === "educator" ? ClickName : null}
     >
       <div
         name={props.itemKey.key}
