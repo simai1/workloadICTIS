@@ -53,7 +53,7 @@ function HomePage() {
   const educatorTableHeaders = headersEducator; // заголовок таблтиц преподавателей
   const educatorLkHeaders = tableHeadersLks; // заголовок страницы личного кабинета
   const scheduleHeaders = scheduleHead;
-  const [tableHeaders, setTableHeaders] = useState(workloadTableHeaders);
+  // const [tableHeaders, setTableHeaders] = useState(workloadTableHeaders);
   const [filePopUp, setfilePopUp] = useState(false);
   // const [appData.selectedComponent, appData.setSelectedComponent] = useState("Disciplines");
   const [tableMode, setTableMode] = useState("cathedrals"); //выбранный компонент
@@ -120,6 +120,7 @@ function HomePage() {
     } else if (component === "Teachers") {
       basicTabData.setTableHeaders(educatorTableHeaders);
     } else if (component === "ScheduleMaterials") {
+      console.log("scheduleHeaders", scheduleHeaders);
       basicTabData.setTableHeaders(scheduleHeaders);
     } else {
       basicTabData.setTableHeaders(educatorLkHeaders);
@@ -127,7 +128,7 @@ function HomePage() {
   };
 
   const changeInput = () => {
-    setTableHeaders(educatorTableHeaders);
+    basicTabData.setTableHeaders(educatorTableHeaders);
   };
 
   const handleSearch = (event) => {
@@ -822,8 +823,8 @@ function HomePage() {
           {appData.selectedComponent === "Disciplines" ? (
             <TableWorkload
               tableMode={tableMode}
-              tableHeaders={tableHeaders}
-              setTableHeaders={setTableHeaders}
+              tableHeaders={ basicTabData.tableHeaders}
+              setTableHeaders={basicTabData.setTableHeaders}
               searchTerm={basicTabData.searchTerm}
               setSearchTerm={basicTabData.setSearchTerm}
               refProfile={refProfile}
@@ -834,8 +835,8 @@ function HomePage() {
             <TableTeachers
               setEducatorIdforLk={setEducatorIdforLk}
               changeInput={changeInput}
-              tableHeaders={tableHeaders}
-              setTableHeaders={setTableHeaders}
+              tableHeaders={ basicTabData.tableHeaders}
+              setTableHeaders={basicTabData.setTableHeaders}
               searchTerm={basicTabData.searchTerm}
               setSearchTerm={basicTabData.setSearchTerm}
               setEducatorData={setEducatorData}
@@ -846,15 +847,15 @@ function HomePage() {
               setEducatorIdforLk={setEducatorIdforLk}
               educatorIdforLk={educatorIdforLk}
               changeInput={changeInput}
-              setTableHeaders={setTableHeaders}
+              setTableHeaders={basicTabData.setTableHeaders}
               searchTerm={basicTabData.searchTerm}
               educatorData={educatorData}
             />
           ) : appData.selectedComponent === "History" ? (
             <TableHistory
               tableMode={tableMode}
-              tableHeaders={tableHeaders}
-              setTableHeaders={setTableHeaders}
+              tableHeaders={ basicTabData.tableHeaders}
+              setTableHeaders={basicTabData.setTableHeaders}
               searchTerm={basicTabData.searchTerm}
               setSearchTerm={basicTabData.setSearchTerm}
               refProfile={refProfile}
@@ -863,8 +864,9 @@ function HomePage() {
           ) : appData.selectedComponent === "ScheduleMaterials" ? (
             <TableSchedule
               tableMode={tableMode}
-              tableHeaders={tableHeaders}
-              setTableHeaders={setTableHeaders}
+              // tableHeaders={tableHeaders}
+              tableHeaders={ basicTabData.tableHeaders}
+              setTableHeaders={basicTabData.setTableHeaders}
               searchTerm={basicTabData.searchTerm}
               setSearchTerm={basicTabData.setSearchTerm}
               refProfile={refProfile}
@@ -873,8 +875,8 @@ function HomePage() {
           ) : appData.selectedComponent === "MyWorkload" ? (
             <MyWorkload
               tableMode={tableMode}
-              tableHeaders={tableHeaders}
-              setTableHeaders={setTableHeaders}
+              tableHeaders={ basicTabData.tableHeaders}
+              setTableHeaders={basicTabData.setTableHeaders}
               searchTerm={basicTabData.searchTerm}
               setSearchTerm={basicTabData.setSearchTerm}
               refProfile={refProfile}

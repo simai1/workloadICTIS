@@ -11,8 +11,8 @@ import { scheduleHead } from "../TableWorkload/Data";
 function TableSchedule(props) {
   const { tabPar, visibleDataPar, basicTabData, checkPar, appData } =
     useContext(DataContext);
-  // const [tableHeader, setTableHeader] = useState([...props.tableHeaders]);
-  const [tableHeader, setTableHeader] = useState(scheduleHead);
+  const [tableHeader, setTableHeader] = useState([...props.tableHeaders]);
+  // const [tableHeader, setTableHeader] = useState(scheduleHead);
   const [tableData, setTableData] = useState([]);
   const [tableDataFix, setTableDataFix] = useState([]);
   const [filtredData, setFiltredData] = useState([]);
@@ -34,7 +34,7 @@ function TableSchedule(props) {
     ssIsChecked,
     ssHeader,
     isCheckedStore,
-    isSorted: true, //! показать или скрыть сортировку
+    isSorted: false, //! показать или скрыть сортировку
     isBlocked: false, //! показывать или скрывать блокированные
   };
 
@@ -56,7 +56,6 @@ function TableSchedule(props) {
       url = "";
     }
     getSchedule(url).then((resp) => {
-      console.log("RESP", resp);
       if (resp.status === 200) {
         dataBd = [...resp.data];
         const fixEducator = funFixEducator(dataBd);
@@ -70,7 +69,7 @@ function TableSchedule(props) {
       }
     });
   }
-  
+
   useEffect(() => {
     updateDataTable()
   }, [basicTabData.selectTableSchedle, isCheckedStore, appData.dataUpdated]);
