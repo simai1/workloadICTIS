@@ -713,3 +713,14 @@ export const DeleteMaterials = async (materialId) => {
     //throw error;
   }
 };
+
+//! получение кафедр к материалам 
+export const GetDepartmentsMaterials = async () => {
+  try {
+    const response = await http.get(`${server}/materials/getUsableDepartments`);
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};

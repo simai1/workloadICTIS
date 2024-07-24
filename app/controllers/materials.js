@@ -3,28 +3,36 @@ import { Sequelize, Op } from 'sequelize';
 import Educator from '../models/educator.js';
 import MaterialsDto from '../dtos/materials-dto.js';
 import Materials from '../models/materials.js';
-import departments, { map as mapDepartments } from '../config/departments.js';
-import { AppErrorMissing } from '../utils/errors.js';
+import { map as mapDepartments } from '../config/departments.js';
+import { AppErrorMissing, AppErrorNotExist } from '../utils/errors.js';
 import MaterialsModelDto from '../dtos/materialModel-dto.js';
 import User from '../models/user.js';
 
-const orderRule = [
-    // ['department', 'ASC'],
-    // ['discipline', 'ASC'],
-    // ['workload', 'ASC'],
-    // ['notes', 'ASC'],
-    ['number', "ASC"]
-];
+const orderRule = [['number', 'ASC']];
 
 export default {
     async sync(req, res) {
-        const workloads = await Workload.findAll({
-            where: {
-                audienceHours: { [Op.ne]: 0 },
-                educatorId: { [Op.ne]: null },
-            },
-            include: [{ model: Educator }],
-        });
+        let { departments } = req.query;
+        let workloads;
+        if (!departments) {
+            workloads = await Workload.findAll({
+                where: {
+                    audienceHours: { [Op.ne]: 0 },
+                    educatorId: { [Op.ne]: null },
+                },
+                include: [{ model: Educator }],
+            });
+        } else {
+            departments = departments.split(',').map(d => parseInt(d));
+            workloads = await Workload.findAll({
+                where: {
+                    audienceHours: { [Op.ne]: 0 },
+                    educatorId: { [Op.ne]: null },
+                    department: departments,
+                },
+                include: [{ model: Educator }],
+            });
+        }
         const materials = [...new Set(workloads.map(w => JSON.stringify(new MaterialsDto(w))))];
         const uniqueWorkloads = [];
         let wmat;
@@ -62,7 +70,7 @@ export default {
                     notes: w.notes,
                 })
             ),
-            { ignoreDuplicates: true, individualHooks: true }
+            { ignoreDuplicates: true }
         );
         res.json({ status: 'OK' });
     },
@@ -78,7 +86,7 @@ export default {
         let { departments } = req.query;
         let materials;
         if (!departments) {
-            materials = await Materials.findAll();
+            materials = await Materials.findAll({ order: orderRule });
         } else {
             departments = departments.split(',').map(d => parseInt(d));
             materials = await Materials.findAll({
@@ -102,7 +110,7 @@ export default {
 
     async getUsableDepartments(req, res) {
         const userId = req.user;
-        console.log(userId)
+        console.log(userId);
         const checkUser = await User.findByPk(userId);
         if (!checkUser) throw new AppErrorNotExist('User');
         const role = checkUser.role;
