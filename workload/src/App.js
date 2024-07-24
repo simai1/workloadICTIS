@@ -95,6 +95,7 @@ function App() {
   const [sortParamByColumn, setSortParamByColumn] = useState(""); //! сортировка в колнке по возрастанию убыванию или без если ""
   const [popupErrorText, setPopupErrorText] = useState(""); //! если не пустой то в поап ерор будет текст который в состоянии
   const [popupGoodText, setPopupGoodText] = useState(""); //! если не пустой то в поап ерор будет текст который в состоянии
+  const [dataUpdated, setDataUpdated] = useState(false);//!индикатор что данные обновлены
 
   const appData = {
     popupGoodText,
@@ -136,6 +137,8 @@ function App() {
     setPopupErrorText,
     sortParamByColumn,
     setSortParamByColumn,
+    setDataUpdated,
+    dataUpdated,
   };
 
   useEffect(() => {
@@ -315,6 +318,7 @@ function App() {
     }
   }
 
+  
   //! функция обновления предложений преподавателей
   function funUpdateOffers() {
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 17.1)) {
@@ -377,7 +381,7 @@ function App() {
     const fixData = UpdateWorkloadForBoofer(
       funFixEducator(dataBd, bufferAction)
     );
-
+   
     //! функция прокида буффера для разделения соединения и удаления нагрузок
     const fdb = fixDataBuff(fixData, bufferAction);
     // зменяем массив преподавателя на его имя

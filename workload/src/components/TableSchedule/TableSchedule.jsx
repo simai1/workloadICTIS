@@ -38,7 +38,8 @@ function TableSchedule(props) {
     isBlocked: false, //! показывать или скрывать блокированные
   };
 
-  useEffect(() => {
+  const updateDataTable = () =>{
+    appData.setDataUpdated(false);
     appData.setLoaderAction(true);
     let dataBd = [];
     let url = "";
@@ -68,13 +69,18 @@ function TableSchedule(props) {
         appData.setLoaderAction(false);
       }
     });
-  }, [basicTabData.selectTableSchedle, isCheckedStore]);
+  }
+  
+  useEffect(() => {
+    updateDataTable()
+  }, [basicTabData.selectTableSchedle, isCheckedStore, appData.dataUpdated]);
+
 
   return (
     <div className={styles.TableSchedule}>
       <UniversalTable
         searchTerm={props.searchTerm}
-        contextMenu={""}
+        contextMenu={"Schedule"}
         tabDat={tabDat}
       />
     </div>

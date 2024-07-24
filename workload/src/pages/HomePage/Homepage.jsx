@@ -43,6 +43,7 @@ import SplitByHoursPopup from "../../components/SplitByHoursPopup/SplitByHoursPo
 // import { UniversalPopup } from "../../ui/UniversalPopup/UniversalPopup";
 import TableSchedule from "../../components/TableSchedule/TableSchedule";
 import MyWorkload from "../../components/MyWorkload/MyWorkload";
+import ListSchedule from "../../ui/ListSchedule/ListSchedule";
 
 function HomePage() {
   const { appData, tabPar, visibleDataPar, basicTabData } =
@@ -345,6 +346,7 @@ function HomePage() {
     SyncTable().then((resp) => {
       if (resp.status === 200) {
         appData.setLoaderAction(false);
+        appData.setDataUpdated(true);
         appData.setgodPopUp(true);
       }
     });
