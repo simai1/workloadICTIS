@@ -43,6 +43,7 @@ export default {
                         model: SummaryWorkload,
                     },
                 ],
+                order: orderRule,
             });
         } else if (_user.role === 6) {
             educators = await Educator.findAll({
@@ -54,6 +55,7 @@ export default {
                         model: SummaryWorkload,
                     },
                 ],
+                order: orderRule,
             });
         } else {
             const allowedDepartments = [];
@@ -73,6 +75,7 @@ export default {
                         model: SummaryWorkload,
                     },
                 ],
+                order: orderRule,
             });
         }
 
@@ -132,7 +135,6 @@ export default {
         });
         console.log(workloads.length);
         const workloadsDto = [];
-        let totalHoursWithoutPeriod = 0;
         let flag;
         for (const workload of workloads) {
             flag = true;
