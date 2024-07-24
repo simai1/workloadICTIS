@@ -44,7 +44,6 @@ import SplitByHoursPopup from "../../components/SplitByHoursPopup/SplitByHoursPo
 import TableSchedule from "../../components/TableSchedule/TableSchedule";
 import MyWorkload from "../../components/MyWorkload/MyWorkload";
 import ListSchedule from "../../ui/ListSchedule/ListSchedule";
-
 function HomePage() {
   const { appData, tabPar, visibleDataPar, basicTabData } =
     React.useContext(DataContext);

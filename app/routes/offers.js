@@ -68,6 +68,7 @@ router
             checkRole([
                 role.GOD,
                 role.GIGA_ADMIN,
+                role.LECTURER,
                 role.DEPARTMENT_HEAD,
                 role.DEPUTY_DEPARTMENT_HEAD,
                 role.UNIT_ADMIN,

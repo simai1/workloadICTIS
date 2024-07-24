@@ -23,6 +23,7 @@ function TableSchedule(props) {
   const isCheckedStore = useSelector((state) => state.isCheckedSlice.isChecked);
 
   const tabDat = {
+    funUpdateTabDat,
     tableHeader,
     setTableHeader,
     tableData,
