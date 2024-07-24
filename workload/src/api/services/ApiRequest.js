@@ -640,6 +640,20 @@ export const ApiUnblockTable = async (indexTable) => {
   }
 };
 
+//! Добавить примечание в материалы к рассписанию
+export const apiNotecAddMaterials = async (materialId, data) => {
+  try {
+    const response = await http.patch(
+      `${server}/materials/${materialId}`,
+      data
+    );
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};
+
 //! Получение текущей суммы и остатка по нагрузкам для ЗК
 export const getAllocatedAndUnallocatedWrokloadHours = async (
   indexDepartment

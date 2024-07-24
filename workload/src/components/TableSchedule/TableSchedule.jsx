@@ -23,6 +23,7 @@ function TableSchedule(props) {
   const isCheckedStore = useSelector((state) => state.isCheckedSlice.isChecked);
 
   const tabDat = {
+    funUpdateTabDat,
     tableHeader,
     setTableHeader,
     tableData,
@@ -34,12 +35,12 @@ function TableSchedule(props) {
     ssIsChecked,
     ssHeader,
     isCheckedStore,
-    isSorted: true, //! показать или скрыть сортировку
+    isSorted: false, //! показать или скрыть сортировку
     isBlocked: false, //! показывать или скрывать блокированные
   };
 
-  useEffect(() => {
-    appData.setLoaderAction(true);
+  //! функция обновления таблицы
+  function funUpdateTabDat() {
     let dataBd = [];
     let url = "";
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 55)) {
@@ -68,6 +69,11 @@ function TableSchedule(props) {
         appData.setLoaderAction(false);
       }
     });
+  }
+
+  useEffect(() => {
+    appData.setLoaderAction(true);
+    funUpdateTabDat();
   }, [basicTabData.selectTableSchedle, isCheckedStore]);
 
   return (

@@ -1,0 +1,15 @@
+.TextArea {
+  textarea {
+    display: block;
+    box-sizing: border-box;
+    padding: 5px;
+    width: 100%;
+    height: 65%;
+    font-size: 14px;
+    margin-top: 10px;
+    outline: none;
+    border-radius: 8px;
+    resize: none;
+    border: 1px solid #bdbdbd;
+  }
+}
