@@ -3,11 +3,15 @@ import styles from "./UniversalTable.module.scss";
 import DataContext from "../../context";
 import { ReactComponent as SvgChackmark } from "./../../img/checkmark.svg";
 import { ReactComponent as SvgCross } from "./../../img/cross.svg";
+import TextArea from "../../ui/TextArea/TextArea";
+import { apiNotecAddMaterials } from "../../api/services/ApiRequest";
 
 function TableTd(props) {
   const { tabPar, basicTabData, appData } = React.useContext(DataContext);
   const [onTextArea, setOnTextArea] = useState(false);
-  const [textareaTd, setTextareaTd] = useState(props.item[props.itemKey.key]);
+  const [textareaTd, setTextareaTd] = useState(
+    props.item[props.itemKey.key] || ""
+  );
 
   //определение каласса td
   const getClassNameTr = () => {
@@ -20,9 +24,9 @@ function TableTd(props) {
 
   const getTextAreaOn = () => {
     if (
-      //! проеряем роль
+      //! проверяем роль
       appData.metodRole[appData.myProfile?.role]?.some((el) => el === 8) &&
-      props.itemKey.key === "audienceHours"
+      props.itemKey.key === "notes"
     ) {
       return onTextArea;
     } else if (
@@ -32,15 +36,20 @@ function TableTd(props) {
     }
   };
 
-  const onChangeTextareaTd = (e) => {
+  const onChangeTextareaTd = (e, type) => {
     const query = e.target.value;
-    console.log(Number(query));
-    if (query === "") {
+    if (type === "text") {
+      console.log(query);
       setTextareaTd(query);
-    } else if (query === "0") {
-      setTextareaTd(query);
-    } else if (Number(query)) {
-      setTextareaTd(query);
+    } else {
+      console.log(Number(query));
+      if (query === "") {
+        setTextareaTd(query);
+      } else if (query === "0") {
+        setTextareaTd(query);
+      } else if (Number(query)) {
+        setTextareaTd(query);
+      }
     }
   };
 
@@ -53,6 +62,29 @@ function TableTd(props) {
   const crossClick = (e) => {
     setTextareaTd(props.item[props.itemKey.key]);
     setOnTextArea(false);
+  };
+
+  const defineFunction = (action) => {
+    if (action === "headerSchedule") {
+      onClicNotic();
+    } else {
+      onClickButton();
+    }
+  };
+
+  //! сохраниени примечаний
+  const onClicNotic = () => {
+    const data = {
+      notes: textareaTd,
+    };
+    console.log("props.item", props.item.id);
+    apiNotecAddMaterials(props.item?.id, data).then((req) => {
+      console.log(req);
+      if (req.status === 200) {
+        setOnTextArea(false);
+        props.tabDat.funUpdateTabDat();
+      }
+    });
   };
 
   //! при клике применить изменения textArea
@@ -183,20 +215,16 @@ function TableTd(props) {
       >
         {getTextAreaOn() ? (
           <div>
-            <textarea
-              // defaultValue={props.item[props.itemKey.key]}
+            <TextArea
+              defaultValue={""}
               value={textareaTd}
-              onChange={onChangeTextareaTd}
-              className={styles.textarea}
-              type="text"
-              style={
-                Number(textareaTd) > 2000 ? { border: "3px solid red" } : null
-              }
-            ></textarea>
+              onChange={(e) => onChangeTextareaTd(e, "text")}
+            />
             <div className={styles.svg_textarea}>
-              {textareaTd !== "" && Number(textareaTd) <= 2000 && (
+              {((textareaTd !== "" && Number(textareaTd) <= 2000) ||
+                props.tabDat.ssHeader === "headerSchedule") && (
                 <SvgChackmark
-                  onClick={onClickButton}
+                  onClick={() => defineFunction(props.tabDat.ssHeader)}
                   className={styles.SvgChackmark_green}
                 />
               )}

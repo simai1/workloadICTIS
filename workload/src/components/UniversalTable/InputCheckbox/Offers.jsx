@@ -73,15 +73,31 @@ function Offers(props) {
         <div className={styles.offerEducator}>
           {offerData.offer.educator.name}
         </div>
-        {appData.metodRole[appData.myProfile?.role]?.some(
-          (el) => el === 38
-        ) && (
-          <div className={styles.offerButton}>
+        {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 38) &&
+          appData.selectedComponent !== "MyWorkload" && (
+            <div className={styles.offerButton}>
+              <button className={styles.left} onClick={() => reject(offerData)}>
+                Отклонить
+              </button>
+              <button
+                className={styles.rigth}
+                onClick={() => accept(offerData)}
+              >
+                Принять
+              </button>
+            </div>
+          )}
+
+        {(appData.metodRole[appData.myProfile?.role]?.some(
+          (el) => el === 38.2
+        ) ||
+          appData.selectedComponent === "MyWorkload") && (
+          <div
+            className={styles.offerButton}
+            style={{ display: "flex", justifyContent: "end" }}
+          >
             <button className={styles.left} onClick={() => reject(offerData)}>
-              Отклонить
-            </button>
-            <button className={styles.rigth} onClick={() => accept(offerData)}>
-              Принять
+              Отменить
             </button>
           </div>
         )}

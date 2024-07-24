@@ -43,7 +43,7 @@ import SplitByHoursPopup from "../../components/SplitByHoursPopup/SplitByHoursPo
 // import { UniversalPopup } from "../../ui/UniversalPopup/UniversalPopup";
 import TableSchedule from "../../components/TableSchedule/TableSchedule";
 import MyWorkload from "../../components/MyWorkload/MyWorkload";
-
+import ListSchedule from "../../ui/ListSchedule/ListSchedule";
 function HomePage() {
   const { appData, tabPar, visibleDataPar, basicTabData } =
     React.useContext(DataContext);
@@ -75,7 +75,6 @@ function HomePage() {
           (el) => el.name === basicTabData?.nameKaf
         )?.id
       );
-      // basicTabData.setnameKaf("ОИД");
     }
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 42)) {
       basicTabData.funUpdateTable(
@@ -84,7 +83,6 @@ function HomePage() {
         )?.id
       );
     }
-    // setKafedralIsOpen(false);
     tabPar.setSelectedFilter("Все дисциплины");
   };
 
@@ -575,30 +573,6 @@ function HomePage() {
                 }}
                 text="Дисциплины"
               />
-
-              {appData.metodRole[appData.myProfile?.role]?.some(
-                (el) => el === 3
-              ) && (
-                <Button
-                  Bg={
-                    appData.selectedComponent === "Teachers"
-                      ? "#0040E5"
-                      : "#efedf3"
-                  }
-                  textColot={
-                    appData.selectedComponent !== "Teachers"
-                      ? "#000000"
-                      : "#efedf3"
-                  }
-                  onClick={() => {
-                    handleComponentChange("Teachers");
-                    handleButtonClick();
-                    basicTabData.setselectISOid(false);
-                  }}
-                  text="Преподаватели"
-                />
-              )}
-
               {appData.metodRole[appData.myProfile?.role]?.some(
                 (el) => el === 56
               ) && (
@@ -619,6 +593,28 @@ function HomePage() {
                     // basicTabData.setselectISOid(false);
                   }}
                   text="Моя нагрузка"
+                />
+              )}
+
+              {appData.metodRole[appData.myProfile?.role]?.some(
+                (el) => el === 3
+              ) && (
+                <Button
+                  Bg={
+                    appData.selectedComponent === "Teachers"
+                      ? "#0040E5"
+                      : "#efedf3"
+                  }
+                  textColot={
+                    appData.selectedComponent !== "Teachers"
+                      ? "#000000"
+                      : "#efedf3"
+                  }
+                  onClick={() => {
+                    handleComponentChange("Teachers");
+                    basicTabData.setselectISOid(false);
+                  }}
+                  text="Преподаватели"
                 />
               )}
 
@@ -657,7 +653,6 @@ function HomePage() {
                   onClick={() => {
                     setEducatorIdforLk(appData.myProfile.educator.id);
                     appData.setSelectedComponent("Teachers");
-                    console.log("myProfilea", appData.myProfile.id);
                   }}
                   Bg={educatorIdforLk.length !== 0 ? "#0040E5" : "#efedf3"}
                   textColot={
@@ -713,15 +708,20 @@ function HomePage() {
                     appData.selectedComponent === "History" ||
                     appData.selectedComponent === "ScheduleMaterials") && (
                     <>
-                      <ListKaf
-                        dataList={departments}
-                        setTableMode={setTableMode}
-                      />
-                      {appData.selectedComponent === "ScheduleMaterials" && (
-                        <button onClick={sync} className={styles.buttonSync}>
-                          Синхронизация
-                        </button>
+                      {appData.selectedComponent != "ScheduleMaterials" ? (
+                        <ListKaf
+                          dataList={departments}
+                          setTableMode={setTableMode}
+                        />
+                      ) : (
+                        <>
+                          <ListSchedule dataList={departments} />
+                          <button onClick={sync} className={styles.buttonSync}>
+                            Синхронизация
+                          </button>
+                        </>
                       )}
+
                       {appData.selectedComponent === "History" && (
                         <div className={styles.perenesen}>
                           <button
@@ -775,8 +775,10 @@ function HomePage() {
                           ? "headerHistory"
                           : appData.selectedComponent === "Teachers"
                           ? "headerTeachers"
-                          : appData.selectedComponent === "ScheduleMaterials" &&
-                            "headerSchedule"
+                          : appData.selectedComponent === "ScheduleMaterials"
+                          ? "headerSchedule"
+                          : appData.selectedComponent === "MyWorkload" &&
+                            "headerMyWorkload"
                       }
                     />
                   )}

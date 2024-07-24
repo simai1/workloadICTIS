@@ -9,7 +9,7 @@ import { getSchedule } from "../../api/services/ApiRequest";
 import { scheduleHead } from "../TableWorkload/Data";
 
 function TableSchedule(props) {
-  const { tabPar, visibleDataPar, basicTabData, checkPar } =
+  const { tabPar, visibleDataPar, basicTabData, checkPar, appData } =
     useContext(DataContext);
   // const [tableHeader, setTableHeader] = useState([...props.tableHeaders]);
   const [tableHeader, setTableHeader] = useState(scheduleHead);
@@ -22,11 +22,8 @@ function TableSchedule(props) {
   //! достаем данные из редакса
   const isCheckedStore = useSelector((state) => state.isCheckedSlice.isChecked);
 
-  useEffect(() => {
-    console.log("props.tableHeaders", props.tableHeaders);
-  }, [props.tableHeaders]);
-
   const tabDat = {
+    funUpdateTabDat,
     tableHeader,
     setTableHeader,
     tableData,
@@ -38,11 +35,27 @@ function TableSchedule(props) {
     ssIsChecked,
     ssHeader,
     isCheckedStore,
+    isSorted: false, //! показать или скрыть сортировку
+    isBlocked: false, //! показывать или скрывать блокированные
   };
 
-  useEffect(() => {
+  //! функция обновления таблицы
+  function funUpdateTabDat() {
     let dataBd = [];
-    getSchedule().then((resp) => {
+    let url = "";
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 55)) {
+      if (basicTabData.selectTableSchedle != "Все") {
+        const depart = basicTabData.tableDepartment.find(
+          (el) => el.name === basicTabData.selectTableSchedle
+        )?.id;
+        url = `?departments=${depart}`;
+      } else if (basicTabData.selectTableSchedle === "Все") {
+        url = "";
+      }
+    } else {
+      url = "";
+    }
+    getSchedule(url).then((resp) => {
       console.log("RESP", resp);
       if (resp.status === 200) {
         dataBd = [...resp.data];
@@ -53,9 +66,15 @@ function TableSchedule(props) {
         setTableDataFix(fdfix);
         setFiltredData(fdfix);
         checkPar.setIsChecked(checks || []);
+        appData.setLoaderAction(false);
       }
     });
-  }, [basicTabData.nameKaf, isCheckedStore]);
+  }
+
+  useEffect(() => {
+    appData.setLoaderAction(true);
+    funUpdateTabDat();
+  }, [basicTabData.selectTableSchedle, isCheckedStore]);
 
   return (
     <div className={styles.TableSchedule}>

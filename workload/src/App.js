@@ -56,16 +56,16 @@ function App() {
     ],
     DIRECTORATE: [
       1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
-      33.1, 34, 35, 36, 38, 16, 40, 44, 47, 49, 50,
+      33.1, 34, 35, 36, 38, 16, 40, 44, 47, 49, 50, 55,
     ],
     UNIT_ADMIN: [
       2, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
-      33.1, 34, 35, 36, 38, 16, 40, 48, 42, 50,
+      33.1, 34, 35, 36, 38, 16, 40, 48, 42, 50, 55,
     ],
     EDUCATOR: [15, 24, 33.2, 41, 53, 51, 50],
     DEPUTY_DIRECTORATE: [
       1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
-      33.1, 34, 35, 36, 38, 16, 40, 44, 47, 49, 50,
+      33.1, 34, 35, 36, 38, 16, 40, 44, 47, 49, 50, 55,
     ],
     DEPUTY_DEPARTMENT_HEAD: [
       2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 20, 22, 23, 25, 26, 27, 30, 31,
@@ -73,12 +73,12 @@ function App() {
     ],
     GIGA_ADMIN: [
       1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 29, 30,
-      31, 33.1, 34, 35, 36, 38, 16, 40, 44, 46, 48, 50,
+      31, 33.1, 34, 35, 36, 38, 16, 40, 44, 46, 48, 50, 55,
     ],
     GOD: [
       1, 3, 4, 8, 8.1, 9, 10, 11, 11.1, 12, 13, 14, 17, 18, 20, 21, 22, 23, 25,
       26, 27, 28, 29, 30, 31, 33.1, 34, 35, 36, 38, 16, 40, 44, 45, 46, 48, 50,
-      54,
+      54, 55,
     ],
   };
   // appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)
@@ -160,6 +160,7 @@ function App() {
   const [nameKaf, setnameKaf] = useState(null);
   const [historyChanges, setHistoryChanges] = useState([]);
   const [searchTerm, setSearchTerm] = useState(""); //поиск по таблице
+  const [selectTableSchedle, setSelectTableSchedle] = useState("Все");
 
   const basicTabData = {
     searchTerm,
@@ -194,6 +195,8 @@ function App() {
     selectISOid,
     historyChanges,
     setHistoryChanges,
+    setSelectTableSchedle,
+    selectTableSchedle,
     // funUpdateHistory,
   };
 
