@@ -186,11 +186,9 @@ export default {
                 attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('department')), 'department']],
                 order: [['department', 'ASC']],
             });
-            console.log(departments.length)
             for (const usableDepartment of departments) {
                 const department = mapDepartments[usableDepartment.department];
                 const materials = await Materials.findOne({ where: { department: usableDepartment.department } });
-                console.log('id', department, 'name', mapDepartments[department])
                 if (materials) {
                     usableDepartments.push({
                         id: usableDepartment.department,
