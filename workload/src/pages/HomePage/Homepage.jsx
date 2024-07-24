@@ -24,6 +24,7 @@ import ListKaf from "../../ui/ListKaf/ListKaf";
 import { PopUpCreateEmploy } from "../../ui/PopUpCreateEmploy/PopUpCreateEmploy";
 import {
   GetDepartment,
+  GetDepartmentsMaterials,
   SyncTable,
   Workload,
   WorkloadBlocked,
@@ -43,7 +44,7 @@ import SplitByHoursPopup from "../../components/SplitByHoursPopup/SplitByHoursPo
 // import { UniversalPopup } from "../../ui/UniversalPopup/UniversalPopup";
 import TableSchedule from "../../components/TableSchedule/TableSchedule";
 import MyWorkload from "../../components/MyWorkload/MyWorkload";
-
+import ListSchedule from "../../ui/ListSchedule/ListSchedule";
 function HomePage() {
   const { appData, tabPar, visibleDataPar, basicTabData } =
     React.useContext(DataContext);
@@ -52,7 +53,7 @@ function HomePage() {
   const educatorTableHeaders = headersEducator; // заголовок таблтиц преподавателей
   const educatorLkHeaders = tableHeadersLks; // заголовок страницы личного кабинета
   const scheduleHeaders = scheduleHead;
-  const [tableHeaders, setTableHeaders] = useState(workloadTableHeaders);
+  // const [tableHeaders, setTableHeaders] = useState(workloadTableHeaders);
   const [filePopUp, setfilePopUp] = useState(false);
   // const [appData.selectedComponent, appData.setSelectedComponent] = useState("Disciplines");
   const [tableMode, setTableMode] = useState("cathedrals"); //выбранный компонент
@@ -64,6 +65,8 @@ function HomePage() {
   const [popupUnblockTable, setPopupUnblockTable] = useState(false);
   const [popupExport, setPopupExport] = useState(false); // открыть/закрыть попап подтверждения блокировки таблицы
   const [departments, setdepartments] = useState([]);
+  const [departmentsMaterials, setDepartmentsMaterials] = useState([]);
+
   // const [kafedralIsOpen, setKafedralIsOpen] = useState(false);
   // const [cafedral, setCafedral] = useState(false);
   const [blockTable, setBlockTable] = useState(false);
@@ -107,6 +110,9 @@ function HomePage() {
     apiGetUser().then((data) => {
       appData.setMyProfile(data);
     });
+    GetDepartmentsMaterials().then((resp) => {
+      setDepartmentsMaterials([{ id: 99, name: "Все" }, ...resp.data]);
+    });
   }, []);
 
   const handleComponentChange = (component) => {
@@ -119,6 +125,7 @@ function HomePage() {
     } else if (component === "Teachers") {
       basicTabData.setTableHeaders(educatorTableHeaders);
     } else if (component === "ScheduleMaterials") {
+      console.log("scheduleHeaders", scheduleHeaders);
       basicTabData.setTableHeaders(scheduleHeaders);
     } else {
       basicTabData.setTableHeaders(educatorLkHeaders);
@@ -126,7 +133,7 @@ function HomePage() {
   };
 
   const changeInput = () => {
-    setTableHeaders(educatorTableHeaders);
+    basicTabData.setTableHeaders(educatorTableHeaders);
   };
 
   const handleSearch = (event) => {
@@ -345,6 +352,7 @@ function HomePage() {
     SyncTable().then((resp) => {
       if (resp.status === 200) {
         appData.setLoaderAction(false);
+        appData.setDataUpdated(true);
         appData.setgodPopUp(true);
       }
     });
@@ -408,7 +416,7 @@ function HomePage() {
             <div className={styles.header_top_save_search}>
               <div className={styles.saveBuffre}>
                 {appData.metodRole[appData.myProfile?.role]?.some(
-                  (el) => el === 25 && appData.selectedComponent !== "Teachers"
+                  (el) => el === 25 && appData.selectedComponent !== "Teachers" && appData.selectedComponent !== "ScheduleMaterials"
                 ) && (
                   <div
                     title="Отмена действия"
@@ -715,7 +723,7 @@ function HomePage() {
                         />
                       ) : (
                         <>
-                          <ListSchedule dataList={departments} />
+                          <ListSchedule dataList={departmentsMaterials} />
                           <button onClick={sync} className={styles.buttonSync}>
                             Синхронизация
                           </button>
@@ -820,8 +828,8 @@ function HomePage() {
           {appData.selectedComponent === "Disciplines" ? (
             <TableWorkload
               tableMode={tableMode}
-              tableHeaders={tableHeaders}
-              setTableHeaders={setTableHeaders}
+              tableHeaders={ basicTabData.tableHeaders}
+              setTableHeaders={basicTabData.setTableHeaders}
               searchTerm={basicTabData.searchTerm}
               setSearchTerm={basicTabData.setSearchTerm}
               refProfile={refProfile}
@@ -832,8 +840,8 @@ function HomePage() {
             <TableTeachers
               setEducatorIdforLk={setEducatorIdforLk}
               changeInput={changeInput}
-              tableHeaders={tableHeaders}
-              setTableHeaders={setTableHeaders}
+              tableHeaders={ basicTabData.tableHeaders}
+              setTableHeaders={basicTabData.setTableHeaders}
               searchTerm={basicTabData.searchTerm}
               setSearchTerm={basicTabData.setSearchTerm}
               setEducatorData={setEducatorData}
@@ -844,15 +852,15 @@ function HomePage() {
               setEducatorIdforLk={setEducatorIdforLk}
               educatorIdforLk={educatorIdforLk}
               changeInput={changeInput}
-              setTableHeaders={setTableHeaders}
+              setTableHeaders={basicTabData.setTableHeaders}
               searchTerm={basicTabData.searchTerm}
               educatorData={educatorData}
             />
           ) : appData.selectedComponent === "History" ? (
             <TableHistory
               tableMode={tableMode}
-              tableHeaders={tableHeaders}
-              setTableHeaders={setTableHeaders}
+              tableHeaders={ basicTabData.tableHeaders}
+              setTableHeaders={basicTabData.setTableHeaders}
               searchTerm={basicTabData.searchTerm}
               setSearchTerm={basicTabData.setSearchTerm}
               refProfile={refProfile}
@@ -861,8 +869,9 @@ function HomePage() {
           ) : appData.selectedComponent === "ScheduleMaterials" ? (
             <TableSchedule
               tableMode={tableMode}
-              tableHeaders={tableHeaders}
-              setTableHeaders={setTableHeaders}
+              // tableHeaders={tableHeaders}
+              tableHeaders={ basicTabData.tableHeaders}
+              setTableHeaders={basicTabData.setTableHeaders}
               searchTerm={basicTabData.searchTerm}
               setSearchTerm={basicTabData.setSearchTerm}
               refProfile={refProfile}
@@ -871,8 +880,8 @@ function HomePage() {
           ) : appData.selectedComponent === "MyWorkload" ? (
             <MyWorkload
               tableMode={tableMode}
-              tableHeaders={tableHeaders}
-              setTableHeaders={setTableHeaders}
+              tableHeaders={ basicTabData.tableHeaders}
+              setTableHeaders={basicTabData.setTableHeaders}
               searchTerm={basicTabData.searchTerm}
               setSearchTerm={basicTabData.setSearchTerm}
               refProfile={refProfile}

@@ -640,6 +640,20 @@ export const ApiUnblockTable = async (indexTable) => {
   }
 };
 
+//! Добавить примечание в материалы к рассписанию
+export const apiNotecAddMaterials = async (materialId, data) => {
+  try {
+    const response = await http.patch(
+      `${server}/materials/${materialId}`,
+      data
+    );
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};
+
 //! Получение текущей суммы и остатка по нагрузкам для ЗК
 export const getAllocatedAndUnallocatedWrokloadHours = async (
   indexDepartment
@@ -682,6 +696,28 @@ export const getSchedule = async (param) => {
 export const SyncTable = async () => {
   try {
     const response = await http.get(`${server}/materials/sync`);
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};
+
+//!удаление по Id строки из материалов 
+export const DeleteMaterials = async (materialId) => {
+  try {
+    const response = await http.delete(`${server}/materials/${materialId}`);
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};
+
+//! получение кафедр к материалам 
+export const GetDepartmentsMaterials = async () => {
+  try {
+    const response = await http.get(`${server}/materials/getUsableDepartments`);
     return response;
   } catch (error) {
     console.error("Error:", error);

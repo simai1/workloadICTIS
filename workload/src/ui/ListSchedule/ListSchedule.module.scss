@@ -50,6 +50,7 @@
     width: 14px;
   }
   .ListData {
+    @include scrollStyle(4px, 4px);
     max-height: 400px;
     position: relative;
     top: -62px;

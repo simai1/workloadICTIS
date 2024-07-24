@@ -64,6 +64,7 @@ function TableTeachers(props) {
   // };
 
   const updateTable = () => {
+    appData.setLoaderAction(true);
     const par = sortParamByColumn !== "" ? `?${sortParamByColumn}` : "";
     if (
       appData.metodRole[appData.myProfile?.role]?.some(
@@ -79,6 +80,9 @@ function TableTeachers(props) {
           setFilteredData([...fdfix]);
           setUpdatedData(res.data);
           setUpdatedHeader(tableHeaders);
+          appData.setLoaderAction(false);
+        }else{
+          appData.setLoaderAction(false);
         }
       });
     } else if (
@@ -93,6 +97,9 @@ function TableTeachers(props) {
           setFilteredData([...fdfix]);
           setUpdatedData(res.data);
           setUpdatedHeader(tableHeaders);
+          appData.setLoaderAction(false);
+        }else{
+          appData.setLoaderAction(false);
         }
       });
       // else if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 45)){

@@ -70,6 +70,7 @@ function UniversalTable(props) {
     let plusX = e.pageX + 256 > window.innerWidth ? -256 : 0;
     let plusY = e.pageY + 320 > window.innerHeight ? -320 : 0;
     tabPar.setContextPosition({ x: e.pageX + plusX, y: e.pageY + plusY });
+    console.log("tabPar.contextMenuShow", tabPar.contextMenuShow);
     tabPar.setContextMenuShow(!tabPar.contextMenuShow);
   };
 
@@ -85,7 +86,7 @@ function UniversalTable(props) {
       {tabPar.contextMenuShow &&
         tabPar.selectedTr.length !== 0 &&
         (props.contextMenu === "TableWorkload" ||
-          props.contextMenu === "MyWorkload") && (
+          props.contextMenu === "MyWorkload") ? (
           <ContextMenu
             setTableDataFix={props.tabDat.setTableDataFix}
             tableDataFix={props.tabDat.tableDataFix}
@@ -97,7 +98,15 @@ function UniversalTable(props) {
               "Выделить",
             ]}
           />
-        )}
+        ) : tabPar.contextMenuShow && tabPar.selectedTr.length !== 0 && props.contextMenu === "Schedule" ? (
+          <ContextMenu
+            setTableDataFix={props.tabDat.setTableDataFix}
+            tableDataFix={props.tabDat.tableDataFix}
+            allowedMenus={[
+              "Удалить",
+            ]}
+          />
+        ) : null}
       <Table tabDat={props.tabDat} />
     </div>
   );
