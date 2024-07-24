@@ -75,9 +75,9 @@ function TableTd(props) {
   //! сохраниени примечаний
   const onClicNotic = () => {
     const data = {
-      notes: textareaTd,
+      notes: textareaTd.trim() || "",
     };
-    console.log("props.item", props.item.id);
+    console.log("data", data);
     apiNotecAddMaterials(props.item?.id, data).then((req) => {
       console.log(req);
       if (req.status === 200) {
