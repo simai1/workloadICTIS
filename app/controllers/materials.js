@@ -86,7 +86,7 @@ export default {
         let { departments } = req.query;
         let materials;
         if (!departments) {
-            materials = await Materials.findAll();
+            materials = await Materials.findAll({ order: orderRule });
         } else {
             departments = departments.split(',').map(d => parseInt(d));
             materials = await Materials.findAll({
