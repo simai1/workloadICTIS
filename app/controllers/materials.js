@@ -100,9 +100,9 @@ export default {
     },
 
     async setNote(req, res) {
-        const { notes } = req.body;
+        let { notes } = req.body;
         const { materialId } = req.params;
-        if (!notes) throw new AppErrorMissing('notes');
+        if (!notes) notes = '';
         if (!materialId) throw new AppErrorMissing('materialId');
         await Materials.update({ notes }, { where: { id: materialId } });
         res.json({ status: 'OK' });
