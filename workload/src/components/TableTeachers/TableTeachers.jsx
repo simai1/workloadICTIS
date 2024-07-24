@@ -19,6 +19,7 @@ import TableTh from "./TableTh";
 import { ReactComponent as ImgClearFilter } from "./../../img/ClearFilter.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { removeTableCheckeds } from "../../store/filter/isChecked.slice";
+import Loader from "../../ui/Loader/Loader";
 
 function TableTeachers(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]);
@@ -64,7 +65,7 @@ function TableTeachers(props) {
   // };
 
   const updateTable = () => {
-    appData.setLoaderAction(true);
+    appData.setLoaderAction(2);
     const par = sortParamByColumn !== "" ? `?${sortParamByColumn}` : "";
     if (
       appData.metodRole[appData.myProfile?.role]?.some(
@@ -80,9 +81,9 @@ function TableTeachers(props) {
           setFilteredData([...fdfix]);
           setUpdatedData(res.data);
           setUpdatedHeader(tableHeaders);
-          appData.setLoaderAction(false);
-        }else{
-          appData.setLoaderAction(false);
+          appData.setLoaderAction(0);
+        } else {
+          appData.setLoaderAction(0);
         }
       });
     } else if (
@@ -97,9 +98,9 @@ function TableTeachers(props) {
           setFilteredData([...fdfix]);
           setUpdatedData(res.data);
           setUpdatedHeader(tableHeaders);
-          appData.setLoaderAction(false);
-        }else{
-          appData.setLoaderAction(false);
+          appData.setLoaderAction(0);
+        } else {
+          appData.setLoaderAction(0);
         }
       });
       // else if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 45)){
@@ -352,7 +353,18 @@ function TableTeachers(props) {
             <tbody className={styles.NotData}>
               <tr>
                 <td className={styles.tdfix} style={{ pointerEvents: "none" }}>
-                  <div className={styles.notdatadiv}>Нет данных</div>
+                  <div className={styles.notdatadiv}>
+                    {appData.loaderAction === 2 ? (
+                      <>
+                        Загружаем данные...
+                        <div className={styles.loader}>
+                          <Loader />
+                        </div>
+                      </>
+                    ) : (
+                      <>Нет данных</>
+                    )}
+                  </div>
                 </td>
               </tr>
             </tbody>

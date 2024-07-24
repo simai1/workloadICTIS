@@ -37,6 +37,13 @@
       font-size: 22px;
       font-weight: 500;
       transform: translateY(-15px);
+      display: flex;
+      justify-content: center;
+
+      .loader {
+        position: absolute;
+        top: 50px;
+      }
     }
   }
 }
@@ -51,6 +58,27 @@
   // button {
   //   margin-bottom: 15px;
   // }
+  &::after {
+    content: "";
+    background-color: var(--bgraund);
+    width: 64px;
+    height: 106px;
+    position: absolute;
+    right: -64px;
+    top: 65px;
+  }
+  &::before {
+    content: "";
+    // background-color: red;
+    background-color: var(--bgraund);
+    width: 64px;
+    height: 15px;
+    position: absolute;
+    right: -64px;
+    bottom: -71vh;
+    z-index: 1;
+  }
+
   .tabledisciplinesMain_search {
     margin-bottom: 10px;
     position: absolute;
@@ -75,7 +103,7 @@
   .TableTeachers__inner {
     height: 74vh;
     width: calc(100% + 14px);
-
+    background-color: #fff;
     overflow: scroll;
     position: relative;
     @include scrollTable(12px, 12px, #a6a6a6, 60px, 0);

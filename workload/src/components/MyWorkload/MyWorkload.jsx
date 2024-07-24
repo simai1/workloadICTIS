@@ -35,7 +35,7 @@ function MyWorkload(props) {
   };
 
   useEffect(() => {
-    appData.setLoaderAction(true);
+    appData.setLoaderAction(2);
     apiOwnDepartHead().then((req) => {
       let data = [];
       if (req.status === 200) {
@@ -48,7 +48,7 @@ function MyWorkload(props) {
       setTableDataFix(fdfix);
       setFiltredData(fdfix);
       checkPar.setIsChecked(checks || []);
-      appData.setLoaderAction(false);
+      appData.setLoaderAction(0);
     });
   }, [isCheckedStore]);
 

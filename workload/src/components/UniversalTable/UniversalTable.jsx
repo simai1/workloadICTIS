@@ -64,7 +64,7 @@ function UniversalTable(props) {
     }
   }, [props.searchTerm]);
 
-  //! при нажатии правой кнопки мыши на таблицу открывает мню
+  //! при нажатии правой кнопки мыши на таблицу открывает меню
   const handleContextMenu = (e) => {
     e.preventDefault();
     let plusX = e.pageX + 256 > window.innerWidth ? -256 : 0;
@@ -84,29 +84,29 @@ function UniversalTable(props) {
       <div className={styles.psevdoElem}></div>
 
       {tabPar.contextMenuShow &&
+      tabPar.selectedTr.length !== 0 &&
+      (props.contextMenu === "TableWorkload" ||
+        props.contextMenu === "MyWorkload") ? (
+        <ContextMenu
+          setTableDataFix={props.tabDat.setTableDataFix}
+          tableDataFix={props.tabDat.tableDataFix}
+          allowedMenus={[
+            "Закрепить",
+            "Открепить",
+            "comments",
+            "Предложить",
+            "Выделить",
+          ]}
+        />
+      ) : tabPar.contextMenuShow &&
         tabPar.selectedTr.length !== 0 &&
-        (props.contextMenu === "TableWorkload" ||
-          props.contextMenu === "MyWorkload") ? (
-          <ContextMenu
-            setTableDataFix={props.tabDat.setTableDataFix}
-            tableDataFix={props.tabDat.tableDataFix}
-            allowedMenus={[
-              "Закрепить",
-              "Открепить",
-              "comments",
-              "Предложить",
-              "Выделить",
-            ]}
-          />
-        ) : tabPar.contextMenuShow && tabPar.selectedTr.length !== 0 && props.contextMenu === "Schedule" ? (
-          <ContextMenu
-            setTableDataFix={props.tabDat.setTableDataFix}
-            tableDataFix={props.tabDat.tableDataFix}
-            allowedMenus={[
-              "Удалить",
-            ]}
-          />
-        ) : null}
+        props.contextMenu === "Schedule" ? (
+        <ContextMenu
+          setTableDataFix={props.tabDat.setTableDataFix}
+          tableDataFix={props.tabDat.tableDataFix}
+          allowedMenus={["Удалить"]}
+        />
+      ) : null}
       <Table tabDat={props.tabDat} />
     </div>
   );

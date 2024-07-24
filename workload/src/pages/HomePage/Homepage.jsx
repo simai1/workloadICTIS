@@ -125,7 +125,6 @@ function HomePage() {
     } else if (component === "Teachers") {
       basicTabData.setTableHeaders(educatorTableHeaders);
     } else if (component === "ScheduleMaterials") {
-      console.log("scheduleHeaders", scheduleHeaders);
       basicTabData.setTableHeaders(scheduleHeaders);
     } else {
       basicTabData.setTableHeaders(educatorLkHeaders);
@@ -350,10 +349,10 @@ function HomePage() {
   }, [appData.selectedComponent]);
 
   const sync = () => {
-    appData.setLoaderAction(true);
+    appData.setLoaderAction(1);
     SyncTable().then((resp) => {
       if (resp.status === 200) {
-        appData.setLoaderAction(false);
+        appData.setLoaderAction(0);
         appData.setDataUpdated(true);
         appData.setgodPopUp(true);
       }
@@ -403,7 +402,7 @@ function HomePage() {
             </div>
           </div>
         )}
-        {appData.loaderAction && (
+        {appData.loaderAction === 1 && (
           <div className={styles.nosavedData}>
             <div className={styles.nosavedDataInner}>
               <div className={styles.loader}>
@@ -418,7 +417,10 @@ function HomePage() {
             <div className={styles.header_top_save_search}>
               <div className={styles.saveBuffre}>
                 {appData.metodRole[appData.myProfile?.role]?.some(
-                  (el) => el === 25 && appData.selectedComponent !== "Teachers" && appData.selectedComponent !== "ScheduleMaterials"
+                  (el) =>
+                    el === 25 &&
+                    appData.selectedComponent !== "Teachers" &&
+                    appData.selectedComponent !== "ScheduleMaterials"
                 ) && (
                   <div
                     title="Отмена действия"
@@ -831,7 +833,7 @@ function HomePage() {
           {appData.selectedComponent === "Disciplines" ? (
             <TableWorkload
               tableMode={tableMode}
-              tableHeaders={ basicTabData.tableHeaders}
+              tableHeaders={basicTabData.tableHeaders}
               setTableHeaders={basicTabData.setTableHeaders}
               searchTerm={basicTabData.searchTerm}
               setSearchTerm={basicTabData.setSearchTerm}
@@ -843,7 +845,7 @@ function HomePage() {
             <TableTeachers
               setEducatorIdforLk={setEducatorIdforLk}
               changeInput={changeInput}
-              tableHeaders={ basicTabData.tableHeaders}
+              tableHeaders={basicTabData.tableHeaders}
               setTableHeaders={basicTabData.setTableHeaders}
               searchTerm={basicTabData.searchTerm}
               setSearchTerm={basicTabData.setSearchTerm}
@@ -862,7 +864,7 @@ function HomePage() {
           ) : appData.selectedComponent === "History" ? (
             <TableHistory
               tableMode={tableMode}
-              tableHeaders={ basicTabData.tableHeaders}
+              tableHeaders={basicTabData.tableHeaders}
               setTableHeaders={basicTabData.setTableHeaders}
               searchTerm={basicTabData.searchTerm}
               setSearchTerm={basicTabData.setSearchTerm}
@@ -873,7 +875,7 @@ function HomePage() {
             <TableSchedule
               tableMode={tableMode}
               // tableHeaders={tableHeaders}
-              tableHeaders={ basicTabData.tableHeaders}
+              tableHeaders={basicTabData.tableHeaders}
               setTableHeaders={basicTabData.setTableHeaders}
               searchTerm={basicTabData.searchTerm}
               setSearchTerm={basicTabData.setSearchTerm}
@@ -883,7 +885,7 @@ function HomePage() {
           ) : appData.selectedComponent === "MyWorkload" ? (
             <MyWorkload
               tableMode={tableMode}
-              tableHeaders={ basicTabData.tableHeaders}
+              tableHeaders={basicTabData.tableHeaders}
               setTableHeaders={basicTabData.setTableHeaders}
               searchTerm={basicTabData.searchTerm}
               setSearchTerm={basicTabData.setSearchTerm}

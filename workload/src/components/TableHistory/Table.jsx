@@ -5,6 +5,7 @@ import styles from "./TableWorkload.module.scss";
 import DataContext from "../../context";
 import InputCheckbox from "./InputCheckbox/InputCheckbox";
 import { funGetConfirmation, getTextForNotData } from "./Function";
+import Loader from "../../ui/Loader/Loader";
 
 function Table(props) {
   const { tabPar, visibleDataPar, basicTabData, appData } =
@@ -147,9 +148,20 @@ function Table(props) {
               ></td>
               <td className={styles.tdfix2} style={{ pointerEvents: "none" }}>
                 <div className={styles.notdatadiv}>
-                  {tabPar.perenesenAction
-                    ? "Нет перенесенных данных"
-                    : "Нет данных"}
+                  {appData.loaderAction === 2 ? (
+                    <>
+                      Загружаем данные...
+                      <div className={styles.loader}>
+                        <Loader />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      {tabPar.perenesenAction
+                        ? "Нет перенесенных данных"
+                        : "Нет данных"}
+                    </>
+                  )}
                 </div>
               </td>
             </tr>
