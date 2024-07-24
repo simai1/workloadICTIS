@@ -165,6 +165,12 @@ function TableLks(props) {
                   <strong>{EducatorLkData?.totalOidHours}</strong>
                 </span>
               </p>
+              <p>
+                <span className={styles.pTop}>
+                  Кафедральные часы:{" "}
+                  <strong>{EducatorLkData?.kafedralAdditionalWorkload}</strong>
+                </span>
+              </p>
             </div>
           </div>
 
