@@ -22,24 +22,7 @@ function TableSchedule(props) {
   //! достаем данные из редакса
   const isCheckedStore = useSelector((state) => state.isCheckedSlice.isChecked);
 
-  const tabDat = {
-    funUpdateTabDat,
-    tableHeader,
-    setTableHeader,
-    tableData,
-    setTableData,
-    tableDataFix,
-    setTableDataFix,
-    filtredData,
-    setFiltredData,
-    ssIsChecked,
-    ssHeader,
-    isCheckedStore,
-    isSorted: false, //! показать или скрыть сортировку
-    isBlocked: false, //! показывать или скрывать блокированные
-  };
-
-  const updateDataTable = () =>{
+  const funUpdateTabDat = () =>{
     appData.setDataUpdated(false);
     appData.setLoaderAction(true);
     let dataBd = [];
@@ -72,10 +55,26 @@ function TableSchedule(props) {
   }
 
   useEffect(() => {
-    updateDataTable()
+    funUpdateTabDat()
   }, [basicTabData.selectTableSchedle, isCheckedStore, appData.dataUpdated]);
 
-
+  const tabDat = {
+    funUpdateTabDat,
+    tableHeader,
+    setTableHeader,
+    tableData,
+    setTableData,
+    tableDataFix,
+    setTableDataFix,
+    filtredData,
+    setFiltredData,
+    ssIsChecked,
+    ssHeader,
+    isCheckedStore,
+    isSorted: false, //! показать или скрыть сортировку
+    isBlocked: false, //! показывать или скрывать блокированные
+  };
+  
   return (
     <div className={styles.TableSchedule}>
       <UniversalTable
