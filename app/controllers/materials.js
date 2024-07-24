@@ -3,8 +3,8 @@ import { Sequelize, Op } from 'sequelize';
 import Educator from '../models/educator.js';
 import MaterialsDto from '../dtos/materials-dto.js';
 import Materials from '../models/materials.js';
-import departments, { map as mapDepartments } from '../config/departments.js';
-import { AppErrorMissing } from '../utils/errors.js';
+import { map as mapDepartments } from '../config/departments.js';
+import { AppErrorMissing, AppErrorNotExist } from '../utils/errors.js';
 import MaterialsModelDto from '../dtos/materialModel-dto.js';
 import User from '../models/user.js';
 
@@ -13,7 +13,7 @@ const orderRule = [
     // ['discipline', 'ASC'],
     // ['workload', 'ASC'],
     // ['notes', 'ASC'],
-    ['number', "ASC"]
+    ['number', 'ASC'],
 ];
 
 export default {
@@ -102,7 +102,7 @@ export default {
 
     async getUsableDepartments(req, res) {
         const userId = req.user;
-        console.log(userId)
+        console.log(userId);
         const checkUser = await User.findByPk(userId);
         if (!checkUser) throw new AppErrorNotExist('User');
         const role = checkUser.role;
