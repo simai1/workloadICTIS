@@ -132,9 +132,11 @@ export default {
         });
         console.log(workloads.length);
         const workloadsDto = [];
+        let totalHoursWithoutPeriod = 0;
         let flag;
         for (const workload of workloads) {
             flag = true;
+            console.log("wor", workload.dataValues)
             for (const workloadDto of workloadsDto) {
                 if (
                     departments[workloadDto.department] === workload.department &&
@@ -143,9 +145,10 @@ export default {
                 ) {
                     workloadDto.hoursFirstPeriod += workload.period === 1 ? workload.hours : 0;
                     workloadDto.hoursSecondPeriod += workload.period === 2 ? workload.hours : 0;
-                    workloadDto.hoursWithoutPeriod += workload.period === null ? workload.hours : 0;
+                    workloadDto.hoursWithoutPeriod += workload.period === 0 ? workload.hours : 0;
+
                     // ориентировочно часы это сумма 3 столбиков этих (уточнить)
-                    workloadDto.hours = workloadDto.hoursFirstPeriod + workloadDto.hoursSecondPeriod;
+                    workloadDto.hours = workloadDto.hoursFirstPeriod + workloadDto.hoursSecondPeriod + workloadDto.hoursWithoutPeriod;
                     flag = false;
                     break;
                 }
@@ -160,6 +163,7 @@ export default {
             totalHours: educator.SummaryWorkload.totalHours,
             totalKafedralHours: educator.SummaryWorkload.totalKafedralHours,
             totalOidHours: educator.SummaryWorkload.totalOidHours,
+            kafedralAdditionalWorkload: educator.SummaryWorkload.kafedralAdditionalWorkload,
         });
     },
 
