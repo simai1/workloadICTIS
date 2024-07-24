@@ -13,5 +13,8 @@ router
     .route('/:materialId')
     .delete(asyncRoute(materialsController.deleteMaterial))
     .patch(asyncRoute(materialsController.setNote));
+router
+    .route('/getUsableDepartments')
+    .get(asyncRoute(materialsController.getUsableDepartments));
 
 export default router;
