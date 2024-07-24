@@ -62,7 +62,7 @@ function Table(props) {
       (
       a === "TD" ||
       a === "INPUT" ||
-      el.target.getAttribute("name") === "educator") && appData.selectedComponent !== "ScheduleMaterials" 
+      el.target.getAttribute("name") === "educator") 
     ) {
       var len = tabPar.selectedTr.length;
       tabPar.setSelectedTr((prev) => {
