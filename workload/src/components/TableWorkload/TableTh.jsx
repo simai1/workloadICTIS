@@ -100,9 +100,10 @@ function TableTh(props) {
                 sortImg !== 1
                   ? {
                       transition: "all 0.2s ease",
+                      transform: "rotate(-180deg)",
                     }
                   : {   transition: "all 0.2s ease",
-                        transform: "rotate(-180deg)", }
+                         }
               }
             ></img>
           )}
