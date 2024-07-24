@@ -22,9 +22,9 @@ function TableSchedule(props) {
   //! достаем данные из редакса
   const isCheckedStore = useSelector((state) => state.isCheckedSlice.isChecked);
 
-  const funUpdateTabDat = () =>{
+  const funUpdateTabDat = () => {
     appData.setDataUpdated(false);
-    appData.setLoaderAction(true);
+    appData.setLoaderAction(2);
     let dataBd = [];
     let url = "";
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 55)) {
@@ -49,13 +49,13 @@ function TableSchedule(props) {
         setTableDataFix(fdfix);
         setFiltredData(fdfix);
         checkPar.setIsChecked(checks || []);
-        appData.setLoaderAction(false);
+        appData.setLoaderAction(0);
       }
     });
-  }
+  };
 
   useEffect(() => {
-    funUpdateTabDat()
+    funUpdateTabDat();
   }, [basicTabData.selectTableSchedle, isCheckedStore, appData.dataUpdated]);
 
   const tabDat = {
@@ -74,7 +74,7 @@ function TableSchedule(props) {
     isSorted: false, //! показать или скрыть сортировку
     isBlocked: false, //! показывать или скрывать блокированные
   };
-  
+
   return (
     <div className={styles.TableSchedule}>
       <UniversalTable

@@ -16,7 +16,7 @@ import {
   getAllAttaches,
   getAllColors,
   getOffers,
-  apiGetHistory,
+  // apiGetHistory,
   CommentsLecktorer,
   getOffersLecturer,
   getAllocatedAndUnallocatedWrokloadHours,
@@ -89,7 +89,7 @@ function App() {
   const [godPopUp, setgodPopUp] = useState(false); //popUp good visible
   const [createEdicatorPopUp, setcreateEdicatorPopUp] = useState(false); //popUp error visible
   const [selectedComponent, setSelectedComponent] = useState("Disciplines");
-  const [loaderAction, setLoaderAction] = useState(false);
+  const [loaderAction, setLoaderAction] = useState(0);
   const [universalPopupTitle, setUniversalPopupTitle] = useState(""); // если он не пустой, то открывается универсальный попап с данным title
   const [hoursWorkloadSumma, setHoursWorkloadSumma] = useState([]); //! сумма часов в профиле
   const [sortParamByColumn, setSortParamByColumn] = useState(""); //! сортировка в колнке по возрастанию убыванию или без если ""
@@ -409,7 +409,7 @@ function App() {
 
   //! функция обновления таблицы
   function funUpdateTable(param, par = null) {
-    setLoaderAction(true);
+    setLoaderAction(2);
     let sp = sortParamByColumn;
     if (par || par === "") {
       sp = par;
@@ -422,7 +422,7 @@ function App() {
         if (data) {
           funUpdTab(data);
         }
-        setLoaderAction(false);
+        setLoaderAction(0);
       });
     }
     if (metodRole[myProfile?.role]?.some((el) => el === 14)) {
@@ -441,7 +441,7 @@ function App() {
       }
       Workload(url).then((data) => {
         funUpdTab(data);
-        setLoaderAction(false);
+        setLoaderAction(0);
       });
     }
 
@@ -643,18 +643,18 @@ function App() {
 
   //! функция сохранения данных
   function funSaveAllData() {
-    appData.setLoaderAction(true);
+    setLoaderAction(1);
     bufferRequestToApi(bufferAction)
       .then((action) => {
         if (action) {
           setBufferAction([0]);
           updateAlldata();
         }
-        appData.setLoaderAction(false);
+        setLoaderAction(0);
       })
       .catch((error) => {
         console.error("Error in bufferRequestToApi:", error);
-        appData.setLoaderAction(false);
+        setLoaderAction(0);
       });
 
     setSelectedTr([]);
