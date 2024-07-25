@@ -1,6 +1,7 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import isCheckedSlice from "./filter/isChecked.slice.js";
 import editInputChecked from "./filter/editInputChecked.slice.js";
+import textAreaSlice from "./popup/textareaData.slice.js";
 
 import {
   persistStore,
@@ -17,6 +18,7 @@ import storage from "redux-persist/lib/storage";
 const rootReducer = combineReducers({
   isCheckedSlice: isCheckedSlice,
   editInputChecked: editInputChecked,
+  textAreaSlice: textAreaSlice,
 });
 
 const persistConfig = {

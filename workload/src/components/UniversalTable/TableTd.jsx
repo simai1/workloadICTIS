@@ -1,19 +1,62 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./UniversalTable.module.scss";
 import DataContext from "../../context";
 import { ReactComponent as SvgChackmark } from "./../../img/checkmark.svg";
 import { ReactComponent as SvgCross } from "./../../img/cross.svg";
 import TextArea from "../../ui/TextArea/TextArea";
 import { apiNotecAddMaterials } from "../../api/services/ApiRequest";
+import { useDispatch, useSelector } from "react-redux";
+
+import {
+  addAllState,
+  onTextareaShow,
+  resetStatus,
+  setTextAreaValue,
+} from "../../store/popup/textareaData.slice";
 
 function TableTd(props) {
   const { tabPar, basicTabData, appData } = React.useContext(DataContext);
   const [onTextArea, setOnTextArea] = useState(false);
+  const textareaStor = useSelector((state) => state.textAreaSlice);
+
+  useEffect(() => {
+    if (textareaStor.status === 200) {
+      setOnTextArea(false);
+      props.tabDat.funUpdateTabDat();
+      dispatch(resetStatus({ value: 0 }));
+    }
+  }, [textareaStor.status]);
+
   const [textareaTd, setTextareaTd] = useState(
     props.item[props.itemKey.key] || ""
   );
+  const dispatch = useDispatch();
 
-  //определение каласса td
+  // useEffect(() => {
+  //   if (props.itemKey.key === "notes" || props.itemKey.key === "groups") {
+  //     const query = props.item[props.itemKey.key] || "";
+  //     dispatch(setTextAreaValue({ value: query }));
+  //   }
+  // }, []);
+
+  const tdTextAreaRef = useRef(null);
+  //! закрытие модального окна при нажати вне него
+  useEffect(() => {
+    const handler = (event) => {
+      if (
+        tdTextAreaRef.current &&
+        !tdTextAreaRef.current.contains(event.target)
+      ) {
+        setOnTextArea(false);
+      }
+    };
+    document.addEventListener("click", handler, true);
+    return () => {
+      document.removeEventListener("click", handler);
+    };
+  }, []);
+
+  // определение каласса td
   const getClassNameTr = () => {
     const changedData = tabPar.changedData[props.itemKey.key];
     if (!changedData) return null;
@@ -25,8 +68,9 @@ function TableTd(props) {
   const getTextAreaOn = () => {
     if (
       //! проверяем роль
-      appData.metodRole[appData.myProfile?.role]?.some((el) => el === 8) &&
-      props.itemKey.key === "notes"
+      (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 8) &&
+        props.itemKey.key === "notes") ||
+      props.itemKey.key === "groups"
     ) {
       return onTextArea;
     } else if (
@@ -36,13 +80,12 @@ function TableTd(props) {
     }
   };
 
-  const onChangeTextareaTd = (e, type) => {
+  const onChangeTextareaTd = (e) => {
     const query = e.target.value;
-    if (type === "text") {
-      console.log(query);
-      setTextareaTd(query);
+    if (props.itemKey.key === "notes" || props.itemKey.key === "groups") {
+      // setTextareaTd(query);
+      dispatch(setTextAreaValue({ value: query }));
     } else {
-      console.log(Number(query));
       if (query === "") {
         setTextareaTd(query);
       } else if (query === "0") {
@@ -55,10 +98,32 @@ function TableTd(props) {
 
   //! при двойном клике на td открываем textarea
   const funDubleClick = () => {
+    if (props.tabDat.ssHeader === "headerSchedule" && !onTextArea) {
+      // dispatch(setTextAreaValue({ value: props.item[props.itemKey.key] }));
+      // dispatch(setOriginalValue({ value: props.item[props.itemKey.key] }));
+      // dispatch(onUpdateTable({ fun: props.tabDat.funUpdateTabDat }));
+      dispatch(
+        addAllState({
+          taValue: props.item[props.itemKey.key],
+          key: props.itemKey.key,
+          itemId: props.item?.id,
+        })
+      );
+    } else {
+      // dispatch(setTextAreaValue({ value: "" }));
+      // dispatch(setOriginalValue({ value: "" }));
+      dispatch(
+        addAllState({
+          taValue: "",
+          key: "",
+          itemId: "",
+        })
+      );
+    }
     setOnTextArea(!onTextArea);
   };
 
-  //! при клтике отмена техтаре
+  //! при клтике отмена textarea
   const crossClick = (e) => {
     setTextareaTd(props.item[props.itemKey.key]);
     setOnTextArea(false);
@@ -75,16 +140,17 @@ function TableTd(props) {
   //! сохраниени примечаний
   const onClicNotic = () => {
     const data = {
-      notes: textareaTd.trim() || "",
+      notes: textareaStor.taValue.trim() || "",
     };
-    console.log("data", data);
-    apiNotecAddMaterials(props.item?.id, data).then((req) => {
-      console.log(req);
-      if (req.status === 200) {
-        setOnTextArea(false);
-        props.tabDat.funUpdateTabDat();
-      }
-    });
+
+    if (props.itemKey.key === "notes") {
+      apiNotecAddMaterials(props.item?.id, data).then((req) => {
+        if (req.status === 200) {
+          setOnTextArea(false);
+          props.tabDat.funUpdateTabDat();
+        }
+      });
+    }
   };
 
   //! при клике применить изменения textArea
@@ -118,7 +184,6 @@ function TableTd(props) {
         ...appData.bufferAction,
       ]);
       let cd = { ...tabPar.changedData };
-      console.log("props.itemKey.key", cd);
       cd[props.itemKey.key] = [...cd[props.itemKey.key], props.item.id];
       tabPar.setChangedData(cd);
       setOnTextArea(false);
@@ -162,9 +227,9 @@ function TableTd(props) {
       }
     }
   };
-  const ClickName = () => {
-    tabPar.setContextMenuShow(true);
-  };
+  // const ClickName = () => {
+  //   tabPar.setContextMenuShow(true);
+  // };
   //! функция определения класса td для открытия длинного текста в попап со скролом
   const getClassNameTdInner = () => {
     let text = styles.tdInner;
@@ -177,10 +242,27 @@ function TableTd(props) {
     return text;
   };
 
+  //! функция раскрытие попап
+  const onPopupTextArea = () => {
+    dispatch(onTextareaShow());
+  };
+
+  //! функция которая возвращает значение текстареа
+  const getValue = () => {
+    if (
+      props.tabDat.ssHeader === "headerSchedule" &&
+      (props.itemKey.key === "notes" || props.itemKey.key === "groups")
+    ) {
+      return textareaStor.taValue;
+    } else {
+      return textareaTd;
+    }
+  };
+
   return (
     <td
       onMouseEnter={() => setShowFullText(true)}
-      onMouseLeave={() => setShowFullText(false)}
+      onMouseLeave={!onTextArea ? () => setShowFullText(false) : null}
       name={props.itemKey.key}
       key={props.item.id + "_" + props.itemKey.key + "_" + props.ind}
       className={getClassNameTr()}
@@ -214,13 +296,17 @@ function TableTd(props) {
         }
       >
         {getTextAreaOn() ? (
-          <div>
-            <TextArea
-              defaultValue={""}
-              value={textareaTd}
-              onChange={(e) => onChangeTextareaTd(e, "text")}
-            />
+          <div ref={tdTextAreaRef} className={styles.textareaContainer}>
+            <div className={styles.textareaStyle}>
+              <TextArea
+                // defaultValue={""}
+                value={getValue()}
+                onChange={onChangeTextareaTd}
+              />
+            </div>
             <div className={styles.svg_textarea}>
+              <span onClick={onPopupTextArea}>Раскрыть</span>
+
               {((textareaTd !== "" && Number(textareaTd) <= 2000) ||
                 props.tabDat.ssHeader === "headerSchedule") && (
                 <SvgChackmark

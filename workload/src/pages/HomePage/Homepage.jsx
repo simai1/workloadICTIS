@@ -45,9 +45,13 @@ import SplitByHoursPopup from "../../components/SplitByHoursPopup/SplitByHoursPo
 import TableSchedule from "../../components/TableSchedule/TableSchedule";
 import MyWorkload from "../../components/MyWorkload/MyWorkload";
 import ListSchedule from "../../ui/ListSchedule/ListSchedule";
+import PopupTextArea from "../../components/PopupTextArea/PopupTextArea";
+import { useSelector } from "react-redux";
 function HomePage() {
   const { appData, tabPar, visibleDataPar, basicTabData } =
     React.useContext(DataContext);
+
+  const textareaStor = useSelector((state) => state.textAreaSlice);
   //! заголовки таблиц
   const workloadTableHeaders = headers; // заголовок таблицы на главной странице
   const educatorTableHeaders = headersEducator; // заголовок таблтиц преподавателей
@@ -226,14 +230,14 @@ function HomePage() {
     if (
       appData.selectedComponent === "History" ||
       appData.selectedComponent === "Teachers" ||
-      appData.selectedComponent === "MyWorkload" 
+      appData.selectedComponent === "MyWorkload"
     ) {
       return false;
     }
     if (
       appData.selectedComponent !== "History" ||
       appData.selectedComponent !== "Teachers" ||
-      appData.selectedComponent !== "MyWorkload" 
+      appData.selectedComponent !== "MyWorkload"
     ) {
       basicTabData.filtredData.every((el) =>
         el.isBlocked === true ? (blocked = true) : (blocked = false)
@@ -926,6 +930,7 @@ function HomePage() {
 
       {appData.godPopUp && <PopUpGoodMessage />}
       {tabPar.popupShareShow && <SplitByHoursPopup />}
+      {textareaStor.textarea && <PopupTextArea data={textareaStor} />}
     </Layout>
   );
 }
