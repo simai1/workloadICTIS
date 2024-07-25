@@ -99,10 +99,11 @@ function TableTh(props) {
               style={
                 sortImg !== 1
                   ? {
-                      transform: "rotate(-180deg)",
                       transition: "all 0.2s ease",
+                      transform: "rotate(-180deg)",
                     }
-                  : { transition: "all 0.2s ease" }
+                  : {   transition: "all 0.2s ease",
+                         }
               }
             ></img>
           )}

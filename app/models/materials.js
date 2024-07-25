@@ -103,6 +103,7 @@ export default class Materials extends Model {
                 notes: {
                     type: DataTypes.STRING,
                     allowNull: true,
+                    defaultValue: '',
                 },
             },
             {

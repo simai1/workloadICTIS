@@ -225,13 +225,15 @@ function HomePage() {
     let blocked = false;
     if (
       appData.selectedComponent === "History" ||
-      appData.selectedComponent === "Teachers"
+      appData.selectedComponent === "Teachers" ||
+      appData.selectedComponent === "MyWorkload" 
     ) {
       return false;
     }
     if (
       appData.selectedComponent !== "History" ||
-      appData.selectedComponent !== "Teachers"
+      appData.selectedComponent !== "Teachers" ||
+      appData.selectedComponent !== "MyWorkload" 
     ) {
       basicTabData.filtredData.every((el) =>
         el.isBlocked === true ? (blocked = true) : (blocked = false)
@@ -660,6 +662,7 @@ function HomePage() {
                   }
                   onClick={() => {
                     handleComponentChange("ScheduleMaterials");
+                    setEducatorIdforLk("");
                     // handleButtonClick();
                     // basicTabData.setselectISOid(true);
                   }}

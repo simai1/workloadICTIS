@@ -21,6 +21,7 @@ router
                 role.UNIT_ADMIN,
                 role.DEPARTMENT_HEAD,
                 role.DIRECTORATE,
+                role.LECTURER,
                 role.DEPUTY_DIRECTORATE,
                 role.DEPUTY_DEPARTMENT_HEAD,
             ])

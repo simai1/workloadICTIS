@@ -62,9 +62,10 @@ function Table(props) {
     // el.stopProgretions();
     const a = el.target.nodeName;
     if (
+      (
       a === "TD" ||
       a === "INPUT" ||
-      el.target.getAttribute("name") === "educator"
+      el.target.getAttribute("name") === "educator") 
     ) {
       var len = tabPar.selectedTr.length;
       tabPar.setSelectedTr((prev) => {

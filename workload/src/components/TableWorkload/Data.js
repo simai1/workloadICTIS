@@ -60,7 +60,7 @@ export const tableHeadersLks = [
   { key: "audienceHours", label: "Аудиторные часы" },
   { key: "hoursFirstPeriod", label: "1 (осень)" },
   { key: "hoursSecondPeriod", label: "2 (весна)" },
-  { key: "hoursWithoutPeriod", label: "Доп. нагрузка" },
+  // { key: "hoursWithoutPeriod", label: "Доп. нагрузка" },
 ];
 
 // ! заголовки

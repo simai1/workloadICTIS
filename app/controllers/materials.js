@@ -86,12 +86,16 @@ export default {
         let { departments } = req.query;
         let materials;
         if (!departments) {
-            materials = await Materials.findAll({ order: orderRule });
+            materials = await Materials.findAll({
+                order: orderRule,
+                include: [{ model: Educator }],
+            });
         } else {
             departments = departments.split(',').map(d => parseInt(d));
             materials = await Materials.findAll({
                 where: { department: departments },
                 attributes: { exclude: ['fields'] },
+                include: [{ model: Educator }],
                 order: orderRule,
             });
         }
@@ -100,9 +104,9 @@ export default {
     },
 
     async setNote(req, res) {
-        const { notes } = req.body;
+        let { notes } = req.body;
         const { materialId } = req.params;
-        if (!notes) throw new AppErrorMissing('notes');
+        if (!notes) notes = '';
         if (!materialId) throw new AppErrorMissing('materialId');
         await Materials.update({ notes }, { where: { id: materialId } });
         res.json({ status: 'OK' });

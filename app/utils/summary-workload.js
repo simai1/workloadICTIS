@@ -21,10 +21,10 @@ async function setHours(newWorkload) {
     // Проверяем предмет на общеинститутский ли он и период и устанавливаем часы для кафедральных или институтских дисциплин
     if (!newWorkload.isOid && newWorkload.period === 1) hours.kafedralAutumnWorkload += parseFloat(newWorkload.hours);
     if (!newWorkload.isOid && newWorkload.period === 2) hours.kafedralSpringWorkload += parseFloat(newWorkload.hours);
-    if (!newWorkload.isOid && !newWorkload.period) hours.kafedralAdditionalWorkload += parseFloat(newWorkload.hours);
+    if (!newWorkload.isOid && newWorkload.period === 0) hours.kafedralAdditionalWorkload += parseFloat(newWorkload.hours);
     if (newWorkload.isOid && newWorkload.period === 1) hours.instituteAutumnWorkload += parseFloat(newWorkload.hours);
     if (newWorkload.isOid && newWorkload.period === 2) hours.instituteSpringWorkload += parseFloat(newWorkload.hours);
-    if (newWorkload.isOid && !newWorkload.period) hours.instituteManagementWorkload += parseFloat(newWorkload.hours);
+    if (newWorkload.isOid && newWorkload.period === 0) hours.instituteManagementWorkload += parseFloat(newWorkload.hours);
 
     hours.totalKafedralHours +=
         hours.kafedralAutumnWorkload + hours.kafedralSpringWorkload + hours.kafedralAdditionalWorkload;
@@ -68,13 +68,13 @@ async function deleteHours(newWorkload) {
         hours.kafedralAutumnWorkload += parseFloat(previousWorkload.hours);
     if (!newWorkload.isOid && newWorkload.period === 2)
         hours.kafedralSpringWorkload += parseFloat(previousWorkload.hours);
-    if (!newWorkload.isOid && !newWorkload.period)
+    if (!newWorkload.isOid && newWorkload.period === 0)
         hours.kafedralAdditionalWorkload += parseFloat(previousWorkload.hours);
     if (newWorkload.isOid && newWorkload.period === 1)
         hours.instituteAutumnWorkload += parseFloat(previousWorkload.hours);
     if (newWorkload.isOid && newWorkload.period === 2)
         hours.instituteSpringWorkload += parseFloat(previousWorkload.hours);
-    if (newWorkload.isOid && !newWorkload.period)
+    if (newWorkload.isOid && newWorkload.period === 0)
         hours.instituteManagementWorkload += parseFloat(previousWorkload.hours);
 
     hours.totalKafedralHours +=
@@ -112,10 +112,10 @@ async function addHoursForEducator(newWorkload) {
         // Проверяем предмет на общеинститутский ли он и период и устанавливаем часы для кафедральных или институтских дисциплин
         if (!newWorkload.isOid && newWorkload.period === 1) hours.kafedralAutumnWorkload += newWorkload.hours;
         if (!newWorkload.isOid && newWorkload.period === 2) hours.kafedralSpringWorkload += newWorkload.hours;
-        if (!newWorkload.isOid && !newWorkload.period) hours.kafedralAdditionalWorkload += newWorkload.hours;
+        if (!newWorkload.isOid && newWorkload.period === 0) hours.kafedralAdditionalWorkload += newWorkload.hours;
         if (newWorkload.isOid && newWorkload.period === 1) hours.instituteAutumnWorkload += newWorkload.hours;
         if (newWorkload.isOid && newWorkload.period === 2) hours.instituteSpringWorkload += newWorkload.hours;
-        if (newWorkload.isOid && !newWorkload.period) hours.instituteManagementWorkload += newWorkload.hours;
+        if (newWorkload.isOid && newWorkload.period === 0) hours.instituteManagementWorkload += newWorkload.hours;
     
         hours.totalKafedralHours = hours.kafedralAutumnWorkload + hours.kafedralSpringWorkload + hours.kafedralAdditionalWorkload;
         hours.totalOidHours = hours.instituteAutumnWorkload + hours.instituteSpringWorkload + hours.instituteManagementWorkload;
