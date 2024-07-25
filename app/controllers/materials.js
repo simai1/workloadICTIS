@@ -86,12 +86,16 @@ export default {
         let { departments } = req.query;
         let materials;
         if (!departments) {
-            materials = await Materials.findAll({ order: orderRule });
+            materials = await Materials.findAll({
+                order: orderRule,
+                include: [{ model: Educator }],
+            });
         } else {
             departments = departments.split(',').map(d => parseInt(d));
             materials = await Materials.findAll({
                 where: { department: departments },
                 attributes: { exclude: ['fields'] },
+                include: [{ model: Educator }],
                 order: orderRule,
             });
         }
