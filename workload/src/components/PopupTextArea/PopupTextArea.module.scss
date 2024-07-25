@@ -1,0 +1,49 @@
+@import "./../../style/colors.scss";
+@import "./../../style/mixin.scss";
+
+.PopupTextArea {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 200;
+  background-color: #8b8b8b49;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .PopupTextAreaBox {
+    position: relative;
+    width: 40%;
+    height: 55%;
+    background-color: #fff;
+    @include boxShadow();
+    padding: 16px;
+  }
+  .exit {
+    display: flex;
+    justify-content: flex-end;
+    cursor: pointer;
+  }
+  .TextAreaComponent {
+    textarea {
+      width: 100%;
+      height: 400px;
+    }
+  }
+  .btnBox {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 15px;
+
+    button {
+      @include button(#fff, #000, 8px, 16px);
+
+      margin: 0 12px 0 12px;
+    }
+    .btn3 {
+      @include button(var(--blue-color), #fff, 8px, 16px);
+      border: none;
+    }
+  }
+}
