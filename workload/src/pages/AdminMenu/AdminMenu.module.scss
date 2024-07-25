@@ -3,4 +3,27 @@
 
 .AdminMenu {
   padding: 32px 64px;
+  .buttonBlock{
+    height: 100px;
+    position: fixed;
+    background-color: #efedf3;
+    margin-bottom: 110px;
+    padding: 0 64px;
+    padding-top: 30px;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+  width: 100% ;
+    button{
+      @include button(var(--blue-color), #fff, 10px, 35px);
+      height: 45px;
+      border: none;
+      font-size: 18px;
+    }
+  }
+  .block2{
+    margin-top: 100px;
+  }
 }

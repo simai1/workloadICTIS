@@ -8,6 +8,14 @@
     overflow: auto;
     @include scrollStyle(8px, 8px);
   }
+  tbody{
+    tr{
+      border-top: 2px solid var(--color--blueBg);
+      &:hover{
+        background-color: #759ddd1e;
+      }
+    }
+  }
   table {
     width: 100%;
     border-collapse: collapse;
