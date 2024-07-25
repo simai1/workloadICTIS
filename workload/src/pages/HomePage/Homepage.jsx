@@ -629,6 +629,22 @@ function HomePage() {
               )}
 
               {appData.metodRole[appData.myProfile?.role]?.some(
+                (el) => el === 24
+              ) && (
+                <Button
+                  text="Моя нагрузка"
+                  onClick={() => {
+                    setEducatorIdforLk(appData.myProfile.educator.id);
+                    appData.setSelectedComponent("Teachers");
+                  }}
+                  Bg={educatorIdforLk.length !== 0 ? "#0040E5" : "#efedf3"}
+                  textColot={
+                    educatorIdforLk.length === 0 ? "#000000" : "#efedf3"
+                  }
+                />
+              )}
+
+              {appData.metodRole[appData.myProfile?.role]?.some(
                 (el) => el === 54
               ) && (
                 <Button
@@ -654,21 +670,6 @@ function HomePage() {
                 <Link to="../Admin">
                   <Button text="Админ панель" />
                 </Link>
-              )}
-              {appData.metodRole[appData.myProfile?.role]?.some(
-                (el) => el === 24
-              ) && (
-                <Button
-                  text="Моя нагрузка"
-                  onClick={() => {
-                    setEducatorIdforLk(appData.myProfile.educator.id);
-                    appData.setSelectedComponent("Teachers");
-                  }}
-                  Bg={educatorIdforLk.length !== 0 ? "#0040E5" : "#efedf3"}
-                  textColot={
-                    educatorIdforLk.length === 0 ? "#000000" : "#efedf3"
-                  }
-                />
               )}
             </div>
             <div className={styles.header_left_component}>
