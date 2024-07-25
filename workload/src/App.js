@@ -16,7 +16,7 @@ import {
   getAllAttaches,
   getAllColors,
   getOffers,
-  apiGetHistory,
+  // apiGetHistory,
   CommentsLecktorer,
   getOffersLecturer,
   getAllocatedAndUnallocatedWrokloadHours,
@@ -89,13 +89,13 @@ function App() {
   const [godPopUp, setgodPopUp] = useState(false); //popUp good visible
   const [createEdicatorPopUp, setcreateEdicatorPopUp] = useState(false); //popUp error visible
   const [selectedComponent, setSelectedComponent] = useState("Disciplines");
-  const [loaderAction, setLoaderAction] = useState(false);
+  const [loaderAction, setLoaderAction] = useState(0);
   const [universalPopupTitle, setUniversalPopupTitle] = useState(""); // если он не пустой, то открывается универсальный попап с данным title
   const [hoursWorkloadSumma, setHoursWorkloadSumma] = useState([]); //! сумма часов в профиле
   const [sortParamByColumn, setSortParamByColumn] = useState(""); //! сортировка в колнке по возрастанию убыванию или без если ""
   const [popupErrorText, setPopupErrorText] = useState(""); //! если не пустой то в поап ерор будет текст который в состоянии
   const [popupGoodText, setPopupGoodText] = useState(""); //! если не пустой то в поап ерор будет текст который в состоянии
-  const [dataUpdated, setDataUpdated] = useState(false);//!индикатор что данные обновлены
+  const [dataUpdated, setDataUpdated] = useState(false); //!индикатор что данные обновлены
 
   const appData = {
     popupGoodText,
@@ -140,8 +140,6 @@ function App() {
     setDataUpdated,
     dataUpdated,
   };
-
-
 
   //! параметры таблицы
   const [tableHeaders, setTableHeaders] = useState(headers);
@@ -312,7 +310,6 @@ function App() {
     }
   }
 
-  
   //! функция обновления предложений преподавателей
   function funUpdateOffers() {
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 17.1)) {
@@ -375,7 +372,7 @@ function App() {
     const fixData = UpdateWorkloadForBoofer(
       funFixEducator(dataBd, bufferAction)
     );
-   
+
     //! функция прокида буффера для разделения соединения и удаления нагрузок
     const fdb = fixDataBuff(fixData, bufferAction);
     // зменяем массив преподавателя на его имя
@@ -411,16 +408,21 @@ function App() {
   }
 
   //! функция обновления таблицы
-  function funUpdateTable(param) {
-    setLoaderAction(true);
+  function funUpdateTable(param, par = null) {
+    setLoaderAction(2);
+    let sp = sortParamByColumn;
+    if (par || par === "") {
+      sp = par;
+    }
+    console.log(sp);
     //param = tableDepartment[0]?.id
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
-      const par = sortParamByColumn !== "" ? `?${sortParamByColumn}` : "";
+      const par = sp !== "" ? `?${sp}` : "";
       Workload(par).then((data) => {
         if (data) {
           funUpdTab(data);
         }
-        setLoaderAction(false);
+        setLoaderAction(0);
       });
     }
     if (metodRole[myProfile?.role]?.some((el) => el === 14)) {
@@ -429,17 +431,17 @@ function App() {
         url = "?isOid=true";
       }
       if (param === 99) {
-        if (sortParamByColumn !== "") {
-          url = `?${sortParamByColumn}`;
+        if (sp !== "") {
+          url = `?${sp}`;
         } else {
           url = "";
         }
       } else if (param !== 99 && param !== 0) {
-        url = `?department=${param}&${sortParamByColumn}`;
+        url = `?department=${param}&${sp}`;
       }
       Workload(url).then((data) => {
         funUpdTab(data);
-        setLoaderAction(false);
+        setLoaderAction(0);
       });
     }
 
@@ -524,7 +526,6 @@ function App() {
             }
             obj.push(o);
           }
-         
         }
       });
       return data.map((item) => {
@@ -642,19 +643,18 @@ function App() {
 
   //! функция сохранения данных
   function funSaveAllData() {
-    appData.setLoaderAction(true);
+    setLoaderAction(1);
     bufferRequestToApi(bufferAction)
       .then((action) => {
-       
         if (action) {
           setBufferAction([0]);
           updateAlldata();
         }
-        appData.setLoaderAction(false);
+        setLoaderAction(0);
       })
       .catch((error) => {
         console.error("Error in bufferRequestToApi:", error);
-        appData.setLoaderAction(false);
+        setLoaderAction(0);
       });
 
     setSelectedTr([]);

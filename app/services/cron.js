@@ -5,7 +5,7 @@ import SummaryWorkload from "../models/summary-workload.js";
 import checkHours from "../utils/notification.js";
 
 export default {
-  checkHours: new CronJob('0 4 * * *', async () => {
+  checkHours: new CronJob('0 3 * * *', async () => {
     console.log('[CRON] Start checkHours');
     const educators = await Educator.findAll({
       include: { model: Workload },
@@ -32,10 +32,10 @@ export default {
           for (const workload of existWorkloads) {
               if (!workload.isOid && workload.period === 1) hours.kafedralAutumnWorkload += workload.hours;
               if (!workload.isOid && workload.period === 2) hours.kafedralSpringWorkload += workload.hours;
-              if (!workload.isOid && !workload.period) hours.kafedralAdditionalWorkload += workload.hours;
+              if (!workload.isOid && workload.period === 0) hours.kafedralAdditionalWorkload += workload.hours;
               if (workload.isOid && workload.period === 1) hours.instituteAutumnWorkload += workload.hours;
               if (workload.isOid && workload.period === 2) hours.instituteSpringWorkload += workload.hours;
-              if (workload.isOid && !workload.period) hours.instituteManagementWorkload += workload.hours;
+              if (workload.isOid && workload.period === 0) hours.instituteManagementWorkload += workload.hours;
 
               hours.totalKafedralHours =
                   hours.kafedralAutumnWorkload + hours.kafedralSpringWorkload + hours.kafedralAdditionalWorkload;

@@ -138,7 +138,6 @@ export default {
         let flag;
         for (const workload of workloads) {
             flag = true;
-            console.log("wor", workload.dataValues)
             for (const workloadDto of workloadsDto) {
                 if (
                     departments[workloadDto.department] === workload.department &&
@@ -179,7 +178,7 @@ export default {
         if (!position) position = educator.position;
         if (!rate && rate !== 0) rate = educator.rate;
         if (!email) email = educator.email;
-        if (!department) department = educator.department;
+        if (!department && department !== 0) department = educator.department;
         if (!typeOfEmployment) typeOfEmployment = educator.typeOfEmployment;
         console.log(rate);
         await educator.update({
