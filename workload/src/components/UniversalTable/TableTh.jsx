@@ -78,6 +78,13 @@ function TableTh(props) {
         >
           {props.item.label}
         </div>
+        { ((props.item.key === "notes" || props.item.key === "groups") && appData.selectedComponent === "ScheduleMaterials") &&
+              <img
+                src="./img/Edit.svg"
+                className={styles.topRightCorner}
+                title="Данная колонка редактируется"
+              />       
+           }
         <div className={styles.th_inner_img}>
           {props.tabDat.isSorted &&
             props.item.key !== "id" &&
