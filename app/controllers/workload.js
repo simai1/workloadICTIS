@@ -509,9 +509,11 @@ export default {
     },
 
     async merge(req, res) {
-        const { ids } = req.body;
+        const { ids, curriculum, semester, } = req.body;
         const { type } = req.query;
         if (!ids) throw new AppErrorMissing('ids');
+        if (!curriculum) throw new AppErrorMissing('curriculum');
+        if (!semester) throw new AppErrorMissing('semester');
         const workloads = await Workload.findAll({ where: { id: ids } });
         const audienceHours = workloads[0].audienceHours;
         const numberOfStudents = workloads[0].numberOfStudents;
@@ -529,9 +531,9 @@ export default {
                 workload: first.workload,
                 groups: first.groups,
                 block: first.block,
-                semester: first.semester,
+                semester,
                 period: first.period,
-                curriculum: first.curriculum,
+                curriculum,
                 curriculumUnit: first.curriculumUnit,
                 formOfEducation: first.formOfEducation,
                 levelOfTraining: first.levelOfTraining,
@@ -556,9 +558,9 @@ export default {
                 workload: first.workload,
                 groups: first.groups,
                 block: first.block,
-                semester: first.semester,
+                semester,
                 period: first.period,
-                curriculum: first.curriculum,
+                curriculum,
                 curriculumUnit: first.curriculumUnit,
                 formOfEducation: first.formOfEducation,
                 levelOfTraining: first.levelOfTraining,
@@ -588,9 +590,9 @@ export default {
                 workload: first.workload,
                 groups: first.groups,
                 block: first.block,
-                semester: first.semester,
+                semester,
                 period: first.period,
-                curriculum: first.curriculum,
+                curriculum,
                 curriculumUnit: first.curriculumUnit,
                 formOfEducation: first.formOfEducation,
                 levelOfTraining: first.levelOfTraining,
@@ -1263,7 +1265,7 @@ export default {
                 name: {
                     [Sequelize.Op.like]: '%Вакансия%',
                 },
-                department: department,
+                department,
             },
         });
         let hoursWorkloadWithoutEducators = 0;
@@ -1283,7 +1285,7 @@ export default {
         const workloadWithoutEducators = await Workload.findAll({
             where: {
                 educatorId: null,
-                department: department,
+                department,
             },
         });
         for (const wrkl of workloadWithoutEducators) {
@@ -1291,7 +1293,7 @@ export default {
         }
         const workloadAll = await Workload.findAll({
             where: {
-                department: department,
+                department,
             },
         });
         for (const wrkl of workloadAll) {
@@ -1301,8 +1303,8 @@ export default {
         hoursWorkloadWithoutEducators = hoursWorkloadWithoutEducators.toFixed(2);
         hoursAllWorkload = hoursAllWorkload.toFixed(2);
         res.json({
-            hoursWorkloadWithoutEducators: hoursWorkloadWithoutEducators,
-            hoursAllWorkload: hoursAllWorkload,
+            hoursWorkloadWithoutEducators,
+            hoursAllWorkload,
         });
     },
 };
