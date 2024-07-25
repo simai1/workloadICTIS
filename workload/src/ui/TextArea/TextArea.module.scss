@@ -1,3 +1,6 @@
+@import "./../../style/colors.scss";
+@import "./../../style/mixin.scss";
+
 .TextArea {
   textarea {
     display: block;
@@ -11,5 +14,6 @@
     border-radius: 8px;
     resize: none;
     border: 1px solid #bdbdbd;
+    @include scrollStyle(8px, 4px);
   }
 }

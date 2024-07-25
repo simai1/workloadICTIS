@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styles from "./Profile.module.scss";
 import svgExit from "./../../img/exit.svg";
 import DataContext from "../../context";
-import { getAllocatedAndUnallocatedWrokloadHours } from "../../api/services/ApiRequest";
+// import { getAllocatedAndUnallocatedWrokloadHours } from "../../api/services/ApiRequest";
 function Profile(props) {
   const { appData } = React.useContext(DataContext);
   const roles = {
@@ -27,7 +27,6 @@ function Profile(props) {
 
   //! закрытие модального окна при нажати вне него
   useEffect(() => {
-    
     const handler = (event) => {
       if (
         props.refProfile.current &&
@@ -40,15 +39,11 @@ function Profile(props) {
     return () => {
       document.removeEventListener("click", handler);
     };
-
-   
   }, []);
 
   const clickModalWind = () => {
     props.setOpenModalWind(!props.onenModalWind);
   };
-
-
 
   return (
     <div ref={props.refProfile} className={styles.Profile}>
@@ -62,12 +57,21 @@ function Profile(props) {
             {roles[appData.myProfile?.role]} {getInstitut()}
           </span>
           <span className={styles.inner}>{appData.myProfile?.login}</span>
-          {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 52) &&
+          {appData.metodRole[appData.myProfile?.role]?.some(
+            (el) => el === 52
+          ) && (
             <div className={styles.profileData}>
-              <p>Общая сумма нагрузки : {appData.hoursWorkloadSumma?.hoursAllWorkload} часов </p>
-              <p>Осталось распределить : {appData.hoursWorkloadSumma?.hoursWorkloadWithoutEducators} часов</p>
+              <p>
+                Общая сумма нагрузки :{" "}
+                {appData.hoursWorkloadSumma?.hoursAllWorkload} часов{" "}
+              </p>
+              <p>
+                Осталось распределить :{" "}
+                {appData.hoursWorkloadSumma?.hoursWorkloadWithoutEducators}{" "}
+                часов
+              </p>
             </div>
-          }
+          )}
           <div className={styles.exid}>
             <a href="https://workload.sfedu.ru/auth/logout">
               Выйти <img src={svgExit} alt="->"></img>
