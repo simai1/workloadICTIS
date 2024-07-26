@@ -673,7 +673,7 @@ function HomePage() {
                     // handleButtonClick();
                     // basicTabData.setselectISOid(true);
                   }}
-                  text="Материалы к расписанию"
+                  text="Расписание"
                 />
               )}
               {appData.myProfile?.role === "GOD" && (
