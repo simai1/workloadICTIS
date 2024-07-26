@@ -25,6 +25,7 @@ export default class MaterialsModelDto {
   isSplit;
   isMerged;
   educator;
+  createdAt;
   notes;
 
   constructor(model) {
@@ -50,6 +51,7 @@ export default class MaterialsModelDto {
     this.isSplit = model.isSplit;
     this.isMerged = model.isMerged;
     this.educator = model.Educator ? new EducatorDto(model.Educator) : null;
+    this.createdAt = model.createdAt;
     this.notes = model.notes;
   }
 }
