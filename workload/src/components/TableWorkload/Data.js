@@ -85,4 +85,6 @@ export const scheduleHead = [
   { key: "audienceHours", label: "Аудиторные часы" },
   { key: "ratingControlHours", label: "Часы рейтинг-контроль" },
   { key: "educator", label: "Преподаватель" },
+  { key: "createdAt", label: "Дата добавления" },
+
 ];
