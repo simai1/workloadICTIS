@@ -11,6 +11,8 @@ import Loader from "../../ui/Loader/Loader";
 function Table(props) {
   const { tabPar, visibleDataPar, basicTabData, appData } =
     useContext(DataContext);
+  let visibleData =
+    props.tabDat.filtredData.length > 10 ? 10 : props.tabDat.filtredData.length;
 
   const headerStore = useSelector(
     (state) => state.editInputChecked.editInputCheckeds[props.tabDat.ssHeader]
@@ -32,7 +34,7 @@ function Table(props) {
     return (
       (props.tabDat.filtredData.length -
         visibleDataPar.startData -
-        visibleDataPar.visibleData) *
+        visibleData) *
       visibleDataPar.heightTd
     );
   };
@@ -198,7 +200,7 @@ function Table(props) {
           {props.tabDat.filtredData
             .slice(
               visibleDataPar.startData,
-              visibleDataPar.startData + visibleDataPar.visibleData
+              visibleDataPar.startData + visibleData
             )
             .map((item, number) => (
               <tr

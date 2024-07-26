@@ -79,7 +79,11 @@ function TableSchedule(props) {
     <div className={styles.TableSchedule}>
       <UniversalTable
         searchTerm={props.searchTerm}
-        contextMenu={"Schedule"}
+        contextMenu={
+          appData.metodRole[appData.myProfile?.role]?.some((el) => el === 54.1)
+            ? "Schedule"
+            : ""
+        }
         tabDat={tabDat}
       />
     </div>
