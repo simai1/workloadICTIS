@@ -286,7 +286,7 @@ $heightCell: 150px;
     td[name="audienceHours"] {
       @include customTd(120px);
     }
-    td[name="workload"] {
+    td[name="notes"] {
       &::after {
         content: "";
         position: absolute;
@@ -299,7 +299,7 @@ $heightCell: 150px;
         top: 0;
       }
     }
-    th[name="workload"] {
+    th[name="notes"] {
       &::after {
         content: "";
         position: absolute;
@@ -436,6 +436,12 @@ $heightCell: 150px;
     td:nth-child(4) {
       @include stickyTd(160px, 320px);
     }
+    td:nth-child(5) {
+      @include stickyTd(160px, 480px);
+    }
+    td:nth-child(6) {
+      @include stickyTd(160px, 640px);
+    }
 
     th:nth-child(1) {
       @include stickyTd(60px, 0);
@@ -456,6 +462,16 @@ $heightCell: 150px;
       @include stickyTd(160px, 320px);
       background-color: var(--gray-color);
       z-index: 15;
+    }
+    th:nth-child(5) {
+      background-color: var(--gray-color);
+      z-index: 15;
+      @include stickyTd(160px, 480px);
+    }
+    th:nth-child(6) {
+      background-color: var(--gray-color);
+      z-index: 15;
+      @include stickyTd(160px, 640px);
     }
   }
   .selectedTr {

@@ -279,7 +279,7 @@ function TableTd(props) {
       className={getClassNameTr()}
       style={
         showFullText && props.item[props.itemKey.key]?.length > lenSlice
-          ? props.itemKey.key === "discipline" || props.itemKey.key === "workload"
+          ? props.itemKey.key === "discipline" || props.itemKey.key === "workload" || props.itemKey.key === "notes" || props.itemKey.key === "groups"
             ? { position: "sticky" }
             : { position: "relative" }
           : null
