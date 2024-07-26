@@ -14,7 +14,6 @@ router
 router
     .route('/getUsableDepartments')
     .get(asyncRoute(materialsController.getUsableDepartments));
-router.route('/:materialId/notes').patch(asyncRoute(materialsController.setNote))
-router.route('/:materialId/groups').patch(asyncRoute(materialsController.setGroups))
+router.route('/:materialId').patch(asyncRoute(materialsController.update))
 
 export default router;
