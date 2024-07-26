@@ -379,7 +379,7 @@ export const createComment = async (data) => {
 
 //! запрос на добавление предложения преподавателя к нагрузке
 export const createOffer = async (data) => {
-  console.log("Предложение ", data);
+  console.log("Создать предложение ", data);
   try {
     const response = await http.post(`${server}/offers/createOffer`, data);
     console.log("response ", response);
@@ -703,7 +703,7 @@ export const SyncTable = async () => {
   }
 };
 
-//!удаление по Id строки из материалов 
+//!удаление по Id строки из материалов
 export const DeleteMaterials = async (materialId) => {
   try {
     const response = await http.delete(`${server}/materials/${materialId}`);
@@ -714,7 +714,7 @@ export const DeleteMaterials = async (materialId) => {
   }
 };
 
-//! получение кафедр к материалам 
+//! получение кафедр к материалам
 export const GetDepartmentsMaterials = async () => {
   try {
     const response = await http.get(`${server}/materials/getUsableDepartments`);
