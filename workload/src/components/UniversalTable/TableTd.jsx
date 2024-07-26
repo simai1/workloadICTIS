@@ -296,11 +296,7 @@ function TableTd(props) {
         {getTextAreaOn() ? (
           <div ref={tdTextAreaRef} className={styles.textareaContainer}>
             <div className={styles.textareaStyle}>
-              <TextArea
-                // defaultValue={""}
-                value={getValue()}
-                onChange={onChangeTextareaTd}
-              />
+              <TextArea value={getValue()} onChange={onChangeTextareaTd} />
             </div>
             <div className={styles.svg_textarea}>
               <span onClick={onPopupTextArea}>Раскрыть</span>
