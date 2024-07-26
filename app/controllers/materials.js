@@ -7,6 +7,7 @@ import { map as mapDepartments } from '../config/departments.js';
 import { AppErrorInvalid, AppErrorMissing, AppErrorNotExist } from '../utils/errors.js';
 import MaterialsModelDto from '../dtos/materialModel-dto.js';
 import User from '../models/user.js';
+import { instituteDepartments } from "../config/institutional-affiliations.js";
 
 const orderRule = [['number', 'ASC']];
 
@@ -86,8 +87,8 @@ export default {
         let { departments } = req.query;
         const user = await User.findByPk(req.user, { include: [{ model: Educator }] });
         let materials;
-        if ([1, 4, 7, 9, 10].includes(user.role)) {
-            // METHODIST & DIRECTORATE & DEPUTY_DIRECTORATE & GOD & GIGA_ADMIN
+        if ([1, 9, 10].includes(user.role)) {
+            // METHODIST & GOD & GIGA_ADMIN
             if (!departments) {
                 materials = await Materials.findAll({
                     order: orderRule,
@@ -96,6 +97,27 @@ export default {
                 });
             } else {
                 departments = departments.split(',').map(d => parseInt(d));
+                materials = await Materials.findAll({
+                    where: { department: departments },
+                    attributes: { exclude: ['fields'] },
+                    include: [{ model: Educator }],
+                    order: orderRule,
+                });
+            }
+        } else if ([4, 7].includes(user.role)){
+            // DIRECTORATE & DEPUTY_DIRECTORATE
+            if (!departments) {
+                materials = await Materials.findAll({
+                    where: {department: instituteDepartments[user.institutionalAffiliation]},
+                    order: orderRule,
+                    attributes: { exclude: ['fields'] },
+                    include: [{ model: Educator }],
+                });
+            } else {
+                departments = departments.split(',').map(d => parseInt(d));
+                if (!departments.every(d => instituteDepartments[user.institutionalAffiliation].includes(d))) {
+                    throw new AppErrorInvalid('departments');
+                }
                 materials = await Materials.findAll({
                     where: { department: departments },
                     attributes: { exclude: ['fields'] },
