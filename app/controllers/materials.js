@@ -151,12 +151,11 @@ export default {
         res.json(materialsDto);
     },
 
-    async setNote(req, res) {
-        let { notes } = req.body;
+    async update(req, res) {
+        const { notes, groups } = req.body;
         const { materialId } = req.params;
-        if (!notes) notes = '';
         if (!materialId) throw new AppErrorMissing('materialId');
-        await Materials.update({ notes }, { where: { id: materialId } });
+        await Materials.update({ notes, groups }, { where: { id: materialId } });
         res.json({ status: 'OK' });
     },
 
