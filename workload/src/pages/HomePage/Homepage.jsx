@@ -115,6 +115,7 @@ function HomePage() {
       appData.setMyProfile(data);
     });
     GetDepartmentsMaterials().then((resp) => {
+      console.log("resp ", resp);
       setDepartmentsMaterials([{ id: 99, name: "Все" }, ...resp.data]);
     });
   }, []);
@@ -230,6 +231,7 @@ function HomePage() {
     if (
       appData.selectedComponent === "History" ||
       appData.selectedComponent === "Teachers" ||
+      appData.selectedComponent === "ScheduleMaterials" ||
       appData.selectedComponent === "MyWorkload"
     ) {
       return false;
@@ -237,6 +239,7 @@ function HomePage() {
     if (
       appData.selectedComponent !== "History" ||
       appData.selectedComponent !== "Teachers" ||
+      appData.selectedComponent === "ScheduleMaterials" ||
       appData.selectedComponent !== "MyWorkload"
     ) {
       basicTabData.filtredData.every((el) =>
@@ -720,7 +723,7 @@ function HomePage() {
             <div className={styles.header_bottom}>
               <div className={styles.header_bottom_button}>
                 {appData.metodRole[appData.myProfile?.role]?.some(
-                  (el) => el === 28
+                  (el) => el === 28 || el === 57
                 ) &&
                   (appData.selectedComponent === "Disciplines" ||
                     appData.selectedComponent === "History" ||
@@ -733,7 +736,9 @@ function HomePage() {
                         />
                       ) : (
                         <>
-                          <ListSchedule dataList={departmentsMaterials} />
+                        {
+                          appData.metodRole[appData.myProfile?.role]?.some((el) => el === 55) && <ListSchedule dataList={departmentsMaterials} />
+                        }
                           <button onClick={sync} className={styles.buttonSync}>
                             Синхронизация
                           </button>
