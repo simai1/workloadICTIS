@@ -268,13 +268,11 @@ function TableTd(props) {
       className={getClassNameTr()}
       style={
         showFullText && props.item[props.itemKey.key]?.length > lenSlice
-          ? props.itemKey.key === "discipline" ||
-            props.itemKey.key === "workload"
+          ? props.itemKey.key === "discipline" || props.itemKey.key === "workload"
             ? { position: "sticky" }
             : { position: "relative" }
           : null
       }
-      // onClick={props.itemKey.key === "educator" ? ClickName : null}
     >
       <div
         name={props.itemKey.key}
@@ -310,16 +308,17 @@ function TableTd(props) {
                   className={styles.SvgChackmark_green}
                 />
               )}
-
               <SvgCross onClick={crossClick} />
             </div>
           </div>
         ) : (
           gettdInnerText()
         )}
+       
       </div>
+     
     </td>
   );
-}
+}  
 
 export default TableTd;

@@ -38,7 +38,7 @@
 
     button {
       @include button(#fff, #000, 8px, 16px);
-
+      border: 1px solid #000;
       margin: 0 12px 0 12px;
     }
     .btn3 {
