@@ -128,8 +128,9 @@ export default {
                 });
             } else {
                 departments = departments.split(',').map(d => parseInt(d));
-                if (!departments.every(d => user.allowedDepartments.includes(d)))
+                if (!departments.every(d => user.allowedDepartments.includes(d))) {
                     throw new AppErrorInvalid('departments');
+                }
                 materials = await Materials.findAll({
                     where: { department: departments },
                     attributes: { exclude: ['fields'] },
@@ -257,5 +258,14 @@ export default {
             }
         }
         res.json(usableDepartments);
+    },
+
+    async setGroups(req, res) {
+        let { groups } = req.body;
+        const { materialId } = req.params;
+        if (!groups) groups = '';
+        if (!materialId) throw new AppErrorMissing('materialId');
+        await Materials.update({ groups }, { where: { id: materialId } });
+        res.json({ status: 'OK' });
     },
 };
