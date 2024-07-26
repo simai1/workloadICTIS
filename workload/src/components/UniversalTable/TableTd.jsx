@@ -18,19 +18,20 @@ function TableTd(props) {
   const { tabPar, basicTabData, appData } = React.useContext(DataContext);
   const [onTextArea, setOnTextArea] = useState(false);
   const textareaStor = useSelector((state) => state.textAreaSlice);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    if (textareaStor.status === 200) {
+    if(appData.popApCloseSttatus){
       setOnTextArea(false);
       props.tabDat.funUpdateTabDat();
       dispatch(resetStatus({ value: 0 }));
+      appData.setPopApCloseSttatus(false);
     }
-  }, [textareaStor.status]);
+}, [  appData.popApCloseSttatus]);
 
   const [textareaTd, setTextareaTd] = useState(
     props.item[props.itemKey.key] || ""
   );
-  const dispatch = useDispatch();
 
   // useEffect(() => {
   //   if (props.itemKey.key === "notes" || props.itemKey.key === "groups") {
@@ -70,7 +71,7 @@ function TableTd(props) {
       //! проверяем роль
       (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 8) &&
         props.itemKey.key === "notes") ||
-      props.itemKey.key === "groups"
+        props.itemKey.key === "groups"
     ) {
       return onTextArea;
     } else if (
@@ -130,20 +131,29 @@ function TableTd(props) {
   };
 
   const defineFunction = (action) => {
+    console.log("click")
     if (action === "headerSchedule") {
-      onClicNotic();
+      onClicNotic(action);
     } else {
       onClickButton();
     }
   };
 
   //! сохраниени примечаний
-  const onClicNotic = () => {
-    const data = {
-      notes: textareaStor.taValue.trim() || "",
-    };
-
-    if (props.itemKey.key === "notes") {
+  const onClicNotic = (action) => {
+    let data = {}
+    if(
+      props.itemKey.key === "notes"
+    ){
+      data = {
+        notes: textareaStor.taValue.trim() || "",
+      };
+    }else{
+      data = {
+        groups: textareaStor.taValue.trim() || "",
+      };
+    }
+      if (props.itemKey.key === "notes" || props.itemKey.key === "groups") {
       apiNotecAddMaterials(props.item?.id, data).then((req) => {
         if (req.status === 200) {
           setOnTextArea(false);
@@ -151,6 +161,7 @@ function TableTd(props) {
         }
       });
     }
+    
   };
 
   //! при клике применить изменения textArea
@@ -192,7 +203,7 @@ function TableTd(props) {
   };
 
   const [showFullText, setShowFullText] = useState(false); // при наведении на td показывает весь текст ячейки
-  const lenSlice = props.itemKey.key === "groups" ? 50 : 70;
+  const lenSlice = props.itemKey.key === "groups" || props.itemKey.key === "notes" ? 50 : 70;
   //! фуункция котороя определяет какой формат текста выводить
   const gettdInnerText = () => {
     if (showFullText) {

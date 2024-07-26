@@ -10,10 +10,12 @@ import {
   setTextAreaValue,
 } from "../../store/popup/textareaData.slice";
 import { apiNotecAddMaterials } from "../../api/services/ApiRequest";
+import DataContext from "../../context";
 
 function PopupTextArea(props) {
   const dispatch = useDispatch();
   const textareaStor = useSelector((state) => state.textAreaSlice);
+  const { appData } = React.useContext(DataContext);
 
   //! изменение textarea
   const onChange = (e) => {
@@ -44,7 +46,7 @@ function PopupTextArea(props) {
     apiNotecAddMaterials(textareaStor.itemId, data).then((req) => {
       if (req.status === 200) {
         dispatch(onTextareaShow());
-        dispatch(resetStatus({ value: 200 }));
+        appData.setPopApCloseSttatus(true);
       }
     });
   };
