@@ -509,11 +509,13 @@ export default {
     },
 
     async merge(req, res) {
-        const { ids, curriculum, semester, } = req.body;
+        const { ids, curriculum, semester, groups, block} = req.body;
         const { type } = req.query;
         if (!ids) throw new AppErrorMissing('ids');
         if (!curriculum) throw new AppErrorMissing('curriculum');
         if (!semester) throw new AppErrorMissing('semester');
+        if (!groups) throw new AppErrorMissing('groups');
+        if (!block) throw new AppErrorMissing('block');
         const workloads = await Workload.findAll({ where: { id: ids } });
         const audienceHours = workloads[0].audienceHours;
         const numberOfStudents = workloads[0].numberOfStudents;
@@ -529,8 +531,8 @@ export default {
                 department: first.department,
                 discipline: first.discipline,
                 workload: first.workload,
-                groups: first.groups,
-                block: first.block,
+                groups,
+                block,
                 semester,
                 period: first.period,
                 curriculum,
@@ -556,8 +558,8 @@ export default {
                 department: first.department,
                 discipline: first.discipline,
                 workload: first.workload,
-                groups: first.groups,
-                block: first.block,
+                groups,
+                block,
                 semester,
                 period: first.period,
                 curriculum,
@@ -588,8 +590,8 @@ export default {
                 department: first.department,
                 discipline: first.discipline,
                 workload: first.workload,
-                groups: first.groups,
-                block: first.block,
+                groups,
+                block,
                 semester,
                 period: first.period,
                 curriculum,

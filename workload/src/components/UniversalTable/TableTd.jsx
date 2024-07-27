@@ -206,7 +206,11 @@ function TableTd(props) {
   const lenSlice = props.itemKey.key === "groups" || props.itemKey.key === "notes" ? 50 : 70;
   //! фуункция котороя определяет какой формат текста выводить
   const gettdInnerText = () => {
-    if (showFullText) {
+    if(props.itemKey.key === "createdAt"){
+      const originalDate = new Date(props.item[props.itemKey.key]);
+      return originalDate.toLocaleString('ru-RU', { timeZone: 'UTC' });
+    }
+    else if (showFullText) {
       if (
         props.item[props.itemKey.key] === null ||
         props.item[props.itemKey.key] === undefined ||
