@@ -14,6 +14,7 @@ import { deleteItemBuffer } from "../Function";
 
 function OverlapWindow(props) {
   const { tabPar, appData, basicTabData } = React.useContext(DataContext);
+  console.log("props.getConfirmation", props.getConfirmation);
 
   const cancelChanges = () => {
     if (props.getConfirmation.type === 1) {

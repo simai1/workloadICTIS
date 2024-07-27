@@ -251,8 +251,19 @@ function App() {
   const [inputEditValue, setInputEditValue] = useState([]);
   const [typeSplit, setTypeSplit] = useState(""); //! тип деления для контекст меню для доп нагрузки
   const [parametrFilter, setParametrFilter] = useState("?"); //! параметр для истории
+  const [hoursPopup, setHoursPopup] = useState([]);
+  const [hoursPopupSet, setHoursPopupSet] = useState(null);
+
+  useEffect(() => {
+    console.log("hoursPopup", hoursPopup);
+    console.log("hoursPopupSet", hoursPopupSet);
+  }, [hoursPopup, hoursPopupSet]);
 
   const tabPar = {
+    hoursPopup,
+    setHoursPopup,
+    hoursPopupSet,
+    setHoursPopupSet,
     selectedTable,
     setSelectedTable,
     selectedTr,

@@ -18,7 +18,6 @@ function MyWorkload(props) {
   const ssHeader = `headerMyWorkload`;
   //! достаем данные из редакса
   const isCheckedStore = useSelector((state) => state.isCheckedSlice.isChecked);
-
   const tabDat = {
     funUpdateTabDat,
     tableHeader,
@@ -63,8 +62,8 @@ function MyWorkload(props) {
   const getContextMenu = () => {
     return (
       <ContextMenu
-        setTableDataFix={setTableDataFix}
-        tableDataFix={tableDataFix}
+        setTableDataFix={setFiltredData}
+        tableDataFix={filtredData}
         allowedMenus={[
           "Закрепить",
           "Открепить",

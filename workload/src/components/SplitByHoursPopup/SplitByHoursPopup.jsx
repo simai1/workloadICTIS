@@ -3,7 +3,7 @@ import { addСhangedData } from "./../../ui/ContextMenu/Function";
 import styles from "./SplitByHoursPopup.module.scss";
 import DataContext from "../../context";
 
-function SplitByHoursPopup() {
+function SplitByHoursPopup(props) {
   const { tabPar, basicTabData, appData } = React.useContext(DataContext);
 
   //! вводим в инпут часы и записываем в состояние
@@ -18,7 +18,7 @@ function SplitByHoursPopup() {
   //! функция для разделения строк при нажатии сохранить
   const handleSplitWorkload = (bufdat, inpValueHoursPopup) => {
     console.log("bufdat", bufdat);
-    let updatedData = [...basicTabData.workloadDataFix];
+    let updatedData = [...props.tableData];
     //! находим индекс строки которую будем делить
     const indexWorkload = updatedData.findIndex(
       (el) => el.id === bufdat.workloadId
@@ -51,7 +51,7 @@ function SplitByHoursPopup() {
       ...newValue,
       ...updatedData.slice(indexWorkload + 1),
     ];
-    basicTabData.setWorkloadDataFix(updatedData);
+    props.setTableData(updatedData);
     tabPar.setChangedData(
       addСhangedData(tabPar.changedData, "split", bufdat.newIds)
     );

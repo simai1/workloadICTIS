@@ -45,7 +45,6 @@ function InputCheckbox(props) {
     basicTabData.setWorkloadDataFix(fdfix);
     appData.setSortParamByColumn("");
   };
-
   return (
     <>
       {props.th ? (
