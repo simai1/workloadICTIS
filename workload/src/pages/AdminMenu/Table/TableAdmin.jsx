@@ -1,8 +1,8 @@
 import React from "react";
-import styles from "./Styles.module.scss";
+import styles from "./TableAdmin.module.scss";
 import { tableHeader } from "../AdminData";
 
-function Table(props) {
+function TableAdmin(props) {
   return (
     <div className={styles.Table}>
       <div className={styles.scrollTable}>
@@ -25,7 +25,7 @@ function Table(props) {
               >
                 {tableHeader.map((keys, index) => (
                   <td key={keys.key + index}>
-                    {item[keys.key]?.length === 0 ? "__" : item[keys.key]}
+                    {item[keys.key]?.length === 0 || item[keys.key] === null || item[keys.key] === undefined ? "__" : item[keys.key]}
                   </td>
                 ))}
               </tr>
@@ -37,4 +37,4 @@ function Table(props) {
   );
 }
 
-export default Table;
+export default TableAdmin;

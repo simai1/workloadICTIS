@@ -30,6 +30,7 @@ import {
   WorkloadBlocked,
   apiGetUser,
   getAllWarningMessage,
+  getSchedule,
 } from "../../api/services/ApiRequest";
 import ConfirmSaving from "../../ui/ConfirmSaving/ConfirmSaving";
 import socketConnect from "../../api/services/socket";
@@ -115,6 +116,7 @@ function HomePage() {
       appData.setMyProfile(data);
     });
     GetDepartmentsMaterials().then((resp) => {
+      console.log("resp ", resp);
       setDepartmentsMaterials([{ id: 99, name: "Все" }, ...resp.data]);
     });
   }, []);
@@ -230,6 +232,7 @@ function HomePage() {
     if (
       appData.selectedComponent === "History" ||
       appData.selectedComponent === "Teachers" ||
+      appData.selectedComponent === "ScheduleMaterials" ||
       appData.selectedComponent === "MyWorkload"
     ) {
       return false;
@@ -237,6 +240,7 @@ function HomePage() {
     if (
       appData.selectedComponent !== "History" ||
       appData.selectedComponent !== "Teachers" ||
+      appData.selectedComponent === "ScheduleMaterials" ||
       appData.selectedComponent !== "MyWorkload"
     ) {
       basicTabData.filtredData.every((el) =>
@@ -268,34 +272,62 @@ function HomePage() {
       url = `?department=${idTableUnlock}`;
     }
     Workload(url).then((resp) => {
-      generateAndDownloadExcel(resp, nameDepartment);
+      generateAndDownloadExcel(resp, nameDepartment , "workload");
     });
   };
 
   //!Функция генерации файла для скачивания
-  const generateAndDownloadExcel = (data, nameDepartment) => {
-    const transformedData = data.map(
-      ({ id, isBlocked, isMerged, isOid, isSplit, educator, ...item }) => ({
-        Кафедра: item?.department,
-        Дисциплина: item?.discipline,
-        Нагрузка: item?.workload,
-        Группы: item?.groups,
-        Блок: item?.block,
-        Семестр: item?.semester,
-        Период: item?.period,
-        Учебный_план: item?.curriculum,
-        Подразделение_учебного_плана: item?.curriculumUnit,
-        Форма_обучения: item?.formOfEducation,
-        Уровень_подготовки: item?.levelOfTraining,
-        Специальность: item?.specialty,
-        Профиль: item?.core,
-        Количество_студентов: item?.numberOfStudents,
-        Часы: item?.hours,
-        Аудиторные_часы: item?.audienceHours,
-        Часы_рейтинг_контроль: item?.ratingControlHours,
-        Преподаватель: educator?.name,
-      })
-    );
+  const generateAndDownloadExcel = (data, nameDepartment, nameTable) => {
+    let transformedData = {};
+    if(nameTable === "schedule") {
+      transformedData = data.map(
+        ({ id, isBlocked, isMerged, isOid, isSplit, educator, ...item }) => ({
+          Кафедра: item?.department,
+          Дисциплина: item?.discipline,
+          Нагрузка: item?.workload,
+          Группы: item?.groups,
+          Примечение: item?.notes,
+          Блок: item?.block,
+          Семестр: item?.semester,
+          Период: item?.period,
+          Учебный_план: item?.curriculum,
+          Подразделение_учебного_плана: item?.curriculumUnit,
+          Форма_обучения: item?.formOfEducation,
+          Уровень_подготовки: item?.levelOfTraining,
+          Специальность: item?.specialty,
+          Профиль: item?.core,
+          Количество_студентов: item?.numberOfStudents,
+          Часы: item?.hours,
+          Аудиторные_часы: item?.audienceHours,
+          Часы_рейтинг_контроль: item?.ratingControlHours,
+          Преподаватель: educator?.name,
+        })
+      );
+    }else{
+      transformedData = data.map(
+        ({ id, isBlocked, isMerged, isOid, isSplit, educator, ...item }) => ({
+          Кафедра: item?.department,
+          Дисциплина: item?.discipline,
+          Нагрузка: item?.workload,
+          Группы: item?.groups,
+          Блок: item?.block,
+          Семестр: item?.semester,
+          Период: item?.period,
+          Учебный_план: item?.curriculum,
+          Подразделение_учебного_плана: item?.curriculumUnit,
+          Форма_обучения: item?.formOfEducation,
+          Уровень_подготовки: item?.levelOfTraining,
+          Специальность: item?.specialty,
+          Профиль: item?.core,
+          Количество_студентов: item?.numberOfStudents,
+          Часы: item?.hours,
+          Аудиторные_часы: item?.audienceHours,
+          Часы_рейтинг_контроль: item?.ratingControlHours,
+          Преподаватель: educator?.name,
+        })
+      );
+    }
+  
     const worksheet = XLSX.utils.json_to_sheet(transformedData);
 
     // Установка ширины столбцов
@@ -337,6 +369,27 @@ function HomePage() {
       `Экспорт_Таблицы_${nameDepartment}_${formattedDate}.xlsx`
     );
   };
+
+  //!Функция экспорта расписания
+  const exportSchedulefunc = () => {
+    let url = "";
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 55)) {
+      if (basicTabData.selectTableSchedle != "Все") {
+        const depart = basicTabData.tableDepartment.find(
+          (el) => el.name === basicTabData.selectTableSchedle
+        )?.id;
+        url = `?departments=${depart}`;
+      } else if (basicTabData.selectTableSchedle === "Все") {
+        url = "";
+      }
+    } else {
+      url = "";
+    }
+    const nameDepartment = basicTabData.selectTableSchedle;
+    getSchedule(url).then((resp) => {
+      generateAndDownloadExcel(resp.data , nameDepartment, "schedule");
+    });
+  }
 
   useEffect(() => {
     setBlockTable(checkBlocked());
@@ -670,7 +723,7 @@ function HomePage() {
                     // handleButtonClick();
                     // basicTabData.setselectISOid(true);
                   }}
-                  text="Материалы к расписанию"
+                  text="Расписание"
                 />
               )}
               {appData.myProfile?.role === "GOD" && (
@@ -720,7 +773,7 @@ function HomePage() {
             <div className={styles.header_bottom}>
               <div className={styles.header_bottom_button}>
                 {appData.metodRole[appData.myProfile?.role]?.some(
-                  (el) => el === 28
+                  (el) => el === 28 || el === 57
                 ) &&
                   (appData.selectedComponent === "Disciplines" ||
                     appData.selectedComponent === "History" ||
@@ -733,10 +786,26 @@ function HomePage() {
                         />
                       ) : (
                         <>
-                          <ListSchedule dataList={departmentsMaterials} />
-                          <button onClick={sync} className={styles.buttonSync}>
+                        {
+                          appData.metodRole[appData.myProfile?.role]?.some((el) => el === 55) && <ListSchedule dataList={departmentsMaterials} />
+                        }
+                        <div className={styles.exportSchedule}>
+                        <button onClick={sync} className={styles.buttonSync}>
                             Синхронизация
                           </button>
+                          <div className={styles.import}>
+                            <button onClick={exportSchedulefunc}>
+                              <img
+                                src="./img/import.svg"
+                                alt=">"
+                                className={styles.export__img}
+                              ></img>
+                              <p>Экспорт таблицы</p>
+                            </button>
+                          </div>
+                        </div>
+                         
+
                         </>
                       )}
 

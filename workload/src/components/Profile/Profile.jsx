@@ -29,10 +29,10 @@ function Profile(props) {
   useEffect(() => {
     const handler = (event) => {
       if (
-        props.refProfile.current &&
-        !props.refProfile.current.contains(event.target)
+        props?.refProfile.current &&
+        !props?.refProfile.current.contains(event.target)
       ) {
-        props.setOpenModalWind(false);
+        props?.setOpenModalWind(false);
       }
     };
     document.addEventListener("click", handler, true);

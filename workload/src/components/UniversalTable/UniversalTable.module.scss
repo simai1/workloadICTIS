@@ -111,7 +111,12 @@ $heightCell: 150px;
       z-index: 1;
     }
   }
-
+  .topRightCorner {
+    position: relative;
+    z-index: 0;
+    top: -5px;
+    right: -2px;
+  }
   .table {
     width: 100%;
     border-collapse: collapse;
@@ -220,6 +225,16 @@ $heightCell: 150px;
         border-radius: 8px;
         padding: 5px 0px;
       }
+      // .tdInner[name="notes"]:hover{
+      //   border-radius: 8px;
+      //   padding: 5px 0px;
+      //   background-color: #5a79c7;
+      // }
+      // .tdInner[name="groups"]:hover{
+      //   border-radius: 8px;
+      //   padding: 5px 0px;
+      //   background-color: #5a79c7;
+      // }
     }
     th[name="specialty"],
     td[name="specialty"] {
@@ -271,7 +286,7 @@ $heightCell: 150px;
     td[name="audienceHours"] {
       @include customTd(120px);
     }
-    td[name="workload"] {
+    td[name="notes"] {
       &::after {
         content: "";
         position: absolute;
@@ -284,7 +299,7 @@ $heightCell: 150px;
         top: 0;
       }
     }
-    th[name="workload"] {
+    th[name="notes"] {
       &::after {
         content: "";
         position: absolute;
@@ -302,7 +317,7 @@ $heightCell: 150px;
     td[name="ratingControlHours"] {
       @include customTd(120px);
     }
-
+   
     th,
     td {
       min-width: 160px;
@@ -421,6 +436,12 @@ $heightCell: 150px;
     td:nth-child(4) {
       @include stickyTd(160px, 320px);
     }
+    td:nth-child(5) {
+      @include stickyTd(160px, 480px);
+    }
+    td:nth-child(6) {
+      @include stickyTd(160px, 640px);
+    }
 
     th:nth-child(1) {
       @include stickyTd(60px, 0);
@@ -441,6 +462,16 @@ $heightCell: 150px;
       @include stickyTd(160px, 320px);
       background-color: var(--gray-color);
       z-index: 15;
+    }
+    th:nth-child(5) {
+      background-color: var(--gray-color);
+      z-index: 15;
+      @include stickyTd(160px, 480px);
+    }
+    th:nth-child(6) {
+      background-color: var(--gray-color);
+      z-index: 15;
+      @include stickyTd(160px, 640px);
     }
   }
   .selectedTr {
