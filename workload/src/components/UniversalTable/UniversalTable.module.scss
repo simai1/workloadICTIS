@@ -83,7 +83,7 @@ $heightCell: 150px;
     width: 64px;
     height: 100%;
     position: absolute;
-    z-index: 1;
+    // z-index: 1;
     left: 0px;
     top: 0;
   }
@@ -317,7 +317,7 @@ $heightCell: 150px;
     td[name="ratingControlHours"] {
       @include customTd(120px);
     }
-   
+
     th,
     td {
       min-width: 160px;

@@ -92,13 +92,7 @@ function InputCheckbox(props) {
           )}
           {
             //! определяем разделенная ли нагрузка
-            ((props.workload?.isSplit &&
-              !props.workload?.isBlocked &&
-              !tabPar.changedData?.split.some((el) => el === props.itemId)) ||
-              (props.workload?.isBlocked &&
-                tabPar.changedData?.split.some(
-                  (el) => el === props.itemId
-                ))) && (
+            props.workload?.isSplit && (
               <div className={styles.isSplit}>
                 <span>Разделенная</span>
               </div>
@@ -109,7 +103,7 @@ function InputCheckbox(props) {
             props.workload?.isBlocked && (
               <div
                 className={styles.isSplit}
-                // style={{ transform: "translateY(-120px)" }}
+                style={{ transform: "translateY(-20px)" }}
               >
                 <span>Заблокирована </span>
               </div>
@@ -126,11 +120,7 @@ function InputCheckbox(props) {
           }
           {
             //! определяем разделенная ли нагрузка
-            ((props.workload?.isMerged &&
-              !props.tabDat.isBlocked &&
-              !tabPar.changedData?.join.some((el) => el === props.itid)) ||
-              (props.tabDat.isBlocked &&
-                tabPar.changedData?.join.some((el) => el === props.itid))) && (
+            props.workload?.isMerged && (
               <div className={styles.isSplit}>Объединенная</div>
             )
           }

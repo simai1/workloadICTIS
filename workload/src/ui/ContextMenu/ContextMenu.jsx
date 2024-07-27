@@ -144,7 +144,7 @@ const ContextMenu = (props) => {
       EducatorLK(id).then((Educator) => {
         const offer = {
           Educator: appData.myProfile,
-          workloadId: tabPar.selectedTr,
+          workloadId: tabPar.selectedTr[0],
           educatorId: Educator.id,
         };
         tabPar.setAllOffersData([...tabPar.allOffersData, offer]);
@@ -549,6 +549,7 @@ const ContextMenu = (props) => {
         !funGetJoinDopWorkload() &&
         wdFix.every(
           (it) =>
+            !it.isBlocked &&
             it.workload !== "Защита ВКР" &&
             !it.workload.toLowerCase().includes("экзамен") &&
             !it.workload.toLowerCase().includes("практика")
@@ -569,6 +570,7 @@ const ContextMenu = (props) => {
         !funGetJoinDopWorkload() &&
         wdFix.every(
           (it) =>
+            !it.isBlocked &&
             it.isSplit === true &&
             it.workload !== "Защита ВКР" &&
             it.workload !== "Кандидатский экзамен"
@@ -587,7 +589,7 @@ const ContextMenu = (props) => {
       //!
       if (
         !funGetJoinDopWorkload() &&
-        wdFix.every((it) => it.workload === "Защита ВКР")
+        wdFix.every((it) => it.workload === "Защита ВКР" && !it.isBlocked)
       ) {
         massMenuPop.push(
           <MenuPop
@@ -602,7 +604,7 @@ const ContextMenu = (props) => {
       //!
       if (
         funGetJoinDopWorkload() &&
-        wdFix.every((it) => it.workload !== "Защита ВКР")
+        wdFix.every((it) => it.workload !== "Защита ВКР" && !it.isBlocked)
       ) {
         massMenuPop.push(
           <MenuPop
@@ -615,7 +617,11 @@ const ContextMenu = (props) => {
       }
 
       //!
-      if (wdFix.every((it) => it.workload === "Кандидатский экзамен")) {
+      if (
+        wdFix.every(
+          (it) => it.workload === "Кандидатский экзамен" && !it.isBlocked
+        )
+      ) {
         massMenuPop.push(
           <MenuPop
             key={"MenuPop18"}
