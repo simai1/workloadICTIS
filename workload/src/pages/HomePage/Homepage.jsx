@@ -779,7 +779,7 @@ function HomePage() {
             <div className={styles.header_bottom}>
               <div className={styles.header_bottom_button}>
                 {appData.metodRole[appData.myProfile?.role]?.some(
-                  (el) => el === 28 || el === 57
+                  (el) => el === 28 || el === 57 || el === 58
                 ) &&
                   (appData.selectedComponent === "Disciplines" ||
                     appData.selectedComponent === "History" ||
