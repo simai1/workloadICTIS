@@ -92,7 +92,13 @@ function InputCheckbox(props) {
           )}
           {
             //! определяем разделенная ли нагрузка
-            props.workload?.isSplit === true && !props.tabDat.isBlocked && (
+            ((props.workload?.isSplit &&
+              !props.workload?.isBlocked &&
+              !tabPar.changedData?.split.some((el) => el === props.itemId)) ||
+              (props.workload?.isBlocked &&
+                tabPar.changedData?.split.some(
+                  (el) => el === props.itemId
+                ))) && (
               <div className={styles.isSplit}>
                 <span>Разделенная</span>
               </div>
@@ -100,15 +106,18 @@ function InputCheckbox(props) {
           }
           {
             //! определяем разделенная ли нагрузка
-            props.workload?.isBlocked === true && props.tabDat.isBlocked && (
-              <div className={styles.isSplit}>
-                <span>Заблокирована</span>
+            props.workload?.isBlocked && (
+              <div
+                className={styles.isSplit}
+                // style={{ transform: "translateY(-120px)" }}
+              >
+                <span>Заблокирована </span>
               </div>
             )
           }
           {
             //! после резделения или обьединения исходную помечаем
-            props.workload?.isSplitArrow === true && (
+            props.workload?.isSplitArrow && (
               <div className={styles.isSplit}>
                 <span>Исходная</span>
                 <img src="img/Arrow.svg" alt=">" />
@@ -117,7 +126,11 @@ function InputCheckbox(props) {
           }
           {
             //! определяем разделенная ли нагрузка
-            props.workload?.isMerged === true && !props.tabDat.isBlocked && (
+            ((props.workload?.isMerged &&
+              !props.tabDat.isBlocked &&
+              !tabPar.changedData?.join.some((el) => el === props.itid)) ||
+              (props.tabDat.isBlocked &&
+                tabPar.changedData?.join.some((el) => el === props.itid))) && (
               <div className={styles.isSplit}>Объединенная</div>
             )
           }

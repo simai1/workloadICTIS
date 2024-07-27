@@ -284,12 +284,14 @@ export function combineData(data, selectedTr, action = "") {
           ? {
               ...upData[index],
               numberOfStudents: sumOfStudents,
+              groups,
               isSplit: false,
               isMerged: true,
               educator: "___",
             }
           : action === "candidatesExam" && {
               ...upData[index],
+              groups,
               isSplit: false,
               isMerged: true,
               educator: "___",
@@ -352,10 +354,25 @@ export function combineData(data, selectedTr, action = "") {
         .reduce((acc, curr) => (acc === "" ? curr : `${acc}, ${curr}`), "");
       // console.log("semestersem", semestersem);
 
+      // let groups = prevState
+      //   .map((el) => el.groups.split(", "))
+      //   .flat()
+      //   .filter((v, i, arr) => arr.indexOf(v) === i)
+      //   .reduce((acc, curr) => (acc === "" ? curr : `${acc}, ${curr}`), "");
+      // console.log("groups", groups);
+
+      let block = prevState
+        .map((el) => el.block.split(", "))
+        .flat()
+        .filter((v, i, arr) => arr.indexOf(v) === i)
+        .reduce((acc, curr) => (acc === "" ? curr : `${acc}, ${curr}`), "");
+      console.log("block", block);
+
       newState = {
         ...newState,
         curriculum: cursum,
         semester: semestersem,
+        block: block,
       };
 
       const newUpdatedData = [

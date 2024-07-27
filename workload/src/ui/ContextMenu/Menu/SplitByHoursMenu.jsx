@@ -149,8 +149,6 @@ function SplitByHoursMenu(props) {
         funSplitVKR();
       }
     }
-    tabPar.setHoursPopup(props.tableDataFix);
-    tabPar.setHoursPopupSet(props.setTableDataFix);
   };
 
   //! переменная которая хранит ширину данного меню

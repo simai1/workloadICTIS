@@ -15,7 +15,6 @@ import { deleteItemBuffer } from "../Function";
 
 function OverlapWindow(props) {
   const { tabPar, appData, basicTabData } = React.useContext(DataContext);
-  console.log("OverlapWindow");
   const cancelChanges = () => {
     if (props.getConfirmation.type === 1) {
       appData.setBufferAction(
@@ -71,7 +70,7 @@ function OverlapWindow(props) {
       appData.setBufferAction(
         [...buff].filter((el) => el.data?.ids?.length > 0)
       );
-      let wdf = [...props.tabDat.tableDataFix];
+      let wdf = [...props.tabDat.filtredData];
       let datMap = { ...dat };
       let f = true;
       const wdfNew = wdf
@@ -85,7 +84,7 @@ function OverlapWindow(props) {
         })
         .filter((el) => el !== undefined);
 
-      props.tabDat.setTableDataFix(wdfNew);
+      props.tabDat.setFiltredData(wdfNew);
 
       let changed = { ...tabPar.changedData };
       changed.split = changed.split.filter(
@@ -93,19 +92,20 @@ function OverlapWindow(props) {
       );
       tabPar.setChangedData(changed);
     } else if (props.getConfirmation.type === 3) {
+      console.log("props.getConfirmation", props.getConfirmation);
       //! отмена обьединения
       const bd = props.getConfirmation.data;
       // удаляем нагрузку которую обьеденили
-      const dataTable = [...props.tabDat.tableDataFix].filter(
+      const dataTable = [...props.tabDat.filtredData].filter(
         (item) => !bd.prevState.some((el) => el.id === item.id)
       );
       // сохраняем индекс удаленного элемента
-      const deletedIndex = props.tabDat.tableDataFix.findIndex((item) =>
+      const deletedIndex = props.tabDat.filtredData.findIndex((item) =>
         bd.prevState.some((el) => el.id === item.id)
       );
       const newArray = [...dataTable];
       newArray.splice(deletedIndex, 0, ...bd.prevState);
-      props.tabDat.setTableDataFix(newArray);
+      props.tabDat.setFiltredData(newArray);
       // убираем заблокированные элементы
       let cd = { ...tabPar.changedData };
       let cdJoin = [...cd.join];
@@ -118,7 +118,7 @@ function OverlapWindow(props) {
     } else if (props.getConfirmation.type === 4) {
       //! если разделили по часам применяем эту отмену
       const dat = { ...props.getConfirmation.data };
-      let updatedData = [...props.tabDat.setTableDataFix];
+      let updatedData = [...props.tabDat.setFiltredData];
       updatedData = updatedData
         .map((item) => {
           const ind = dat.newIds.findIndex((e) => e === item.id);
@@ -131,7 +131,7 @@ function OverlapWindow(props) {
         .filter((el) => el !== undefined);
       console.log(updatedData);
 
-      props.tabDat.setTableDataFix(updatedData);
+      props.tabDat.setFiltredData(updatedData);
 
       let changed = { ...tabPar.changedData };
       changed.split = changed.split.filter(
@@ -169,8 +169,8 @@ function OverlapWindow(props) {
                 "deleteWorkload"
               ).buffer
             );
-            props.tabDat.setTableDataFix(
-              props.tabDat.tableDataFix.filter((item) => item.id !== props.itid)
+            props.tabDat.setFiltredData(
+              props.tabDat.filtredData.filter((item) => item.id !== props.itid)
             );
             props.tabDat.setTableData(
               props.tabDat.tableData.filter((item) => item.id !== props.itid)
@@ -181,6 +181,9 @@ function OverlapWindow(props) {
             );
             tabPar.setChangedData(changed);
             appData.setDataUpdated(true);
+          } else {
+            appData.seterrorPopUp(true);
+            appData.setPopupErrorText("Возникала ошибка на сервере");
           }
         });
       } else {
@@ -192,8 +195,8 @@ function OverlapWindow(props) {
               "deleteWorkload"
             ).buffer
           );
-          props.tabDat.setTableDataFix(
-            props.tabDat.tableDataFix.filter((item) => item.id !== props.itid)
+          props.tabDat.setFiltredData(
+            props.tabDat.filtredData.filter((item) => item.id !== props.itid)
           );
           props.tabDat.setTableData(
             props.tabDat.tableData.filter((item) => item.id !== props.itid)
@@ -236,6 +239,9 @@ function OverlapWindow(props) {
               (el) => el.name === basicTabData.nameKaf
             )?.id
           );
+        } else {
+          appData.seterrorPopUp(true);
+          appData.setPopupErrorText("Возникала ошибка на сервере");
         }
       });
     } else if (props.getConfirmation.type === 3) {
@@ -268,6 +274,9 @@ function OverlapWindow(props) {
                 (el) => el.name === basicTabData.nameKaf
               )?.id
             );
+          } else {
+            appData.seterrorPopUp(true);
+            appData.setPopupErrorText("Возникала ошибка на сервере");
           }
         });
       } else {
@@ -275,30 +284,35 @@ function OverlapWindow(props) {
           props.getConfirmation.data.data,
           props.getConfirmation.data.action
         ).then((res) => {
-          const ab = [...appData.bufferAction];
-          const abfix = ab
-            .filter((item) => {
-              if (
-                item.request === "joinWorkloads" &&
-                item.newState.id === props.itid
-              ) {
-                return null;
-              } else {
-                return item;
-              }
-            })
-            .filter((el) => el !== null);
+          if (res.status === 200) {
+            const ab = [...appData.bufferAction];
+            const abfix = ab
+              .filter((item) => {
+                if (
+                  item.request === "joinWorkloads" &&
+                  item.newState.id === props.itid
+                ) {
+                  return null;
+                } else {
+                  return item;
+                }
+              })
+              .filter((el) => el !== null);
 
-          appData.setBufferAction(abfix);
+            appData.setBufferAction(abfix);
 
-          let changed = { ...tabPar.changedData };
-          changed.join = changed.join.filter((item) => item !== props.itid);
-          tabPar.setChangedData(changed);
-          props.tabDat.funUpdateTabDat(
-            basicTabData.tableDepartment.find(
-              (el) => el.name === basicTabData.nameKaf
-            )?.id
-          );
+            let changed = { ...tabPar.changedData };
+            changed.join = changed.join.filter((item) => item !== props.itid);
+            tabPar.setChangedData(changed);
+            props.tabDat.funUpdateTabDat(
+              basicTabData.tableDepartment.find(
+                (el) => el.name === basicTabData.nameKaf
+              )?.id
+            );
+          } else {
+            appData.seterrorPopUp(true);
+            appData.setPopupErrorText("Возникала ошибка на сервере");
+          }
         });
       }
     } else if (props.getConfirmation.type === 4) {

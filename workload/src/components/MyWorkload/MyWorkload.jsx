@@ -9,11 +9,10 @@ import { apiOwnDepartHead, getSchedule } from "../../api/services/ApiRequest";
 import ContextMenu from "../../ui/ContextMenu/ContextMenu";
 
 function MyWorkload(props) {
-  const { appData, basicTabData, checkPar } = useContext(DataContext);
+  const { appData, tabPar, checkPar } = useContext(DataContext);
   const [tableHeader, setTableHeader] = useState(props.tableHeaders);
   const [tableData, setTableData] = useState([]);
   const [tableDataFix, setTableDataFix] = useState([]);
-  const [filtredData, setFiltredData] = useState([]);
   const ssIsChecked = `isCheckedMyWorkload`;
   const ssHeader = `headerMyWorkload`;
   //! достаем данные из редакса
@@ -26,8 +25,8 @@ function MyWorkload(props) {
     setTableData,
     tableDataFix,
     setTableDataFix,
-    filtredData,
-    setFiltredData,
+    filtredData: tabPar.tableDataMyWorkload,
+    setFiltredData: tabPar.setTableDataMyWorkload,
     ssIsChecked,
     ssHeader,
     isCheckedStore,
@@ -48,7 +47,7 @@ function MyWorkload(props) {
       const fdfix = FilteredSample(fixEducator, checks);
       setTableData(data);
       setTableDataFix(fdfix);
-      setFiltredData(fdfix);
+      tabPar.setTableDataMyWorkload(fdfix);
       checkPar.setIsChecked(checks || []);
       appData.setLoaderAction(0);
     });
@@ -62,8 +61,8 @@ function MyWorkload(props) {
   const getContextMenu = () => {
     return (
       <ContextMenu
-        setTableDataFix={setFiltredData}
-        tableDataFix={filtredData}
+        setTableDataFix={tabPar.setTableDataMyWorkload}
+        tableDataFix={tabPar.tableDataMyWorkload}
         allowedMenus={[
           "Закрепить",
           "Открепить",

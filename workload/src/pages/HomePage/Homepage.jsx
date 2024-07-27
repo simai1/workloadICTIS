@@ -1006,10 +1006,7 @@ function HomePage() {
 
       {appData.godPopUp && <PopUpGoodMessage />}
       {tabPar.popupShareShow && (
-        <SplitByHoursPopup
-          tableData={basicTabData.workloadDataFix}
-          setTableData={basicTabData.setWorkloadDataFix}
-        />
+        <SplitByHoursPopup component={appData.selectedComponent} />
       )}
       {textareaStor.textarea && <PopupTextArea data={textareaStor} />}
     </Layout>

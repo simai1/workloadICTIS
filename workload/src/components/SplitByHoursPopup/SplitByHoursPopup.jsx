@@ -18,7 +18,13 @@ function SplitByHoursPopup(props) {
   //! функция для разделения строк при нажатии сохранить
   const handleSplitWorkload = (bufdat, inpValueHoursPopup) => {
     console.log("bufdat", bufdat);
-    let updatedData = [...props.tableData];
+    let updatedData = [];
+
+    if (props.component === "MyWorkload") {
+      updatedData = [...tabPar.tableDataMyWorkload];
+    } else {
+      updatedData = [...basicTabData.workloadDataFix];
+    }
     //! находим индекс строки которую будем делить
     const indexWorkload = updatedData.findIndex(
       (el) => el.id === bufdat.workloadId
@@ -51,7 +57,11 @@ function SplitByHoursPopup(props) {
       ...newValue,
       ...updatedData.slice(indexWorkload + 1),
     ];
-    props.setTableData(updatedData);
+    if (props.component === "MyWorkload") {
+      tabPar.setTableDataMyWorkload(updatedData);
+    } else {
+      basicTabData.setWorkloadDataFix(updatedData);
+    }
     tabPar.setChangedData(
       addСhangedData(tabPar.changedData, "split", bufdat.newIds)
     );

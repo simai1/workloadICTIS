@@ -188,6 +188,8 @@ const ContextMenu = (props) => {
         ...data,
         curriculum: funData.newState.curriculum,
         semester: funData.newState.semester,
+        groups: funData.newState.groups,
+        block: funData.newState.block,
       };
     }
 
@@ -214,6 +216,8 @@ const ContextMenu = (props) => {
         audienceHours: funData.newState.audienceHours,
         curriculum: funData.newState.curriculum,
         semester: funData.newState.semester,
+        grups: funData.newState.grups,
+        block: funData.newState.block,
       };
 
       if (action === "add" || action === "candidatesExam") {
