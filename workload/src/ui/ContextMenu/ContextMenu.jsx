@@ -758,7 +758,7 @@ const ContextMenu = (props) => {
           )}
 
         {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 18) &&
-          // tabPar.selectedTr.length === 1 &&
+          tabPar.selectedTr.length === 1 &&
           determineIsBlocked() &&
           funAllowedMenus("Предложить") && (
             <MenuPop
