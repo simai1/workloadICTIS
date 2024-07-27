@@ -83,7 +83,7 @@ function TableTh(props) {
               <img
                 src="./img/Edit.svg"
                 className={styles.topRightCorner}
-                title="Данная колонка редактируется"
+                title="Данная колонка редактируется (Двойной клик по полю колонки)"
               />       
            }
         <div className={styles.th_inner_img}>
