@@ -156,12 +156,12 @@ function OverlapWindow(props) {
 
   const confirmChanges = () => {
     //! удаляем нагрузку
-   
+
     if (props.getConfirmation.type === 1) {
-      if(appData.selectedComponent === "ScheduleMaterials"){
-        console.log(props.itid)
+      if (appData.selectedComponent === "ScheduleMaterials") {
+        console.log(props.itid);
         DeleteMaterials(props.itid).then((resp) => {
-          if(resp?.status === 200){
+          if (resp?.status === 200) {
             appData.setBufferAction(
               deleteItemBuffer(
                 [...appData.bufferAction],
@@ -176,12 +176,14 @@ function OverlapWindow(props) {
               props.tabDat.tableData.filter((item) => item.id !== props.itid)
             );
             let changed = { ...tabPar.changedData };
-            changed.deleted = changed.deleted.filter((item) => item !== props.itid);
+            changed.deleted = changed.deleted.filter(
+              (item) => item !== props.itid
+            );
             tabPar.setChangedData(changed);
             appData.setDataUpdated(true);
           }
-        })
-      }else{
+        });
+      } else {
         deleteWorkload({ ids: [props.itid] }).then(() => {
           appData.setBufferAction(
             deleteItemBuffer(
@@ -197,12 +199,12 @@ function OverlapWindow(props) {
             props.tabDat.tableData.filter((item) => item.id !== props.itid)
           );
           let changed = { ...tabPar.changedData };
-          changed.deleted = changed.deleted.filter((item) => item !== props.itid);
+          changed.deleted = changed.deleted.filter(
+            (item) => item !== props.itid
+          );
           tabPar.setChangedData(changed);
         });
       }
-     
-
     } else if (props.getConfirmation.type === 2) {
       //! подтверждение разделить нагрузку по подгруппам
       console.log("props.getConfirmation", props.getConfirmation);
@@ -229,7 +231,7 @@ function OverlapWindow(props) {
           );
           tabPar.setChangedData(changed);
           // обновляем таблицу согласно кафедре
-          basicTabData.funUpdateTable(
+          props.tabDat.funUpdateTabDat(
             basicTabData.tableDepartment.find(
               (el) => el.name === basicTabData.nameKaf
             )?.id
@@ -261,7 +263,7 @@ function OverlapWindow(props) {
             let changed = { ...tabPar.changedData };
             changed.join = changed.join.filter((item) => item !== props.itid);
             tabPar.setChangedData(changed);
-            basicTabData.funUpdateTable(
+            props.tabDat.funUpdateTabDat(
               basicTabData.tableDepartment.find(
                 (el) => el.name === basicTabData.nameKaf
               )?.id
@@ -292,7 +294,7 @@ function OverlapWindow(props) {
           let changed = { ...tabPar.changedData };
           changed.join = changed.join.filter((item) => item !== props.itid);
           tabPar.setChangedData(changed);
-          basicTabData.funUpdateTable(
+          props.tabDat.funUpdateTabDat(
             basicTabData.tableDepartment.find(
               (el) => el.name === basicTabData.nameKaf
             )?.id
@@ -326,7 +328,7 @@ function OverlapWindow(props) {
           );
           tabPar.setChangedData(changed);
           //! обновляем таблицу
-          basicTabData.funUpdateTable(
+          props.tabDat.funUpdateTabDat(
             basicTabData.tableDepartment.find(
               (el) => el.name === basicTabData.nameKaf
             )?.id

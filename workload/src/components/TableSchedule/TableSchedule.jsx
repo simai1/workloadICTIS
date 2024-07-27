@@ -7,6 +7,7 @@ import { FilteredSample } from "../../ui/SamplePoints/Function";
 import { useSelector } from "react-redux";
 import { getSchedule } from "../../api/services/ApiRequest";
 import { scheduleHead } from "../TableWorkload/Data";
+import ContextMenu from "../../ui/ContextMenu/ContextMenu";
 
 function TableSchedule(props) {
   const { tabPar, visibleDataPar, basicTabData, checkPar, appData } =
@@ -75,15 +76,24 @@ function TableSchedule(props) {
     isBlocked: false, //! показывать или скрывать блокированные
   };
 
+  //! функция которая возвращает контекстное меню с параметрами
+  const getContextMenu = () => {
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 54.1)) {
+      return (
+        <ContextMenu
+          setTableDataFix={setTableDataFix}
+          tableDataFix={tableDataFix}
+          allowedMenus={["Удалить"]}
+        />
+      );
+    } else return "";
+  };
+
   return (
     <div className={styles.TableSchedule}>
       <UniversalTable
         searchTerm={props.searchTerm}
-        contextMenu={
-          appData.metodRole[appData.myProfile?.role]?.some((el) => el === 54.1)
-            ? "Schedule"
-            : ""
-        }
+        contextMenu={() => getContextMenu()}
         tabDat={tabDat}
       />
     </div>

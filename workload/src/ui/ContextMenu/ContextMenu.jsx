@@ -114,7 +114,7 @@ const ContextMenu = (props) => {
         );
         const edicatorName = { edicatorName: dataReq?.name };
         props.setTableDataFix(newData);
-        basicTabData.setFiltredData(newData);
+        // basicTabData.setFiltredData(newData);
         const workloadId = data.workloadIds;
         appData.setBufferAction([
           {
@@ -787,6 +787,8 @@ const ContextMenu = (props) => {
           setMenuShow={setMenuShow}
           contextPosition={tabPar.contextPosition}
           typeSplit={menuShow}
+          setTableDataFix={props.setTableDataFix}
+          tableDataFix={props.tableDataFix}
         />
       )}
       {menuShow === "splitCandidatesExam" && (
@@ -796,6 +798,8 @@ const ContextMenu = (props) => {
           setMenuShow={setMenuShow}
           contextPosition={tabPar.contextPosition}
           typeSplit={menuShow}
+          setTableDataFix={props.setTableDataFix}
+          tableDataFix={props.tableDataFix}
         />
       )}
       {(menuShow === "educator" || menuShow === "propose") && (
@@ -832,6 +836,8 @@ const ContextMenu = (props) => {
           styles={styles}
           setMenuShow={setMenuShow}
           typeMenu={"splitByHoursMenu"}
+          setTableDataFix={props.setTableDataFix}
+          tableDataFix={props.tableDataFix}
         />
       )}
       {menuShow === "splitVKR" && (
@@ -841,6 +847,8 @@ const ContextMenu = (props) => {
           styles={styles}
           setMenuShow={setMenuShow}
           typeMenu={"splitVKR"}
+          setTableDataFix={props.setTableDataFix}
+          tableDataFix={props.tableDataFix}
         />
       )}
       {menuShow === "splitByHoursMenu" && (
@@ -850,6 +858,8 @@ const ContextMenu = (props) => {
           styles={styles}
           setMenuShow={setMenuShow}
           typeMenu={"splitByHoursMenu"}
+          setTableDataFix={props.setTableDataFix}
+          tableDataFix={props.tableDataFix}
         />
       )}
       {appData.universalPopupTitle !== "" && <UniversalPopup />}

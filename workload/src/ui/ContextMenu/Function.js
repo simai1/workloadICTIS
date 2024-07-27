@@ -131,7 +131,14 @@ export function combineDataIdentify(data, selectedTr, action) {
     text = text + "нагрузка, ";
   }
   if (!prevState.every((el) => el.period === prevState[0].period)) {
-    text = text + "период ";
+    text = text + "период, ";
+  }
+  if (
+    !prevState.every(
+      (el) => el.formOfEducation === prevState[0].formOfEducation
+    )
+  ) {
+    text = text + "форма обучения";
   }
 
   if (action === "g") {
@@ -187,7 +194,8 @@ export function combineData(data, selectedTr, action = "") {
           item.workload === prevState[0].workload &&
           item.discipline === prevState[0].discipline &&
           item.audienceHours === prevState[0].audienceHours &&
-          item.period === prevState[0].period
+          item.period === prevState[0].period &&
+          item.formOfEducation === prevState[0].formOfEducation
       )) ||
     (action === "h" &&
       prevState.every(
@@ -196,7 +204,8 @@ export function combineData(data, selectedTr, action = "") {
           item.discipline === prevState[0].discipline &&
           item.numberOfStudents === prevState[0].numberOfStudents &&
           item.isSplit === true &&
-          item.period === prevState[0].period
+          item.period === prevState[0].period &&
+          item.formOfEducation === prevState[0].formOfEducation
       )) ||
     (action === "vkr" &&
       prevState.every(
@@ -204,21 +213,24 @@ export function combineData(data, selectedTr, action = "") {
           item.workload === prevState[0].workload &&
           item.discipline === prevState[0].discipline &&
           item.numberOfStudents === prevState[0].numberOfStudents &&
-          item.period === prevState[0].period
+          item.period === prevState[0].period &&
+          item.formOfEducation === prevState[0].formOfEducation
       )) ||
     (action === "add" &&
       prevState.every(
         (item) =>
           item.workload === prevState[0].workload &&
           item.discipline === prevState[0].discipline &&
-          item.period === prevState[0].period
+          item.period === prevState[0].period &&
+          item.formOfEducation === prevState[0].formOfEducation
       )) ||
     (action === "candidatesExam" &&
       prevState.every(
         (item) =>
           item.workload === prevState[0].workload &&
           item.discipline === prevState[0].discipline &&
-          item.period === prevState[0].period
+          item.period === prevState[0].period &&
+          item.formOfEducation === prevState[0].formOfEducation
       ))
   ) {
     const sumOfStudents = prevState.reduce(
@@ -345,7 +357,6 @@ export function combineData(data, selectedTr, action = "") {
         curriculum: cursum,
         semester: semestersem,
       };
-      console.log("newState", newState);
 
       const newUpdatedData = [
         ...upData.slice(0, index),
