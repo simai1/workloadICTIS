@@ -261,7 +261,7 @@ export const joinWorkloads = async (data, action) => {
   try {
     const response = await http.post(`${server}/workload/map${action}`, data);
     console.log("response ", response);
-    return response.data;
+    return response;
   } catch (error) {
     console.error("Error:", error);
     return false;

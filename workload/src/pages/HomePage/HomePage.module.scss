@@ -105,11 +105,9 @@ body {
     .right_button {
       display: flex;
       flex-direction: row;
-
-     
     }
   }
-  .buttonSync{
+  .buttonSync {
     @include button(var(--blue-color), #fff, 10px, 25px);
     border: none;
     font-size: 18px;
@@ -276,7 +274,7 @@ body {
       bottom: 50px;
       width: 64px;
       height: 14px;
-      z-index: 100;
+      // z-index: 100;
 
       background-color: var(--bgraund);
     }
@@ -344,7 +342,7 @@ body {
       }
     }
   }
-  .exportSchedule{
+  .exportSchedule {
     display: flex;
     justify-content: space-between;
     width: 100%;

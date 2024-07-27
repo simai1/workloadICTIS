@@ -29,8 +29,9 @@ export function SubMenu(props) {
       count,
       props.typeSplit
     );
+
     props.setTableDataFix(funData.updatedData);
-    console.log(funData.blocked);
+
     tabPar.setChangedData(
       addСhangedData(tabPar.changedData, "split", funData.blocked)
     );

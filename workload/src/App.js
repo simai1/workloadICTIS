@@ -251,8 +251,11 @@ function App() {
   const [inputEditValue, setInputEditValue] = useState([]);
   const [typeSplit, setTypeSplit] = useState(""); //! тип деления для контекст меню для доп нагрузки
   const [parametrFilter, setParametrFilter] = useState("?"); //! параметр для истории
+  const [tableDataMyWorkload, setTableDataMyWorkload] = useState([]); //! данные для myWorkload
 
   const tabPar = {
+    tableDataMyWorkload,
+    setTableDataMyWorkload,
     selectedTable,
     setSelectedTable,
     selectedTr,
