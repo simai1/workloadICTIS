@@ -469,6 +469,7 @@ const ContextMenu = (props) => {
       //!
       if (
         !funGetSplitDopWorkload() &&
+        selectedTr.length === 1 &&
         wdFix.every(
           (it) =>
             it.workload !== "Защита ВКР" &&
