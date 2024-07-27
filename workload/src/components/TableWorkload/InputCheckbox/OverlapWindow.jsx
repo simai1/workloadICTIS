@@ -208,7 +208,7 @@ function OverlapWindow(props) {
         }
       });
     } else if (props.getConfirmation.type === 3) {
-      //! обьединение соединенеи строк
+      //! обьединение соединение строк
       console.log("props.getConfirmation", props.getConfirmation);
       if (props.getConfirmation.data.action === "?type=add") {
         joinAddWorkloads(props.getConfirmation.data.data).then((res) => {
@@ -240,6 +240,7 @@ function OverlapWindow(props) {
           }
         });
       } else {
+        console.log("props.getConfirmation.data", props.getConfirmation.data);
         joinWorkloads(
           props.getConfirmation.data.data,
           props.getConfirmation.data.action

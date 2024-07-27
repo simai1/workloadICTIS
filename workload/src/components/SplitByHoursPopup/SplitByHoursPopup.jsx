@@ -191,11 +191,11 @@ function SplitByHoursPopup() {
               <tr className={styles.origData}>
                 <td>
                   {tabPar.typeSplit === ""
-                    ? tabPar.tableDataHoursPopup.audienceHours
-                    : tabPar.tableDataHoursPopup.numberOfStudents}
+                    ? tabPar.tableDataHoursPopup?.audienceHours
+                    : tabPar.tableDataHoursPopup?.numberOfStudents}
                 </td>
-                <td>{tabPar.tableDataHoursPopup.ratingControlHours}</td>
-                <td>{tabPar.tableDataHoursPopup.hours}</td>
+                <td>{tabPar.tableDataHoursPopup?.ratingControlHours}</td>
+                <td>{tabPar.tableDataHoursPopup?.hours}</td>
               </tr>
               {Array.from(
                 { length: Number(tabPar.inpValueHoursPopup) },

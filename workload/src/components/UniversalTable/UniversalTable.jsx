@@ -96,6 +96,8 @@ function UniversalTable(props) {
             "comments",
             "Предложить",
             "Выделить",
+            "всеразделения",
+            "всеобъединения",
           ]}
         />
       ) : tabPar.contextMenuShow &&

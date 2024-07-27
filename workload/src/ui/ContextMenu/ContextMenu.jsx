@@ -179,11 +179,17 @@ const ContextMenu = (props) => {
   //! соединение нагрузок
   const handleJoinWorkloads = (action) => {
     setMenuShow("");
+    const funData = combineData(props.tableDataFix, tabPar.selectedTr, action);
     let data = {
       ids: tabPar.selectedTr,
     };
-
-    const funData = combineData(props.tableDataFix, tabPar.selectedTr, action);
+    if (funData && funData.newState) {
+      data = {
+        ...data,
+        curriculum: funData.newState.curriculum,
+        semester: funData.newState.semester,
+      };
+    }
 
     if (funData === null) {
       appData.seterrorPopUp(true);
@@ -206,6 +212,8 @@ const ContextMenu = (props) => {
         hours: funData.newState.hours,
         ratingControlHours: funData.newState.ratingControlHours,
         audienceHours: funData.newState.audienceHours,
+        curriculum: funData.newState.curriculum,
+        semester: funData.newState.semester,
       };
 
       if (action === "add" || action === "candidatesExam") {

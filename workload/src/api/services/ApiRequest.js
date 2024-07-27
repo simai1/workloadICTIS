@@ -257,7 +257,7 @@ export const apiSplitByHours = async (data) => {
 
 //! запрос на соединение нагрузки
 export const joinWorkloads = async (data, action) => {
-  console.log("Соединение нагрузки ", data, action);
+  console.log("Соединение нагрузки ", "data: ", data, "action: ", action);
   try {
     const response = await http.post(`${server}/workload/map${action}`, data);
     console.log("response ", response);

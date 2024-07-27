@@ -225,7 +225,6 @@ export function combineData(data, selectedTr, action = "") {
       (total, el) => total + el.numberOfStudents,
       0
     );
-    console.log(prevState);
     const audienceHours = prevState.reduce(
       (total, el) => total + el.audienceHours,
       0
@@ -325,6 +324,28 @@ export function combineData(data, selectedTr, action = "") {
       } else if (action === "candidatesExam") {
         newState = { ...updatedObject };
       }
+
+      //! рассчитываем учебный план, берем все учебные планы добалвяем в массив выбираем уникальные переводим в текст
+      let cursum = prevState
+        .map((el) => el.curriculum.split(", "))
+        .flat()
+        .filter((v, i, arr) => arr.indexOf(v) === i)
+        .reduce((acc, curr) => (acc === "" ? curr : `${acc}, ${curr}`), "");
+      // console.log("curmass", cursum);
+
+      let semestersem = prevState
+        .map((el) => el.semester.split(", "))
+        .flat()
+        .filter((v, i, arr) => arr.indexOf(v) === i)
+        .reduce((acc, curr) => (acc === "" ? curr : `${acc}, ${curr}`), "");
+      // console.log("semestersem", semestersem);
+
+      newState = {
+        ...newState,
+        curriculum: cursum,
+        semester: semestersem,
+      };
+      console.log("newState", newState);
 
       const newUpdatedData = [
         ...upData.slice(0, index),
