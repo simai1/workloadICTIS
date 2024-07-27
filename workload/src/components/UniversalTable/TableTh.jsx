@@ -54,7 +54,8 @@ function TableTh(props) {
     }
   }, [appData.sortParamByColumn]);
   return (
-    <th name={props.item.key} key={props.item.key}>
+    <th name={props.item.key} key={props.item.key} id={appData.selectedComponent === "ScheduleMaterials" && (props.item.key === "notes" || props.item.key === "groups") ? styles.fihedTh : null}
+    >
       {props.modal && (
         <SamplePoints
           index={props.index}
