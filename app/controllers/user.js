@@ -8,6 +8,7 @@ import institutionalAffiliations from '../config/institutional-affiliations.js';
 
 export default {
     async getUser(req, res) {
+        console.log(req.user)
         if (req.user == null) res.redirect('/');
         const user = await User.findByPk(req.user, { include: Educator });
         if (!user) throw new AppErrorNotExist('user');

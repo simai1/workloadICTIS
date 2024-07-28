@@ -3,8 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import styles from "./Authorization.module.scss";
 import Input from "../../ui/Input/Input";
 import { AuthTest } from "../../api/services/ApiRequest";
+import DataContext from "../../context";
 
 function Authorization() {
+  const { appData, tabPar, visibleDataPar, basicTabData } =
+    React.useContext(DataContext);
   const [formData, setFormData] = useState({ login: '', password: '' });
   const navigate = useNavigate();
 
@@ -20,7 +23,10 @@ function Authorization() {
     console.log('formData', formData)
     AuthTest(formData).then((resp)=>{
       if(resp?.status === 200){
+        console.log(resp)
+        appData.setMyProfile(resp?.data.user)
         navigate('/HomePage')//!то что нужно вставить
+        // location.reload()
       }else{
         alert("Неверный логин или пароль!")
       }

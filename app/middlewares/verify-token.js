@@ -1,8 +1,8 @@
 import { asyncRoute } from '../utils/errors.js';
-
+import jwt from '../utils/jwt.js';
 
 async function general(req, res, next) {
-    if (!req.user) {
+    if (!req.cookies.refreshToken) {
         res.redirect('/auth/loginSfedu');
     } else {
         next();

@@ -10,6 +10,7 @@ import checkHours from '../utils/notification.js';
 import History from '../models/history.js';
 import sendMail from '../services/email.js';
 import { Op, Sequelize } from 'sequelize';
+import jwt from '../utils/jwt.js';
 
 const getIds = modelsArr => {
     const arr = [];
@@ -819,7 +820,8 @@ export default {
     },
 
     async getUsableDepartments(req, res) {
-        const userId = req.user;
+        const existUser = jwt.decode(req.cookies.refreshToken)
+        const userId = existUser.id;
         const checkUser = await User.findByPk(userId);
         if (!checkUser) throw new AppErrorNotExist('User');
         const role = checkUser.role;

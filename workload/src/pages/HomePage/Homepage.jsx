@@ -104,9 +104,10 @@ function HomePage() {
 
   //! получаем и записываем данные usera
   useEffect(() => {
-    apiGetUser().then((data) => {
-      appData.setMyProfile(data);
-    });
+    console.log("Вызвал получение ")
+    // apiGetUser().then((data) => {
+    //   appData.setMyProfile(data);
+    // });
   }, []);
 
   const handleComponentChange = (component) => {
