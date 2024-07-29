@@ -176,7 +176,7 @@ export default {
     async update(req, res) {
         const { notes, groups, ids } = req.body;
         if (!ids) throw new AppErrorMissing('materialId');
-        if (!notes && !groups) throw new AppErrorMissing('body');
+        // if (!notes && !groups) throw new AppErrorMissing('body');
         await Materials.update({ notes, groups }, { where: { id: ids } });
         res.json({ status: 'OK' });
     },
