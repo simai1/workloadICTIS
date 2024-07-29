@@ -5,12 +5,15 @@ import Educator from '../models/educator.js';
 import departments from '../config/departments.js';
 import roles, { map as mapRoles } from '../config/roles.js';
 import institutionalAffiliations from '../config/institutional-affiliations.js';
+import jwt from '../utils/jwt.js';
 
 export default {
     async getUser(req, res) {
         console.log(req.user)
-        if (req.user == null) res.redirect('/');
-        const user = await User.findByPk(req.user, { include: Educator });
+        const existUser = jwt.decode(req.cookies.refreshToken)
+        const userId = existUser.id;
+        if (req.cookies.refreshToken == null) res.redirect('/');
+        const user = await User.findByPk(userId, { include: Educator });
         if (!user) throw new AppErrorNotExist('user');
         const userDto = new UserDto(user);
         if (user.role !== 1) {

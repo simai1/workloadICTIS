@@ -6,6 +6,7 @@ import { AppErrorInvalid, AppErrorMissing } from '../utils/errors.js';
 import EducatorDto from '../dtos/educator-dto.js';
 import OfferDto from '../dtos/offer-dto.js';
 import status from '../config/status.js';
+import jwt from '../utils/jwt.js';
 
 export default {
     async getAllOffers(req, res) {
@@ -47,9 +48,11 @@ export default {
 
     async getAllOffersByLecture(req, res) {
         try {
+            const existUser = jwt.decode(req.cookies.refreshToken)
+            const userId = existUser.id;
             const _educator = await Educator.findOne({
                 where: {
-                    userId: req.user,
+                    userId: userId,
                 },
             })
             // Получение всех предложений
@@ -89,9 +92,11 @@ export default {
     async createOffer({ body: { educatorId, workloadId }, user }, res) {
         try {
             // Получение информации о преподавателе
+            const existUser = jwt.decode(req.cookies.refreshToken)
+            const userId = existUser.id;
             const educator = await Educator.findByPk(educatorId, { attributes: { exclude: ['id'] } });
 
-            const proposer = await Educator.findOne({ where: { userId: user } });
+            const proposer = await Educator.findOne({ where: { userId: userId } });
             if (!educator) {
                 throw new AppErrorMissing('Educator not found');
             }

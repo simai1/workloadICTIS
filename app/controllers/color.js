@@ -3,10 +3,13 @@ import Color from '../models/color.js';
 import Educator from '../models/educator.js';
 import Workload from '../models/workload.js';
 import { AppErrorInvalid, AppErrorMissing } from "../utils/errors.js";
+import jwt from '../utils/jwt.js';
 
 export default {
     async getAllColors(req, res) {
-        const userId = req.user;
+        const existUser = jwt.decode(req.cookies.refreshToken)
+        const userId = existUser.id;
+        // const userId = req.user;
         const educator = await Educator.findOne({ where: { userId } });
 
         if (!educator) res.json({});
@@ -21,8 +24,9 @@ export default {
         if (!workloadIds || !Array.isArray(workloadIds) || workloadIds.length === 0) {
             throw new AppErrorMissing('workloadIds');
         }
-
-        const educator = await Educator.findOne({ where: { userId: user } });
+        const existUser = jwt.decode(req.cookies.refreshToken)
+        const userId = existUser.id;
+        const educator = await Educator.findOne({ where: { userId: userId } });
 
         const workloadColor = { color, educatorId: educator.id };
 

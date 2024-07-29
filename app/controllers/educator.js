@@ -11,6 +11,7 @@ import Workload from '../models/workload.js';
 import departments from '../config/departments.js';
 import WorkloadProfileDto from '../dtos/workload-profile-dto.js';
 import { instituteDepartments } from "../config/institutional-affiliations.js";
+import jwt from '../utils/jwt.js';
 
 const orderRule = [
     ['department', 'ASC'],
@@ -19,7 +20,9 @@ const orderRule = [
 
 export default {
     async getAll(req, res) {
-        const _user = await User.findByPk(req.user);
+        const existUser = jwt.decode(req.cookies.refreshToken)
+        const userId = existUser.id;
+        const _user = await User.findByPk(userId);
         const {col, type} = req.query;
         let educators;
         if (_user.role === 4 || _user.role === 7) {
@@ -213,8 +216,10 @@ export default {
         if (!educatorId) throw new AppErrorMissing('educatorId');
 
         const educator = await Educator.findByPk(educatorId);
+        const existUser = jwt.decode(req.cookies.refreshToken)
+        const userId = existUser.id;
 
-        if (educator.userId === user) throw AppErrorForbiddenAction();
+        if (educator.userId === userId) throw AppErrorForbiddenAction();
 
         if (!educator) {
             return res.status(404).json('Educator not found');
@@ -226,7 +231,8 @@ export default {
     },
 
     async getEducatorsByDepartment(req, res) {
-        const userId = req.user;
+        const existUser = jwt.decode(req.cookies.refreshToken)
+        const userId = existUser.id;
         const educator = await Educator.findOne({
             where: { userId },
             include: [{ model: User }],
@@ -260,7 +266,8 @@ export default {
     },
 
     async getEducatorsByInstitute(req, res){
-        const userId = req.user;
+        const existUser = jwt.decode(req.cookies.refreshToken)
+        const userId = existUser.id;
         const educator = await Educator.findOne({
             where: { userId },
             include: [{ model: User }],

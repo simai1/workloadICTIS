@@ -3,6 +3,7 @@ import Notification from '../models/notifications.js';
 import NotificationDto from '../dtos/notification-dto.js';
 import User from '../models/user.js';
 import { Op, Sequelize } from 'sequelize';
+import jwt from '../utils/jwt.js';
 
 const order = [
     'Превышены максимальные часы для преподавателя',
@@ -17,7 +18,9 @@ function getPosition(message) {
 export default {
     async getAllNotifications(req, res) {
         try {
-            const _user = await User.findByPk(req.user, { include: Educator });
+            const existUser = jwt.decode(req.cookies.refreshToken)
+            const userId = existUser.id;
+            const _user = await User.findByPk(userId, { include: Educator });
             let notifications;
             if (_user.role === 3 || _user.role === 8) {
                 notifications = await Notification.findAll({
