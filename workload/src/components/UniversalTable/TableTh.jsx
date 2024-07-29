@@ -24,19 +24,19 @@ function TableTh(props) {
   //! сортируем по колонке в App вызывается useEfferc для обновления массива
   const funSortByColumn = () => {
     let par = "";
-    if (appData.sortParamByColumn === "") {
+    if (props.tabDat.sortParamByColumn === "") {
       par = `col=${props.item.key}&type=${"asc"}`;
       setSortImg(1);
     } else {
       if (
-        appData.sortParamByColumn.includes(props.item.key) &&
-        appData.sortParamByColumn.includes("asc")
+        props.tabDat.sortParamByColumn.includes(props.item.key) &&
+        props.tabDat.sortParamByColumn.includes("asc")
       ) {
         par = `col=${props.item.key}&type=${"desc"}`;
         setSortImg(2);
       } else if (
-        appData.sortParamByColumn.includes(props.item.key) &&
-        appData.sortParamByColumn.includes("desc")
+        props.tabDat.sortParamByColumn.includes(props.item.key) &&
+        props.tabDat.sortParamByColumn.includes("desc")
       ) {
         par = "";
         setSortImg(0);
@@ -45,16 +45,24 @@ function TableTh(props) {
         setSortImg(1);
       }
     }
-    appData.setSortParamByColumn(par);
+    props.tabDat.setSortParamByColumn(par);
   };
 
   useEffect(() => {
-    if (!appData.sortParamByColumn.includes(props.item.key)) {
+    if (!props.tabDat.sortParamByColumn.includes(props.item.key)) {
       setSortImg(0);
     }
-  }, [appData.sortParamByColumn]);
+  }, [props.tabDat.sortParamByColumn]);
   return (
-    <th name={props.item.key} key={props.item.key} id={appData.selectedComponent === "ScheduleMaterials" && (props.item.key === "notes" || props.item.key === "groups") ? styles.fihedTh : null}
+    <th
+      name={props.item.key}
+      key={props.item.key}
+      id={
+        appData.selectedComponent === "ScheduleMaterials" &&
+        (props.item.key === "notes" || props.item.key === "groups")
+          ? styles.fihedTh
+          : null
+      }
     >
       {props.modal && (
         <SamplePoints
@@ -79,13 +87,14 @@ function TableTh(props) {
         >
           {props.item.label}
         </div>
-        { ((props.item.key === "notes" || props.item.key === "groups") && appData.selectedComponent === "ScheduleMaterials") &&
-              <img
-                src="./img/Edit.svg"
-                className={styles.topRightCorner}
-                title="Данная колонка редактируется (Двойной клик по полю колонки)"
-              />       
-           }
+        {(props.item.key === "notes" || props.item.key === "groups") &&
+          appData.selectedComponent === "ScheduleMaterials" && (
+            <img
+              src="./img/Edit.svg"
+              className={styles.topRightCorner}
+              title="Данная колонка редактируется (Двойной клик по полю колонки)"
+            />
+          )}
         <div className={styles.th_inner_img}>
           {props.tabDat.isSorted &&
             props.item.key !== "id" &&
@@ -101,8 +110,10 @@ function TableTh(props) {
                     ? {
                         transition: "all 0.2s ease",
                       }
-                    : { transition: "all 0.2s ease",
-                        transform: "rotate(-180deg)", }
+                    : {
+                        transition: "all 0.2s ease",
+                        transform: "rotate(-180deg)",
+                      }
                 }
               ></img>
             )}

@@ -898,7 +898,7 @@ function HomePage() {
                     <div className={styles.import}>
                       <button onClick={exportFile}>
                         <img
-                          src="./img/import.svg"
+                          src="./img/exportTable.svg"
                           alt=">"
                           className={styles.export__img}
                         ></img>

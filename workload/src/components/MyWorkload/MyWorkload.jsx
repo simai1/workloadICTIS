@@ -32,6 +32,7 @@ function MyWorkload(props) {
     isCheckedStore,
     isSorted: false, //! показать или скрыть сортировку
     isBlocked: true, //! показывать или скрывать блокированные
+    isSignature: true,
   };
 
   function funUpdateTabDat() {
