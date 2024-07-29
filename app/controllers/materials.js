@@ -174,10 +174,10 @@ export default {
     },
 
     async update(req, res) {
-        const { notes, groups } = req.body;
-        const { materialId } = req.params;
-        if (!materialId) throw new AppErrorMissing('materialId');
-        await Materials.update({ notes, groups }, { where: { id: materialId } });
+        const { notes, groups, ids } = req.body;
+        if (!ids) throw new AppErrorMissing('materialId');
+        if (!notes && !groups) throw new AppErrorMissing('body');
+        await Materials.update({ notes, groups }, { where: { id: ids } });
         res.json({ status: 'OK' });
     },
 
@@ -279,14 +279,5 @@ export default {
             }
         }
         res.json(usableDepartments);
-    },
-
-    async setGroups(req, res) {
-        let { groups } = req.body;
-        const { materialId } = req.params;
-        if (!groups) groups = '';
-        if (!materialId) throw new AppErrorMissing('materialId');
-        await Materials.update({ groups }, { where: { id: materialId } });
-        res.json({ status: 'OK' });
     },
 };
