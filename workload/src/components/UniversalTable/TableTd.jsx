@@ -23,8 +23,6 @@ function TableTd(props) {
   useEffect(() => {
     if(appData.popApCloseSttatus){
       setOnTextArea(false);
-      props.tabDat.funUpdateTabDat();
-      dispatch(resetStatus({ value: 0 }));
       appData.setPopApCloseSttatus(false);
     }
 }, [  appData.popApCloseSttatus]);
@@ -281,6 +279,7 @@ function TableTd(props) {
       name={props.itemKey.key}
       key={props.item.id + "_" + props.itemKey.key + "_" + props.ind}
       className={getClassNameTr()}
+      id={appData.selectedComponent === "ScheduleMaterials" && (props.itemKey.key === "notes" || props.itemKey.key === "groups") ? styles.fihedTd : null}
       style={
         showFullText && props.item[props.itemKey.key]?.length > lenSlice
           ? props.itemKey.key === "discipline" || props.itemKey.key === "workload" || props.itemKey.key === "notes" || props.itemKey.key === "groups"

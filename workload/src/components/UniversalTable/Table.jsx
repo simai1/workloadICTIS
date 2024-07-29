@@ -62,10 +62,9 @@ function Table(props) {
     // el.stopProgretions();
     const a = el.target.nodeName;
     if (
-      (
       a === "TD" ||
       a === "INPUT" ||
-      el.target.getAttribute("name") === "educator") 
+      el.target.getAttribute("name") === "educator"
     ) {
       var len = tabPar.selectedTr.length;
       tabPar.setSelectedTr((prev) => {
@@ -131,8 +130,8 @@ function Table(props) {
 
     return classText;
   };
-
-  //! функция опредления заблокирован ли tr, чтобы вывести кнопки отмены подтверждения
+  // console.log("tabPar.changedData", tabPar.changedData);
+  //! функция опредления заблокирован ли tr, чтобы вывести кнопки отмены и подтверждения
   const getConfirmation = (itemId) => {
     return funGetConfirmation(itemId, tabPar.changedData, appData.bufferAction);
   };

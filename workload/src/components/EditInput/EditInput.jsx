@@ -13,7 +13,7 @@ import {
 // import { headers as hed } from "../TableDisciplines/Data";
 
 function EditInput({ selectedComponent, originalHeader, ssname }) {
-  const { basicTabData } = React.useContext(DataContext);
+  const { basicTabData, appData } = React.useContext(DataContext);
   const headers = [...basicTabData.tableHeaders];
   const [searchResults, setSearchResults] = useState(headers);
   const [isListOpen, setListOpen] = useState(false);
@@ -30,7 +30,7 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
     originalHeader?.length === ssUpdatedHeader?.length ? true : false
   );
   const [checkedItems, setCheckedItems] = useState(
-    Array(originalHeader?.slice(3).length).fill(true)
+    appData.selectedComponent === "ScheduleMaterials" ?   Array(originalHeader?.slice(5).length).fill(true) :  Array(originalHeader?.slice(3).length).fill(true)
   );
 
   const [isChecked, setChecked] = useState(
@@ -54,7 +54,8 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
   }, [originalHeader, selectedComponent]);
 
   useEffect(() => {
-    setSearchResults(originalHeader.slice(3));
+    appData.selectedComponent === "ScheduleMaterials" ? setSearchResults(originalHeader.slice(5)) : setSearchResults(originalHeader.slice(3));
+
   }, [basicTabData.tableHeaders, selectedComponent]);
 
   //! закрытие модального окна при нажатии вне него
@@ -132,18 +133,26 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
         addAllCheckeds({ tableName: ssname, checked: [...originalHeader] })
       );
     } else {
-      setChecked([...originalHeader.slice(3)].map((el) => el.key));
-      basicTabData.setTableHeaders([...originalHeader].slice(0, 3));
-      // sessionStorage.setItem(
-      //   ssname,
-      //   JSON.stringify([...originalHeader].slice(0, 3))
-      // );
-      dispatch(
-        addAllCheckeds({
-          checked: [...originalHeader].slice(0, 3),
-          tableName: ssname,
-        })
-      );
+      if(appData.selectedComponent === "ScheduleMaterials") {
+        setChecked([...originalHeader.slice(5)].map((el) => el.key));
+        basicTabData.setTableHeaders([...originalHeader].slice(0, 5));
+        dispatch(
+          addAllCheckeds({
+            checked: [...originalHeader].slice(0, 5),
+            tableName: ssname,
+          })
+        );
+      }else{
+        setChecked([...originalHeader.slice(3)].map((el) => el.key));
+       basicTabData.setTableHeaders([...originalHeader].slice(0, 3));
+        dispatch(
+          addAllCheckeds({
+            checked: [...originalHeader].slice(0, 3),
+            tableName: ssname,
+          })
+        );
+      }
+      
     }
   }
 

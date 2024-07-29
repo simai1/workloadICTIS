@@ -3,7 +3,6 @@ import Table from "./Table";
 import styles from "./UniversalTable.module.scss";
 import { filteredWorkload, funfastenedDataSort } from "./Function";
 import DataContext from "../../context";
-import ContextMenu from "../../ui/ContextMenu/ContextMenu";
 
 //! обязательные параметры
 // const tabDat = {
@@ -84,29 +83,8 @@ function UniversalTable(props) {
       <div className={styles.psevdoElem}></div>
 
       {tabPar.contextMenuShow &&
-      tabPar.selectedTr.length !== 0 &&
-      (props.contextMenu === "TableWorkload" ||
-        props.contextMenu === "MyWorkload") ? (
-        <ContextMenu
-          setTableDataFix={props.tabDat.setTableDataFix}
-          tableDataFix={props.tabDat.tableDataFix}
-          allowedMenus={[
-            "Закрепить",
-            "Открепить",
-            "comments",
-            "Предложить",
-            "Выделить",
-          ]}
-        />
-      ) : tabPar.contextMenuShow &&
         tabPar.selectedTr.length !== 0 &&
-        props.contextMenu === "Schedule" ? (
-        <ContextMenu
-          setTableDataFix={props.tabDat.setTableDataFix}
-          tableDataFix={props.tabDat.tableDataFix}
-          allowedMenus={["Удалить"]}
-        />
-      ) : null}
+        props.contextMenu()}
       <Table tabDat={props.tabDat} />
     </div>
   );

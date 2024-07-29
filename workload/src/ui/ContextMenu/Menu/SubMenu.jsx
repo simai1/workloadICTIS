@@ -8,7 +8,7 @@ import {
 } from "../Function";
 
 export function SubMenu(props) {
-  const { tabPar, basicTabData, appData } = React.useContext(DataContext);
+  const { tabPar, appData } = React.useContext(DataContext);
 
   //! разделение нагрузки на count
   const handleSplitWorkload = (cou) => {
@@ -18,20 +18,20 @@ export function SubMenu(props) {
       n: count,
     };
 
-    const prev = basicTabData.workloadDataFix.filter((item) =>
+    const prev = [...props.tableDataFix].filter((item) =>
       tabPar.selectedTr.some((el) => el === item.id)
     );
 
     // Создаем новый массив для измененных данных
-    let updatedData = [...basicTabData.workloadDataFix];
     const funData = splitWorkloadCount(
-      updatedData,
+      props.tableDataFix,
       tabPar.selectedTr,
       count,
       props.typeSplit
     );
-    basicTabData.setWorkloadDataFix(funData.updatedData);
-    console.log(funData.blocked);
+
+    props.setTableDataFix(funData.updatedData);
+
     tabPar.setChangedData(
       addСhangedData(tabPar.changedData, "split", funData.blocked)
     );

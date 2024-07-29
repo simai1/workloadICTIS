@@ -3,7 +3,7 @@ import { addСhangedData } from "./../../ui/ContextMenu/Function";
 import styles from "./SplitByHoursPopup.module.scss";
 import DataContext from "../../context";
 
-function SplitByHoursPopup() {
+function SplitByHoursPopup(props) {
   const { tabPar, basicTabData, appData } = React.useContext(DataContext);
 
   //! вводим в инпут часы и записываем в состояние
@@ -18,7 +18,13 @@ function SplitByHoursPopup() {
   //! функция для разделения строк при нажатии сохранить
   const handleSplitWorkload = (bufdat, inpValueHoursPopup) => {
     console.log("bufdat", bufdat);
-    let updatedData = [...basicTabData.workloadDataFix];
+    let updatedData = [];
+
+    if (props.component === "MyWorkload") {
+      updatedData = [...tabPar.tableDataMyWorkload];
+    } else {
+      updatedData = [...basicTabData.workloadDataFix];
+    }
     //! находим индекс строки которую будем делить
     const indexWorkload = updatedData.findIndex(
       (el) => el.id === bufdat.workloadId
@@ -51,7 +57,11 @@ function SplitByHoursPopup() {
       ...newValue,
       ...updatedData.slice(indexWorkload + 1),
     ];
-    basicTabData.setWorkloadDataFix(updatedData);
+    if (props.component === "MyWorkload") {
+      tabPar.setTableDataMyWorkload(updatedData);
+    } else {
+      basicTabData.setWorkloadDataFix(updatedData);
+    }
     tabPar.setChangedData(
       addСhangedData(tabPar.changedData, "split", bufdat.newIds)
     );
@@ -191,11 +201,11 @@ function SplitByHoursPopup() {
               <tr className={styles.origData}>
                 <td>
                   {tabPar.typeSplit === ""
-                    ? tabPar.tableDataHoursPopup.audienceHours
-                    : tabPar.tableDataHoursPopup.numberOfStudents}
+                    ? tabPar.tableDataHoursPopup?.audienceHours
+                    : tabPar.tableDataHoursPopup?.numberOfStudents}
                 </td>
-                <td>{tabPar.tableDataHoursPopup.ratingControlHours}</td>
-                <td>{tabPar.tableDataHoursPopup.hours}</td>
+                <td>{tabPar.tableDataHoursPopup?.ratingControlHours}</td>
+                <td>{tabPar.tableDataHoursPopup?.hours}</td>
               </tr>
               {Array.from(
                 { length: Number(tabPar.inpValueHoursPopup) },

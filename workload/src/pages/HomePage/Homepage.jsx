@@ -272,14 +272,14 @@ function HomePage() {
       url = `?department=${idTableUnlock}`;
     }
     Workload(url).then((resp) => {
-      generateAndDownloadExcel(resp, nameDepartment , "workload");
+      generateAndDownloadExcel(resp, nameDepartment, "workload");
     });
   };
 
   //!Функция генерации файла для скачивания
   const generateAndDownloadExcel = (data, nameDepartment, nameTable) => {
     let transformedData = {};
-    if(nameTable === "schedule") {
+    if (nameTable === "schedule") {
       transformedData = data.map(
         ({ id, isBlocked, isMerged, isOid, isSplit, educator, ...item }) => ({
           Кафедра: item?.department,
@@ -303,7 +303,7 @@ function HomePage() {
           Преподаватель: educator?.name,
         })
       );
-    }else{
+    } else {
       transformedData = data.map(
         ({ id, isBlocked, isMerged, isOid, isSplit, educator, ...item }) => ({
           Кафедра: item?.department,
@@ -327,7 +327,7 @@ function HomePage() {
         })
       );
     }
-  
+
     const worksheet = XLSX.utils.json_to_sheet(transformedData);
 
     // Установка ширины столбцов
@@ -387,9 +387,9 @@ function HomePage() {
     }
     const nameDepartment = basicTabData.selectTableSchedle;
     getSchedule(url).then((resp) => {
-      generateAndDownloadExcel(resp.data , nameDepartment, "schedule");
+      generateAndDownloadExcel(resp.data, nameDepartment, "schedule");
     });
-  }
+  };
 
   useEffect(() => {
     setBlockTable(checkBlocked());
@@ -434,6 +434,12 @@ function HomePage() {
       tabPar.setParametrFilter("?");
     }
   };
+
+  // //! функция котора открывет попап для редактирвоания цасов с определенными данными
+  // function funDataSplitHoursPopup(data, setdata, action){
+  //   console.log("")
+
+  // }
 
   return (
     <Layout>
@@ -773,7 +779,7 @@ function HomePage() {
             <div className={styles.header_bottom}>
               <div className={styles.header_bottom_button}>
                 {appData.metodRole[appData.myProfile?.role]?.some(
-                  (el) => el === 28 || el === 57
+                  (el) => el === 28 || el === 57 || el === 58
                 ) &&
                   (appData.selectedComponent === "Disciplines" ||
                     appData.selectedComponent === "History" ||
@@ -786,26 +792,27 @@ function HomePage() {
                         />
                       ) : (
                         <>
-                        {
-                          appData.metodRole[appData.myProfile?.role]?.some((el) => el === 55) && <ListSchedule dataList={departmentsMaterials} />
-                        }
-                        <div className={styles.exportSchedule}>
-                        <button onClick={sync} className={styles.buttonSync}>
-                            Синхронизация
-                          </button>
-                          <div className={styles.import}>
-                            <button onClick={exportSchedulefunc}>
-                              <img
-                                src="./img/import.svg"
-                                alt=">"
-                                className={styles.export__img}
-                              ></img>
-                              <p>Экспорт таблицы</p>
+                          {appData.metodRole[appData.myProfile?.role]?.some(
+                            (el) => el === 55
+                          ) && <ListSchedule dataList={departmentsMaterials} />}
+                          <div className={styles.exportSchedule}>
+                            <button
+                              onClick={sync}
+                              className={styles.buttonSync}
+                            >
+                              Синхронизация
                             </button>
+                            <div className={styles.import}>
+                              <button onClick={exportSchedulefunc}>
+                                <img
+                                  src="./img/import.svg"
+                                  alt=">"
+                                  className={styles.export__img}
+                                ></img>
+                                <p>Экспорт таблицы</p>
+                              </button>
+                            </div>
                           </div>
-                        </div>
-                         
-
                         </>
                       )}
 
@@ -998,7 +1005,9 @@ function HomePage() {
       {appData.errorPopUp && <PopUpError />}
 
       {appData.godPopUp && <PopUpGoodMessage />}
-      {tabPar.popupShareShow && <SplitByHoursPopup />}
+      {tabPar.popupShareShow && (
+        <SplitByHoursPopup component={appData.selectedComponent} />
+      )}
       {textareaStor.textarea && <PopupTextArea data={textareaStor} />}
     </Layout>
   );

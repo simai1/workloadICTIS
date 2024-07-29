@@ -20,7 +20,7 @@ function SplitByHoursMenu(props) {
   const funsplitByHours = () => {
     tabPar.setPopupShareShow(true);
     //! получаем строку которую выделили
-    const prev = basicTabData.workloadDataFix.find(
+    const prev = [...props.tableDataFix].find(
       (item) => item.id === tabPar.selectedTr[0]
     );
     const origHours = {
@@ -43,7 +43,7 @@ function SplitByHoursMenu(props) {
   const funSplitVKR = () => {
     // tabPar.setPopupShareShow(true);
     //! получаем строку которую выделили
-    const prev = basicTabData.workloadDataFix.find(
+    const prev = props.tableDataFix.find(
       (item) => item.id === tabPar.selectedTr[0]
     );
     const origHours = {
@@ -62,7 +62,7 @@ function SplitByHoursMenu(props) {
     //! функция для разделения строк
     const handleSplit = (bufdat, inpValueHoursPopup) => {
       console.log("bufdat", bufdat);
-      let updatedData = [...basicTabData.workloadDataFix];
+      let updatedData = [...props.tableDataFix];
       //! находим индекс строки которую будем делить
       const indexWorkload = updatedData.findIndex(
         (el) => el.id === bufdat.workloadId
@@ -95,7 +95,7 @@ function SplitByHoursMenu(props) {
         ...newValue,
         ...updatedData.slice(indexWorkload + 1),
       ];
-      basicTabData.setWorkloadDataFix(updatedData);
+      props.setTableDataFix(updatedData);
       tabPar.setChangedData(
         addСhangedData(tabPar.changedData, "split", bufdat.newIds)
       );

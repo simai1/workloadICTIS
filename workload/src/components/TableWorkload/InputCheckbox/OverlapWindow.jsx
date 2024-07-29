@@ -14,6 +14,7 @@ import { deleteItemBuffer } from "../Function";
 
 function OverlapWindow(props) {
   const { tabPar, appData, basicTabData } = React.useContext(DataContext);
+  console.log("props.getConfirmation", props.getConfirmation);
 
   const cancelChanges = () => {
     if (props.getConfirmation.type === 1) {
@@ -208,7 +209,7 @@ function OverlapWindow(props) {
         }
       });
     } else if (props.getConfirmation.type === 3) {
-      //! обьединение соединенеи строк
+      //! обьединение соединение строк
       console.log("props.getConfirmation", props.getConfirmation);
       if (props.getConfirmation.data.action === "?type=add") {
         joinAddWorkloads(props.getConfirmation.data.data).then((res) => {
@@ -240,6 +241,7 @@ function OverlapWindow(props) {
           }
         });
       } else {
+        console.log("props.getConfirmation.data", props.getConfirmation.data);
         joinWorkloads(
           props.getConfirmation.data.data,
           props.getConfirmation.data.action
