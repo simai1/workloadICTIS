@@ -99,7 +99,11 @@ function App() {
   const [popupGoodText, setPopupGoodText] = useState(""); //! если не пустой то в поап ерор будет текст который в состоянии
   const [dataUpdated, setDataUpdated] = useState(false); //!индикатор что данные обновлены
   const [popApCloseSttatus, setPopApCloseSttatus] = useState(false); //!индикатор что данные обновлены через попап
+  const [popUpTextArea, SetPopUpTextArea] = useState(false); //!индикатор что данные обновлены через попап
+
   const appData = {
+    SetPopUpTextArea,
+    popUpTextArea,
     setPopApCloseSttatus,
     popApCloseSttatus,
     popupGoodText,

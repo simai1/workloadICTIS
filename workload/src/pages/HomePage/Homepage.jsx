@@ -48,6 +48,7 @@ import MyWorkload from "../../components/MyWorkload/MyWorkload";
 import ListSchedule from "../../ui/ListSchedule/ListSchedule";
 import PopupTextArea from "../../components/PopupTextArea/PopupTextArea";
 import { useSelector } from "react-redux";
+import PopUpTextAreaMore from "../../components/PopUpTextAreaMore/PopUpTextAreaMore";
 function HomePage() {
   const { appData, tabPar, visibleDataPar, basicTabData } =
     React.useContext(DataContext);
@@ -1009,6 +1010,7 @@ function HomePage() {
         <SplitByHoursPopup component={appData.selectedComponent} />
       )}
       {textareaStor.textarea && <PopupTextArea data={textareaStor} />}
+      {appData.popUpTextArea && <PopUpTextAreaMore />}
     </Layout>
   );
 }

@@ -430,6 +430,9 @@ const ContextMenu = (props) => {
     }
   };
 
+  const addNote = () =>{
+    appData.SetPopUpTextArea(true);
+  }
   //! функция которая определяет какое разделене выводить
   function getSplitMenuPopup(
     metodRole,
@@ -637,6 +640,7 @@ const ContextMenu = (props) => {
     return massMenuPop;
   }
 
+
   const funAllowedMenus = (menuName) => {
     let mass = [];
     if (props.allowedMenus) {
@@ -769,6 +773,14 @@ const ContextMenu = (props) => {
               img={true}
             />
           )}
+          {
+            appData.selectedComponent === "ScheduleMaterials" &&
+            <MenuPop
+              key={"MenuPop9"}
+              btnText={"Добавить примечание"}
+              func={addNote}
+              img={false} />
+          }
         {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 13) &&
           determineIsBlocked() &&
           funAllowedMenus("Удалить") && (
