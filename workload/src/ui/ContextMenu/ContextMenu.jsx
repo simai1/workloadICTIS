@@ -774,7 +774,7 @@ const ContextMenu = (props) => {
             />
           )}
           {
-            appData.selectedComponent === "ScheduleMaterials" &&
+            appData.selectedComponent === "ScheduleMaterials" && tabPar.selectedTr.length <= 15 && 
             <MenuPop
               key={"MenuPop9"}
               btnText={"Добавить примечание"}
