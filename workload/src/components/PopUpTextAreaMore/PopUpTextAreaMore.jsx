@@ -2,10 +2,19 @@ import React, { useState } from "react";
 import styles from "./PopUpTextAreaMore.module.scss";
 import TextArea from "../../ui/TextArea/TextArea";
 import DataContext from "../../context";
-
+import { apiNotecAddMaterials } from "../../api/services/ApiRequest";
+import { useDispatch } from "react-redux";
+import {
+  cancleEditTd,
+  onTextareaShow,
+  resetStatus,
+  resetTheValue,
+  setTextAreaValue,
+} from "../../store/popup/textareaData.slice";
 function PopUpTextAreaMore(props) {
   const { appData, tabPar } = React.useContext(DataContext);
   const [textAreaText, SetTextAreaText] = useState("");
+  const dispatch = useDispatch();
 
   //! изменение textarea
   const onChange = (e) => {
@@ -31,16 +40,15 @@ function PopUpTextAreaMore(props) {
   //! приемнить изменения
   const applyChang = () => {
     const data = {
-      nootes: textAreaText,
-      ids: [tabPar.selectedTr]
+      notes: textAreaText || "",
+      ids: tabPar.selectedTr
     };
-    console.log('data', data)
-    // apiNotecAddMaterials(textareaStor.itemId, data).then((req) => {
-    //   if (req.status === 200) {
-    //     dispatch(onTextareaShow());
-    //     appData.setPopApCloseSttatus(true);
-    //   }
-    // });
+    apiNotecAddMaterials(data).then((req) => {
+      if (req?.status === 200) {
+        appData.SetPopUpTextArea(false)
+        appData.setPopApCloseSttatus(true);
+      }
+    });
   };
 
   return (

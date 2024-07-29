@@ -42,8 +42,10 @@ function PopupTextArea(props) {
   const applyChang = () => {
     const data = {
       [textareaStor.key]: textareaStor.taValue.trim() || "",
+      ids: [textareaStor.itemId],
     };
-    apiNotecAddMaterials(textareaStor.itemId, data).then((req) => {
+    console.log(data)
+    apiNotecAddMaterials(data).then((req) => {
       if (req?.status === 200) {
         dispatch(onTextareaShow());
         appData.setPopApCloseSttatus(true);

@@ -145,15 +145,17 @@ function TableTd(props) {
     ){
       data = {
         notes: textareaStor.taValue.trim() || "",
+        ids : [props.item?.id]
       };
     }else{
       data = {
         groups: textareaStor.taValue.trim() || "",
+        ids : [props.item?.id]
       };
     }
       if (props.itemKey.key === "notes" || props.itemKey.key === "groups") {
-      apiNotecAddMaterials(props.item?.id, data).then((req) => {
-        if (req.status === 200) {
+      apiNotecAddMaterials(data).then((req) => {
+        if (req?.status === 200) {
           setOnTextArea(false);
           props.tabDat.funUpdateTabDat();
         }

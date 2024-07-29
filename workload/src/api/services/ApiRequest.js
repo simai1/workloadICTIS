@@ -641,10 +641,10 @@ export const ApiUnblockTable = async (indexTable) => {
 };
 
 //! Добавить примечание в материалы к рассписанию
-export const apiNotecAddMaterials = async (materialId, data) => {
+export const apiNotecAddMaterials = async (data) => {
   try {
     const response = await http.patch(
-      `${server}/materials/${materialId}`,
+      `${server}/materials`,
       data
     );
     return response;
