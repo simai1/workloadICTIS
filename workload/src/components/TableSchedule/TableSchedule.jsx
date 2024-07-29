@@ -60,9 +60,7 @@ function TableSchedule(props) {
       appData.setPopApCloseSttatus(false);
     }
       funUpdateTabDat();
-
-  }, [basicTabData.selectTableSchedle, appData.popApCloseSttatus]);
-
+  }, [basicTabData.selectTableSchedle, appData.popApCloseSttatus, appData.dataUpdated, isCheckedStore]);
   
   const tabDat = {
     funUpdateTabDat,
