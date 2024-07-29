@@ -44,7 +44,7 @@ function PopupTextArea(props) {
       [textareaStor.key]: textareaStor.taValue.trim() || "",
     };
     apiNotecAddMaterials(textareaStor.itemId, data).then((req) => {
-      if (req.status === 200) {
+      if (req?.status === 200) {
         dispatch(onTextareaShow());
         appData.setPopApCloseSttatus(true);
       }

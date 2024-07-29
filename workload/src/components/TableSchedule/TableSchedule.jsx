@@ -56,9 +56,14 @@ function TableSchedule(props) {
   };
 
   useEffect(() => {
-    funUpdateTabDat();
-  }, [basicTabData.selectTableSchedle, isCheckedStore, appData.dataUpdated]);
+    if(appData.popApCloseSttatus){
+      appData.setPopApCloseSttatus(false);
+    }
+      funUpdateTabDat();
 
+  }, [basicTabData.selectTableSchedle, appData.popApCloseSttatus]);
+
+  
   const tabDat = {
     funUpdateTabDat,
     tableHeader,

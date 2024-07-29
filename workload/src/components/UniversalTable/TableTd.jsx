@@ -23,8 +23,6 @@ function TableTd(props) {
   useEffect(() => {
     if(appData.popApCloseSttatus){
       setOnTextArea(false);
-      props.tabDat.funUpdateTabDat();
-      dispatch(resetStatus({ value: 0 }));
       appData.setPopApCloseSttatus(false);
     }
 }, [  appData.popApCloseSttatus]);
