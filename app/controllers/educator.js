@@ -212,11 +212,11 @@ export default {
         res.json(mapPositions);
     },
 
-    async deleteEducator({ params: { educatorId }, user }, res) {
+    async deleteEducator({ params: { educatorId }, cookies:{refreshToken} }, res) {
         if (!educatorId) throw new AppErrorMissing('educatorId');
 
         const educator = await Educator.findByPk(educatorId);
-        const existUser = jwt.decode(req.cookies.refreshToken)
+        const existUser = jwt.decode(refreshToken)
         const userId = existUser.id;
 
         if (educator.userId === userId) throw AppErrorForbiddenAction();

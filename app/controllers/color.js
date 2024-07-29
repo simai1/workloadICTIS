@@ -19,12 +19,12 @@ export default {
         res.json(colorsDto);
     },
 
-    async setColor({ body: { color, workloadIds }, user }, res) {
+    async setColor({ body: { color, workloadIds },cookies:{refreshToken}}, res) {
         if (!color) throw new AppErrorMissing('color');
         if (!workloadIds || !Array.isArray(workloadIds) || workloadIds.length === 0) {
             throw new AppErrorMissing('workloadIds');
         }
-        const existUser = jwt.decode(req.cookies.refreshToken)
+        const existUser = jwt.decode(refreshToken)
         const userId = existUser.id;
         const educator = await Educator.findOne({ where: { userId: userId } });
 

@@ -19,11 +19,11 @@ export default {
         res.json(attachedDto);
     },
 
-    async setAttaches({ body: { workloadIds }, user }, res) {
+    async setAttaches({ body: { workloadIds },cookies: {refreshToken} }, res) {
         if (!workloadIds || !Array.isArray(workloadIds) || workloadIds.length === 0) {
             throw new AppErrorMissing('workloadIds');
         }
-        const existUser = jwt.decode(req.cookies.refreshToken)
+        const existUser = jwt.decode(cookies)
         const userId = existUser.id;
         const educator = await Educator.findOne({ where: { userId: userId } });
         const attachedDtos = [];

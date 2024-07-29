@@ -437,7 +437,7 @@ export const users = [
     {
         name: 'Тест DIRECTORATE ИНЕП',
         login: 'test4inep@sfedu.ru',
-        prole: 4,
+        role: 4,
         institutionalAffiliation: 3,
     },
     {

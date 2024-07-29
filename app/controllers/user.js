@@ -9,7 +9,6 @@ import jwt from '../utils/jwt.js';
 
 export default {
     async getUser(req, res) {
-        console.log(req.user)
         const existUser = jwt.decode(req.cookies.refreshToken)
         const userId = existUser.id;
         if (req.cookies.refreshToken == null) res.redirect('/');

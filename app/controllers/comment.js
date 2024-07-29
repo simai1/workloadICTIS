@@ -6,10 +6,10 @@ import User from '../models/user.js';
 import jwt from '../utils/jwt.js';
 
 export default {
-    async createComment({ body: { workloadId, text }, user }, res) {
+    async createComment({ body: { workloadId, text }, cookies:{refreshToken} }, res) {
         if (!workloadId) throw new AppErrorMissing('workloadId');
         if (!text) throw new AppErrorMissing('text');
-        const existUser = jwt.decode(req.cookies.refreshToken)
+        const existUser = jwt.decode(refreshToken)
         const userId = existUser.id;
         const sender = await Educator.findOne({ where: { userId: userId } });
 

@@ -89,10 +89,10 @@ export default {
         }
     },
 
-    async createOffer({ body: { educatorId, workloadId }, user }, res) {
+    async createOffer({ body: { educatorId, workloadId }, cookies:{refreshToken} }, res) {
         try {
             // Получение информации о преподавателе
-            const existUser = jwt.decode(req.cookies.refreshToken)
+            const existUser = jwt.decode(refreshToken)
             const userId = existUser.id;
             const educator = await Educator.findByPk(educatorId, { attributes: { exclude: ['id'] } });
 
