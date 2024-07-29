@@ -84,14 +84,14 @@ export default {
     },
 
     async getAll(req, res) {
-        let { departments } = req.query;
+        let { departments, col, type } = req.query;
         const user = await User.findByPk(req.user, { include: [{ model: Educator }] });
         let materials;
         if ([1, 9, 10].includes(user.role)) {
             // METHODIST & GOD & GIGA_ADMIN
             if (!departments) {
                 materials = await Materials.findAll({
-                    order: orderRule,
+                    order: col && type ? [[col, type.toUpperCase()]] : orderRule,
                     attributes: { exclude: ['fields'] },
                     include: [{ model: Educator }],
                 });
@@ -101,7 +101,7 @@ export default {
                     where: { department: departments },
                     attributes: { exclude: ['fields'] },
                     include: [{ model: Educator }],
-                    order: orderRule,
+                    order: col && type ? [[col, type.toUpperCase()]] : orderRule,
                 });
             }
         } else if ([4, 7].includes(user.role)){
@@ -109,7 +109,7 @@ export default {
             if (!departments) {
                 materials = await Materials.findAll({
                     where: {department: instituteDepartments[user.institutionalAffiliation]},
-                    order: orderRule,
+                    order: col && type ? [[col, type.toUpperCase()]] : orderRule,
                     attributes: { exclude: ['fields'] },
                     include: [{ model: Educator }],
                 });
@@ -122,7 +122,7 @@ export default {
                     where: { department: departments },
                     attributes: { exclude: ['fields'] },
                     include: [{ model: Educator }],
-                    order: orderRule,
+                    order: col && type ? [[col, type.toUpperCase()]] : orderRule,
                 });
             }
         } else if ([3, 8].includes(user.role)) {
@@ -131,7 +131,7 @@ export default {
                 where: { department: user.Educator.department },
                 attributes: { exclude: ['fields'] },
                 include: [{ model: Educator }],
-                order: orderRule,
+                order: col && type ? [[col, type.toUpperCase()]] : orderRule,
             });
         } else if (user.role === 6) {
             // UNIT_ADMIN
@@ -139,13 +139,13 @@ export default {
                 where: { department: user.allowedDepartments },
                 attributes: { exclude: ['fields'] },
                 include: [{ model: Educator }],
-                order: orderRule,
+                order: col && type ? [[col, type.toUpperCase()]] : orderRule,
             });
             if (!departments) {
                 materials = await Materials.findAll({
                     where: { department: user.allowedDepartments },
                     attributes: { exclude: ['fields'] },
-                    order: orderRule,
+                    order: col && type ? [[col, type.toUpperCase()]] : orderRule,
                     include: [{ model: Educator }],
                 });
             } else {
@@ -157,7 +157,7 @@ export default {
                     where: { department: departments },
                     attributes: { exclude: ['fields'] },
                     include: [{ model: Educator }],
-                    order: orderRule,
+                    order: col && type ? [[col, type.toUpperCase()]] : orderRule,
                 });
             }
         } else if ([2, 5].includes(user.role)) {
@@ -166,7 +166,7 @@ export default {
                 where: { educatorId: user.Educator.id },
                 attributes: { exclude: ['fields'] },
                 include: [{ model: Educator }],
-                order: orderRule,
+                order: col && type ? [[col, type.toUpperCase()]] : orderRule,
             });
         }
         const materialsDto = materials.map(m => new MaterialsModelDto(m));
