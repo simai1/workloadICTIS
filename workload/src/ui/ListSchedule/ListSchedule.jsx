@@ -4,14 +4,10 @@ import DataContext from "../../context";
 import arrowWhite from "./../../img/arrow-White.svg";
 import arrowBlack from "./../../img/arrow_down.svg";
 
-function ListSchedule({
-  dataList,
-  Textlabel,
-  defaultValue,
-}) {
-  const { tabPar, appData, basicTabData } = React.useContext(DataContext);
+function ListSchedule({ dataList, Textlabel, defaultValue }) {
+  const { basicTabData } = React.useContext(DataContext);
   const [activeList, setactiveList] = useState(false);
-  
+
   const addKafedra = (el) => {
     basicTabData.setSelectTableSchedle(el.name);
     setactiveList(false);
@@ -30,8 +26,6 @@ function ListSchedule({
       document.removeEventListener("click", handler);
     };
   }, []);
-
-
 
   return (
     <div ref={refDiv} className={styles.ListSchedule}>
@@ -87,7 +81,9 @@ function ListSchedule({
                     onClick={() => addKafedra(el)}
                     className={styles.listItem}
                   >
-                    <p>{el.name}</p>
+                    <p style={el.isBlocked ? { color: "red" } : null}>
+                      {el.name}
+                    </p>
                   </div>
                 ))}
               </>

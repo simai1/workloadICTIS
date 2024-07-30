@@ -692,7 +692,11 @@ function HomePage() {
               />
             </div>
           </div>
-          {blockTable && (
+          {(blockTable ||
+            (appData.selectedComponent === "ScheduleMaterials" &&
+              departmentsMaterials.find(
+                (el) => el.name === basicTabData?.selectTableSchedle
+              )?.isBlocked)) && (
             <div className={styles.blockedTextTable}>
               <div>
                 <img src="./img/errorTreangle.svg" alt="i" />
