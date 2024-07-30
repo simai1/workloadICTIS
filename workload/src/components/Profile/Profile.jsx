@@ -5,6 +5,7 @@ import DataContext from "../../context";
 // import { getAllocatedAndUnallocatedWrokloadHours } from "../../api/services/ApiRequest";
 function Profile(props) {
   const { appData } = React.useContext(DataContext);
+  const [name, setName] = useState("");
   const roles = {
     METHODIST: "Методист",
     LECTURER: "Лектор",
@@ -45,10 +46,43 @@ function Profile(props) {
     props.setOpenModalWind(!props.onenModalWind);
   };
 
+  //! функция которая добовляет инициалы на основе ширины страницы
+  const getNameByWidth = (name) => {
+    let n = name;
+    if (name && window.innerWidth < 1400) {
+      const splitName = name.split(" ");
+      const fio =
+        splitName[0] + " " + splitName[1][0] + ". " + splitName[2][0] + ".";
+      n = fio;
+    }
+    return n || name;
+  };
+
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+  useEffect(() => {
+    let origName = appData.myProfile?.name;
+    let fio = "";
+    if (name && windowWidth < 1400) {
+      const splitName = origName.split(" ");
+      fio = splitName[0] + " " + splitName[1][0] + ". " + splitName[2][0] + ".";
+    }
+    setName(fio || origName);
+  }, [appData.myProfile?.name, windowWidth]);
+
   return (
     <div ref={props.refProfile} className={styles.Profile}>
       <div className={styles.container} onClick={clickModalWind}>
-        {appData.myProfile?.name}
+        {name}
       </div>
       {props.onenModalWind && (
         <div className={styles.modal_window}>

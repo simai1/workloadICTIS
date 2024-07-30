@@ -34,7 +34,7 @@ body {
         .header_search {
           display: flex;
           align-items: center;
-          width: 250px;
+          width: 15vw;
           height: 45px;
           box-sizing: border-box;
           padding: 10px;
@@ -59,6 +59,9 @@ body {
             margin: 0;
             background-color: #efedf3;
             font-size: 18px;
+            @media (max-width: 1150px) {
+              font-size: 16px;
+            }
             font-weight: 500;
             color: #000000;
             cursor: pointer;
@@ -177,6 +180,11 @@ body {
       border-radius: 8px;
       height: 45px;
       padding: 12px;
+      @media (max-width: 1400px) {
+        .text {
+          display: none;
+        }
+      }
       .text {
         padding-right: 10px;
       }
@@ -286,16 +294,17 @@ body {
     justify-content: center;
     align-items: center;
     height: 44px;
-    width: 176px;
+    width: auto;
+
     background-color: #fff;
     margin-left: 12px;
     border-radius: 8px;
     color: var(--blue-color);
     justify-content: space-between;
     position: relative;
-    .export__img {
-      margin-right: 5px;
-    }
+    // .export__img {
+    //   margin-right: 5px;
+    // }
     input::placeholder {
       color: var(--blue-color);
     }
@@ -319,11 +328,12 @@ body {
       cursor: pointer;
     }
     button {
-      position: absolute;
+      // position: absolute;
+      white-space: nowrap;
       background-color: #fff;
       left: 0;
       z-index: 10;
-      width: 176px;
+      width: auto;
       height: 42px;
       display: flex;
       border: none;
@@ -334,10 +344,18 @@ body {
         cursor: pointer;
       }
       p {
+        padding-left: 4px;
+        padding-right: 4px;
+
         color: var(--blue-color);
         font-size: 16px;
         &:first-child {
           margin-right: 8px;
+        }
+      }
+      @media (max-width: 1220px) {
+        p {
+          display: none;
         }
       }
     }

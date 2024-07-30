@@ -8,7 +8,7 @@ const textareaSlice = createSlice({
     originalValue: "",
     key: "",
     itemId: "",
-    status: null,
+    status: 200,
   },
 
   reducers: {

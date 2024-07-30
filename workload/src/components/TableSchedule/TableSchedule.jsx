@@ -4,10 +4,11 @@ import UniversalTable from "../UniversalTable/UniversalTable";
 import DataContext from "../../context";
 import { funFixEducator } from "../TableWorkload/Function";
 import { FilteredSample } from "../../ui/SamplePoints/Function";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getSchedule } from "../../api/services/ApiRequest";
-import { scheduleHead } from "../TableWorkload/Data";
+// import { scheduleHead } from "../TableWorkload/Data";
 import ContextMenu from "../../ui/ContextMenu/ContextMenu";
+import { resetStatus } from "../../store/popup/textareaData.slice";
 
 function TableSchedule(props) {
   const { tabPar, visibleDataPar, basicTabData, checkPar, appData } =
@@ -22,6 +23,9 @@ function TableSchedule(props) {
   const ssHeader = `headerSchedule`;
   //! достаем данные из редакса
   const isCheckedStore = useSelector((state) => state.isCheckedSlice.isChecked);
+
+  //параметр для сортировки по колонке
+  const [sortParamByColumn, setSortParamByColumn] = useState("");
 
   const funUpdateTabDat = () => {
     appData.setDataUpdated(false);
@@ -40,6 +44,11 @@ function TableSchedule(props) {
     } else {
       url = "";
     }
+    if (url !== "" && sortParamByColumn !== "") {
+      url = url + `&${sortParamByColumn}`;
+    } else if (url === "" && sortParamByColumn !== "") {
+      url = `?${sortParamByColumn}`;
+    }
     getSchedule(url).then((resp) => {
       if (resp.status === 200) {
         dataBd = [...resp.data];
@@ -54,14 +63,21 @@ function TableSchedule(props) {
       }
     });
   };
+  const dispatch = useDispatch();
+  const textareaStor = useSelector((state) => state.textAreaSlice);
 
+  console.log("textareaStor", textareaStor);
   useEffect(() => {
-    if(appData.popApCloseSttatus){
-      appData.setPopApCloseSttatus(false);
-    }
-      funUpdateTabDat();
-  }, [basicTabData.selectTableSchedle, appData.popApCloseSttatus, appData.dataUpdated, isCheckedStore]);
-  
+    if (textareaStor.status === 200) funUpdateTabDat();
+    dispatch(resetStatus({ value: 0 }));
+  }, [
+    basicTabData.selectTableSchedle,
+    textareaStor.status,
+    appData.dataUpdated,
+    isCheckedStore,
+    sortParamByColumn,
+  ]);
+
   const tabDat = {
     funUpdateTabDat,
     tableHeader,
@@ -75,8 +91,11 @@ function TableSchedule(props) {
     ssIsChecked,
     ssHeader,
     isCheckedStore,
-    isSorted: false, //! показать или скрыть сортировку
+    sortParamByColumn,
+    setSortParamByColumn,
+    isSorted: true, //! показать или скрыть сортировку
     isBlocked: false, //! показывать или скрывать блокированные
+    isSignature: false, //! показывать или скрыть подпись блокированные, разделенные и тд.
   };
 
   //! функция которая возвращает контекстное меню с параметрами

@@ -1,7 +1,9 @@
-import React from "react";
-import styles from "./PopupTextArea.module.scss";
+import React, { useState } from "react";
+import styles from "./PopUpTextAreaMore.module.scss";
 import TextArea from "../../ui/TextArea/TextArea";
-import { useDispatch, useSelector } from "react-redux";
+import DataContext from "../../context";
+import { apiNotecAddMaterials } from "../../api/services/ApiRequest";
+import { useDispatch } from "react-redux";
 import {
   cancleEditTd,
   onTextareaShow,
@@ -9,45 +11,41 @@ import {
   resetTheValue,
   setTextAreaValue,
 } from "../../store/popup/textareaData.slice";
-import { apiNotecAddMaterials } from "../../api/services/ApiRequest";
-import DataContext from "../../context";
-
-function PopupTextArea(props) {
+function PopUpTextAreaMore(props) {
+  const { appData, tabPar } = React.useContext(DataContext);
+  const [textAreaText, SetTextAreaText] = useState("");
   const dispatch = useDispatch();
-  const textareaStor = useSelector((state) => state.textAreaSlice);
-  const { appData } = React.useContext(DataContext);
 
   //! изменение textarea
   const onChange = (e) => {
     const query = e.target.value;
-    dispatch(setTextAreaValue({ value: query }));
+    SetTextAreaText(query);
   };
 
-  //! закрытие попапа
-  const exitPopup = () => {
-    dispatch(onTextareaShow());
-  };
+  //   //! закрытие попапа
+  //   const exitPopup = () => {
+  //   };
 
-  //! закрытие попапа
+  //! сброс значения попапа
   const resetValue = () => {
-    dispatch(resetTheValue());
+    SetTextAreaText("");
   };
 
   //! отмена редактирования
   const cancleEdit = () => {
-    dispatch(cancleEditTd());
+    appData.SetPopUpTextArea(false);
+    SetTextAreaText("");
   };
 
   //! приемнить изменения
   const applyChang = () => {
     const data = {
-      [textareaStor.key]: textareaStor.taValue.trim() || "",
-      ids: [textareaStor.itemId],
+      notes: textAreaText || "",
+      ids: tabPar.selectedTr,
     };
-    console.log(data);
     apiNotecAddMaterials(data).then((req) => {
       if (req?.status === 200) {
-        dispatch(onTextareaShow());
+        appData.SetPopUpTextArea(false);
         // appData.setPopApCloseSttatus(true);
         dispatch(resetStatus({ value: 200 }));
       }
@@ -58,11 +56,11 @@ function PopupTextArea(props) {
     <div className={styles.PopupTextArea}>
       <div className={styles.PopupTextAreaBox}>
         <div className={styles.exit}>
-          <img onClick={exitPopup} src="./img/x.svg" />
+          <img onClick={cancleEdit} src="./img/x.svg" />
         </div>
-        <h2>Редактирование поля</h2>
+        <h2>Добавление примечания</h2>
         <div className={styles.TextAreaComponent}>
-          <TextArea value={props.data?.taValue} onChange={onChange} />
+          <TextArea value={textAreaText} onChange={onChange} />
         </div>
         <div className={styles.btnBox}>
           <button className={styles.btn1} onClick={resetValue}>
@@ -80,4 +78,4 @@ function PopupTextArea(props) {
   );
 }
 
-export default PopupTextArea;
+export default PopUpTextAreaMore;

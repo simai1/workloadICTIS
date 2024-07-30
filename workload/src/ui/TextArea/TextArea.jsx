@@ -9,6 +9,7 @@ function TextArea(props) {
         value={props.value}
         onChange={props.onChange}
         type="text"
+        maxLength="990"
         // style={Number(textareaTd) > 2000 ? { border: "3px solid red" } : null}
       ></textarea>
     </div>

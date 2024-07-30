@@ -16,9 +16,12 @@ import DataContext from "../../context";
 //   setFiltredData,
 //   ssIsChecked,
 //   ssHeader,
+//   sortParamByColumn,
+//   setSortParamByColumn,
 //   isCheckedStore,
 //   isSorted: false, //! показать или скрыть сортировку (в заголовке таблицы)
 //   isBlocked: true, //! показывать или скрывать блокированные, (для лектора, чтобы он мог выделять цветом)
+//   isSignature: false, //! показывать или скрыть подпись блокированные, разделенные и тд.
 // };
 
 function UniversalTable(props) {

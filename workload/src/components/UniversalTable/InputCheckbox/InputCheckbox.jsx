@@ -92,7 +92,7 @@ function InputCheckbox(props) {
           )}
           {
             //! определяем разделенная ли нагрузка
-            props.workload?.isSplit && (
+            props.workload?.isSplit && props.tabDat.isSignature && (
               <div className={styles.isSplit}>
                 <span>Разделенная</span>
               </div>
@@ -100,7 +100,7 @@ function InputCheckbox(props) {
           }
           {
             //! определяем разделенная ли нагрузка
-            props.workload?.isBlocked && (
+            props.workload?.isBlocked && props.tabDat.isSignature && (
               <div
                 className={styles.isSplit}
                 style={{ transform: "translateY(-20px)" }}
@@ -111,7 +111,7 @@ function InputCheckbox(props) {
           }
           {
             //! после резделения или обьединения исходную помечаем
-            props.workload?.isSplitArrow && (
+            props.workload?.isSplitArrow && props.tabDat.isSignature && (
               <div className={styles.isSplit}>
                 <span>Исходная</span>
                 <img src="img/Arrow.svg" alt=">" />
@@ -120,7 +120,7 @@ function InputCheckbox(props) {
           }
           {
             //! определяем разделенная ли нагрузка
-            props.workload?.isMerged && (
+            props.workload?.isMerged && props.tabDat.isSignature && (
               <div className={styles.isSplit}>Объединенная</div>
             )
           }
