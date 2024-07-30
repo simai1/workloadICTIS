@@ -105,6 +105,16 @@ export default class Materials extends Model {
                     allowNull: true,
                     defaultValue: '',
                 },
+                audiences: {
+                    type: DataTypes.STRING(1024),
+                    allowNull: true,
+                    defaultValue: '',
+                },
+                isActual: {
+                    type: DataTypes.BOOLEAN,
+                    allowNull: false,
+                    defaultValue: true,
+                },
             },
             {
                 sequelize,
