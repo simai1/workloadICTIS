@@ -4,10 +4,11 @@ import UniversalTable from "../UniversalTable/UniversalTable";
 import DataContext from "../../context";
 import { funFixEducator } from "../TableWorkload/Function";
 import { FilteredSample } from "../../ui/SamplePoints/Function";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getSchedule } from "../../api/services/ApiRequest";
 // import { scheduleHead } from "../TableWorkload/Data";
 import ContextMenu from "../../ui/ContextMenu/ContextMenu";
+import { resetStatus } from "../../store/popup/textareaData.slice";
 
 function TableSchedule(props) {
   const { tabPar, visibleDataPar, basicTabData, checkPar, appData } =
@@ -62,15 +63,16 @@ function TableSchedule(props) {
       }
     });
   };
+  const dispatch = useDispatch();
+  const textareaStor = useSelector((state) => state.textAreaSlice);
 
+  console.log("textareaStor", textareaStor);
   useEffect(() => {
-    if (appData.popApCloseSttatus) {
-      appData.setPopApCloseSttatus(false);
-    }
-    funUpdateTabDat();
+    if (textareaStor.status === 200) funUpdateTabDat();
+    dispatch(resetStatus({ value: 0 }));
   }, [
     basicTabData.selectTableSchedle,
-    appData.popApCloseSttatus,
+    textareaStor.status,
     appData.dataUpdated,
     isCheckedStore,
     sortParamByColumn,

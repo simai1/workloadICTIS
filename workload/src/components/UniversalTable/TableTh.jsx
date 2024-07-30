@@ -80,13 +80,6 @@ function TableTh(props) {
       )}
 
       <div className={styles.th_inner}>
-        <div
-          onClick={clickTh}
-          className={styles.th_title}
-          title="Открыть меню фильтрации"
-        >
-          {props.item.label}
-        </div>
         {(props.item.key === "notes" || props.item.key === "groups") &&
           appData.selectedComponent === "ScheduleMaterials" && (
             <img
@@ -95,6 +88,14 @@ function TableTh(props) {
               title="Данная колонка редактируется (Двойной клик по полю колонки)"
             />
           )}
+        <div
+          onClick={clickTh}
+          className={styles.th_title}
+          title="Открыть меню фильтрации"
+        >
+          {props.item.label}
+        </div>
+
         <div className={styles.th_inner_img}>
           {props.tabDat.isSorted &&
             props.item.key !== "id" &&

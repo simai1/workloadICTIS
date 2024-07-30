@@ -21,11 +21,11 @@ function TableTd(props) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if(appData.popApCloseSttatus){
+    if (appData.popApCloseSttatus) {
       setOnTextArea(false);
       appData.setPopApCloseSttatus(false);
     }
-}, [  appData.popApCloseSttatus]);
+  }, [appData.popApCloseSttatus]);
 
   const [textareaTd, setTextareaTd] = useState(
     props.item[props.itemKey.key] || ""
@@ -69,7 +69,7 @@ function TableTd(props) {
       //! проверяем роль
       (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 8) &&
         props.itemKey.key === "notes") ||
-        props.itemKey.key === "groups"
+      props.itemKey.key === "groups"
     ) {
       return onTextArea;
     } else if (
@@ -129,7 +129,7 @@ function TableTd(props) {
   };
 
   const defineFunction = (action) => {
-    console.log("click")
+    console.log("click");
     if (action === "headerSchedule") {
       onClicNotic(action);
     } else {
@@ -139,21 +139,19 @@ function TableTd(props) {
 
   //! сохраниени примечаний
   const onClicNotic = (action) => {
-    let data = {}
-    if(
-      props.itemKey.key === "notes"
-    ){
+    let data = {};
+    if (props.itemKey.key === "notes") {
       data = {
         notes: textareaStor.taValue.trim() || "",
-        ids : [props.item?.id]
+        ids: [props.item?.id],
       };
-    }else{
+    } else {
       data = {
         groups: textareaStor.taValue.trim() || "",
-        ids : [props.item?.id]
+        ids: [props.item?.id],
       };
     }
-      if (props.itemKey.key === "notes" || props.itemKey.key === "groups") {
+    if (props.itemKey.key === "notes" || props.itemKey.key === "groups") {
       apiNotecAddMaterials(data).then((req) => {
         if (req?.status === 200) {
           setOnTextArea(false);
@@ -161,7 +159,6 @@ function TableTd(props) {
         }
       });
     }
-    
   };
 
   //! при клике применить изменения textArea
@@ -203,14 +200,14 @@ function TableTd(props) {
   };
 
   const [showFullText, setShowFullText] = useState(false); // при наведении на td показывает весь текст ячейки
-  const lenSlice = props.itemKey.key === "groups" || props.itemKey.key === "notes" ? 50 : 70;
+  const lenSlice =
+    props.itemKey.key === "groups" || props.itemKey.key === "notes" ? 50 : 70;
   //! фуункция котороя определяет какой формат текста выводить
   const gettdInnerText = () => {
-    if(props.itemKey.key === "createdAt"){
+    if (props.itemKey.key === "createdAt") {
       const originalDate = new Date(props.item[props.itemKey.key]);
-      return originalDate.toLocaleString('ru-RU', { timeZone: 'UTC' });
-    }
-    else if (showFullText) {
+      return originalDate.toLocaleString("ru-RU", { timeZone: "UTC" });
+    } else if (showFullText) {
       if (
         props.item[props.itemKey.key] === null ||
         props.item[props.itemKey.key] === undefined ||
@@ -281,10 +278,18 @@ function TableTd(props) {
       name={props.itemKey.key}
       key={props.item.id + "_" + props.itemKey.key + "_" + props.ind}
       className={getClassNameTr()}
-      id={appData.selectedComponent === "ScheduleMaterials" && (props.itemKey.key === "notes" || props.itemKey.key === "groups") ? styles.fihedTd : null}
+      id={
+        appData.selectedComponent === "ScheduleMaterials" &&
+        (props.itemKey.key === "notes" || props.itemKey.key === "groups")
+          ? styles.fihedTd
+          : null
+      }
       style={
         showFullText && props.item[props.itemKey.key]?.length > lenSlice
-          ? props.itemKey.key === "discipline" || props.itemKey.key === "workload" || props.itemKey.key === "notes" || props.itemKey.key === "groups"
+          ? props.itemKey.key === "discipline" ||
+            props.itemKey.key === "workload" ||
+            props.itemKey.key === "notes" ||
+            props.itemKey.key === "groups"
             ? { position: "sticky" }
             : { position: "relative" }
           : null
@@ -330,11 +335,9 @@ function TableTd(props) {
         ) : (
           gettdInnerText()
         )}
-       
       </div>
-     
     </td>
   );
-}  
+}
 
 export default TableTd;

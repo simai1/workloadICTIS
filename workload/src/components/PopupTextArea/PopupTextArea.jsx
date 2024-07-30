@@ -32,7 +32,7 @@ function PopupTextArea(props) {
   const resetValue = () => {
     dispatch(resetTheValue());
   };
-  
+
   //! отмена редактирования
   const cancleEdit = () => {
     dispatch(cancleEditTd());
@@ -44,11 +44,12 @@ function PopupTextArea(props) {
       [textareaStor.key]: textareaStor.taValue.trim() || "",
       ids: [textareaStor.itemId],
     };
-    console.log(data)
+    console.log(data);
     apiNotecAddMaterials(data).then((req) => {
       if (req?.status === 200) {
         dispatch(onTextareaShow());
-        appData.setPopApCloseSttatus(true);
+        // appData.setPopApCloseSttatus(true);
+        dispatch(resetStatus({ value: 200 }));
       }
     });
   };

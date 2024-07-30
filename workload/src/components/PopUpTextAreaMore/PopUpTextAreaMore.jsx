@@ -19,18 +19,18 @@ function PopUpTextAreaMore(props) {
   //! изменение textarea
   const onChange = (e) => {
     const query = e.target.value;
-    SetTextAreaText(query)
+    SetTextAreaText(query);
   };
 
-//   //! закрытие попапа
-//   const exitPopup = () => {
-//   };
+  //   //! закрытие попапа
+  //   const exitPopup = () => {
+  //   };
 
   //! сброс значения попапа
   const resetValue = () => {
-    SetTextAreaText("")
+    SetTextAreaText("");
   };
-  
+
   //! отмена редактирования
   const cancleEdit = () => {
     appData.SetPopUpTextArea(false);
@@ -41,12 +41,13 @@ function PopUpTextAreaMore(props) {
   const applyChang = () => {
     const data = {
       notes: textAreaText || "",
-      ids: tabPar.selectedTr
+      ids: tabPar.selectedTr,
     };
     apiNotecAddMaterials(data).then((req) => {
       if (req?.status === 200) {
-        appData.SetPopUpTextArea(false)
-        appData.setPopApCloseSttatus(true);
+        appData.SetPopUpTextArea(false);
+        // appData.setPopApCloseSttatus(true);
+        dispatch(resetStatus({ value: 200 }));
       }
     });
   };
