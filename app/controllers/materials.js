@@ -174,10 +174,10 @@ export default {
     },
 
     async update(req, res) {
-        const { notes, groups, ids } = req.body;
+        const { notes, groups, audiences, ids } = req.body;
         if (!ids) throw new AppErrorMissing('materialId');
         // if (!notes && !groups) throw new AppErrorMissing('body');
-        await Materials.update({ notes, groups }, { where: { id: ids } });
+        await Materials.update({ notes, groups, audiences }, { where: { id: ids } });
         res.json({ status: 'OK' });
     },
 
