@@ -12,6 +12,7 @@ export const generateAndDownloadExcel = (data, nameDepartment, nameTable) => {
         Нагрузка: item?.workload,
         Группы: item?.groups,
         Примечение: item?.notes,
+        Аудитории: item?.audiences,
         Блок: item?.block,
         Семестр: item?.semester,
         Период: item?.period,

@@ -69,7 +69,8 @@ function TableTd(props) {
       //! проверяем роль
       (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 8) &&
         props.itemKey.key === "notes") ||
-      props.itemKey.key === "groups"
+      props.itemKey.key === "groups" ||
+      props.itemKey.key === "audiences"
     ) {
       return onTextArea;
     } else if (
@@ -81,7 +82,11 @@ function TableTd(props) {
 
   const onChangeTextareaTd = (e) => {
     const query = e.target.value;
-    if (props.itemKey.key === "notes" || props.itemKey.key === "groups") {
+    if (
+      props.itemKey.key === "notes" ||
+      props.itemKey.key === "groups" ||
+      props.itemKey.key === "audiences"
+    ) {
       // setTextareaTd(query);
       dispatch(setTextAreaValue({ value: query }));
     } else {
@@ -145,13 +150,22 @@ function TableTd(props) {
         notes: textareaStor.taValue.trim() || "",
         ids: [props.item?.id],
       };
-    } else {
+    } else if (props.itemKey.key === "groups") {
       data = {
         groups: textareaStor.taValue.trim() || "",
         ids: [props.item?.id],
       };
+    } else if (props.itemKey.key === "audiences") {
+      data = {
+        audiences: textareaStor.taValue.trim() || "",
+        ids: [props.item?.id],
+      };
     }
-    if (props.itemKey.key === "notes" || props.itemKey.key === "groups") {
+    if (
+      props.itemKey.key === "notes" ||
+      props.itemKey.key === "groups" ||
+      props.itemKey.key === "audiences"
+    ) {
       apiNotecAddMaterials(data).then((req) => {
         if (req?.status === 200) {
           setOnTextArea(false);
@@ -201,7 +215,11 @@ function TableTd(props) {
 
   const [showFullText, setShowFullText] = useState(false); // при наведении на td показывает весь текст ячейки
   const lenSlice =
-    props.itemKey.key === "groups" || props.itemKey.key === "notes" ? 50 : 70;
+    props.itemKey.key === "groups" ||
+    props.itemKey.key === "notes" ||
+    props.itemKey.key === "audiences"
+      ? 50
+      : 70;
   //! фуункция котороя определяет какой формат текста выводить
   const gettdInnerText = () => {
     if (props.itemKey.key === "createdAt") {
@@ -263,7 +281,9 @@ function TableTd(props) {
   const getValue = () => {
     if (
       props.tabDat.ssHeader === "headerSchedule" &&
-      (props.itemKey.key === "notes" || props.itemKey.key === "groups")
+      (props.itemKey.key === "notes" ||
+        props.itemKey.key === "groups" ||
+        props.itemKey.key === "audiences")
     ) {
       return textareaStor.taValue;
     } else {
@@ -280,7 +300,9 @@ function TableTd(props) {
       className={getClassNameTr()}
       id={
         appData.selectedComponent === "ScheduleMaterials" &&
-        (props.itemKey.key === "notes" || props.itemKey.key === "groups")
+        (props.itemKey.key === "notes" ||
+          props.itemKey.key === "groups" ||
+          props.itemKey.key === "audiences")
           ? styles.fihedTd
           : null
       }
@@ -289,7 +311,8 @@ function TableTd(props) {
           ? props.itemKey.key === "discipline" ||
             props.itemKey.key === "workload" ||
             props.itemKey.key === "notes" ||
-            props.itemKey.key === "groups"
+            props.itemKey.key === "groups" ||
+            props.itemKey.key === "audiences"
             ? { position: "sticky" }
             : { position: "relative" }
           : null

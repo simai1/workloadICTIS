@@ -59,7 +59,9 @@ function TableTh(props) {
       key={props.item.key}
       id={
         appData.selectedComponent === "ScheduleMaterials" &&
-        (props.item.key === "notes" || props.item.key === "groups")
+        (props.item.key === "notes" ||
+          props.item.key === "groups" ||
+          props.item.key === "audiences")
           ? styles.fihedTh
           : null
       }
@@ -80,7 +82,9 @@ function TableTh(props) {
       )}
 
       <div className={styles.th_inner}>
-        {(props.item.key === "notes" || props.item.key === "groups") &&
+        {(props.item.key === "notes" ||
+          props.item.key === "groups" ||
+          props.item.key === "audiences") &&
           appData.selectedComponent === "ScheduleMaterials" && (
             <img
               src="./img/Edit.svg"

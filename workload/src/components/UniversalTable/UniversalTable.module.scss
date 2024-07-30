@@ -442,6 +442,9 @@ $heightCell: 150px;
     #fihedTd:nth-child(6) {
       @include stickyTd(160px, 640px);
     }
+    #fihedTd:nth-child(7) {
+      @include stickyTd(160px, 800px);
+    }
 
     th:nth-child(1) {
       @include stickyTd(60px, 0);
@@ -472,6 +475,11 @@ $heightCell: 150px;
       background-color: var(--gray-color);
       z-index: 15;
       @include stickyTd(160px, 640px);
+    }
+    #fihedTh:nth-child(7) {
+      background-color: var(--gray-color);
+      z-index: 15;
+      @include stickyTd(160px, 800px);
     }
   }
   .selectedTr {
