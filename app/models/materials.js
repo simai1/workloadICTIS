@@ -110,6 +110,11 @@ export default class Materials extends Model {
                     allowNull: true,
                     defaultValue: '',
                 },
+                isBlocked: {
+                    type: DataTypes.BOOLEAN,
+                    allowNull: true,
+                    defaultValue: false,
+                },
                 isActual: {
                     type: DataTypes.BOOLEAN,
                     allowNull: false,

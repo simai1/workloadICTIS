@@ -7,7 +7,7 @@ import { map as mapDepartments } from '../config/departments.js';
 import { AppErrorInvalid, AppErrorMissing, AppErrorNotExist } from '../utils/errors.js';
 import MaterialsModelDto from '../dtos/materialModel-dto.js';
 import User from '../models/user.js';
-import { instituteDepartments } from "../config/institutional-affiliations.js";
+import { instituteDepartments } from '../config/institutional-affiliations.js';
 
 const orderRule = [['number', 'ASC']];
 
@@ -104,11 +104,11 @@ export default {
                     order: col && type ? [[col, type.toUpperCase()]] : orderRule,
                 });
             }
-        } else if ([4, 7].includes(user.role)){
+        } else if ([4, 7].includes(user.role)) {
             // DIRECTORATE & DEPUTY_DIRECTORATE
             if (!departments) {
                 materials = await Materials.findAll({
-                    where: {department: instituteDepartments[user.institutionalAffiliation]},
+                    where: { department: instituteDepartments[user.institutionalAffiliation] },
                     order: col && type ? [[col, type.toUpperCase()]] : orderRule,
                     attributes: { exclude: ['fields'] },
                     include: [{ model: Educator }],
@@ -177,7 +177,40 @@ export default {
         const { notes, groups, audiences, ids } = req.body;
         if (!ids) throw new AppErrorMissing('materialId');
         // if (!notes && !groups) throw new AppErrorMissing('body');
-        await Materials.update({ notes, groups, audiences }, { where: { id: ids } });
+        await Materials.update(
+            {
+                notes,
+                groups,
+                audiences,
+            },
+            { where: { id: ids } }
+        );
+        res.json({ status: 'OK' });
+    },
+
+    async blockMaterials(req, res) {
+        const { department } = req.body;
+        await Materials.update(
+            { isBlocked: true },
+            {
+                where: {
+                    department,
+                },
+            }
+        );
+        res.json({ status: 'OK' });
+    },
+
+    async unblockMaterials(req, res) {
+        const { department } = req.body;
+        await Materials.update(
+            { isBlocked: false },
+            {
+                where: {
+                    department,
+                },
+            }
+        );
         res.json({ status: 'OK' });
     },
 

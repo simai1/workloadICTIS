@@ -10,5 +10,6 @@ router.route('/').get(asyncRoute(materialsController.getAll)).patch(asyncRoute(m
 router.route('/sync').get(asyncRoute(materialsController.sync));
 router.route('/:materialId').delete(asyncRoute(materialsController.deleteMaterial));
 router.route('/getUsableDepartments').get(asyncRoute(materialsController.getUsableDepartments));
-
+router.route('/block').patch(asyncRoute(materialsController.blockMaterials));
+router.route('/unblock').patch(asyncRoute(materialsController.unblockMaterials));
 export default router;
