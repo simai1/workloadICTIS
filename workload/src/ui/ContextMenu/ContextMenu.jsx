@@ -430,9 +430,9 @@ const ContextMenu = (props) => {
     }
   };
 
-  const addNote = () =>{
-    appData.SetPopUpTextArea(true);
-  }
+  const addNote = (action) => {
+    appData.SetPopUpTextArea(action);
+  };
   //! функция которая определяет какое разделене выводить
   function getSplitMenuPopup(
     metodRole,
@@ -640,7 +640,6 @@ const ContextMenu = (props) => {
     return massMenuPop;
   }
 
-
   const funAllowedMenus = (menuName) => {
     let mass = [];
     if (props.allowedMenus) {
@@ -773,14 +772,34 @@ const ContextMenu = (props) => {
               img={true}
             />
           )}
-          {
-            appData.selectedComponent === "ScheduleMaterials" && tabPar.selectedTr.length <= 15 && 
+
+        {appData.selectedComponent === "ScheduleMaterials" &&
+          tabPar.selectedTr.length <= 15 && (
             <MenuPop
               key={"MenuPop9"}
-              btnText={"Добавить примечание"}
-              func={addNote}
-              img={false} />
-          }
+              btnText={"Редактировать группы"}
+              func={() => addNote("groups")}
+              img={false}
+            />
+          )}
+        {appData.selectedComponent === "ScheduleMaterials" &&
+          tabPar.selectedTr.length <= 15 && (
+            <MenuPop
+              key={"MenuPop9"}
+              btnText={"Редактировать аудитории"}
+              func={() => addNote("audiences")}
+              img={false}
+            />
+          )}
+        {appData.selectedComponent === "ScheduleMaterials" &&
+          tabPar.selectedTr.length <= 15 && (
+            <MenuPop
+              key={"MenuPop9"}
+              btnText={"Редактировать примечания"}
+              func={() => addNote("notes")}
+              img={false}
+            />
+          )}
         {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 13) &&
           determineIsBlocked() &&
           funAllowedMenus("Удалить") && (

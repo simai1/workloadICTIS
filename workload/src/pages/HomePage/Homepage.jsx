@@ -28,6 +28,7 @@ import {
   SyncTable,
   Workload,
   WorkloadBlocked,
+  apiBlockMaterials,
   apiGetUser,
   getAllWarningMessage,
   getSchedule,
@@ -49,6 +50,7 @@ import PopupTextArea from "../../components/PopupTextArea/PopupTextArea";
 import { useSelector } from "react-redux";
 import PopUpTextAreaMore from "../../components/PopUpTextAreaMore/PopUpTextAreaMore";
 import { generateAndDownloadExcel } from "./functionHomePage";
+import BlockingTables from "../../components/BlockingTables/BlockingTables";
 function HomePage() {
   const { appData, tabPar, visibleDataPar, basicTabData } =
     React.useContext(DataContext);
@@ -209,6 +211,19 @@ function HomePage() {
       setPopupExport(false);
       setConfirmationSave(true);
     }
+  };
+
+  const confirmClickSchedule = () => {
+    const idTable = basicTabData?.tableDepartment.find(
+      (el) => el.name === basicTabData?.selectTableSchedle
+    ).id;
+    apiBlockMaterials(idTable).then((res) => {
+      console.log("блокировака ", res);
+
+      if (res?.status === 200) {
+        setPopupExport(false);
+      }
+    });
   };
 
   //! функции для импорта файла
@@ -504,6 +519,15 @@ function HomePage() {
                       />
                     )}
                   </div>
+                )}
+                {appData.selectedComponent === "ScheduleMaterials" && (
+                  <BlockingTables
+                    popupExport={popupExport}
+                    clickFun={onExportClick}
+                    nameKaf={basicTabData.selectTableSchedle}
+                    confirmClick={confirmClickSchedule}
+                    setShow={setPopupExport}
+                  />
                 )}
               </div>
               {funGetSherch() && (

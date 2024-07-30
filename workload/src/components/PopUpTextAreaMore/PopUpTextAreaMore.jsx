@@ -33,23 +33,33 @@ function PopUpTextAreaMore(props) {
 
   //! отмена редактирования
   const cancleEdit = () => {
-    appData.SetPopUpTextArea(false);
+    appData.SetPopUpTextArea("");
     SetTextAreaText("");
   };
 
   //! приемнить изменения
   const applyChang = () => {
     const data = {
-      notes: textAreaText || "",
+      [appData.popUpTextArea]: textAreaText || "",
       ids: tabPar.selectedTr,
     };
     apiNotecAddMaterials(data).then((req) => {
       if (req?.status === 200) {
-        appData.SetPopUpTextArea(false);
+        appData.SetPopUpTextArea("");
         // appData.setPopApCloseSttatus(true);
         dispatch(resetStatus({ value: 200 }));
       }
     });
+  };
+
+  const getEditName = () => {
+    if (appData.popUpTextArea === "groups") {
+      return "групп";
+    } else if (appData.popUpTextArea === "audiences") {
+      return "аудиторий";
+    } else if (appData.popUpTextArea === "notes") {
+      return "примечаний";
+    }
   };
 
   return (
@@ -58,7 +68,7 @@ function PopUpTextAreaMore(props) {
         <div className={styles.exit}>
           <img onClick={cancleEdit} src="./img/x.svg" />
         </div>
-        <h2>Добавление примечания</h2>
+        <h2>Редактирование {getEditName()}</h2>
         <div className={styles.TextAreaComponent}>
           <TextArea value={textAreaText} onChange={onChange} />
         </div>

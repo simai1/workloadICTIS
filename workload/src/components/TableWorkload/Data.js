@@ -69,7 +69,7 @@ export const scheduleHead = [
   { key: "discipline", label: "Дисциплина" },
   { key: "workload", label: "Нагрузка" },
   { key: "groups", label: "Группа" },
-  { key: "audiences", label: "Аудитории" },
+  { key: "audiences", label: "Аудитория" },
   { key: "notes", label: "Примечания" },
   { key: "department", label: "Кафедра" },
   { key: "block", label: "Блок" },

@@ -640,13 +640,35 @@ export const ApiUnblockTable = async (indexTable) => {
   }
 };
 
+//!  Блокировака рассписания
+export const apiBlockMaterials = async (indexTable) => {
+  try {
+    const response = await http.patch(
+      `${server}/materials/block/${indexTable}`
+    );
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};
+//!  разБлокировака рассписания
+export const apiUnblockMaterials = async (indexTable) => {
+  try {
+    const response = await http.patch(
+      `${server}/materials/unblock/${indexTable}`
+    );
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};
+
 //! Добавить примечание в материалы к рассписанию
 export const apiNotecAddMaterials = async (data) => {
   try {
-    const response = await http.patch(
-      `${server}/materials`,
-      data
-    );
+    const response = await http.patch(`${server}/materials`, data);
     return response;
   } catch (error) {
     console.error("Error:", error);

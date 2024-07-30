@@ -23,6 +23,8 @@ function TableSchedule(props) {
   const ssHeader = `headerSchedule`;
   //! достаем данные из редакса
   const isCheckedStore = useSelector((state) => state.isCheckedSlice.isChecked);
+  const dispatch = useDispatch();
+  const textareaStor = useSelector((state) => state.textAreaSlice);
 
   //параметр для сортировки по колонке
   const [sortParamByColumn, setSortParamByColumn] = useState("");
@@ -66,21 +68,17 @@ function TableSchedule(props) {
 
   useEffect(() => {
     funUpdateTabDat();
-  }, []);
-  const dispatch = useDispatch();
-  const textareaStor = useSelector((state) => state.textAreaSlice);
-
-  console.log("textareaStor", textareaStor);
-  useEffect(() => {
-    if (textareaStor.status === 200) funUpdateTabDat();
-    dispatch(resetStatus({ value: 0 }));
   }, [
     basicTabData.selectTableSchedle,
-    textareaStor.status,
     appData.dataUpdated,
     isCheckedStore,
     sortParamByColumn,
   ]);
+
+  useEffect(() => {
+    if (textareaStor.status === 200) funUpdateTabDat();
+    dispatch(resetStatus({ value: 0 }));
+  }, [textareaStor.status]);
 
   const tabDat = {
     funUpdateTabDat,
