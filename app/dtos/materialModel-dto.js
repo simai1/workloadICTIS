@@ -27,6 +27,7 @@ export default class MaterialsModelDto {
   educator;
   createdAt;
   audiences;
+  isBlocked;
   notes;
 
   constructor(model) {
@@ -54,6 +55,7 @@ export default class MaterialsModelDto {
     this.educator = model.Educator ? new EducatorDto(model.Educator) : null;
     this.createdAt = model.createdAt;
     this.audiences = model.audiences;
+    this.isBlocked = model.isBlocked;
     this.notes = model.notes;
   }
 }

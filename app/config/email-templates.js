@@ -4,6 +4,11 @@ export default {
     template: (kaf) =>
       `<p>Редактирование нагрузки для кафедры ${kaf} завершено.</p>`,
   },
+  blockingMaterials: {
+    subject: 'Блокировка материалов к расписанию',
+    template: (kaf) =>
+      `<p>Редактирование материалов к расписанию для кафедры ${kaf} завершено.</p>`,
+  },
   requestUnblocking: {
     subject: 'Запрос на разблокировку таблицы',
     template: (kaf) =>
@@ -18,6 +23,11 @@ export default {
     subject: 'Разблокировка таблицы',
     template: () =>
       `<p>По вашей просьбе кафедра была разблокирована</p>`
+  },
+  unblockingMaterials: {
+    subject: 'Разблокировка материалов к расписанию',
+    template: () =>
+      `<p>Материалы к расписанию Вашей кафедры были разблокированы</p>`
   },
   lectorInvite: {
     subject: 'Уведомление workload.sfedu.ru',
