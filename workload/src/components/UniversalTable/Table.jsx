@@ -87,9 +87,12 @@ function Table(props) {
 
   const clickTrAll = () => {
     let ids = [];
-    if (props.tabDat.filtredData.length !== tabPar.selectedTr.length) {
+    if (
+      props.tabDat.filtredData.filter((el) => !el.isBlocked).length !==
+      tabPar.selectedTr.length
+    ) {
       props.tabDat.filtredData.map((item) => {
-        ids.push(item.id);
+        !item.isBlocked && ids.push(item.id);
       });
       tabPar.setOnCheckBoxAll(true);
     } else {
@@ -206,12 +209,12 @@ function Table(props) {
                 // выделяем цветом если выбранно для контекстного меню
                 className={getClassNameTr(item)}
                 onClick={
-                  getConfirmation(item.id).blocked
+                  getConfirmation(item.id).blocked || item.isBlocked
                     ? null
                     : (e) => clickTr(e, item.id)
                 }
                 onContextMenu={
-                  getConfirmation(item.id).blocked
+                  getConfirmation(item.id).blocked || item.isBlocked
                     ? null
                     : () => clickTrContetx(item.id)
                 }

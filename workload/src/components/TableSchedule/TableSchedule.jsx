@@ -96,7 +96,7 @@ function TableSchedule(props) {
     sortParamByColumn,
     setSortParamByColumn,
     isSorted: true, //! показать или скрыть сортировку
-    isBlocked: false, //! показывать или скрывать блокированные
+    isBlocked: false, //! показывать или скрывать блокированные false это показать
     isSignature: false, //! показывать или скрыть подпись блокированные, разделенные и тд.
   };
 
