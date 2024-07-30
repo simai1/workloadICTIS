@@ -516,120 +516,127 @@ export default {
         if (!semester) throw new AppErrorMissing('semester');
         if (!groups) throw new AppErrorMissing('groups');
         if (!block) throw new AppErrorMissing('block');
-        const workloads = await Workload.findAll({ where: { id: ids } });
-        const audienceHours = workloads[0].audienceHours;
-        const numberOfStudents = workloads[0].numberOfStudents;
-        const first = workloads[0];
-        let newWorkloadData;
-        if (type === 'g' && workloads.every(w => w.audienceHours === audienceHours)) {
-            // Объединение по подгруппам
-            const newNumberOfStudents = workloads.reduce(
-                (accumulator, currentValue) => accumulator + currentValue.numberOfStudents,
-                0
-            );
-            newWorkloadData = {
-                department: first.department,
-                discipline: first.discipline,
-                workload: first.workload,
-                groups,
-                block,
-                semester,
-                period: first.period,
-                curriculum,
-                curriculumUnit: first.curriculumUnit,
-                formOfEducation: first.formOfEducation,
-                levelOfTraining: first.levelOfTraining,
-                specialty: first.specialty,
-                core: first.core,
-                numberOfStudents: newNumberOfStudents,
-                hours: Math.round((newNumberOfStudents * first.audienceHours * 0.01 + first.audienceHours) * 100) / 100,
-                audienceHours: first.audienceHours,
-                ratingControlHours: Math.round(newNumberOfStudents * first.audienceHours * 0.01 * 100) / 100,
-                comment: first.comment ? first.comment : null,
-                isSplit: false,
-                isMerged: true,
-                originalId: null,
-                educatorId: null,
-                isOid: first.isOid,
-            };
-        } else if (type === 'h' && workloads.every(w => w.numberOfStudents === numberOfStudents && w.isSplit)) {
-            // Объединение по часам
-            newWorkloadData = {
-                department: first.department,
-                discipline: first.discipline,
-                workload: first.workload,
-                groups,
-                block,
-                semester,
-                period: first.period,
-                curriculum,
-                curriculumUnit: first.curriculumUnit,
-                formOfEducation: first.formOfEducation,
-                levelOfTraining: first.levelOfTraining,
-                specialty: first.specialty,
-                core: first.core,
-                numberOfStudents: first.numberOfStudents,
-                hours: workloads.reduce((accumulator, currentValue) => accumulator + currentValue.hours, 0),
-                audienceHours: workloads.reduce(
-                    (accumulator, currentValue) => accumulator + currentValue.audienceHours,
+        try{
+            const workloads = await Workload.findAll({ where: { id: ids } });
+            const audienceHours = workloads[0].audienceHours;
+            const numberOfStudents = workloads[0].numberOfStudents;
+            const first = workloads[0];
+            let newWorkloadData;
+            if (type === 'g' && workloads.every(w => w.audienceHours === audienceHours)) {
+                // Объединение по подгруппам
+                const newNumberOfStudents = workloads.reduce(
+                    (accumulator, currentValue) => accumulator + currentValue.numberOfStudents,
                     0
-                ),
-                ratingControlHours: workloads.reduce(
-                    (accumulator, currentValue) => accumulator + currentValue.ratingControlHours,
-                    0
-                ),
-                comment: first.comment ? first.comment : null,
-                isSplit: false,
-                isMerged: true,
-                originalId: null,
-                educatorId: null,
-                isOid: first.isOid,
-            };
-        } else if (type === 'vkr') {
-            newWorkloadData = {
+                );
+                newWorkloadData = {
+                    department: first.department,
+                    discipline: first.discipline,
+                    workload: first.workload,
+                    groups,
+                    block,
+                    semester,
+                    period: first.period,
+                    curriculum,
+                    curriculumUnit: first.curriculumUnit,
+                    formOfEducation: first.formOfEducation,
+                    levelOfTraining: first.levelOfTraining,
+                    specialty: first.specialty,
+                    core: first.core,
+                    numberOfStudents: newNumberOfStudents,
+                    hours: Math.round((newNumberOfStudents * first.audienceHours * 0.01 + first.audienceHours) * 100) / 100,
+                    audienceHours: first.audienceHours,
+                    ratingControlHours: Math.round(newNumberOfStudents * first.audienceHours * 0.01 * 100) / 100,
+                    comment: first.comment ? first.comment : null,
+                    isSplit: false,
+                    isMerged: true,
+                    originalId: null,
+                    educatorId: null,
+                    isOid: first.isOid,
+                };
+                
+            } else if (type === 'h' && workloads.every(w => w.numberOfStudents === numberOfStudents && w.isSplit)) {
+                // Объединение по часам
+                newWorkloadData = {
+                    department: first.department,
+                    discipline: first.discipline,
+                    workload: first.workload,
+                    groups,
+                    block,
+                    semester,
+                    period: first.period,
+                    curriculum,
+                    curriculumUnit: first.curriculumUnit,
+                    formOfEducation: first.formOfEducation,
+                    levelOfTraining: first.levelOfTraining,
+                    specialty: first.specialty,
+                    core: first.core,
+                    numberOfStudents: first.numberOfStudents,
+                    hours: workloads.reduce((accumulator, currentValue) => accumulator + currentValue.hours, 0),
+                    audienceHours: workloads.reduce(
+                        (accumulator, currentValue) => accumulator + currentValue.audienceHours,
+                        0
+                    ),
+                    ratingControlHours: workloads.reduce(
+                        (accumulator, currentValue) => accumulator + currentValue.ratingControlHours,
+                        0
+                    ),
+                    comment: first.comment ? first.comment : null,
+                    isSplit: false,
+                    isMerged: true,
+                    originalId: null,
+                    educatorId: null,
+                    isOid: first.isOid,
+                };
+            } else if (type === 'vkr') {
+                newWorkloadData = {
+                    department: first.department,
+                    discipline: first.discipline,
+                    workload: first.workload,
+                    groups,
+                    block,
+                    semester,
+                    period: first.period,
+                    curriculum,
+                    curriculumUnit: first.curriculumUnit,
+                    formOfEducation: first.formOfEducation,
+                    levelOfTraining: first.levelOfTraining,
+                    specialty: first.specialty,
+                    core: first.core,
+                    numberOfStudents: first.numberOfStudents,
+                    hours: first.hours,
+                    audienceHours: first.audienceHours,
+                    ratingControlHours: first.ratingControlHours,
+                    comment: first.comment ? first.comment : null,
+                    isSplit: false,
+                    isMerged: true,
+                    originalId: null,
+                    educatorId: null,
+                    isOid: first.isOid,
+                };
+            } else {
+                throw new AppErrorInvalid('type');
+            }
+            const newWorkload = await Workload.create(newWorkloadData);
+            workloads.reduce((chain, workload) => {
+                return chain.then(() => workload.destroy());
+            }, Promise.resolve());
+
+            await History.create({
+                type: 2,
                 department: first.department,
-                discipline: first.discipline,
-                workload: first.workload,
-                groups,
-                block,
-                semester,
-                period: first.period,
-                curriculum,
-                curriculumUnit: first.curriculumUnit,
-                formOfEducation: first.formOfEducation,
-                levelOfTraining: first.levelOfTraining,
-                specialty: first.specialty,
-                core: first.core,
-                numberOfStudents: first.numberOfStudents,
-                hours: first.hours,
-                audienceHours: first.audienceHours,
-                ratingControlHours: first.ratingControlHours,
-                comment: first.comment ? first.comment : null,
-                isSplit: false,
-                isMerged: true,
-                originalId: null,
-                educatorId: null,
-                isOid: first.isOid,
-            };
-        } else {
-            throw new AppErrorInvalid('type');
+                before: ids,
+                after: [newWorkload.id],
+            });
+
+            res.json({
+                id: newWorkloadData.id,
+                ...newWorkload,
+            });
+        } catch(err){
+            console.log(err);
+            res.status(500).json({ message: err.message });
         }
-        const newWorkload = await Workload.create(newWorkloadData);
-        workloads.reduce((chain, workload) => {
-            return chain.then(() => workload.destroy());
-        }, Promise.resolve());
-
-        await History.create({
-            type: 2,
-            department: first.department,
-            before: ids,
-            after: [newWorkload.id],
-        });
-
-        res.json({
-            id: newWorkloadData.id,
-            ...newWorkload,
-        });
+        
     },
 
     async mergeReadyData({ body: { workloadData, ids } }, res) {
