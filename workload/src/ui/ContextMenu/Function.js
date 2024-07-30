@@ -303,7 +303,7 @@ export function combineData(data, selectedTr, action = "") {
         const updatedObjectFix = {
           ...updatedObject,
           ratingControlHours: rc,
-          hours: rc + updatedObject.audienceHours,
+          hours: (rc + updatedObject.audienceHours).toFixed(2),
         };
         newState = updatedObjectFix;
       } else if (action === "h") {
@@ -312,7 +312,7 @@ export function combineData(data, selectedTr, action = "") {
         const updatedObjectFix = {
           ...updatedObject,
           ratingControlHours: rc,
-          hours: rc + updatedObject.audienceHours,
+          hours: (rc + updatedObject.audienceHours).toFixed(2),
         };
         newState = updatedObjectFix;
       } else if (action === "vkr") {
