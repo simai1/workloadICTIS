@@ -269,6 +269,7 @@ export default {
             if (materials) {
                 usableDepartments.push({
                     id: department,
+                    isBlocked: materials.isBlocked,
                     name: mapDepartments[department],
                 });
             }
@@ -285,6 +286,7 @@ export default {
                     if (materials) {
                         usableDepartments.push({
                             id: usableDepartment.department,
+                            isBlocked: materials.isBlocked,
                             name: department,
                         });
                     }
@@ -331,6 +333,7 @@ export default {
                 if (materials) {
                     usableDepartments.push({
                         id: usableDepartment.department,
+                        isBlocked: materials.isBlocked,
                         name: department,
                     });
                 }
@@ -346,6 +349,7 @@ export default {
                 if (materials) {
                     usableDepartments.push({
                         id: usableDepartment.department,
+                        isBlocked: materials.isBlocked,
                         name: department,
                     });
                 }
