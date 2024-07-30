@@ -63,6 +63,10 @@ function TableSchedule(props) {
       }
     });
   };
+
+  useEffect(() => {
+    funUpdateTabDat();
+  }, []);
   const dispatch = useDispatch();
   const textareaStor = useSelector((state) => state.textAreaSlice);
 
