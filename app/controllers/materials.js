@@ -8,6 +8,7 @@ import { AppErrorInvalid, AppErrorMissing, AppErrorNotExist } from '../utils/err
 import MaterialsModelDto from '../dtos/materialModel-dto.js';
 import User from '../models/user.js';
 import { instituteDepartments } from '../config/institutional-affiliations.js';
+import sendMail from '../services/email.js';
 
 const orderRule = [['number', 'ASC']];
 
@@ -198,6 +199,23 @@ export default {
                 },
             }
         );
+        if (process.env.NODE_ENV === 'production') {
+            const methodists = await User.findAll({ where: { role: 1 } });
+            for (const methodist of methodists) {
+                sendMail(
+                    methodist.login,
+                    'blockingMaterials',
+                    department === 0 ? 'Общеинститутская нагрузка' : `${mapDepartments[department]}`
+                );
+            }
+        } else {
+            sendMail(
+                process.env.EMAIL_RECIEVER,
+                'blockingMaterials',
+                department === 0 ? 'Общеинститутская нагрузка' : `${mapDepartments[department]}`
+            );
+        }
+
         res.json({ status: 'OK' });
     },
 
@@ -211,6 +229,28 @@ export default {
                 },
             }
         );
+
+        if (process.env.NODE_ENV === 'production') {
+            const recievers = await User.findAll({
+                where: {
+                    role: { [Op.in]: [3, 8] },
+                },
+                include: [
+                    {
+                        model: Educator,
+                        where: {
+                            department,
+                        },
+                    },
+                ],
+            });
+            for (const reciever of recievers) {
+                sendMail(reciever.login, 'unblockingMaterials');
+            }
+        } else {
+            sendMail(process.env.EMAIL_RECIEVER, 'unblockingMaterials');
+        }
+
         res.json({ status: 'OK' });
     },
 
