@@ -2,7 +2,7 @@ version: '3'
 services:
   db:
     container_name:
-      workload-master-db
+      db
     image: postgres:15
     restart: always
     environment:
@@ -18,14 +18,14 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   server:
-    container_name: workload-master-server
+    container_name: api
     build:
       context: ./app
       dockerfile: Dockerfile
     depends_on:
       - db
     ports:
-      - '3010:3010'
+      - '3002:3002'
     environment:
       - DB_NAME=${DB_NAME}
       - DB_USERNAME=${DB_USER}
@@ -38,7 +38,7 @@ services:
   client:
     depends_on:
       - server
-    container_name: workload-master-client
+    container_name: client
     build:
       context: ./workload
       dockerfile: Dockerfile

@@ -804,7 +804,7 @@ function App() {
         basicTabData,
       }}
     >
-      <BrowserRouter basename="/client">
+      <BrowserRouter basename="/test-client">
         <div className="Container">
           <Routes>
             <Route path="/" element={<Authorization />}></Route>
