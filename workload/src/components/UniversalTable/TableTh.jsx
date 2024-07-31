@@ -29,14 +29,14 @@ function TableTh(props) {
       setSortImg(1);
     } else {
       if (
-        props.tabDat.sortParamByColumn.includes(props.item.key) &&
-        props.tabDat.sortParamByColumn.includes("asc")
+        props.tabDat.sortParamByColumn?.includes(props.item.key) &&
+        props.tabDat.sortParamByColumn?.includes("asc")
       ) {
         par = `col=${props.item.key}&type=${"desc"}`;
         setSortImg(2);
       } else if (
-        props.tabDat.sortParamByColumn.includes(props.item.key) &&
-        props.tabDat.sortParamByColumn.includes("desc")
+        props.tabDat.sortParamByColumn?.includes(props.item.key) &&
+        props.tabDat.sortParamByColumn?.includes("desc")
       ) {
         par = "";
         setSortImg(0);
@@ -49,7 +49,7 @@ function TableTh(props) {
   };
 
   useEffect(() => {
-    if (!props.tabDat.sortParamByColumn.includes(props.item.key)) {
+    if (!props.tabDat.sortParamByColumn?.includes(props.item.key)) {
       setSortImg(0);
     }
   }, [props.tabDat.sortParamByColumn]);
