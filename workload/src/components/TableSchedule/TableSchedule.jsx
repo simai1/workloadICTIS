@@ -54,6 +54,7 @@ function TableSchedule(props) {
     getSchedule(url).then((resp) => {
       if (resp.status === 200) {
         dataBd = [...resp.data].map((el) => {
+          //! кода на бэке будут передавать "" вместо null, убрать map!!!
           return { ...el, notes: el.notes || "___" };
         });
         const fixEducator = funFixEducator(dataBd);
