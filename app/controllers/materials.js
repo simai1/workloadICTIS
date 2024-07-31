@@ -129,7 +129,9 @@ export default {
         } else if ([3, 8].includes(user.role)) {
             // DEPARTMENT_HEAD & DEPUTY_DEPARTMENT_HEAD
             materials = await Materials.findAll({
-                where: { department: user.Educator.department },
+                where: {
+                    [Op.or]: [{department: user.Educator.department}, {educatorId: user.Educator.id}]
+                },
                 attributes: { exclude: ['fields'] },
                 include: [{ model: Educator }],
                 order: col && type ? [[col, type.toUpperCase()]] : orderRule,
