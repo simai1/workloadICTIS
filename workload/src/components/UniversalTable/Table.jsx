@@ -227,7 +227,7 @@ function Table(props) {
                   workload={item}
                   number={number}
                   getConfirmation={getConfirmation(item.id)}
-                  checked={tabPar.selectedTr.includes(item.id)}
+                  checked={tabPar.selectedTr?.includes(item.id)}
                   tabDat={props.tabDat}
                 />
                 {tableHeaders.map((itemKey, index) => (
