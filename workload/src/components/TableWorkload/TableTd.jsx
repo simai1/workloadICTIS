@@ -172,7 +172,7 @@ function TableTd(props) {
         showFullText && props.item[props.itemKey.key]?.length > lenSlice
           ? props.itemKey.key === "discipline" ||
             props.itemKey.key === "workload"
-            ? { position: "sticky" }
+            ? { position: "sticky", zIndex: "1" }
             : { position: "relative" }
           : null
       }

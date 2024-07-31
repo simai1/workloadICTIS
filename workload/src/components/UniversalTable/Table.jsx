@@ -209,12 +209,16 @@ function Table(props) {
                 // выделяем цветом если выбранно для контекстного меню
                 className={getClassNameTr(item)}
                 onClick={
-                  getConfirmation(item.id).blocked || item.isBlocked
+                  getConfirmation(item.id).blocked ||
+                  (item.isBlocked &&
+                    appData.selectedComponent === "ScheduleMaterials")
                     ? null
                     : (e) => clickTr(e, item.id)
                 }
                 onContextMenu={
-                  getConfirmation(item.id).blocked || item.isBlocked
+                  getConfirmation(item.id).blocked ||
+                  (item.isBlocked &&
+                    appData.selectedComponent === "ScheduleMaterials")
                     ? null
                     : () => clickTrContetx(item.id)
                 }

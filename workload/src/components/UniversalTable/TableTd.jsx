@@ -313,7 +313,7 @@ function TableTd(props) {
             props.itemKey.key === "notes" ||
             props.itemKey.key === "groups" ||
             props.itemKey.key === "audiences"
-            ? { position: "sticky" }
+            ? { position: "sticky", zIndex: "1" }
             : { position: "relative" }
           : null
       }

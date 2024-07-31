@@ -15,10 +15,17 @@ export function EducatorMenu(props) {
 
   useEffect(() => {
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 2)) {
-      apiEducatorDepartment().then((req) => {
-        setEductor(req.data);
-        setFiltredData(req.data);
-      });
+      if (appData.selectedComponent === "MyWorkload") {
+        EducatorByInstitute().then((req) => {
+          setEductor(req.data);
+          setFiltredData(req.data);
+        });
+      } else {
+        apiEducatorDepartment().then((req) => {
+          setEductor(req.data);
+          setFiltredData(req.data);
+        });
+      }
     }
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)) {
       Educator().then((req) => {
