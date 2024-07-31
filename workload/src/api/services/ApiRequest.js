@@ -128,11 +128,16 @@ export const TypeOfEmployments = async () => {
   }
 };
 
+const uniqueObjects = (array) => {
+  return array.filter(
+    (value, index, self) => index === self.findIndex((t) => t.id === value.id)
+  );
+};
 //! получаем нагрузки
 export const Workload = async (param) => {
   try {
     const response = await http.get(`${server}/workload${param}`);
-    return response.data;
+    return uniqueObjects(response.data); //! БАГ С ОДИНКОВЫМИ id по этому фильтрация
   } catch (error) {
     console.error("Error:", error, `${server}/workload`);
     return [];

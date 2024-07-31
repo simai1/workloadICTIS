@@ -54,11 +54,11 @@ function PopUpTextAreaMore(props) {
 
   const getEditName = () => {
     if (appData.popUpTextArea === "groups") {
-      return "групп";
+      return "группы";
     } else if (appData.popUpTextArea === "audiences") {
-      return "аудиторий";
+      return "аудитории";
     } else if (appData.popUpTextArea === "notes") {
-      return "примечаний";
+      return "примечания";
     }
   };
 

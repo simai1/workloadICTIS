@@ -125,7 +125,8 @@ function Table(props) {
     }
     if (
       items.isBlocked &&
-      appData.metodRole[appData.myProfile?.role]?.some((el) => el === 33.1) &&
+      (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 33.1) ||
+        appData.selectedComponent === "ScheduleMaterials") &&
       !props.tabDat.isBlocked
     ) {
       classText = `${classText} ${styles.trIsBloced}`;
