@@ -30,6 +30,7 @@ import {
   WorkloadBlocked,
   apiBlockMaterials,
   apiGetUser,
+  apiUnblockMaterials,
   getAllWarningMessage,
   getSchedule,
 } from "../../api/services/ApiRequest";
@@ -47,10 +48,11 @@ import TableSchedule from "../../components/TableSchedule/TableSchedule";
 import MyWorkload from "../../components/MyWorkload/MyWorkload";
 import ListSchedule from "../../ui/ListSchedule/ListSchedule";
 import PopupTextArea from "../../components/PopupTextArea/PopupTextArea";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import PopUpTextAreaMore from "../../components/PopUpTextAreaMore/PopUpTextAreaMore";
 import { generateAndDownloadExcel } from "./functionHomePage";
 import BlockingTables from "../../components/BlockingTables/BlockingTables";
+import { resetStatus } from "../../store/popup/textareaData.slice";
 function HomePage() {
   const { appData, tabPar, visibleDataPar, basicTabData } =
     React.useContext(DataContext);
@@ -74,7 +76,7 @@ function HomePage() {
   const [popupExport, setPopupExport] = useState(false); // открыть/закрыть попап подтверждения блокировки таблицы
   const [departments, setdepartments] = useState([]);
   const [departmentsMaterials, setDepartmentsMaterials] = useState([]);
-
+  const dispatch = useDispatch();
   // const [kafedralIsOpen, setKafedralIsOpen] = useState(false);
   // const [cafedral, setCafedral] = useState(false);
   const [blockTable, setBlockTable] = useState(false);
@@ -213,8 +215,9 @@ function HomePage() {
     }
   };
 
+  //! функция при клике блокировки в расписании
   const confirmClickSchedule = () => {
-    const idTable = basicTabData?.tableDepartment.find(
+    const idTable = departmentsMaterials.find(
       (el) => el.name === basicTabData?.selectTableSchedle
     ).id;
     apiBlockMaterials(idTable).then((res) => {
@@ -222,6 +225,30 @@ function HomePage() {
 
       if (res?.status === 200) {
         setPopupExport(false);
+        dispatch(resetStatus({ value: 200 }));
+        GetDepartmentsMaterials().then((resp) => {
+          console.log("resp ", resp);
+          setDepartmentsMaterials([{ id: 99, name: "Все" }, ...resp.data]);
+        });
+      }
+    });
+  };
+
+  //! функция при клике разблокировки в расписании
+  const confirmClickScheduleUnBlocked = () => {
+    const idTable = departmentsMaterials.find(
+      (el) => el.name === basicTabData?.selectTableSchedle
+    ).id;
+    apiUnblockMaterials(idTable).then((res) => {
+      console.log("разблокировка ", res);
+      if (res?.status === 200) {
+        setPopupExport(false);
+        dispatch(resetStatus({ value: 200 }));
+
+        GetDepartmentsMaterials().then((resp) => {
+          console.log("resp ", resp);
+          setDepartmentsMaterials([{ id: 99, name: "Все" }, ...resp.data]);
+        });
       }
     });
   };
@@ -357,11 +384,12 @@ function HomePage() {
     }
   };
 
-  // //! функция котора открывет попап для редактирвоания цасов с определенными данными
-  // function funDataSplitHoursPopup(data, setdata, action){
-  //   console.log("")
-
-  // }
+  //! функция которая отпределяет что выбранная кафедра в рассписании заблокированна
+  const getBlockedSchadule = () => {
+    return departmentsMaterials.find(
+      (el) => el.name === basicTabData?.selectTableSchedle
+    )?.isBlocked;
+  };
 
   return (
     <Layout>
@@ -520,15 +548,34 @@ function HomePage() {
                     )}
                   </div>
                 )}
-                {appData.selectedComponent === "ScheduleMaterials" && (
-                  <BlockingTables
-                    popupExport={popupExport}
-                    clickFun={onExportClick}
-                    nameKaf={basicTabData.selectTableSchedle}
-                    confirmClick={confirmClickSchedule}
-                    setShow={setPopupExport}
-                  />
-                )}
+                {appData.selectedComponent === "ScheduleMaterials" &&
+                  getBlockedSchadule() && (
+                    <BlockingTables
+                      imgUrl={"./img/unblock.svg"}
+                      title={"Разблокировать материалы к расписанию"}
+                      confirmSavingTitle={`Разблокировать материалы к расписанию ${basicTabData.selectTableSchedle}?`}
+                      popupExport={popupExport}
+                      clickFun={onExportClick}
+                      nameKaf={basicTabData.selectTableSchedle}
+                      confirmClick={confirmClickScheduleUnBlocked}
+                      setShow={setPopupExport}
+                    />
+                  )}
+                {appData.selectedComponent === "ScheduleMaterials" &&
+                  !getBlockedSchadule() && (
+                    <BlockingTables
+                      imgUrl={"./img/export.svg"}
+                      title={
+                        "Завершение редактирования материалов к расписанию"
+                      }
+                      confirmSavingTitle={`Завершить редактирование материалов к расписанию ${basicTabData.selectTableSchedle}?`}
+                      popupExport={popupExport}
+                      clickFun={onExportClick}
+                      nameKaf={basicTabData.selectTableSchedle}
+                      confirmClick={confirmClickSchedule}
+                      setShow={setPopupExport}
+                    />
+                  )}
               </div>
               {funGetSherch() && (
                 <div

@@ -660,9 +660,9 @@ export const apiBlockMaterials = async (indexTable) => {
 //!  разБлокировака рассписания
 export const apiUnblockMaterials = async (indexTable) => {
   try {
-    const response = await http.patch(
-      `${server}/materials/unblock/${indexTable}`
-    );
+    const response = await http.patch(`${server}/materials/unblock/`, {
+      department: indexTable,
+    });
     return response;
   } catch (error) {
     console.error("Error:", error);
