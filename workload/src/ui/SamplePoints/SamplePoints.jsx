@@ -156,6 +156,18 @@ export function SamplePoints(props) {
     props.setWorkloadDataFix(fdfix);
   };
 
+  const getText = (index, el) => {
+    if (index === 0) {
+      return index + 1;
+    } else {
+      if (el === "" || el === null || el === undefined) {
+        return "___";
+      } else {
+        return el;
+      }
+    }
+  };
+
   return (
     <main className={styles.SamplePoints} ref={spRef}>
       <div className={styles.container}>
@@ -195,7 +207,7 @@ export function SamplePoints(props) {
                       )
                     }
                   />
-                  <p>{props.index === 0 ? index + 1 : el === "" ? "__" : el}</p>
+                  <p>{getText(props.index, el)}</p>
                 </div>
               );
             })}
