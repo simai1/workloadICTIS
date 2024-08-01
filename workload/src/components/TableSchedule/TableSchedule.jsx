@@ -51,12 +51,12 @@ function TableSchedule(props) {
     } else if (url === "" && sortParamByColumn !== "") {
       url = `?${sortParamByColumn}`;
     }
-    const limit = {
+    const lim = {
       limit: 10,
       offset: 20,
     };
-    getSchedule(url, limit).then((resp) => {
-      if (resp.status === 200) {
+    getSchedule(url, lim).then((resp) => {
+      if (resp?.status === 200) {
         dataBd = [...resp.data];
         const fixEducator = funFixEducator(dataBd);
         const checks = isCheckedStore[ssIsChecked];

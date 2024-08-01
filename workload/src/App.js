@@ -305,6 +305,7 @@ function App() {
     setTypeSplit,
     parametrFilter,
     setParametrFilter,
+    UpdateWorkloadForBoofer,
   };
 
   //! функция обновления комментаривев
