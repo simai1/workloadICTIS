@@ -712,7 +712,7 @@ export const UnblockTablePlease = async (indexDepartment) => {
 export const getSchedule = async (param, lim) => {
   console.log(param, lim);
   try {
-    const response = await http.get(`${server}/materials${param}`);
+    const response = await http.post(`${server}/materials${param}`, lim);
     return response;
   } catch (error) {
     console.error("Error:", error);

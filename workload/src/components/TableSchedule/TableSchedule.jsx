@@ -53,7 +53,7 @@ function TableSchedule(props) {
     }
     const lim = {
       limit: 10,
-      offset: 20,
+      offset: 10,
     };
     getSchedule(url, lim).then((resp) => {
       if (resp?.status === 200) {
@@ -77,6 +77,7 @@ function TableSchedule(props) {
     appData.dataUpdated,
     isCheckedStore,
     sortParamByColumn,
+    visibleDataPar.startData,
   ]);
 
   useEffect(() => {
