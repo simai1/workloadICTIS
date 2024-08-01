@@ -69,7 +69,7 @@ export default {
                     isSplit: w.isSplit,
                     isMerged: w.isMerged,
                     educatorId: w.educatorId,
-                    notes: w.notes,
+                    notes: w.notes? w.notes : '',
                 })
             ),
             { ignoreDuplicates: true }
