@@ -102,12 +102,12 @@ export default class Materials extends Model {
                 },
                 notes: {
                     type: DataTypes.STRING(1024),
-                    allowNull: true,
+                    allowNull: false,
                     defaultValue: '',
                 },
                 audiences: {
                     type: DataTypes.STRING(1024),
-                    allowNull: true,
+                    allowNull: false,
                     defaultValue: '',
                 },
                 isBlocked: {
