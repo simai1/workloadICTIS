@@ -65,7 +65,6 @@ function TableSchedule(props) {
         setFiltredData(fdfix);
         checkPar.setIsChecked(checks || []);
         appData.setLoaderAction(0);
-        console.log("dataBd", dataBd);
       }
     });
   };
