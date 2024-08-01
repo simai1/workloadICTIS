@@ -134,7 +134,6 @@ function TableTd(props) {
   };
 
   const defineFunction = (action) => {
-    console.log("click");
     if (action === "headerSchedule") {
       onClicNotic(action);
     } else {

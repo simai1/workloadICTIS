@@ -51,11 +51,13 @@ function TableSchedule(props) {
     } else if (url === "" && sortParamByColumn !== "") {
       url = `?${sortParamByColumn}`;
     }
-    getSchedule(url).then((resp) => {
-      if (resp.status === 200) {
-        dataBd = [...resp.data].map((el) => {
-          return { ...el, notes: el.notes || "___" };
-        });
+    const lim = {
+      limit: 10,
+      offset: 20,
+    };
+    getSchedule(url, lim).then((resp) => {
+      if (resp?.status === 200) {
+        dataBd = [...resp.data];
         const fixEducator = funFixEducator(dataBd);
         const checks = isCheckedStore[ssIsChecked];
         const fdfix = FilteredSample(fixEducator, checks);
@@ -64,7 +66,6 @@ function TableSchedule(props) {
         setFiltredData(fdfix);
         checkPar.setIsChecked(checks || []);
         appData.setLoaderAction(0);
-        console.log("dataBd", dataBd);
       }
     });
   };

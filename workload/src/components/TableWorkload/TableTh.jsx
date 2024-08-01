@@ -72,7 +72,9 @@ function TableTh(props) {
           isAllChecked={checkPar.isAllChecked}
           isChecked={checkPar.isChecked}
           setIsChecked={checkPar.setIsChecked}
-          workloadData={basicTabData.workloadData}
+          workloadData={tabPar.UpdateWorkloadForBoofer(
+            basicTabData.workloadData
+          )}
           // workloadDataFix={basicTabData.workloadDataFix}
           setWorkloadDataFix={basicTabData.setWorkloadDataFix}
           setSpShow={tabPar.setSpShow}
@@ -102,8 +104,7 @@ function TableTh(props) {
                       transition: "all 0.2s ease",
                       transform: "rotate(-180deg)",
                     }
-                  : {   transition: "all 0.2s ease",
-                         }
+                  : { transition: "all 0.2s ease" }
               }
             ></img>
           )}

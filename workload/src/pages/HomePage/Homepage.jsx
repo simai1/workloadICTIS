@@ -121,7 +121,6 @@ function HomePage() {
       appData.setMyProfile(data);
     });
     GetDepartmentsMaterials().then((resp) => {
-      console.log("resp ", resp);
       setDepartmentsMaterials([{ id: 99, name: "Все" }, ...resp.data]);
     });
   }, []);
@@ -221,13 +220,10 @@ function HomePage() {
       (el) => el.name === basicTabData?.selectTableSchedle
     ).id;
     apiBlockMaterials(idTable).then((res) => {
-      console.log("блокировака ", res);
-
       if (res?.status === 200) {
         setPopupExport(false);
         dispatch(resetStatus({ value: 200 }));
         GetDepartmentsMaterials().then((resp) => {
-          console.log("resp ", resp);
           setDepartmentsMaterials([{ id: 99, name: "Все" }, ...resp.data]);
         });
       }
@@ -240,13 +236,11 @@ function HomePage() {
       (el) => el.name === basicTabData?.selectTableSchedle
     ).id;
     apiUnblockMaterials(idTable).then((res) => {
-      console.log("разблокировка ", res);
       if (res?.status === 200) {
         setPopupExport(false);
         dispatch(resetStatus({ value: 200 }));
 
         GetDepartmentsMaterials().then((resp) => {
-          console.log("resp ", resp);
           setDepartmentsMaterials([{ id: 99, name: "Все" }, ...resp.data]);
         });
       }
@@ -549,6 +543,9 @@ function HomePage() {
                   </div>
                 )}
                 {appData.selectedComponent === "ScheduleMaterials" &&
+                  appData.metodRole[appData.myProfile?.role]?.some(
+                    (el) => el === 27
+                  ) &&
                   getBlockedSchadule() && (
                     <BlockingTables
                       imgUrl={"./img/unblock.svg"}
@@ -562,6 +559,9 @@ function HomePage() {
                     />
                   )}
                 {appData.selectedComponent === "ScheduleMaterials" &&
+                  appData.metodRole[appData.myProfile?.role]?.some(
+                    (el) => el === 27
+                  ) &&
                   !getBlockedSchadule() && (
                     <BlockingTables
                       imgUrl={"./img/export.svg"}
