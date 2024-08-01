@@ -543,6 +543,9 @@ function HomePage() {
                   </div>
                 )}
                 {appData.selectedComponent === "ScheduleMaterials" &&
+                  appData.metodRole[appData.myProfile?.role]?.some(
+                    (el) => el === 27
+                  ) &&
                   getBlockedSchadule() && (
                     <BlockingTables
                       imgUrl={"./img/unblock.svg"}
@@ -556,6 +559,9 @@ function HomePage() {
                     />
                   )}
                 {appData.selectedComponent === "ScheduleMaterials" &&
+                  appData.metodRole[appData.myProfile?.role]?.some(
+                    (el) => el === 27
+                  ) &&
                   !getBlockedSchadule() && (
                     <BlockingTables
                       imgUrl={"./img/export.svg"}
