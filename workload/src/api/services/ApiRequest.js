@@ -709,9 +709,10 @@ export const UnblockTablePlease = async (indexDepartment) => {
 };
 
 //! Получение Данных для таблицы раасписания к материалам
-export const getSchedule = async (param) => {
+export const getSchedule = async (param, limit) => {
+  console.log(param, limit);
   try {
-    const response = await http.get(`${server}/materials${param}`);
+    const response = await http.get(`${server}/materials${param}`, limit);
     return response;
   } catch (error) {
     console.error("Error:", error);
