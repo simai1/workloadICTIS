@@ -777,7 +777,7 @@ const ContextMenu = (props) => {
           tabPar.selectedTr.length <= 15 && (
             <MenuPop
               key={"MenuPop9"}
-              btnText={"Редактировать группы"}
+              btnText={"Редактировать группу"}
               func={() => addNote("groups")}
               img={false}
             />
@@ -786,7 +786,7 @@ const ContextMenu = (props) => {
           tabPar.selectedTr.length <= 15 && (
             <MenuPop
               key={"MenuPop9"}
-              btnText={"Редактировать аудитории"}
+              btnText={"Редактировать аудиторию"}
               func={() => addNote("audiences")}
               img={false}
             />

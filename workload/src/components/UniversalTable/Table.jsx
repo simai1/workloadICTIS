@@ -125,7 +125,8 @@ function Table(props) {
     }
     if (
       items.isBlocked &&
-      appData.metodRole[appData.myProfile?.role]?.some((el) => el === 33.1) &&
+      (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 33.1) ||
+        appData.selectedComponent === "ScheduleMaterials") &&
       !props.tabDat.isBlocked
     ) {
       classText = `${classText} ${styles.trIsBloced}`;
@@ -209,12 +210,16 @@ function Table(props) {
                 // выделяем цветом если выбранно для контекстного меню
                 className={getClassNameTr(item)}
                 onClick={
-                  getConfirmation(item.id).blocked || item.isBlocked
+                  getConfirmation(item.id).blocked ||
+                  (item.isBlocked &&
+                    appData.selectedComponent === "ScheduleMaterials")
                     ? null
                     : (e) => clickTr(e, item.id)
                 }
                 onContextMenu={
-                  getConfirmation(item.id).blocked || item.isBlocked
+                  getConfirmation(item.id).blocked ||
+                  (item.isBlocked &&
+                    appData.selectedComponent === "ScheduleMaterials")
                     ? null
                     : () => clickTrContetx(item.id)
                 }

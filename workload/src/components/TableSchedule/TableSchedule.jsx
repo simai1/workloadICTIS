@@ -53,7 +53,9 @@ function TableSchedule(props) {
     }
     getSchedule(url).then((resp) => {
       if (resp.status === 200) {
-        dataBd = [...resp.data];
+        dataBd = [...resp.data].map((el) => {
+          return { ...el, notes: el.notes || "___" };
+        });
         const fixEducator = funFixEducator(dataBd);
         const checks = isCheckedStore[ssIsChecked];
         const fdfix = FilteredSample(fixEducator, checks);
@@ -62,6 +64,7 @@ function TableSchedule(props) {
         setFiltredData(fdfix);
         checkPar.setIsChecked(checks || []);
         appData.setLoaderAction(0);
+        console.log("dataBd", dataBd);
       }
     });
   };

@@ -12,12 +12,12 @@ function BlockingTables(props) {
         style={{ marginRight: "15px" }}
         className={styles.btnMenuBox}
         onClick={props.clickFun}
-        title="Выгрузка таблицы для методистов"
+        title={props.title}
       >
-        <img className={styles.btnLeft} src="./img/export.svg" alt="i" />
+        <img className={styles.btnLeft} src={props.imgUrl} alt="i" />
         {props.popupExport && (
           <ConfirmSaving
-            title={`Вы уверены, что хотите отправить таблицу ${props.nameKaf}?`}
+            title={props.confirmSavingTitle}
             confirmClick={props.confirmClick}
             setShow={props.setShow}
           />
