@@ -86,6 +86,8 @@ export default {
 
     async getAll(req, res) {
         let { departments, col, type } = req.query;
+        const {limit, offset} = req.body;
+        const pagination = {limit, offset};
         const user = await User.findByPk(req.user, { include: [{ model: Educator }] });
         let materials;
         if ([1, 9, 10].includes(user.role)) {
@@ -95,6 +97,7 @@ export default {
                     order: col && type ? [[col, type.toUpperCase()]] : orderRule,
                     attributes: { exclude: ['fields'] },
                     include: [{ model: Educator }],
+                    ...(limit && offset ? pagination : {}),
                 });
             } else {
                 departments = departments.split(',').map(d => parseInt(d));
@@ -103,6 +106,7 @@ export default {
                     attributes: { exclude: ['fields'] },
                     include: [{ model: Educator }],
                     order: col && type ? [[col, type.toUpperCase()]] : orderRule,
+                    ...(limit && offset ? pagination : {}),
                 });
             }
         } else if ([4, 7].includes(user.role)) {
@@ -113,6 +117,7 @@ export default {
                     order: col && type ? [[col, type.toUpperCase()]] : orderRule,
                     attributes: { exclude: ['fields'] },
                     include: [{ model: Educator }],
+                    ...(limit && offset ? pagination : {}),
                 });
             } else {
                 departments = departments.split(',').map(d => parseInt(d));
@@ -124,6 +129,7 @@ export default {
                     attributes: { exclude: ['fields'] },
                     include: [{ model: Educator }],
                     order: col && type ? [[col, type.toUpperCase()]] : orderRule,
+                    ...(limit && offset ? pagination : {}),
                 });
             }
         } else if ([3, 8].includes(user.role)) {
@@ -135,6 +141,7 @@ export default {
                 attributes: { exclude: ['fields'] },
                 include: [{ model: Educator }],
                 order: col && type ? [[col, type.toUpperCase()]] : orderRule,
+                ...(limit && offset ? pagination : {}),
             });
         } else if (user.role === 6) {
             // UNIT_ADMIN
@@ -143,6 +150,7 @@ export default {
                 attributes: { exclude: ['fields'] },
                 include: [{ model: Educator }],
                 order: col && type ? [[col, type.toUpperCase()]] : orderRule,
+                ...(limit && offset ? pagination : {}),
             });
             if (!departments) {
                 materials = await Materials.findAll({
@@ -150,6 +158,7 @@ export default {
                     attributes: { exclude: ['fields'] },
                     order: col && type ? [[col, type.toUpperCase()]] : orderRule,
                     include: [{ model: Educator }],
+                    ...(limit && offset ? pagination : {}),
                 });
             } else {
                 departments = departments.split(',').map(d => parseInt(d));
@@ -161,6 +170,7 @@ export default {
                     attributes: { exclude: ['fields'] },
                     include: [{ model: Educator }],
                     order: col && type ? [[col, type.toUpperCase()]] : orderRule,
+                    ...(limit && offset ? pagination : {}),
                 });
             }
         } else if ([2, 5].includes(user.role)) {
@@ -170,6 +180,7 @@ export default {
                 attributes: { exclude: ['fields'] },
                 include: [{ model: Educator }],
                 order: col && type ? [[col, type.toUpperCase()]] : orderRule,
+                ...(limit && offset ? pagination : {}),
             });
         }
         const materialsDto = materials.map(m => new MaterialsModelDto(m));
