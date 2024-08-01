@@ -334,6 +334,7 @@ function HomePage() {
     });
   };
 
+
   useEffect(() => {
     setBlockTable(checkBlocked());
   }, [
@@ -824,6 +825,7 @@ function HomePage() {
               </div>
 
               <div className={styles.right_button}>
+              
                 <div className={styles.EditInput}>
                   {educatorIdforLk === "" && (
                     <EditInput

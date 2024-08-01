@@ -101,7 +101,7 @@ function App() {
   const [dataUpdated, setDataUpdated] = useState(false); //!индикатор что данные обновлены
   const [popApCloseSttatus, setPopApCloseSttatus] = useState(false); //!индикатор что данные обновлены через попап
   const [popUpTextArea, SetPopUpTextArea] = useState(""); //!индикатор что данные обновлены через попап
-
+  
   const appData = {
     SetPopUpTextArea,
     popUpTextArea,
