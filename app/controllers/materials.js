@@ -9,6 +9,8 @@ import MaterialsModelDto from '../dtos/materialModel-dto.js';
 import User from '../models/user.js';
 import { instituteDepartments } from '../config/institutional-affiliations.js';
 import sendMail from '../services/email.js';
+import prepare from '../utils/prepare.js';
+import pick from '../utils/pick.js';
 
 const orderRule = [['number', 'ASC']];
 
@@ -69,7 +71,7 @@ export default {
                     isSplit: w.isSplit,
                     isMerged: w.isMerged,
                     educatorId: w.educatorId,
-                    notes: w.notes? w.notes : '',
+                    notes: w.notes ? w.notes : '',
                 })
             ),
             { ignoreDuplicates: true }
@@ -86,8 +88,43 @@ export default {
 
     async getAll(req, res) {
         let { departments, col, type } = req.query;
-        const {limit, offset} = req.body;
-        const pagination = {limit, offset};
+        const filter = prepare(
+            pick(req.query, [
+                'number',
+                'department',
+                'discipline',
+                'workload',
+                'groups',
+                'block',
+                'semester',
+                'period',
+                'curriculum',
+                'curriculumUnit',
+                'formOfEducation',
+                'levelOfTraining',
+                'specialty',
+                'core',
+                'numberOfStudents',
+                'hours',
+                'audienceHours',
+                'ratingControlHours',
+                'educator',
+                'notes',
+                'audiences',
+                'createdAt',
+            ])
+        );
+
+        const whereParams = {};
+        Object.keys(filter).forEach(k =>
+            k !== 'educator' ? (whereParams[k] = filter[k]) : (whereParams['$Educator.name$'] = filter[k])
+        );
+        console.log(whereParams);
+        const { limit, offset } = req.body;
+        const pagination = {
+            limit,
+            offset,
+        };
         const user = await User.findByPk(req.user, { include: [{ model: Educator }] });
         let materials;
         if ([1, 9, 10].includes(user.role)) {
@@ -98,11 +135,12 @@ export default {
                     attributes: { exclude: ['fields'] },
                     include: [{ model: Educator }],
                     ...(limit && offset ? pagination : {}),
+                    where: whereParams,
                 });
             } else {
                 departments = departments.split(',').map(d => parseInt(d));
                 materials = await Materials.findAll({
-                    where: { department: departments },
+                    where: { [Op.and]: [{ department: departments }, whereParams] },
                     attributes: { exclude: ['fields'] },
                     include: [{ model: Educator }],
                     order: col && type ? [[col, type.toUpperCase()]] : orderRule,
@@ -113,7 +151,9 @@ export default {
             // DIRECTORATE & DEPUTY_DIRECTORATE
             if (!departments) {
                 materials = await Materials.findAll({
-                    where: { department: instituteDepartments[user.institutionalAffiliation] },
+                    where: {
+                        [Op.and]: [{ department: instituteDepartments[user.institutionalAffiliation] }, whereParams],
+                    },
                     order: col && type ? [[col, type.toUpperCase()]] : orderRule,
                     attributes: { exclude: ['fields'] },
                     include: [{ model: Educator }],
@@ -125,7 +165,7 @@ export default {
                     throw new AppErrorInvalid('departments');
                 }
                 materials = await Materials.findAll({
-                    where: { department: departments },
+                    where: { [Op.and]: [{ department: departments }, whereParams] },
                     attributes: { exclude: ['fields'] },
                     include: [{ model: Educator }],
                     order: col && type ? [[col, type.toUpperCase()]] : orderRule,
@@ -136,7 +176,10 @@ export default {
             // DEPARTMENT_HEAD & DEPUTY_DEPARTMENT_HEAD
             materials = await Materials.findAll({
                 where: {
-                    [Op.or]: [{department: user.Educator.department}, {educatorId: user.Educator.id}]
+                    [Op.and]: [
+                        { [Op.or]: [{ department: user.Educator.department }, { educatorId: user.Educator.id }] },
+                        whereParams,
+                    ],
                 },
                 attributes: { exclude: ['fields'] },
                 include: [{ model: Educator }],
@@ -146,7 +189,7 @@ export default {
         } else if (user.role === 6) {
             // UNIT_ADMIN
             materials = await Materials.findAll({
-                where: { department: user.allowedDepartments },
+                where: { [Op.and]: [{ department: user.allowedDepartments }, whereParams] },
                 attributes: { exclude: ['fields'] },
                 include: [{ model: Educator }],
                 order: col && type ? [[col, type.toUpperCase()]] : orderRule,
@@ -154,7 +197,7 @@ export default {
             });
             if (!departments) {
                 materials = await Materials.findAll({
-                    where: { department: user.allowedDepartments },
+                    where: { [Op.and]: [{ department: user.allowedDepartments }, whereParams] },
                     attributes: { exclude: ['fields'] },
                     order: col && type ? [[col, type.toUpperCase()]] : orderRule,
                     include: [{ model: Educator }],
@@ -166,7 +209,7 @@ export default {
                     throw new AppErrorInvalid('departments');
                 }
                 materials = await Materials.findAll({
-                    where: { department: departments },
+                    where: { [Op.and]: [{ department: departments }, whereParams] },
                     attributes: { exclude: ['fields'] },
                     include: [{ model: Educator }],
                     order: col && type ? [[col, type.toUpperCase()]] : orderRule,
@@ -176,7 +219,7 @@ export default {
         } else if ([2, 5].includes(user.role)) {
             // LECTURER & EDUCATOR
             materials = await Materials.findAll({
-                where: { educatorId: user.Educator.id },
+                where: { [Op.and]: [{ educatorId: user.Educator.id }, whereParams] },
                 attributes: { exclude: ['fields'] },
                 include: [{ model: Educator }],
                 order: col && type ? [[col, type.toUpperCase()]] : orderRule,
