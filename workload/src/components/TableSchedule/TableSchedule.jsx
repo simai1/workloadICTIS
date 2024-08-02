@@ -25,7 +25,17 @@ function TableSchedule(props) {
   const isCheckedStore = useSelector((state) => state.isCheckedSlice.isChecked);
   const dispatch = useDispatch();
   const textareaStor = useSelector((state) => state.textAreaSlice);
+  const [limit, setLimit] = useState({
+    limit: 20,
+    offset: 1,
+  });
 
+  const setLim = (l, o) => {
+    setLimit({
+      limit: l,
+      offset: o,
+    });
+  };
   //параметр для сортировки по колонке
   const [sortParamByColumn, setSortParamByColumn] = useState("");
 
@@ -51,13 +61,12 @@ function TableSchedule(props) {
     } else if (url === "" && sortParamByColumn !== "") {
       url = `?${sortParamByColumn}`;
     }
-    const lim = {
-      limit: 10,
-      offset: 10,
-    };
-    getSchedule(url, lim).then((resp) => {
+
+    getSchedule(url, limit).then((resp) => {
       if (resp?.status === 200) {
-        dataBd = [...resp.data];
+        console.log("resp.data", resp.data);
+        console.log("tableData", tableData);
+        dataBd = [...tableData, ...resp.data];
         const fixEducator = funFixEducator(dataBd);
         const checks = isCheckedStore[ssIsChecked];
         const fdfix = FilteredSample(fixEducator, checks);
@@ -77,8 +86,15 @@ function TableSchedule(props) {
     appData.dataUpdated,
     isCheckedStore,
     sortParamByColumn,
-    visibleDataPar.startData,
+    limit,
   ]);
+
+  useEffect(() => {
+    // console.log("visibleDataPar.startData", visibleDataPar.startData);
+    if (visibleDataPar.startData > limit.offset) {
+      setLim(limit.limit, limit.offset + 20);
+    }
+  }, [visibleDataPar.startData]);
 
   useEffect(() => {
     if (textareaStor.status === 200) funUpdateTabDat();
