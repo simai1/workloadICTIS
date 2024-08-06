@@ -44,8 +44,8 @@ function App() {
   //! в файле RoleMetods можно посмотреть назание метода и их id
   const metodRole = {
     METHODIST: [
-      1, 3, 4, 8, 9, 10, 14, 17, 20, 21, 25, 26, 28, 29, 31, 33.1, 34, 35, 36,
-      16, 40, 47, 48, 50, 54, 54.1, 55, 57,
+      1, 3, 4, 8, 9, 10, 14, 17, 20, 21, 25, 26, 27, 28, 29, 31, 33.1, 34, 35,
+      36, 16, 40, 47, 48, 50, 54, 54.1, 55, 57,
     ],
     LECTURER: [
       1.1, 8, 11, 11.1, 12, 15, 17, 17.1, 38.2, 18, 20, 22, 24, 33.2, 34, 37,
@@ -101,7 +101,7 @@ function App() {
   const [dataUpdated, setDataUpdated] = useState(false); //!индикатор что данные обновлены
   const [popApCloseSttatus, setPopApCloseSttatus] = useState(false); //!индикатор что данные обновлены через попап
   const [popUpTextArea, SetPopUpTextArea] = useState(""); //!индикатор что данные обновлены через попап
-  
+
   const appData = {
     SetPopUpTextArea,
     popUpTextArea,
@@ -154,7 +154,7 @@ function App() {
   const [tableHeaders, setTableHeaders] = useState(headers);
   const [workloadData, setWorkloadData] = useState([]); // данные с бд нагрузок
   const [workloadDataFix, setWorkloadDataFix] = useState([]); //данные с убранным массиовм преподавателя
-  const [filtredData,  setFiltredData] = useState([]); // фильтрованные данные
+  const [filtredData, setFiltredData] = useState([]); // фильтрованные данные
   const [allCommentsData, setAllCommentsData] = useState([]); // все комментарии
   const [allOffersData, setAllOffersData] = useState([]); // предложения
   const [selectkafedra, setselectkafedra] = useState(""); //state выбранной кафедры

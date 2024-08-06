@@ -188,7 +188,7 @@ function HomePage() {
         ) {
           const id = appData.myProfile.educator.departmentId;
           WorkloadBlocked(id).then((resp) => {
-            if (resp.status === 200) {
+            if (resp?.status === 200) {
               basicTabData.funUpdateTable(99);
               appData.setgodPopUp(true);
             }
@@ -198,7 +198,7 @@ function HomePage() {
             (el) => el.name === basicTabData?.nameKaf
           ).id;
           WorkloadBlocked(idTable).then((resp) => {
-            if (resp.status === 200) {
+            if (resp?.status === 200) {
               basicTabData.funUpdateTable(idTable);
               appData.setgodPopUp(true);
               basicTabData.funGetDepartment();
@@ -333,7 +333,6 @@ function HomePage() {
       generateAndDownloadExcel(resp.data, nameDepartment, "schedule");
     });
   };
-
 
   useEffect(() => {
     setBlockTable(checkBlocked());
@@ -831,7 +830,6 @@ function HomePage() {
               </div>
 
               <div className={styles.right_button}>
-              
                 <div className={styles.EditInput}>
                   {educatorIdforLk === "" && (
                     <EditInput
