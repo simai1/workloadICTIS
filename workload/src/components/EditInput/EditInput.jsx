@@ -30,7 +30,7 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
     originalHeader?.length === ssUpdatedHeader?.length ? true : false
   );
   const [checkedItems, setCheckedItems] = useState(
-    appData.selectedComponent === "ScheduleMaterials" ?   Array(originalHeader?.slice(5).length).fill(true) :  Array(originalHeader?.slice(3).length).fill(true)
+    appData.selectedComponent === "ScheduleMaterials" ?   Array(originalHeader?.slice(6).length).fill(true) :  Array(originalHeader?.slice(3).length).fill(true)
   );
 
   const [isChecked, setChecked] = useState(
@@ -54,7 +54,7 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
   }, [originalHeader, selectedComponent]);
 
   useEffect(() => {
-    appData.selectedComponent === "ScheduleMaterials" ? setSearchResults(originalHeader.slice(5)) : setSearchResults(originalHeader.slice(3));
+    appData.selectedComponent === "ScheduleMaterials" ? setSearchResults(originalHeader.slice(6)) : setSearchResults(originalHeader.slice(3));
 
   }, [basicTabData.tableHeaders, selectedComponent]);
 
@@ -134,11 +134,11 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
       );
     } else {
       if(appData.selectedComponent === "ScheduleMaterials") {
-        setChecked([...originalHeader.slice(5)].map((el) => el.key));
-        basicTabData.setTableHeaders([...originalHeader].slice(0, 5));
+        setChecked([...originalHeader.slice(6)].map((el) => el.key));
+        basicTabData.setTableHeaders([...originalHeader].slice(0, 6));
         dispatch(
           addAllCheckeds({
-            checked: [...originalHeader].slice(0, 5),
+            checked: [...originalHeader].slice(0, 6),
             tableName: ssname,
           })
         );

@@ -20,6 +20,7 @@ import { ReactComponent as ImgClearFilter } from "./../../img/ClearFilter.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { removeTableCheckeds } from "../../store/filter/isChecked.slice";
 import Loader from "../../ui/Loader/Loader";
+import { generateAndDownloadExcel } from "../../pages/HomePage/functionHomePage";
 
 function TableTeachers(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]);
@@ -290,9 +291,14 @@ function TableTeachers(props) {
     };
     return style;
   };
+  //!Функция экспорта преподователей
+  const funExportTeacher = () => {
+    generateAndDownloadExcel(appData.educator, "Преподаватели", "Teacher");
+  }
 
   return (
     <div className={styles.TableTeachers}>
+    <div className={styles.buttonHeader}>
       {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 4) ? (
         <Button
           text="Создать преподавателя"
@@ -305,7 +311,20 @@ function TableTeachers(props) {
       ) : (
         <div style={{ height: "59px" }}></div>
       )}
+      {appData.selectedComponent === "Teachers" &&
+        <div className={styles.import}>
+              <button onClick={funExportTeacher}>
+                <img
+                  src="./img/import.svg"
+                  alt=">"
+                  className={styles.export__img}
+                ></img>
+                <p>Экспорт таблицы</p>
+              </button>
+        </div>
+      }
 
+      </div>
       <div className={styles.filterdClear}>
         <ImgClearFilter
           className={isChecked.length > 0 ? styles.svgRed : null}

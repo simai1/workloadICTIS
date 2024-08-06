@@ -101,7 +101,7 @@ function App() {
   const [dataUpdated, setDataUpdated] = useState(false); //!индикатор что данные обновлены
   const [popApCloseSttatus, setPopApCloseSttatus] = useState(false); //!индикатор что данные обновлены через попап
   const [popUpTextArea, SetPopUpTextArea] = useState(""); //!индикатор что данные обновлены через попап
-
+  
   const appData = {
     SetPopUpTextArea,
     popUpTextArea,
@@ -154,7 +154,7 @@ function App() {
   const [tableHeaders, setTableHeaders] = useState(headers);
   const [workloadData, setWorkloadData] = useState([]); // данные с бд нагрузок
   const [workloadDataFix, setWorkloadDataFix] = useState([]); //данные с убранным массиовм преподавателя
-  const [filtredData, setFiltredData] = useState([]); // фильтрованные данные
+  const [filtredData,  setFiltredData] = useState([]); // фильтрованные данные
   const [allCommentsData, setAllCommentsData] = useState([]); // все комментарии
   const [allOffersData, setAllOffersData] = useState([]); // предложения
   const [selectkafedra, setselectkafedra] = useState(""); //state выбранной кафедры
