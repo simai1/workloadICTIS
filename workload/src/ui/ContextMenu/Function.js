@@ -366,13 +366,21 @@ export function combineData(data, selectedTr, action = "") {
         .flat()
         .filter((v, i, arr) => arr.indexOf(v) === i)
         .reduce((acc, curr) => (acc === "" ? curr : `${acc}, ${curr}`), "");
-      console.log("block", block);
+      // console.log("block", block);
+
+      let core = prevState
+        .map((el) => el.core.split(", "))
+        .flat()
+        .filter((v, i, arr) => arr.indexOf(v) === i)
+        .reduce((acc, curr) => (acc === "" ? curr : `${acc}, ${curr}`), "");
+      // console.log("core", core);
 
       newState = {
         ...newState,
         curriculum: cursum,
         semester: semestersem,
         block: block,
+        core: core,
       };
 
       const newUpdatedData = [

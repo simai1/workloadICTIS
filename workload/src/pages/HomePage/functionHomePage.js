@@ -30,6 +30,25 @@ export const generateAndDownloadExcel = (data, nameDepartment, nameTable) => {
         Дата_добавления: item?.createdAt,
       })
     );
+  }else if(nameTable === 'Teacher'){
+    transformedData = data.map(
+      ({...item }) => ({
+        Преподаватель: item?.name,
+        Должность: item?.position,
+        Вид_занятости: item?.typeOfEmployment,
+        Кафедоа: item?.department,
+        Ставка: item?.rate,
+        Всего_часов: item?.totalHours,
+        Общеинститутские_часы: item?.totalOidHours,
+        Институтская_нагрузка_осень: item?.instituteAutumnWorkload,
+        Институтская_нагрузка_весна: item?.instituteSpringWorkload,
+        Институтская_нагрузка_руководство: item?.instituteManagementWorkload,
+        Кафедральные_часы: item?.totalKafedralHours,
+        Кафедральные_нагрузка_осень: item?.kafedralAutumnWorkload,
+        Кафедральные_нагрузка_весна: item?.kafedralSpringWorkload,
+        Доп_нагрузка: item?.kafedralAdditionalWorkload,
+      })
+    );
   } else {
     transformedData = data.map(
       ({ id, isBlocked, isMerged, isOid, isSplit, educator, ...item }) => ({

@@ -48,19 +48,11 @@ export function PopUpCreateEmploy(props) {
   useEffect(() => {
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 46)) {
       GetAllDepartments().then((resp) => {
-        let newData = resp.data.filter((obj) => obj.name !== "ОИД");
-        setDataKaf(newData);
+        setDataKaf(resp.data);
       });
     } else {
       GetUsibleDepartment().then((resp) => {
-        if (
-          appData.metodRole[appData.myProfile?.role]?.some((el) => el === 47)
-        ) {
-          let newData = resp.data.filter((obj) => obj.name !== "ОИД");
-          setDataKaf(newData);
-        } else {
           setDataKaf(resp.data);
-        }
       });
     }
   }, []);
@@ -213,7 +205,7 @@ export function PopUpCreateEmploy(props) {
               !dataNewEdicator.email ||
               !dataNewEdicator.position ||
               !dataNewEdicator.rate ||
-              !dataNewEdicator.department
+              !dataNewEdicator.department === undefined 
             }
             style={{
               backgroundColor:
@@ -223,7 +215,7 @@ export function PopUpCreateEmploy(props) {
                 !dataNewEdicator.email ||
                 !dataNewEdicator.position ||
                 !dataNewEdicator.rate ||
-                !dataNewEdicator.department
+                !dataNewEdicator.department === undefined 
                   ? "#b9b9ba"
                   : "#3b28cc",
               cursor:
@@ -233,7 +225,7 @@ export function PopUpCreateEmploy(props) {
                 !dataNewEdicator.email ||
                 !dataNewEdicator.position ||
                 !dataNewEdicator.rate ||
-                !dataNewEdicator.department
+                !dataNewEdicator.department === undefined 
                   ? "not-allowed"
                   : "pointer",
               color: "#fff",

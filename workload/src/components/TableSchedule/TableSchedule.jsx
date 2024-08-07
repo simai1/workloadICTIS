@@ -27,7 +27,7 @@ function TableSchedule(props) {
   const textareaStor = useSelector((state) => state.textAreaSlice);
   const [limit, setLimit] = useState({
     limit: 20,
-    offset: 1,
+    offset: 0,
   });
 
   const setLim = (l, o) => {
@@ -89,12 +89,12 @@ function TableSchedule(props) {
     limit,
   ]);
 
-  useEffect(() => {
-    // console.log("visibleDataPar.startData", visibleDataPar.startData);
-    if (visibleDataPar.startData > limit.offset) {
-      setLim(limit.limit, limit.offset + 20);
-    }
-  }, [visibleDataPar.startData]);
+  // useEffect(() => {
+  //   // console.log("visibleDataPar.startData", visibleDataPar.startData);
+  //   if (visibleDataPar.startData > limit.offset) {
+  //     setLim(limit.limit, limit.offset + 20);
+  //   }
+  // }, [visibleDataPar.startData]);
 
   useEffect(() => {
     if (textareaStor.status === 200) funUpdateTabDat();
