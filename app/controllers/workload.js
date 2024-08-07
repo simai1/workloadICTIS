@@ -509,9 +509,10 @@ export default {
     },
 
     async merge(req, res) {
-        const { ids, curriculum, semester, groups, block} = req.body;
+        const { ids, curriculum, semester, groups, block, core} = req.body;
         const { type } = req.query;
         if (!ids) throw new AppErrorMissing('ids');
+        if (!core) throw new AppErrorMissing('core');
         if (!curriculum) throw new AppErrorMissing('curriculum');
         if (!semester) throw new AppErrorMissing('semester');
         if (!groups) throw new AppErrorMissing('groups');
@@ -541,7 +542,7 @@ export default {
                     formOfEducation: first.formOfEducation,
                     levelOfTraining: first.levelOfTraining,
                     specialty: first.specialty,
-                    core: first.core,
+                    core,
                     numberOfStudents: newNumberOfStudents,
                     hours: Math.round((newNumberOfStudents * first.audienceHours * 0.01 + first.audienceHours) * 100) / 100,
                     audienceHours: first.audienceHours,
@@ -553,7 +554,7 @@ export default {
                     educatorId: null,
                     isOid: first.isOid,
                 };
-                
+
             } else if (type === 'h' && workloads.every(w => w.numberOfStudents === numberOfStudents && w.isSplit)) {
                 // Объединение по часам
                 newWorkloadData = {
@@ -569,7 +570,7 @@ export default {
                     formOfEducation: first.formOfEducation,
                     levelOfTraining: first.levelOfTraining,
                     specialty: first.specialty,
-                    core: first.core,
+                    core,
                     numberOfStudents: first.numberOfStudents,
                     hours: workloads.reduce((accumulator, currentValue) => accumulator + currentValue.hours, 0),
                     audienceHours: workloads.reduce(
@@ -601,7 +602,7 @@ export default {
                     formOfEducation: first.formOfEducation,
                     levelOfTraining: first.levelOfTraining,
                     specialty: first.specialty,
-                    core: first.core,
+                    core,
                     numberOfStudents: first.numberOfStudents,
                     hours: first.hours,
                     audienceHours: first.audienceHours,
@@ -636,7 +637,7 @@ export default {
             console.log(err);
             res.status(500).json({ message: err.message });
         }
-        
+
     },
 
     async mergeReadyData({ body: { workloadData, ids } }, res) {
