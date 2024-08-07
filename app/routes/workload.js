@@ -232,7 +232,7 @@ router
             ])
         ),
         asyncRoute(workloadController.getWorkloadOwnForDepartHead)
-    )
+    );
 router
     .route('/get/departments')
     .get(
@@ -293,6 +293,7 @@ router
     .patch(
         asyncRoute(
             checkRole([
+                role.METHODIST,
                 role.GOD,
                 role.GIGA_ADMIN,
                 role.UNIT_ADMIN,
