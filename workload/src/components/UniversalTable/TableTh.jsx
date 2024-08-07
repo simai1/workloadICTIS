@@ -13,9 +13,12 @@ function TableTh(props) {
     if (tabPar.spShow === props.index) {
       tabPar.setSpShow(null);
     } else {
-      const modalData = props.tabDat.tableDataFix.map(
+      let modalData = props.tabDat.tableDataFix.map(
         (item) => item[props.item.key]
       );
+      if (checkPar.isChecked) {
+        modalData = [...modalData, ...checkPar.isChecked.map((el) => el.value)];
+      }
       tabPar.setSamplePointsData([...modalData]);
       tabPar.setSpShow(props.index);
     }

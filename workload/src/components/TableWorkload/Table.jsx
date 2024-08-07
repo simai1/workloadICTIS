@@ -152,6 +152,7 @@ function Table(props) {
                 item={item}
                 index={index}
                 modal={tabPar.spShow === index}
+                ssheader={props.ssheader}
               />
             ))}
           </tr>

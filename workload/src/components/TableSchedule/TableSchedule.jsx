@@ -25,17 +25,17 @@ function TableSchedule(props) {
   const isCheckedStore = useSelector((state) => state.isCheckedSlice.isChecked);
   const dispatch = useDispatch();
   const textareaStor = useSelector((state) => state.textAreaSlice);
-  const [limit, setLimit] = useState({
-    limit: 20,
-    offset: 0,
-  });
+  // const [limit, setLimit] = useState({
+  //   limit: 20,
+  //   offset: 1,
+  // });
 
-  const setLim = (l, o) => {
-    setLimit({
-      limit: l,
-      offset: o,
-    });
-  };
+  // const setLim = (l, o) => {
+  //   setLimit({
+  //     limit: l,
+  //     offset: o,
+  //   });
+  // };
   //параметр для сортировки по колонке
   const [sortParamByColumn, setSortParamByColumn] = useState("");
 
@@ -62,11 +62,11 @@ function TableSchedule(props) {
       url = `?${sortParamByColumn}`;
     }
 
-    getSchedule(url, limit).then((resp) => {
+    // getSchedule(url, limit).then((resp) => {
+    getSchedule(url).then((resp) => {
       if (resp?.status === 200) {
-        console.log("resp.data", resp.data);
-        console.log("tableData", tableData);
-        dataBd = [...tableData, ...resp.data];
+        // dataBd = [...tableData, ...resp.data];
+        dataBd = [...resp.data];
         const fixEducator = funFixEducator(dataBd);
         const checks = isCheckedStore[ssIsChecked];
         const fdfix = FilteredSample(fixEducator, checks);
@@ -86,7 +86,7 @@ function TableSchedule(props) {
     appData.dataUpdated,
     isCheckedStore,
     sortParamByColumn,
-    limit,
+    // limit,
   ]);
 
   // useEffect(() => {
