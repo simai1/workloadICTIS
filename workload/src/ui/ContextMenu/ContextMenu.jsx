@@ -850,6 +850,7 @@ const ContextMenu = (props) => {
           key={"EducatorMenu1"}
           conxextMenuRefBlock={conxextMenuRefBlock}
           propose={menuShow === "propose"}
+          setMenuShow={setMenuShow}
           contextPosition={tabPar.contextPosition}
           selectedEducator={selectedEducator}
         />
