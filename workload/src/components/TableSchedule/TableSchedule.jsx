@@ -11,8 +11,7 @@ import ContextMenu from "../../ui/ContextMenu/ContextMenu";
 import { resetStatus } from "../../store/popup/textareaData.slice";
 
 function TableSchedule(props) {
-  const { tabPar, visibleDataPar, basicTabData, checkPar, appData } =
-    useContext(DataContext);
+  const { basicTabData, checkPar, appData } = useContext(DataContext);
   const [tableHeader, setTableHeader] = useState([...props.tableHeaders]);
   // const [tableHeader, setTableHeader] = useState(scheduleHead);
   const [tableData, setTableData] = useState([]);
@@ -27,7 +26,7 @@ function TableSchedule(props) {
   const textareaStor = useSelector((state) => state.textAreaSlice);
   // const [limit, setLimit] = useState({
   //   limit: 20,
-  //   offset: 1,
+  //   offset: 0,
   // });
 
   // const setLim = (l, o) => {

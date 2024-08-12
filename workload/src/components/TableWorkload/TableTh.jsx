@@ -14,14 +14,9 @@ function TableTh(props) {
     if (tabPar.spShow === props.index) {
       tabPar.setSpShow(null);
     } else {
-      let modalData = basicTabData.workloadDataFix.map(
+      const modalData = basicTabData.workloadDataFix.map(
         (item) => item[props.item.key]
       );
-      console.log("modalData", modalData);
-      console.log("checkPar.isChecked", checkPar.isChecked);
-      if (checkPar.isChecked) {
-        modalData = [...modalData, ...checkPar.isChecked.map((el) => el.value)];
-      }
       tabPar.setSamplePointsData([...modalData]);
       tabPar.setSpShow(props.index);
     }

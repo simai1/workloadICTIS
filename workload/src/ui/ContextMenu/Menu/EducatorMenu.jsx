@@ -14,30 +14,46 @@ export function EducatorMenu(props) {
   const { tabPar, appData } = React.useContext(DataContext);
 
   useEffect(() => {
-    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 2)) {
-      if (appData.selectedComponent === "MyWorkload") {
-        EducatorByInstitute().then((req) => {
-          setEductor(req.data);
-          setFiltredData(req.data);
-        });
-      } else {
-        apiEducatorDepartment().then((req) => {
-          setEductor(req.data);
-          setFiltredData(req.data);
+    if (props.propose) {
+      Educator().then((req) => {
+        if (req?.status === 200) {
+          setEductor(req?.data);
+          setFiltredData(req?.data);
+        } else {
+          EducatorByInstitute().then((req) => {
+            setEductor(req?.data);
+            setFiltredData(req?.data);
+          });
+        }
+      });
+    } else {
+      if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 2)) {
+        if (appData.selectedComponent === "MyWorkload") {
+          EducatorByInstitute().then((req) => {
+            setEductor(req?.data);
+            setFiltredData(req?.data);
+          });
+        } else {
+          apiEducatorDepartment().then((req) => {
+            setEductor(req?.data);
+            setFiltredData(req?.data);
+          });
+        }
+      }
+      if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)) {
+        Educator().then((req) => {
+          setEductor(req?.data);
+          setFiltredData(req?.data);
         });
       }
-    }
-    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)) {
-      Educator().then((req) => {
-        setEductor(req.data);
-        setFiltredData(req.data);
-      });
-    }
-    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1.1)) {
-      EducatorByInstitute().then((req) => {
-        setEductor(req.data);
-        setFiltredData(req.data);
-      });
+      if (
+        appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1.1)
+      ) {
+        EducatorByInstitute().then((req) => {
+          setEductor(req?.data);
+          setFiltredData(req?.data);
+        });
+      }
     }
   }, [appData.myProfile]);
 
@@ -57,6 +73,20 @@ export function EducatorMenu(props) {
       setMenuWidth(menuRef.current.clientWidth);
     }
   }, [menuRef.current]);
+
+  //! закрытие модального окна при нажати вне него
+  useEffect(() => {
+    const handler = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setEductor([]);
+        props.setMenuShow("");
+      }
+    };
+    document.addEventListener("click", handler, true);
+    return () => {
+      document.removeEventListener("click", handler);
+    };
+  }, []);
 
   return (
     <div
