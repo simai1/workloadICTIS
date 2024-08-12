@@ -63,6 +63,13 @@ function TableSchedule(props) {
       url = `?${sortParamByColumn}`;
     }
 
+    const act = scheduleSlice?.scheduleSelectedFilter.param;
+    if (url !== "" && act !== "") {
+      url = url + `&${act}`;
+    } else if (url === "" && act !== "") {
+      url = `?${act}`;
+    }
+
     // getSchedule(url, limit).then((resp) => {
     getSchedule(url).then((resp) => {
       if (resp?.status === 200) {
@@ -125,6 +132,7 @@ function TableSchedule(props) {
     isSorted: true, //! показать или скрыть сортировку
     isBlocked: false, //! показывать или скрывать блокированные false это показать
     isSignature: false, //! показывать или скрыть подпись блокированные, разделенные и тд.
+    isActual: true, //! выделять в расписании акутальные
   };
 
   //! функция которая возвращает контекстное меню с параметрами

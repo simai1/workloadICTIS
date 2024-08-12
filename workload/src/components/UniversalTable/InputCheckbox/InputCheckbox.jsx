@@ -45,6 +45,14 @@ function InputCheckbox(props) {
     appData.setSortParamByColumn("");
   };
 
+  const getClassTd = () => {
+    let cl = `${styles.InputCheckbox}`;
+    if (props.tabDat.isActual && !props.workload.isActual) {
+      cl = `${cl} ${styles.tableShaduleTdOld}`;
+    }
+    return cl;
+  };
+
   return (
     <>
       {props.th ? (
@@ -74,7 +82,7 @@ function InputCheckbox(props) {
           ></input>
         </th>
       ) : (
-        <td style={stylesTd} className={styles.InputCheckbox}>
+        <td style={stylesTd} className={getClassTd()}>
           {tabPar.fastenedData.some((el) => el.workloadId === props.itid) && ( //отмечаем закрепленные // сделать проверку на преподавателя который закрепляет
             <img
               className={styles.fastenedImg}

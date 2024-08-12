@@ -58,10 +58,16 @@ function TableTd(props) {
   // определение каласса td
   const getClassNameTr = () => {
     const changedData = tabPar.changedData[props.itemKey.key];
-    if (!changedData) return null;
-    return changedData.find((el) => el === props.item.id)
-      ? styles.tdChanged
-      : null;
+    let cl = "";
+
+    if (changedData && changedData.find((el) => el === props.item.id)) {
+      cl = `${cl} ${styles.tdChanged}`;
+    }
+    if (props.tabDat.isActual && !props.item.isActual) {
+      cl = `${cl} ${styles.tableShaduleTdOld}`;
+    }
+
+    return cl;
   };
 
   const getTextAreaOn = () => {
