@@ -1,7 +1,4 @@
-import EducatorDto from './educator-dto.js';
-import { map as departmentsMap } from '../config/departments.js';
-
-export default class MaterialsDto {
+export default class MaterialsNoEduDto {
     department;
     discipline;
     workload;
@@ -18,11 +15,9 @@ export default class MaterialsDto {
     hours;
     audienceHours;
     ratingControlHours;
-    isActual;
-    educator;
 
     constructor(model) {
-        this.department = departmentsMap[model.department];
+        this.department = model.department;
         this.discipline = model.discipline;
         this.workload = model.workload;
         this.groups = model.groups;
@@ -38,7 +33,5 @@ export default class MaterialsDto {
         this.hours = model.hours;
         this.audienceHours = model.audienceHours;
         this.ratingControlHours = model.ratingControlHours;
-        this.isActual = model.isActual;
-        this.educator = model.Educator ? new EducatorDto(model.Educator) : null;
     }
 }

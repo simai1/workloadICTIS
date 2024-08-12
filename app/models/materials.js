@@ -146,5 +146,16 @@ export default class Materials extends Model {
                 maxNumber++;
             }
         });
+      Materials.beforeCreate(async models => {
+        let maxNumber = await Materials.max('number');
+        for (const model of models) {
+          if (!maxNumber || maxNumber === 0) {
+            model.set('number', 1);
+          } else {
+            model.set('number', maxNumber + 1);
+          }
+          maxNumber++;
+        }
+      });
     }
 }
