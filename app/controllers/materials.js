@@ -144,6 +144,7 @@ export default {
                 'notes',
                 'audiences',
                 'createdAt',
+                'isActual',
             ])
         );
 
