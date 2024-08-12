@@ -62,14 +62,16 @@ router
     .get(
         asyncRoute(
             checkRole([
-                role.GOD,
-                role.GIGA_ADMIN,
-                role.UNIT_ADMIN,
-                role.DIRECTORATE,
-                role.DEPARTMENT_HEAD,
-                role.METHODIST,
-                role.DEPUTY_DIRECTORATE,
-                role.DEPUTY_DEPARTMENT_HEAD,
+              role.METHODIST,
+              role.LECTURER,
+              role.DEPARTMENT_HEAD,
+              role.DIRECTORATE,
+              role.EDUCATOR,
+              role.UNIT_ADMIN,
+              role.DEPUTY_DIRECTORATE,
+              role.DEPUTY_DEPARTMENT_HEAD,
+              role.GIGA_ADMIN,
+              role.GOD,
             ])
         ),
         asyncRoute(eduController.getAll)
