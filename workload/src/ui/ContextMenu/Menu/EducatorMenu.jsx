@@ -13,18 +13,22 @@ export function EducatorMenu(props) {
   const [filtredData, setFiltredData] = useState(educator);
   const { tabPar, appData } = React.useContext(DataContext);
 
+  //! институты которым можно видеть всех преподов для зк
+  const institutPermission = ["ИРТСУ"];
+
   useEffect(() => {
-    if (props.propose) {
+    console.log("appData.myProfile", appData.myProfile);
+    if (
+      appData.myProfile &&
+      institutPermission.find(
+        (el) => el === appData.myProfile.institutionalAffiliation
+      ) &&
+      (appData.myProfile.role === "DEPARTMENT_HEAD" ||
+        appData.myProfile.role === "DEPUTY_DEPARTMENT_HEAD")
+    ) {
       Educator().then((req) => {
-        if (req?.status === 200) {
-          setEductor(req?.data);
-          setFiltredData(req?.data);
-        } else {
-          EducatorByInstitute().then((req) => {
-            setEductor(req?.data);
-            setFiltredData(req?.data);
-          });
-        }
+        setEductor(req?.data);
+        setFiltredData(req?.data);
       });
     } else {
       if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 2)) {
