@@ -11,6 +11,7 @@ import { instituteDepartments } from '../config/institutional-affiliations.js';
 import sendMail from '../services/email.js';
 import prepare from '../utils/prepare.js';
 import pick from '../utils/pick.js';
+import MaterialsNoEduDto from '../dtos/materialsNoEdu-dto.js';
 
 const orderRule = [['number', 'ASC']];
 
@@ -76,6 +77,37 @@ export default {
             ),
             { ignoreDuplicates: true }
         );
+
+        // check actual
+        const materialsDB = await Materials.findAll({});
+        const wmatsDB = [...workloads.map(w => new MaterialsNoEduDto(w))];
+        for (const wmatDB of wmatsDB) {
+            const matchMaterials = materialsDB.filter(m =>
+                Object.keys(wmatDB).every(key => {
+                    return (
+                        m[key] === wmatDB[key] && ['Практические', 'Лекционные', 'Лабораторные'].includes(m.workload)
+                    );
+                })
+            );
+            if (matchMaterials.length >= 2) {
+                matchMaterials.sort((a, b) => {
+                    return new Date(b.createdAt).getTime() + new Date(a.createdAt).getTime();
+                });
+                // matchMaterials.forEach(m => process.stdout.write(`${new Date(m.createdAt).getTime()}; `))
+                for (const m of matchMaterials) {
+                    // process.stdout.write(`'${m.id}', `);
+                    if (
+                      (new Date(m.createdAt).getTime()) <
+                      (new Date(matchMaterials[matchMaterials.length - 1].createdAt).getTime())
+                    ) {
+                        m.isActual = false;
+                        await m.save();
+                    }
+                }
+                // console.log();
+            }
+        }
+
         res.json({ status: 'OK' });
     },
 
