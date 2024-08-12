@@ -68,6 +68,10 @@ function TableSchedule(props) {
       if (resp?.status === 200) {
         // dataBd = [...tableData, ...resp.data];
         dataBd = [...resp.data];
+        console.log(
+          "dataBd",
+          dataBd.filter((el) => !el.isActual && el)
+        );
         const fixEducator = funFixEducator(dataBd);
         const checks = isCheckedStore[ssIsChecked];
         const fdfix = FilteredSample(fixEducator, checks);
