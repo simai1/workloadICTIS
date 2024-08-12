@@ -1,0 +1,54 @@
+@import "./../../style/mixin.scss";
+.ScheduleListFilter {
+  display: flex;
+  margin-left: 12px;
+  position: relative;
+  button {
+    @include button();
+    display: flex;
+    flex-direction: row;
+    border: none;
+    font-size: 18px;
+    align-items: center;
+    p {
+      margin-right: 10px;
+    }
+  }
+  .list {
+    display: flex;
+    position: absolute;
+    background-color: #fff;
+    width: 150px;
+    z-index: 200;
+    flex-direction: column;
+    border-radius: 8px;
+    box-shadow: 4px 4px 20px 0px rgba(0, 0, 0, 0.1490196078);
+    padding: 12px;
+    img {
+      position: absolute;
+      right: 10px;
+      width: 14px;
+      height: 14px;
+      cursor: pointer;
+      top: 16px;
+      transform: rotate(180deg);
+    }
+
+    ul {
+      outline: none;
+      text-decoration: none;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      li {
+        cursor: pointer;
+        border-radius: 8px;
+        font-size: 18px;
+      }
+
+      li:hover {
+        color: var(--blue-color);
+      }
+    }
+  }
+}

@@ -24,6 +24,8 @@ function TableSchedule(props) {
   const isCheckedStore = useSelector((state) => state.isCheckedSlice.isChecked);
   const dispatch = useDispatch();
   const textareaStor = useSelector((state) => state.textAreaSlice);
+  const scheduleSlice = useSelector((state) => state.scheduleSlice);
+
   // const [limit, setLimit] = useState({
   //   limit: 20,
   //   offset: 0,
@@ -85,6 +87,7 @@ function TableSchedule(props) {
     appData.dataUpdated,
     isCheckedStore,
     sortParamByColumn,
+    scheduleSlice?.scheduleSelectedFilter,
     // limit,
   ]);
 

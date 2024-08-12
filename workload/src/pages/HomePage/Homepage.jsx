@@ -53,6 +53,7 @@ import PopUpTextAreaMore from "../../components/PopUpTextAreaMore/PopUpTextAreaM
 import { generateAndDownloadExcel } from "./functionHomePage";
 import BlockingTables from "../../components/BlockingTables/BlockingTables";
 import { resetStatus } from "../../store/popup/textareaData.slice";
+import ScheduleListFilter from "../../components/ScheduleListFilter/ScheduleListFilter";
 function HomePage() {
   const { appData, tabPar, visibleDataPar, basicTabData } =
     React.useContext(DataContext);
@@ -778,12 +779,15 @@ function HomePage() {
                             (el) => el === 55
                           ) && <ListSchedule dataList={departmentsMaterials} />}
                           <div className={styles.exportSchedule}>
-                            <button
-                              onClick={sync}
-                              className={styles.buttonSync}
-                            >
-                              Синхронизация
-                            </button>
+                            <div className={styles.exportScheduleButton}>
+                              <button
+                                onClick={sync}
+                                className={styles.buttonSync}
+                              >
+                                Синхронизация
+                              </button>
+                              <ScheduleListFilter />
+                            </div>
                             <div className={styles.import}>
                               <button onClick={exportSchedulefunc}>
                                 <img
