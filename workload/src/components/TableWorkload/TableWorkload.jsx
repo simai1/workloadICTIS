@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 // import { FilteredSample } from "../../ui/SamplePoints/Function";
 
 function TableWorkload(props) {
-  const { tabPar, visibleDataPar, basicTabData, checkPar } =
+  const { appData, tabPar, visibleDataPar, basicTabData, checkPar } =
     useContext(DataContext);
   const ssname = `isCheckedWorkload${basicTabData.nameKaf}`;
 
@@ -80,6 +80,23 @@ function TableWorkload(props) {
         <ContextMenu
           tableDataFix={basicTabData?.workloadDataFix}
           setTableDataFix={basicTabData?.setWorkloadDataFix}
+          allowedMenus={
+            appData.myProfile.role === "DEPARTMENT_HEAD" ||
+            appData.myProfile.role === "DEPUTY_DEPARTMENT_HEAD"
+              ? [
+                  "educator",
+                  "removeEducator",
+                  "Закрепить",
+                  "Открепить",
+                  "всеразделения",
+                  "comments",
+                  "всеобъединения",
+                  // "Предложить",
+                  "Удалить",
+                  "Выделить",
+                ]
+              : null
+          }
         />
       )}
       <Table ssname={ssname} />

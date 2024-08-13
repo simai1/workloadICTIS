@@ -12,12 +12,12 @@ export function EducatorMenu(props) {
   const [educator, setEductor] = useState([]); //преподы с бд
   const [filtredData, setFiltredData] = useState(educator);
   const { tabPar, appData } = React.useContext(DataContext);
-
+  const [allEducator, setAllEducator] = useState([]);
   //! институты которым можно видеть всех преподов для зк
-  const institutPermission = ["ИРТСУ"];
+  const institutPermission = ["ИРТСУ", "ИКТИБ", "ИНЕП"];
 
   useEffect(() => {
-    console.log("appData.myProfile", appData.myProfile);
+    // console.log("appData.myProfile", appData.myProfile);
     if (
       appData.myProfile &&
       institutPermission.find(
@@ -27,46 +27,59 @@ export function EducatorMenu(props) {
         appData.myProfile.role === "DEPUTY_DEPARTMENT_HEAD")
     ) {
       Educator().then((req) => {
-        setEductor(req?.data);
-        setFiltredData(req?.data);
+        setAllEducator(req?.data);
       });
-    } else {
-      if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 2)) {
-        if (appData.selectedComponent === "MyWorkload") {
-          EducatorByInstitute().then((req) => {
-            setEductor(req?.data);
-            setFiltredData(req?.data);
-          });
-        } else {
-          apiEducatorDepartment().then((req) => {
-            setEductor(req?.data);
-            setFiltredData(req?.data);
-          });
-        }
-      }
-      if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)) {
-        Educator().then((req) => {
+    }
+
+    // else {
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 2)) {
+      if (appData.selectedComponent === "MyWorkload") {
+        EducatorByInstitute().then((req) => {
           setEductor(req?.data);
           setFiltredData(req?.data);
         });
-      }
-      if (
-        appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1.1)
-      ) {
-        EducatorByInstitute().then((req) => {
+      } else {
+        apiEducatorDepartment().then((req) => {
           setEductor(req?.data);
           setFiltredData(req?.data);
         });
       }
     }
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)) {
+      Educator().then((req) => {
+        setEductor(req?.data);
+        setFiltredData(req?.data);
+      });
+    }
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1.1)) {
+      EducatorByInstitute().then((req) => {
+        setEductor(req?.data);
+        setFiltredData(req?.data);
+      });
+    }
+    // }
   }, [appData.myProfile]);
 
   //! поиск
   const handleSearch = (el) => {
-    const fd = educator.filter((item) =>
-      item.name.toLowerCase().includes(el.target.value.toLowerCase())
-    );
-    setFiltredData(fd);
+    if (
+      appData.myProfile.role === "DEPARTMENT_HEAD" ||
+      appData.myProfile.role === "DEPUTY_DEPARTMENT_HEAD"
+    ) {
+      if (el.target.value !== "") {
+        const fd = allEducator.filter((item) =>
+          item.name.toLowerCase().includes(el.target.value.toLowerCase())
+        );
+        setFiltredData(fd);
+      } else {
+        setFiltredData(educator);
+      }
+    } else {
+      const fd = educator.filter((item) =>
+        item.name.toLowerCase().includes(el.target.value.toLowerCase())
+      );
+      setFiltredData(fd);
+    }
   };
 
   //! переменная которая хранит ширину данного меню
