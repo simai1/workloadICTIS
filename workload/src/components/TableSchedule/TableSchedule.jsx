@@ -24,6 +24,8 @@ function TableSchedule(props) {
   const isCheckedStore = useSelector((state) => state.isCheckedSlice.isChecked);
   const dispatch = useDispatch();
   const textareaStor = useSelector((state) => state.textAreaSlice);
+  const scheduleSlice = useSelector((state) => state.scheduleSlice);
+
   // const [limit, setLimit] = useState({
   //   limit: 20,
   //   offset: 0,
@@ -61,11 +63,22 @@ function TableSchedule(props) {
       url = `?${sortParamByColumn}`;
     }
 
+    const act = scheduleSlice?.scheduleSelectedFilter.param;
+    if (url !== "" && act !== "") {
+      url = url + `&${act}`;
+    } else if (url === "" && act !== "") {
+      url = `?${act}`;
+    }
+
     // getSchedule(url, limit).then((resp) => {
     getSchedule(url).then((resp) => {
       if (resp?.status === 200) {
         // dataBd = [...tableData, ...resp.data];
         dataBd = [...resp.data];
+        console.log(
+          "dataBd",
+          dataBd.filter((el) => !el.isActual && el)
+        );
         const fixEducator = funFixEducator(dataBd);
         const checks = isCheckedStore[ssIsChecked];
         const fdfix = FilteredSample(fixEducator, checks);
@@ -85,6 +98,7 @@ function TableSchedule(props) {
     appData.dataUpdated,
     isCheckedStore,
     sortParamByColumn,
+    scheduleSlice?.scheduleSelectedFilter,
     // limit,
   ]);
 
@@ -118,6 +132,7 @@ function TableSchedule(props) {
     isSorted: true, //! показать или скрыть сортировку
     isBlocked: false, //! показывать или скрывать блокированные false это показать
     isSignature: false, //! показывать или скрыть подпись блокированные, разделенные и тд.
+    isActual: true, //! выделять в расписании акутальные
   };
 
   //! функция которая возвращает контекстное меню с параметрами

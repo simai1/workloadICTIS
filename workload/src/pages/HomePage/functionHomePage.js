@@ -5,7 +5,7 @@ import * as XLSX from "xlsx";
 export const generateAndDownloadExcel = (data, nameDepartment, nameTable) => {
   let transformedData = {};
   if (nameTable === "schedule") {
-    transformedData = data.map(
+    transformedData = data.filter((item) => item.isActual !== false).map(
       ({ id, isBlocked, isMerged, isOid, isSplit, educator, ...item }) => ({
         Кафедра: item?.department,
         Дисциплина: item?.discipline,

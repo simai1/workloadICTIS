@@ -360,7 +360,7 @@ body {
       }
     }
   }
-  .EditInput{
+  .EditInput {
     margin-left: 15px;
   }
   .exportSchedule {
@@ -368,5 +368,9 @@ body {
     justify-content: space-between;
     width: 100%;
     margin-right: 15px;
+    .exportScheduleButton {
+      display: flex;
+      flex-direction: row;
+    }
   }
 }
