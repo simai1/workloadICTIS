@@ -117,6 +117,20 @@ export default {
         res.json(educatorProfileDto);
     },
 
+    async getOneByEmail({params: { email }}, res) {
+        if (!email) throw new AppErrorMissing('email');
+        const educator = await Educator.findOne({
+            where: { email },
+            include: [{
+                model: SummaryWorkload,
+            }],
+        });
+        if (!educator) throw new AppErrorNotExist('educator');
+        const educatorProfileDto = new EducatorListDto(educator);
+
+        res.json(educatorProfileDto);
+    },
+
     async getOneLK({ params: { educatorId } }, res) {
         if (!educatorId) throw new AppErrorMissing('educatorId');
         const educator = await Educator.findOne({

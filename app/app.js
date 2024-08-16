@@ -27,6 +27,7 @@ import colorRoute from './routes/color.js';
 import attachesRoute from './routes/attached.js';
 import historyRoute from './routes/history.js';
 import materialsRoute from "./routes/materials.js";
+import apiRoute from "./routes/apiRoute.js";
 // FIX ME
 import roleRoute from './routes/role.js';
 import cors from 'cors';
@@ -99,6 +100,7 @@ app.use('/color', colorRoute);
 app.use('/attaches', attachesRoute);
 app.use('/history', historyRoute);
 app.use('/materials', materialsRoute);
+app.use('/api', apiRoute);
 app.route('/test').get(async (req, res)=> {
     sendMail(process.env.EMAIL_RECIEVER, 'lectorInvite');
     res.json({status: "OK"});
