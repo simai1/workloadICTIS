@@ -18,11 +18,22 @@ export default {
         res.json(comment);
     },
 
-    async deleteComment({ params: { commentId } }, res) {
+    async deleteComment(req, res) {
+        const { commentId } = req.params;
         if (!commentId) throw new AppErrorMissing('commentId');
-        const comment = await Comment.findByPk(commentId);
-        await comment.destroy({ force: true });
-        res.status(200).json('Successfully checked');
+        const _user = await User.findByPk(req.user, { include: Educator });
+        if (!_user) throw new AppErrorMissing('user');
+        let comment = await Comment.findByPk(commentId);
+        if(_user.role === 2 || _user.role === 3 || _user.role === 8) {
+            if(comment.educatorId !== _user.Educator.id) res.status(409).json('Is not your comment');
+            else await comment.destroy({ force: true });
+            res.status(200).json('Successfully deleted');
+
+        } else {
+            await comment.destroy({ force: true });
+        }
+        
+        res.status(200).json('Successfully deleted');
     },
 
     async getOwnComments(req, res) {
