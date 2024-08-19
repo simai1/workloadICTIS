@@ -27,7 +27,6 @@ export default {
         if(_user.role === 2 || _user.role === 3 || _user.role === 8) {
             if(comment.educatorId !== _user.Educator.id) res.status(409).json('Is not your comment');
             else await comment.destroy({ force: true });
-            res.status(200).json('Successfully deleted');
 
         } else {
             await comment.destroy({ force: true });
