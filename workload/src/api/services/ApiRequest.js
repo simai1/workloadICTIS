@@ -753,3 +753,14 @@ export const GetDepartmentsMaterials = async () => {
     //throw error;
   }
 };
+
+//! удалить свой комментарий
+export const apiDeleteMyComment = async (id) => {
+  try {
+    const response = await http.delete(`${server}/comment/delete/${id}`);
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};

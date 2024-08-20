@@ -30,7 +30,9 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
     originalHeader?.length === ssUpdatedHeader?.length ? true : false
   );
   const [checkedItems, setCheckedItems] = useState(
-    appData.selectedComponent === "ScheduleMaterials" ?   Array(originalHeader?.slice(6).length).fill(true) :  Array(originalHeader?.slice(3).length).fill(true)
+    appData.selectedComponent === "ScheduleMaterials"
+      ? Array(originalHeader?.slice(6).length).fill(true)
+      : Array(originalHeader?.slice(3).length).fill(true)
   );
 
   const [isChecked, setChecked] = useState(
@@ -54,8 +56,9 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
   }, [originalHeader, selectedComponent]);
 
   useEffect(() => {
-    appData.selectedComponent === "ScheduleMaterials" ? setSearchResults(originalHeader.slice(6)) : setSearchResults(originalHeader.slice(3));
-
+    appData.selectedComponent === "ScheduleMaterials"
+      ? setSearchResults(originalHeader.slice(6))
+      : setSearchResults(originalHeader.slice(3));
   }, [basicTabData.tableHeaders, selectedComponent]);
 
   //! закрытие модального окна при нажатии вне него
@@ -133,7 +136,7 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
         addAllCheckeds({ tableName: ssname, checked: [...originalHeader] })
       );
     } else {
-      if(appData.selectedComponent === "ScheduleMaterials") {
+      if (appData.selectedComponent === "ScheduleMaterials") {
         setChecked([...originalHeader.slice(6)].map((el) => el.key));
         basicTabData.setTableHeaders([...originalHeader].slice(0, 6));
         dispatch(
@@ -142,9 +145,9 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
             tableName: ssname,
           })
         );
-      }else{
+      } else {
         setChecked([...originalHeader.slice(3)].map((el) => el.key));
-       basicTabData.setTableHeaders([...originalHeader].slice(0, 3));
+        basicTabData.setTableHeaders([...originalHeader].slice(0, 3));
         dispatch(
           addAllCheckeds({
             checked: [...originalHeader].slice(0, 3),
@@ -152,7 +155,6 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
           })
         );
       }
-      
     }
   }
 
@@ -192,7 +194,7 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
           />
           <div className={styles.EditInputList}>
             <ul className={styles.fadeinul}>
-              <li>
+              <li onClick={takeFunctionAll}>
                 <input
                   type="checkbox"
                   onChange={takeFunctionAll}
@@ -204,7 +206,7 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
               </li>
               {searchResults.map((row, index) => (
                 <div key={index + 1}>
-                  <li key={index}>
+                  <li onClick={() => takeFunction(index, row)} key={index}>
                     <input
                       type="checkbox"
                       onChange={() => takeFunction(index, row)}

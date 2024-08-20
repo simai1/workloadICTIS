@@ -42,7 +42,9 @@ function TableSchedule(props) {
 
   const funUpdateTabDat = () => {
     appData.setDataUpdated(false);
-    appData.setLoaderAction(2);
+    if (appData.loaderAction === 0) {
+      appData.setLoaderAction(2);
+    }
     let dataBd = [];
     let url = "";
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 55)) {
@@ -86,6 +88,8 @@ function TableSchedule(props) {
         setTableDataFix(fdfix);
         setFiltredData(fdfix);
         checkPar.setIsChecked(checks || []);
+        appData.setLoaderAction(0);
+      } else {
         appData.setLoaderAction(0);
       }
     });

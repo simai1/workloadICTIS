@@ -2,11 +2,13 @@ import { useDispatch, useSelector } from "react-redux";
 import styles from "./ScheduleListFilter.module.scss";
 import arrowBlack from "./../../img/arrow_down.svg";
 import arrowWhite from "./../../img/arrow-White.svg";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { setScheduleSelected } from "./../../store/schedule/schedule.slice";
+import DataContext from "../../context";
 
 function ScheduleListFilter() {
   const [listOpen, setListOpen] = useState(false);
+  const { appData } = React.useContext(DataContext);
 
   const listData = ["Все", "Новые", "Старые"];
 
@@ -23,6 +25,9 @@ function ScheduleListFilter() {
   const liClick = (el) => {
     setListOpen(false);
     dispatch(setScheduleSelected({ select: el }));
+    if (store.scheduleSelectedFilter.select !== el) {
+      appData.setLoaderAction(1);
+    }
   };
 
   const refDiv = useRef(null);
