@@ -3,7 +3,7 @@
 
 .NotData {
   position: relative;
-  
+
   tr {
     height: 150px;
 
@@ -78,10 +78,7 @@
     bottom: -71vh;
     z-index: 1;
   }
-  .buttonHeader{
-    display: flex;
-    justify-content: space-between;
-    width: calc(100% - 286px);
+  .buttonHeader {
     .import {
       font-size: 16px;
       font-weight: 500;
@@ -90,7 +87,7 @@
       align-items: center;
       height: 44px;
       width: auto;
-  
+
       background-color: #fff;
       margin-left: 12px;
       border-radius: 8px;
@@ -108,7 +105,7 @@
         opacity: 0.75;
         transition: opacity 0.2s ease;
       }
-  
+
       input {
         cursor: pointer;
         display: block;
@@ -141,7 +138,7 @@
         p {
           padding-left: 4px;
           padding-right: 4px;
-  
+
           color: var(--blue-color);
           font-size: 16px;
           &:first-child {

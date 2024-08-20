@@ -294,24 +294,24 @@ function TableTeachers(props) {
   //!Функция экспорта преподователей
   const funExportTeacher = () => {
     generateAndDownloadExcel(appData.educator, "Преподаватели", "Teacher");
-  }
+  };
 
   return (
     <div className={styles.TableTeachers}>
-    <div className={styles.buttonHeader}>
-      {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 4) ? (
-        <Button
-          text="Создать преподавателя"
-          Bg="#0040E5"
-          textColot="#fff"
-          onClick={() => {
-            appData.setcreateEdicatorPopUp(true);
-          }}
-        />
-      ) : (
-        <div style={{ height: "59px" }}></div>
-      )}
-      {appData.selectedComponent === "Teachers" &&
+      <div className={styles.buttonHeader}>
+        {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 4) ? (
+          <Button
+            text="Создать преподавателя"
+            Bg="#0040E5"
+            textColot="#fff"
+            onClick={() => {
+              appData.setcreateEdicatorPopUp(true);
+            }}
+          />
+        ) : (
+          <div style={{ height: "59px" }}></div>
+        )}
+        {/* {appData.selectedComponent === "Teachers" &&
         <div className={styles.import}>
               <button onClick={funExportTeacher}>
                 <img
@@ -322,8 +322,7 @@ function TableTeachers(props) {
                 <p>Экспорт таблицы</p>
               </button>
         </div>
-      }
-
+      } */}
       </div>
       <div className={styles.filterdClear}>
         <ImgClearFilter

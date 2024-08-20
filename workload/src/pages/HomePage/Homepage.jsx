@@ -386,6 +386,11 @@ function HomePage() {
     )?.isBlocked;
   };
 
+  //!Функция экспорта преподователей
+  const funExportTeacher = () => {
+    generateAndDownloadExcel(appData.educator, "Преподаватели", "Teacher");
+  };
+
   return (
     <Layout>
       <div className={styles.HomePage}>
@@ -768,7 +773,7 @@ function HomePage() {
                     appData.selectedComponent === "History" ||
                     appData.selectedComponent === "ScheduleMaterials") && (
                     <>
-                      {appData.selectedComponent != "ScheduleMaterials" ? (
+                      {appData.selectedComponent !== "ScheduleMaterials" ? (
                         <ListKaf
                           dataList={departments}
                           setTableMode={setTableMode}
@@ -788,7 +793,7 @@ function HomePage() {
                               </button>
                               <ScheduleListFilter />
                             </div>
-                            <div className={styles.import}>
+                            {/* <div className={styles.import}>
                               <button onClick={exportSchedulefunc}>
                                 <img
                                   src="./img/import.svg"
@@ -797,7 +802,7 @@ function HomePage() {
                                 ></img>
                                 <p>Экспорт таблицы</p>
                               </button>
-                            </div>
+                            </div> */}
                           </div>
                         </>
                       )}
@@ -891,6 +896,30 @@ function HomePage() {
                       </button>
                     </div>
                   )}
+                {appData.selectedComponent === "ScheduleMaterials" && (
+                  <div className={styles.import}>
+                    <button onClick={exportSchedulefunc}>
+                      <img
+                        src="./img/exportTable.svg"
+                        alt=">"
+                        className={styles.export__img}
+                      ></img>
+                      <p>Экспорт таблицы</p>
+                    </button>
+                  </div>
+                )}
+                {appData.selectedComponent === "Teachers" && (
+                  <div style={{ zIndex: "200" }} className={styles.import}>
+                    <button onClick={funExportTeacher}>
+                      <img
+                        src="./img/exportTable.svg"
+                        alt=">"
+                        className={styles.export__img}
+                      ></img>
+                      <p>Экспорт таблицы</p>
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           )}
