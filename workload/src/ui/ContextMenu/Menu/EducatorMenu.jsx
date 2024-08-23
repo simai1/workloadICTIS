@@ -130,6 +130,7 @@ export function EducatorMenu(props) {
               onClick={() => props.selectedEducator(el.id)}
             >
               {el.name}
+              <br />({el.typeOfEmployment})
             </p>
           </li>
         ))}
