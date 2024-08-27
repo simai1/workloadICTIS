@@ -10,6 +10,7 @@ import fs from 'fs';
 import User from '../models/user.js';
 import { Op } from 'sequelize';
 import History from '../models/history.js';
+import EnumTypeOfEmployment from '../config/type-of-employment.js';
 
 export default {
     async parseWorkload(req, res) {
@@ -59,6 +60,7 @@ export default {
                     const englishHeader = HeaderTranslation[header];
                     obj[englishHeader] = row[index];
                 });
+                let typeOfEmployment = obj.typeOfEmployment.trim();
                 obj.department = obj.department.trim();
                 obj.educator = obj.educator.trim();
                 obj.department = FullNameDepartments[obj.department];
@@ -68,17 +70,57 @@ export default {
                 const ratingControlHours = obj.hours - obj.audienceHours;
                 obj.ratingControlHours = parseFloat(ratingControlHours.toFixed(2));
                 obj.period = Number(obj.period);
-
-                const existEducator = await Educator.findOne({
+                let existEducator;
+                let resEducator;
+                existEducator = await Educator.findOne({
                     where: {
                         name: obj.educator,
+                        typeOfEmployment: { [Op.between]: [1, 3] }
                     },
                 });
-                const educatorId = existEducator ? existEducator.id : null;
-                const isSplit = false;
 
+                let educatorId = existEducator ? existEducator.id : null;
+
+                if(typeOfEmployment === 'На условиях почасовой оплаты труда'){
+                    existEducator = await Educator.findOne({
+                        where: {
+                            name: obj.educator,
+                            typeOfEmployment: 4,
+                        },
+                    });
+                    if(existEducator === null){
+                        existEducator = await Educator.findOne({
+                            where: {
+                                name: obj.educator,
+                                typeOfEmployment: { [Op.between]: [1, 3] }
+                            },
+                        });
+                        if(existEducator !== null){
+                            resEducator = await Educator.create({
+                                name: existEducator.name,
+                                department: existEducator.department,
+                                position: existEducator.position,
+                                rate: existEducator.rate,
+                                typeOfEmployment: 4,
+                            });
+                        }  else {
+                            resEducator = await Educator.create({
+                                name: obj.educator,
+                                department:  obj.department,
+                                position: positions[obj.position],
+                                rate: 0,
+                                typeOfEmployment: 4,
+                            });
+                            console.log("resEducator", resEducator)
+                        }
+                        educatorId = resEducator.id;
+                    } else educatorId = existEducator.id;
+                } 
+
+                const isSplit = false;
                 delete obj.educator;
                 delete obj.undefined;
+                delete obj.typeOfEmployment;
                 await Workload.create(
                     {
                         ...obj,
@@ -92,8 +134,6 @@ export default {
                 console.log(e);
             }
         }
-        // 504 долго работает запрос (слишком много всего)
-        // await workloadController.checkHoursEducators();
 
         try {
             fs.unlinkSync(req.file.path); // Синхронное удаление файла
