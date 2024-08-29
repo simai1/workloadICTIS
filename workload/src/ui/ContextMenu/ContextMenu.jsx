@@ -190,6 +190,7 @@ const ContextMenu = (props) => {
         semester: funData.newState.semester,
         groups: funData.newState.groups,
         block: funData.newState.block,
+        core: funData.newState.core,
       };
     }
 

@@ -1,7 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 import EnumDepartments from '../config/departments.js';
 import { deleteHours, setHours } from '../utils/summary-workload.js';
-import {promiseForAddHoursForEducator} from '../utils/promise-for-add-hours-for-educator.js';
+import { promiseForAddHoursForEducator } from '../utils/promise-for-add-hours-for-educator.js';
 // import checkHours from '../utils/notification.js';
 export default class Workload extends Model {
     static initialize(sequelize) {
@@ -29,7 +29,7 @@ export default class Workload extends Model {
                     allowNull: false,
                 },
                 groups: {
-                    type: DataTypes.STRING(400),
+                    type: DataTypes.STRING(1000),
                     allowNull: false,
                 },
                 block: {
@@ -108,14 +108,14 @@ export default class Workload extends Model {
                     defaultValue: false,
                 },
                 isBlocked: {
-                  type: DataTypes.BOOLEAN,
-                  allowNull: false,
-                  defaultValue: false,
+                    type: DataTypes.BOOLEAN,
+                    allowNull: false,
+                    defaultValue: false,
                 },
                 notes: {
                     type: DataTypes.STRING,
                     allowNull: true,
-                }
+                },
             },
             {
                 sequelize,
@@ -126,7 +126,7 @@ export default class Workload extends Model {
             }
         );
 
-        Workload.afterCreate(async (workload) => {
+        Workload.afterCreate(async workload => {
             await promiseForAddHoursForEducator(workload);
         });
 
@@ -141,6 +141,5 @@ export default class Workload extends Model {
         Workload.afterUpdate(async workload => {
             await setHours(workload);
         });
-
     }
 }

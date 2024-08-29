@@ -241,9 +241,17 @@ export function combineData(data, selectedTr, action = "") {
       (total, el) => total + el.audienceHours,
       0
     );
+
     const groups = prevState.reduce((total, el) => {
       if (!total.includes(el.groups)) {
         return total + " " + el.groups;
+      }
+      return total;
+    }, "");
+
+    const core1 = prevState.reduce((total, el) => {
+      if (!total.includes(el.core)) {
+        return total + " " + el.core;
       }
       return total;
     }, "");
@@ -257,6 +265,7 @@ export function combineData(data, selectedTr, action = "") {
           ? {
               ...upData[index],
               groups,
+              core: core1,
               numberOfStudents: sumOfStudents,
               isSplit: false,
               isMerged: true,
@@ -267,6 +276,7 @@ export function combineData(data, selectedTr, action = "") {
               ...upData[index],
               audienceHours,
               groups,
+              core,
               isSplit: false,
               isMerged: true,
               educator: "___",
@@ -276,6 +286,7 @@ export function combineData(data, selectedTr, action = "") {
               ...upData[index],
               audienceHours,
               groups,
+              core,
               isSplit: false,
               isMerged: true,
               educator: "___",
@@ -284,6 +295,7 @@ export function combineData(data, selectedTr, action = "") {
           ? {
               ...upData[index],
               numberOfStudents: sumOfStudents,
+              core,
               groups,
               isSplit: false,
               isMerged: true,
@@ -291,6 +303,7 @@ export function combineData(data, selectedTr, action = "") {
             }
           : action === "candidatesExam" && {
               ...upData[index],
+              core,
               groups,
               isSplit: false,
               isMerged: true,

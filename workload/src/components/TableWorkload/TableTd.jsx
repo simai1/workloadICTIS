@@ -146,9 +146,9 @@ function TableTd(props) {
   //! получаем стили для td текст которого не вмещается в ячейку
   const getStylesBigText = () => {
     let top = `${10}%`;
-    if (basicTabData.filtredData.length - 2 <= props.index) {
-      top = `${-100}%`;
-    }
+    // if (basicTabData.filtredData.length - 2 <= props.index) {
+    //   top = `${-100}%`;
+    // }
     const style = {
       position: "absolute",
       backgroundColor: "inherit",
