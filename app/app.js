@@ -31,6 +31,7 @@ import roleRoute from './routes/role.js';
 import cors from 'cors';
 import { eventEmitter } from './utils/notification.js';
 import sendMail from './services/email.js';
+import fs from "fs";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -60,6 +61,12 @@ const io = new Server(server, {
         setTimeout(initDb, 5000);
     }
 })();
+
+const dir = './uploads';
+if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir);
+}
+
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
