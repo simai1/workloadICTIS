@@ -5,6 +5,8 @@ services:
       db
     image: postgres:15
     restart: always
+    env_file:
+      - app/.env
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}

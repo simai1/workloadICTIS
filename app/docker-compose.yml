@@ -2,7 +2,7 @@ version: '3'
 services:
   db:
     container_name:
-      workload-ICTIS-db
+      workload-ictis-db
     image: postgres:15
     restart: always
     env_file:
@@ -20,7 +20,7 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   server:
-    container_name: workload-ICTIS-server
+    container_name: workload-ictis-server
     build:
       context: .
       dockerfile: ./Dockerfile
@@ -42,10 +42,10 @@ services:
       - server
     container_name: workload-master-client
     build:
-      context: ./workload
+      context: ../workload
       dockerfile: Dockerfile
     ports:
-      - '80:80'
+      - '82:82'
     restart: always
     networks:
       - workload-ICTIS-network
