@@ -289,6 +289,7 @@ export const educators = [
         rate: 0.5,
     },
     {
+
         name: 'Тоноян Артур Арменович',
         department: 6,
         email: 'atonoian@sfedu.ru',
