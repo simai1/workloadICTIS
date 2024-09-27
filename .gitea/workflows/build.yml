@@ -7,7 +7,7 @@ on:
 jobs:
   frontend:
     runs-on: ubuntu-latest
-    name: Publish image
+    name: Publish frontend image
     container: catthehacker/ubuntu:act-latest
     permissions:
       contents: read
@@ -28,7 +28,7 @@ jobs:
         id: meta
         uses: https://github.com/docker/metadata-action@v4
         with:
-          images: ${{ vars.SERVER_DOMAIN }}/workload-frontend
+          images: ${{ vars.SERVER_DOMAIN }}/${{ gitea.repository }}/workload-frontend
 
       - name: Build and push Docker image
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
@@ -39,7 +39,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
   backend:
     runs-on: ubuntu-latest
-    name: Publish image
+    name: Publish backend image
     container: catthehacker/ubuntu:act-latest
     permissions:
       contents: read
@@ -60,7 +60,7 @@ jobs:
         id: meta
         uses: https://github.com/docker/metadata-action@v4
         with:
-          images: ${{ vars.SERVER_DOMAIN }}/workload-backend
+          images: ${{ vars.SERVER_DOMAIN }}/${{ gitea.repository }}/workload-backend
 
       - name: Build and push Docker image
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
