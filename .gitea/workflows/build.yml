@@ -20,15 +20,15 @@ jobs:
       - name: Log in to the Container registry
         uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ gitea.actor }}
+          registry: ${{ vars.SERVER_DOMAIN }}
+          username: ${{ secrets.REGISTRY_LOGIN }}
           password: ${{ secrets.TOKEN }}
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: https://github.com/docker/metadata-action@v4
         with:
-          images: ${{ env.REGISTRY }}/${{ gitea.repository }}
+          images: ${{ vars.SERVER_DOMAIN }}/${{ gitea.repository }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
