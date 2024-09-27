@@ -28,12 +28,44 @@ jobs:
         id: meta
         uses: https://github.com/docker/metadata-action@v4
         with:
-          images: ${{ vars.SERVER_DOMAIN }}/${{ gitea.repository }}
+          images: ${{ vars.SERVER_DOMAIN }}/workload-frontend
 
       - name: Build and push Docker image
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
           context: ./workload
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+  backend:
+    runs-on: ubuntu-latest
+    name: Publish image
+    container: catthehacker/ubuntu:act-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ${{ vars.SERVER_DOMAIN }}
+          username: ${{ secrets.REGISTRY_LOGIN }}
+          password: ${{ secrets.TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: https://github.com/docker/metadata-action@v4
+        with:
+          images: ${{ vars.SERVER_DOMAIN }}/workload-backend
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        with:
+          context: ./app
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
