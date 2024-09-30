@@ -22,7 +22,7 @@ services:
     depends_on:
       - db
     ports:
-      - '3010:3010'
+      - '3002:3002'
     environment:
       - DB_NAME=${DB_NAME}
       - DB_USERNAME=${DB_USER}
