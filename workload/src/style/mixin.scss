@@ -100,7 +100,12 @@
   height: 40%;
   margin-top: 70%;
 }
-@mixin button($bgcolor, $textColor, $paddingTB, $paddingLR) {
+@mixin button(
+  $bgcolor: var(--blue-color),
+  $textColor: #fff,
+  $paddingTB: 10px,
+  $paddingLR: 25px
+) {
   border-radius: 8px;
   color: $textColor;
   background-color: $bgcolor;

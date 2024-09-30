@@ -37,6 +37,13 @@
       font-size: 22px;
       font-weight: 500;
       transform: translateY(-15px);
+      display: flex;
+      justify-content: center;
+
+      .loader {
+        position: absolute;
+        top: 50px;
+      }
     }
   }
 }
@@ -51,6 +58,102 @@
   // button {
   //   margin-bottom: 15px;
   // }
+  &::after {
+    content: "";
+    background-color: var(--bgraund);
+    width: 64px;
+    height: 106px;
+    position: absolute;
+    right: -64px;
+    top: 65px;
+  }
+  &::before {
+    content: "";
+    // background-color: red;
+    background-color: var(--bgraund);
+    width: 64px;
+    height: 15px;
+    position: absolute;
+    right: -64px;
+    bottom: -71vh;
+    z-index: 1;
+  }
+  .buttonHeader {
+    .import {
+      font-size: 16px;
+      font-weight: 500;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 44px;
+      width: auto;
+
+      background-color: #fff;
+      margin-left: 12px;
+      border-radius: 8px;
+      color: var(--blue-color);
+      justify-content: space-between;
+      position: relative;
+      // .export__img {
+      //   margin-right: 5px;
+      // }
+      input::placeholder {
+        color: var(--blue-color);
+      }
+      &:hover {
+        cursor: pointer;
+        opacity: 0.75;
+        transition: opacity 0.2s ease;
+      }
+
+      input {
+        cursor: pointer;
+        display: block;
+        width: 176px;
+        height: 42px;
+        border-radius: 8px;
+        background: none;
+        position: relative;
+        z-index: 0;
+      }
+      #file-upload-button {
+        cursor: pointer;
+      }
+      button {
+        // position: absolute;
+        white-space: nowrap;
+        background-color: #fff;
+        left: 0;
+        z-index: 10;
+        width: auto;
+        height: 42px;
+        display: flex;
+        border: none;
+        border-radius: 6px;
+        align-items: center;
+        justify-content: center;
+        &:hover {
+          cursor: pointer;
+        }
+        p {
+          padding-left: 4px;
+          padding-right: 4px;
+
+          color: var(--blue-color);
+          font-size: 16px;
+          &:first-child {
+            margin-right: 8px;
+          }
+        }
+        @media (max-width: 1220px) {
+          p {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+
   .tabledisciplinesMain_search {
     margin-bottom: 10px;
     position: absolute;
@@ -75,7 +178,7 @@
   .TableTeachers__inner {
     height: 74vh;
     width: calc(100% + 14px);
-
+    background-color: #fff;
     overflow: scroll;
     position: relative;
     @include scrollTable(12px, 12px, #a6a6a6, 60px, 0);

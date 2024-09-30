@@ -3,7 +3,26 @@ import Table from "./Table";
 import styles from "./UniversalTable.module.scss";
 import { filteredWorkload, funfastenedDataSort } from "./Function";
 import DataContext from "../../context";
-import ContextMenu from "../../ui/ContextMenu/ContextMenu";
+
+//! обязательные параметры
+// const tabDat = {
+//   tableHeader,
+//   setTableHeader,
+//   tableData,
+//   setTableData,
+//   tableDataFix,
+//   setTableDataFix,
+//   filtredData,
+//   setFiltredData,
+//   ssIsChecked,
+//   ssHeader,
+//   sortParamByColumn,
+//   setSortParamByColumn,
+//   isCheckedStore,
+//   isSorted: false, //! показать или скрыть сортировку (в заголовке таблицы)
+//   isBlocked: true, //! показывать или скрывать блокированные, (для лектора, чтобы он мог выделять цветом)
+//   isSignature: false, //! показывать или скрыть подпись блокированные, разделенные и тд.
+// };
 
 function UniversalTable(props) {
   const { tabPar, visibleDataPar, basicTabData } = useContext(DataContext);
@@ -47,12 +66,13 @@ function UniversalTable(props) {
     }
   }, [props.searchTerm]);
 
-  //! при нажатии правой кнопки мыши на таблицу открывает мню
+  //! при нажатии правой кнопки мыши на таблицу открывает меню
   const handleContextMenu = (e) => {
     e.preventDefault();
     let plusX = e.pageX + 256 > window.innerWidth ? -256 : 0;
     let plusY = e.pageY + 320 > window.innerHeight ? -320 : 0;
     tabPar.setContextPosition({ x: e.pageX + plusX, y: e.pageY + plusY });
+    console.log("tabPar.contextMenuShow", tabPar.contextMenuShow);
     tabPar.setContextMenuShow(!tabPar.contextMenuShow);
   };
 
@@ -67,7 +87,7 @@ function UniversalTable(props) {
 
       {tabPar.contextMenuShow &&
         tabPar.selectedTr.length !== 0 &&
-        props.contextMenu === "TableWorkload" && <ContextMenu />}
+        props.contextMenu()}
       <Table tabDat={props.tabDat} />
     </div>
   );

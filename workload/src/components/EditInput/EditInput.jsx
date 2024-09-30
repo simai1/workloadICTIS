@@ -13,7 +13,7 @@ import {
 // import { headers as hed } from "../TableDisciplines/Data";
 
 function EditInput({ selectedComponent, originalHeader, ssname }) {
-  const { basicTabData } = React.useContext(DataContext);
+  const { basicTabData, appData } = React.useContext(DataContext);
   const headers = [...basicTabData.tableHeaders];
   const [searchResults, setSearchResults] = useState(headers);
   const [isListOpen, setListOpen] = useState(false);
@@ -30,8 +30,11 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
     originalHeader?.length === ssUpdatedHeader?.length ? true : false
   );
   const [checkedItems, setCheckedItems] = useState(
-    Array(originalHeader.slice(3).length).fill(true)
+    appData.selectedComponent === "ScheduleMaterials"
+      ? Array(originalHeader?.slice(6).length).fill(true)
+      : Array(originalHeader?.slice(3).length).fill(true)
   );
+
   const [isChecked, setChecked] = useState(
     ssUpdatedHeader && originalHeader
       ? originalHeader
@@ -53,7 +56,9 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
   }, [originalHeader, selectedComponent]);
 
   useEffect(() => {
-    setSearchResults(originalHeader.slice(3));
+    appData.selectedComponent === "ScheduleMaterials"
+      ? setSearchResults(originalHeader.slice(6))
+      : setSearchResults(originalHeader.slice(3));
   }, [basicTabData.tableHeaders, selectedComponent]);
 
   //! закрытие модального окна при нажатии вне него
@@ -131,18 +136,25 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
         addAllCheckeds({ tableName: ssname, checked: [...originalHeader] })
       );
     } else {
-      setChecked([...originalHeader.slice(3)].map((el) => el.key));
-      basicTabData.setTableHeaders([...originalHeader].slice(0, 3));
-      // sessionStorage.setItem(
-      //   ssname,
-      //   JSON.stringify([...originalHeader].slice(0, 3))
-      // );
-      dispatch(
-        addAllCheckeds({
-          checked: [...originalHeader].slice(0, 3),
-          tableName: ssname,
-        })
-      );
+      if (appData.selectedComponent === "ScheduleMaterials") {
+        setChecked([...originalHeader.slice(6)].map((el) => el.key));
+        basicTabData.setTableHeaders([...originalHeader].slice(0, 6));
+        dispatch(
+          addAllCheckeds({
+            checked: [...originalHeader].slice(0, 6),
+            tableName: ssname,
+          })
+        );
+      } else {
+        setChecked([...originalHeader.slice(3)].map((el) => el.key));
+        basicTabData.setTableHeaders([...originalHeader].slice(0, 3));
+        dispatch(
+          addAllCheckeds({
+            checked: [...originalHeader].slice(0, 3),
+            tableName: ssname,
+          })
+        );
+      }
     }
   }
 
@@ -182,7 +194,7 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
           />
           <div className={styles.EditInputList}>
             <ul className={styles.fadeinul}>
-              <li>
+              <li onClick={takeFunctionAll}>
                 <input
                   type="checkbox"
                   onChange={takeFunctionAll}
@@ -194,7 +206,7 @@ function EditInput({ selectedComponent, originalHeader, ssname }) {
               </li>
               {searchResults.map((row, index) => (
                 <div key={index + 1}>
-                  <li key={index}>
+                  <li onClick={() => takeFunction(index, row)} key={index}>
                     <input
                       type="checkbox"
                       onChange={() => takeFunction(index, row)}

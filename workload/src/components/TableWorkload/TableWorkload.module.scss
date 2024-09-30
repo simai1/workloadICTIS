@@ -31,12 +31,19 @@ $heightCell: 150px;
     }
     width: 100%;
     .notdatadiv {
-      position: fixed;
-      width: 100%;
-      left: 0px;
+      display: flex;
+      justify-content: center;
+      position: absolute;
+      width: 100vw;
+      left: -150px;
       font-size: 22px;
       font-weight: 500;
       transform: translateY(-15px);
+
+      .loader {
+        position: absolute;
+        top: 50px;
+      }
     }
   }
 }
@@ -96,7 +103,7 @@ $heightCell: 150px;
       background-color: var(--bgraund);
       // background-color: red;
       width: 64px;
-      height: 11px;
+      height: 12px;
       position: absolute;
       bottom: 0;
       right: 0px;

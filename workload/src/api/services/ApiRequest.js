@@ -129,11 +129,27 @@ export const TypeOfEmployments = async () => {
   }
 };
 
+const uniqueObjects = (array) => {
+  return array.filter(
+    (value, index, self) => index === self.findIndex((t) => t.id === value.id)
+  );
+};
 //! получаем нагрузки
 export const Workload = async (param) => {
   try {
     const response = await http.get(`${server}/workload${param}`);
-    return response.data;
+    return uniqueObjects(response.data); //! БАГ С ОДИНКОВЫМИ id по этому фильтрация
+  } catch (error) {
+    console.error("Error:", error, `${server}/workload`);
+    return [];
+  }
+};
+
+//! получаем нагрузки для зк в роли лектора
+export const apiOwnDepartHead = async () => {
+  try {
+    const response = await http.get(`${server}/workload/get/ownDepartHead`);
+    return response;
   } catch (error) {
     console.error("Error:", error, `${server}/workload`);
     return [];
@@ -247,11 +263,11 @@ export const apiSplitByHours = async (data) => {
 
 //! запрос на соединение нагрузки
 export const joinWorkloads = async (data, action) => {
-  console.log("Соединение нагрузки ", data, action);
+  console.log("Соединение нагрузки ", "data: ", data, "action: ", action);
   try {
     const response = await http.post(`${server}/workload/map${action}`, data);
     console.log("response ", response);
-    return response.data;
+    return response;
   } catch (error) {
     console.error("Error:", error);
     return false;
@@ -369,7 +385,7 @@ export const createComment = async (data) => {
 
 //! запрос на добавление предложения преподавателя к нагрузке
 export const createOffer = async (data) => {
-  console.log("Предложение ", data);
+  console.log("Создать предложение ", data);
   try {
     const response = await http.post(`${server}/offers/createOffer`, data);
     console.log("response ", response);
@@ -630,6 +646,42 @@ export const ApiUnblockTable = async (indexTable) => {
   }
 };
 
+//!  Блокировака рассписания
+export const apiBlockMaterials = async (indexTable) => {
+  try {
+    const response = await http.patch(`${server}/materials/block/`, {
+      department: indexTable,
+    });
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};
+//!  разБлокировака рассписания
+export const apiUnblockMaterials = async (indexTable) => {
+  try {
+    const response = await http.patch(`${server}/materials/unblock/`, {
+      department: indexTable,
+    });
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};
+
+//! Добавить примечание в материалы к рассписанию
+export const apiNotecAddMaterials = async (data) => {
+  try {
+    const response = await http.patch(`${server}/materials`, data);
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};
+
 //! Получение текущей суммы и остатка по нагрузкам для ЗК
 export const getAllocatedAndUnallocatedWrokloadHours = async (
   indexDepartment
@@ -656,7 +708,6 @@ export const UnblockTablePlease = async (indexDepartment) => {
     //throw error;
   }
 };
-
 
 //! Авторизация для теста
 export const AuthTest = async (data) => {

@@ -60,7 +60,7 @@ export const tableHeadersLks = [
   { key: "audienceHours", label: "Аудиторные часы" },
   { key: "hoursFirstPeriod", label: "1 (осень)" },
   { key: "hoursSecondPeriod", label: "2 (весна)" },
-  { key: "hoursWithoutPeriod", label: "Доп. нагрузка" },
+  // { key: "hoursWithoutPeriod", label: "Доп. нагрузка" },
 ];
 
 // ! заголовки
@@ -69,6 +69,8 @@ export const scheduleHead = [
   { key: "discipline", label: "Дисциплина" },
   { key: "workload", label: "Нагрузка" },
   { key: "groups", label: "Группа" },
+  { key: "audiences", label: "Аудитория" },
+  { key: "notes", label: "Примечания" },
   { key: "department", label: "Кафедра" },
   { key: "block", label: "Блок" },
   { key: "semester", label: "Семестр" },
@@ -77,15 +79,12 @@ export const scheduleHead = [
   { key: "curriculumUnit", label: "Подразделение учебного плана" },
   { key: "formOfEducation", label: "Форма обучения" },
   { key: "levelOfTraining", label: "Уровень подготовки" },
-  {
-    key: "specialty",
-    label: "Направление подготовки (специальность)",
-  },
+  { key: "specialty", label: "Направление подготовки (специальность)" },
   { key: "core", label: "Профиль" },
   { key: "numberOfStudents", label: "Количество студентов" },
   { key: "hours", label: "Часы" },
   { key: "audienceHours", label: "Аудиторные часы" },
   { key: "ratingControlHours", label: "Часы рейтинг-контроль" },
   { key: "educator", label: "Преподаватель" },
-  { key: "notes", label: "Аудитории, примечания" },
+  { key: "createdAt", label: "Дата добавления" },
 ];

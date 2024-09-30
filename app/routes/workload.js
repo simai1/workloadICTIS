@@ -17,10 +17,12 @@ router
         asyncRoute(
             checkRole([
                 role.GOD,
+                role.LECTURER,
                 role.GIGA_ADMIN,
                 role.UNIT_ADMIN,
                 role.DEPARTMENT_HEAD,
                 role.DIRECTORATE,
+                role.LECTURER,
                 role.DEPUTY_DIRECTORATE,
                 role.DEPUTY_DEPARTMENT_HEAD,
             ])
@@ -134,6 +136,7 @@ router
         asyncRoute(
             checkRole([
                 role.GOD,
+                role.LECTURER,
                 role.GIGA_ADMIN,
                 role.UNIT_ADMIN,
                 role.DEPARTMENT_HEAD,
@@ -212,6 +215,25 @@ router
         asyncRoute(workloadController.getAllWorkload)
     );
 router
+    .route('/get/ownDepartHead')
+    .get(
+        asyncRoute(
+            checkRole([
+                role.GOD,
+                role.GIGA_ADMIN,
+                role.UNIT_ADMIN,
+                role.DEPARTMENT_HEAD,
+                role.DIRECTORATE,
+                role.METHODIST,
+                role.EDUCATOR,
+                role.LECTURER,
+                role.DEPUTY_DIRECTORATE,
+                role.DEPUTY_DEPARTMENT_HEAD,
+            ])
+        ),
+        asyncRoute(workloadController.getWorkloadOwnForDepartHead)
+    );
+router
     .route('/get/departments')
     .get(
         asyncRoute(
@@ -271,6 +293,7 @@ router
     .patch(
         asyncRoute(
             checkRole([
+                role.METHODIST,
                 role.GOD,
                 role.GIGA_ADMIN,
                 role.UNIT_ADMIN,

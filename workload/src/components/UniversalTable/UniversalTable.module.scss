@@ -37,6 +37,13 @@ $heightCell: 150px;
       font-size: 22px;
       font-weight: 500;
       transform: translateY(-15px);
+
+      display: flex;
+      justify-content: center;
+      .loader {
+        position: absolute;
+        top: 50px;
+      }
     }
   }
 }
@@ -76,7 +83,7 @@ $heightCell: 150px;
     width: 64px;
     height: 100%;
     position: absolute;
-    z-index: 1;
+    // z-index: 1;
     left: 0px;
     top: 0;
   }
@@ -87,7 +94,7 @@ $heightCell: 150px;
     height: 80px;
     position: absolute;
     top: 0;
-    right: 0px;
+    right: 0;
     z-index: 1;
   }
 
@@ -97,14 +104,19 @@ $heightCell: 150px;
       background-color: var(--bgraund);
       // background-color: red;
       width: 64px;
-      height: 11px;
+      height: 12px;
       position: absolute;
       bottom: 0;
       right: 0px;
       z-index: 1;
     }
   }
-
+  .topRightCorner {
+    position: relative;
+    z-index: 0;
+    top: 0px;
+    right: -2px;
+  }
   .table {
     width: 100%;
     border-collapse: collapse;
@@ -120,9 +132,9 @@ $heightCell: 150px;
 
     .gettdInner {
       max-height: 300px;
-      overflow-wrap: break-word;
-      word-break: break-all;
-      hyphens: auto;
+      // overflow-wrap: break-word;
+      // word-break: break-all;
+      // hyphens: auto;
       overflow-x: hidden;
       overflow-y: auto;
       position: absolute;
@@ -157,19 +169,36 @@ $heightCell: 150px;
       min-height: $heightCell;
       padding: 4px 10px;
       max-height: $heightCell;
-      .textarea {
-        width: 100%;
-        height: 100%;
-        resize: none !important;
-        border: none;
-        box-shadow: 0px 0px 7px #b3b0b0;
-        border-radius: 8px;
-        padding: 5px;
-        outline: none;
+
+      .textareaStyle {
+        textarea {
+          width: 100%;
+          min-height: 100px;
+          // max-height: 300px;
+        }
       }
+      .loaderTd {
+        span {
+          width: 40px;
+          height: 40px;
+        }
+      }
+      // .textareaContainer {
+
+      // }
       .svg_textarea {
         display: flex;
         justify-content: end;
+        span {
+          display: flex;
+          margin-right: 20px;
+
+          &:hover {
+            opacity: 80%;
+            cursor: pointer;
+            color: var(--blue-color);
+          }
+        }
         svg {
           margin: 3px;
           cursor: pointer;
@@ -196,6 +225,16 @@ $heightCell: 150px;
         border-radius: 8px;
         padding: 5px 0px;
       }
+      // .tdInner[name="notes"]:hover{
+      //   border-radius: 8px;
+      //   padding: 5px 0px;
+      //   background-color: #5a79c7;
+      // }
+      // .tdInner[name="groups"]:hover{
+      //   border-radius: 8px;
+      //   padding: 5px 0px;
+      //   background-color: #5a79c7;
+      // }
     }
     th[name="specialty"],
     td[name="specialty"] {
@@ -247,7 +286,7 @@ $heightCell: 150px;
     td[name="audienceHours"] {
       @include customTd(120px);
     }
-    td[name="workload"] {
+    td[name="notes"] {
       &::after {
         content: "";
         position: absolute;
@@ -260,7 +299,7 @@ $heightCell: 150px;
         top: 0;
       }
     }
-    th[name="workload"] {
+    th[name="notes"] {
       &::after {
         content: "";
         position: absolute;
@@ -285,12 +324,17 @@ $heightCell: 150px;
       max-width: 160px;
       box-sizing: border-box;
     }
-
     .trBlocked {
       td {
         background-color: var(--color--blockedBg);
       }
       pointer-events: none;
+    }
+
+    .trIsBloced {
+      td {
+        background-color: var(--color--blockedBg);
+      }
     }
 
     .trDeleted {
@@ -377,6 +421,9 @@ $heightCell: 150px;
           left: 10px;
         }
       }
+      .tableShaduleTdOld {
+        background-color: #fcbaba;
+      }
     }
 
     td:nth-child(1) {
@@ -391,6 +438,15 @@ $heightCell: 150px;
     }
     td:nth-child(4) {
       @include stickyTd(160px, 320px);
+    }
+    #fihedTd:nth-child(5) {
+      @include stickyTd(160px, 480px);
+    }
+    #fihedTd:nth-child(6) {
+      @include stickyTd(160px, 640px);
+    }
+    #fihedTd:nth-child(7) {
+      @include stickyTd(160px, 800px);
     }
 
     th:nth-child(1) {
@@ -412,6 +468,21 @@ $heightCell: 150px;
       @include stickyTd(160px, 320px);
       background-color: var(--gray-color);
       z-index: 15;
+    }
+    #fihedTh:nth-child(5) {
+      background-color: var(--gray-color);
+      z-index: 15;
+      @include stickyTd(160px, 480px);
+    }
+    #fihedTh:nth-child(6) {
+      background-color: var(--gray-color);
+      z-index: 15;
+      @include stickyTd(160px, 640px);
+    }
+    #fihedTh:nth-child(7) {
+      background-color: var(--gray-color);
+      z-index: 15;
+      @include stickyTd(160px, 800px);
     }
   }
   .selectedTr {
@@ -516,7 +587,18 @@ $heightCell: 150px;
       background-color: var(--bgraund);
       width: 64px;
       height: 100%;
-      svg {
+      .bacgroundsvgRed {
+        width: 18px;
+        height: 18px;
+        position: relative;
+        right: -38px;
+        top: -3px;
+        &:hover {
+          opacity: 0.6;
+          cursor: pointer;
+        }
+      }
+      .svgRed {
         width: 18px;
         height: 18px;
         position: relative;

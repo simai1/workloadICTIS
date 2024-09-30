@@ -5,6 +5,7 @@ import { ReactComponent as CommentsSvg } from "./../../../img/comments.svg";
 import { ReactComponent as Checkmark } from "./../../../img/checkmark.svg";
 import DataContext from "../../../context";
 import { createComment, deleteComment } from "../../../api/services/ApiRequest";
+import DeletPointComments from "../../../ui/DeletPointComments/DeletPointComments";
 
 function Comments(props) {
   const { appData, basicTabData } = useContext(DataContext);
@@ -129,6 +130,13 @@ function Comments(props) {
                 {allCommentsShow ? (
                   props.commentData.map((item) => (
                     <div key={item.id}>
+                      {props.commentData?.find((el) => el.id === item.id)
+                        .educator.name === appData.myProfile.name && (
+                        <DeletPointComments
+                          itemId={item?.id}
+                          funUpdComment={basicTabData.funUpdateAllComments}
+                        />
+                      )}
                       <div className={styles.commentTitle}>
                         {item.educator.name}
                       </div>
@@ -137,6 +145,13 @@ function Comments(props) {
                   ))
                 ) : (
                   <div>
+                    {props.commentData[0].educator.name ===
+                      appData.myProfile.name && (
+                      <DeletPointComments
+                        itemId={props.commentData[0]?.id}
+                        funUpdComment={basicTabData.funUpdateAllComments}
+                      />
+                    )}
                     <div className={styles.commentTitle}>
                       {props.commentData[0].educator.name}
                     </div>

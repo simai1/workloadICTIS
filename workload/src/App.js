@@ -16,7 +16,7 @@ import {
   getAllAttaches,
   getAllColors,
   getOffers,
-  apiGetHistory,
+  // apiGetHistory,
   CommentsLecktorer,
   getOffersLecturer,
   getAllocatedAndUnallocatedWrokloadHours,
@@ -41,43 +41,47 @@ function App() {
   const [individualCheckboxes, setIndividualCheckboxes] = useState([]); //чекбоксы таблицы
   const [fileData, setFileData] = useState(null);
   const [myProfile, setMyProfile] = useState(null);
-
   //! в файле RoleMetods можно посмотреть назание метода и их id
   const metodRole = {
     METHODIST: [
-      1, 3, 4, 8, 9, 10, 14, 17, 20, 21, 25, 26, 28, 29, 31, 33.1, 34, 35, 36,
-      16, 40, 47, 48, 50,
+      1, 3, 4, 8, 9, 10, 14, 17, 20, 21, 25, 26, 27, 28, 29, 31, 33.1, 34, 35,
+      36, 16, 40, 47, 48, 50, 54, 54.1, 55, 57,
     ],
-    LECTURER: [1.1, 15, 17, 17.1, 18, 20, 22, 24, 33.2, 34, 37, 41, 53, 51, 50],
+    LECTURER: [
+      1.1, 8, 11, 11.1, 12, 15, 17, 17.1, 38.2, 18, 20, 22, 24, 33.2, 34, 37,
+      41, 53, 51, 50, 54, 54.1, 58,
+    ],
     DEPARTMENT_HEAD: [
-      2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 20, 22, 23, 25, 26, 27, 30, 31,
-      32, 33, 33.1, 34, 36, 16, 38, 39, 40, 49, 50, 51, 52,
+      2, 3, 4, 8, 9, 10, 11, 11.1, 12, 13, 15, 17, 18, 20, 22, 23, 25, 26, 27,
+      30, 31, 32, 33, 33.1, 34, 36, 16, 38, 39, 40, 49, 50, 51, 52, 54, 54.1,
+      56, 57, 58,
     ],
     DIRECTORATE: [
       1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
-      33.1, 34, 35, 36, 38, 16, 40, 44, 47, 49, 50,
+      33.1, 34, 35, 36, 38, 16, 40, 44, 47, 49, 50, 54, 54.1, 55, 57,
     ],
     UNIT_ADMIN: [
       2, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
-      33.1, 34, 35, 36, 38, 16, 40, 48, 42, 50,
+      33.1, 34, 35, 36, 38, 16, 40, 48, 42, 50, 54, 54.1, 55, 57,
     ],
-    EDUCATOR: [15, 24, 33.2, 41, 53, 51, 50],
+    EDUCATOR: [8, 15, 24, 33.2, 41, 53, 51, 50, 54, 54.1, 57, 58],
     DEPUTY_DIRECTORATE: [
       1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 30, 31,
-      33.1, 34, 35, 36, 38, 16, 40, 44, 47, 49, 50,
+      33.1, 34, 35, 36, 38, 16, 40, 44, 47, 49, 50, 54, 54.1, 55, 57,
     ],
     DEPUTY_DEPARTMENT_HEAD: [
       2, 3, 4, 8, 9, 10, 11, 12, 13, 15, 17, 18, 20, 22, 23, 25, 26, 27, 30, 31,
-      32, 33, 33.1, 34, 36, 16, 38, 39, 40, 49, 50, 51, 52,
+      32, 33, 33.1, 34, 36, 16, 38, 39, 40, 49, 50, 51, 52, 54, 54.1, 56, 57,
+      58,
     ],
     GIGA_ADMIN: [
       1, 3, 4, 8, 9, 10, 11, 12, 13, 14, 17, 20, 21, 23, 25, 26, 27, 28, 29, 30,
-      31, 33.1, 34, 35, 36, 38, 16, 40, 44, 46, 48, 50,
+      31, 33.1, 34, 35, 36, 38, 16, 40, 44, 46, 48, 50, 54, 54.1, 55, 57,
     ],
     GOD: [
       1, 3, 4, 8, 8.1, 9, 10, 11, 11.1, 12, 13, 14, 17, 18, 20, 21, 22, 23, 25,
       26, 27, 28, 29, 30, 31, 33.1, 34, 35, 36, 38, 16, 40, 44, 45, 46, 48, 50,
-      54,
+      54, 54.1, 55, 57,
     ],
   };
   // appData.metodRole[appData.myProfile?.role]?.some((el) => el === 1)
@@ -88,14 +92,21 @@ function App() {
   const [godPopUp, setgodPopUp] = useState(false); //popUp good visible
   const [createEdicatorPopUp, setcreateEdicatorPopUp] = useState(false); //popUp error visible
   const [selectedComponent, setSelectedComponent] = useState("Disciplines");
-  const [loaderAction, setLoaderAction] = useState(false);
+  const [loaderAction, setLoaderAction] = useState(0);
   const [universalPopupTitle, setUniversalPopupTitle] = useState(""); // если он не пустой, то открывается универсальный попап с данным title
   const [hoursWorkloadSumma, setHoursWorkloadSumma] = useState([]); //! сумма часов в профиле
   const [sortParamByColumn, setSortParamByColumn] = useState(""); //! сортировка в колнке по возрастанию убыванию или без если ""
   const [popupErrorText, setPopupErrorText] = useState(""); //! если не пустой то в поап ерор будет текст который в состоянии
   const [popupGoodText, setPopupGoodText] = useState(""); //! если не пустой то в поап ерор будет текст который в состоянии
+  const [dataUpdated, setDataUpdated] = useState(false); //!индикатор что данные обновлены
+  const [popApCloseSttatus, setPopApCloseSttatus] = useState(false); //!индикатор что данные обновлены через попап
+  const [popUpTextArea, SetPopUpTextArea] = useState(""); //!индикатор что данные обновлены через попап
 
   const appData = {
+    SetPopUpTextArea,
+    popUpTextArea,
+    setPopApCloseSttatus,
+    popApCloseSttatus,
     popupGoodText,
     setPopupGoodText,
     hoursWorkloadSumma,
@@ -135,11 +146,9 @@ function App() {
     setPopupErrorText,
     sortParamByColumn,
     setSortParamByColumn,
+    setDataUpdated,
+    dataUpdated,
   };
-
-  useEffect(() => {
-    console.log("myProfile", myProfile);
-  }, [myProfile]);
 
   //! параметры таблицы
   const [tableHeaders, setTableHeaders] = useState(headers);
@@ -155,6 +164,7 @@ function App() {
   const [nameKaf, setnameKaf] = useState(null);
   const [historyChanges, setHistoryChanges] = useState([]);
   const [searchTerm, setSearchTerm] = useState(""); //поиск по таблице
+  const [selectTableSchedle, setSelectTableSchedle] = useState("Все");
 
   const basicTabData = {
     searchTerm,
@@ -189,6 +199,8 @@ function App() {
     selectISOid,
     historyChanges,
     setHistoryChanges,
+    setSelectTableSchedle,
+    selectTableSchedle,
     // funUpdateHistory,
   };
 
@@ -244,8 +256,11 @@ function App() {
   const [inputEditValue, setInputEditValue] = useState([]);
   const [typeSplit, setTypeSplit] = useState(""); //! тип деления для контекст меню для доп нагрузки
   const [parametrFilter, setParametrFilter] = useState("?"); //! параметр для истории
+  const [tableDataMyWorkload, setTableDataMyWorkload] = useState([]); //! данные для myWorkload
 
   const tabPar = {
+    tableDataMyWorkload,
+    setTableDataMyWorkload,
     selectedTable,
     setSelectedTable,
     selectedTr,
@@ -290,6 +305,7 @@ function App() {
     setTypeSplit,
     parametrFilter,
     setParametrFilter,
+    UpdateWorkloadForBoofer,
   };
 
   //! функция обновления комментаривев
@@ -405,14 +421,21 @@ function App() {
   }
 
   //! функция обновления таблицы
-  function funUpdateTable(param) {
+  function funUpdateTable(param, par = null) {
+    setLoaderAction(2);
+    let sp = sortParamByColumn;
+    if (par || par === "") {
+      sp = par;
+    }
+    console.log(sp);
     //param = tableDepartment[0]?.id
     if (metodRole[myProfile?.role]?.some((el) => el === 15)) {
-      const par = sortParamByColumn !== "" ? `?${sortParamByColumn}` : "";
+      const par = sp !== "" ? `?${sp}` : "";
       Workload(par).then((data) => {
         if (data) {
           funUpdTab(data);
         }
+        setLoaderAction(0);
       });
     }
     if (metodRole[myProfile?.role]?.some((el) => el === 14)) {
@@ -421,16 +444,17 @@ function App() {
         url = "?isOid=true";
       }
       if (param === 99) {
-        if (sortParamByColumn !== "") {
-          url = `?${sortParamByColumn}`;
+        if (sp !== "") {
+          url = `?${sp}`;
         } else {
           url = "";
         }
       } else if (param !== 99 && param !== 0) {
-        url = `?department=${param}&${sortParamByColumn}`;
+        url = `?department=${param}&${sp}`;
       }
       Workload(url).then((data) => {
         funUpdTab(data);
+        setLoaderAction(0);
       });
     }
 
@@ -440,12 +464,13 @@ function App() {
     // ?department={номер кафедры} - нагрузка одной кафедры
   }
 
-  //! вызываем функцию для обновления массива данных при сортировке через tableTh
-  useEffect(() => {
-    funUpdateTable(
-      tableDepartment.find((el) => el.name === basicTabData?.nameKaf)?.id
-    );
-  }, [sortParamByColumn, isChecked]);
+  // //! вызываем функцию для обновления массива данных при сортировке через tableTh
+  // useEffect(() => {
+  //   console.log("обновление таблицы еще в одном месте ");
+  //   funUpdateTable(
+  //     tableDepartment.find((el) => el.name === basicTabData?.nameKaf)?.id
+  //   );
+  // }, [sortParamByColumn, isChecked]);
 
   //!функция прокида буфера
   function UpdateWorkloadForBoofer(data) {
@@ -514,7 +539,6 @@ function App() {
             }
             obj.push(o);
           }
-          console.log(obj);
         }
       });
       return data.map((item) => {
@@ -577,7 +601,6 @@ function App() {
         ).then((resp) => {
           if (resp.status === 200) {
             setHoursWorkloadSumma(resp.data);
-            console.log("hoursWorkloadSumma", hoursWorkloadSumma);
           }
         });
       }
@@ -591,7 +614,6 @@ function App() {
       ).then((resp) => {
         if (resp.status === 200) {
           setHoursWorkloadSumma(resp.data);
-          console.log("hoursWorkloadSumma", hoursWorkloadSumma);
         }
       });
     }
@@ -634,24 +656,22 @@ function App() {
 
   //! функция сохранения данных
   function funSaveAllData() {
-    appData.setLoaderAction(true);
+    setLoaderAction(1);
     bufferRequestToApi(bufferAction)
       .then((action) => {
-        console.log(action);
         if (action) {
           setBufferAction([0]);
           updateAlldata();
         }
-        appData.setLoaderAction(false);
+        setLoaderAction(0);
       })
       .catch((error) => {
         console.error("Error in bufferRequestToApi:", error);
-        appData.setLoaderAction(false);
+        setLoaderAction(0);
       });
 
     setSelectedTr([]);
     setChangedData(changedDataObj);
-    console.log("выполнено и очищено", bufferAction);
     setBufferAction([0]);
   }
 

@@ -6,6 +6,7 @@ import DataContext from "../../context";
 import InputCheckbox from "./InputCheckbox/InputCheckbox";
 import { funGetConfirmation, getTextForNotData } from "./Function";
 import { useSelector } from "react-redux";
+import Loader from "../../ui/Loader/Loader";
 
 function Table(props) {
   const { tabPar, visibleDataPar, basicTabData, appData } =
@@ -56,9 +57,7 @@ function Table(props) {
   //! при клике на tr выделяем его
   const clickTr = (el, itemId) => {
     // el.stopProgretions();
-    console.log("clickTr");
     const a = el.target.nodeName;
-    console.log(el.target.getAttribute("name"));
     if (
       a === "TD" ||
       a === "INPUT" ||
@@ -168,7 +167,16 @@ function Table(props) {
               <td className={styles.tdfix2} style={{ pointerEvents: "none" }}>
                 {
                   <div className={styles.notdatadiv}>
-                    {getTextForNotData(tabPar.selectedFilter)}
+                    {appData.loaderAction === 2 ? (
+                      <>
+                        Загружаем данные...
+                        <div className={styles.loader}>
+                          <Loader />
+                        </div>
+                      </>
+                    ) : (
+                      <>{getTextForNotData(tabPar.selectedFilter)}</>
+                    )}
                   </div>
                 }
               </td>

@@ -35,15 +35,22 @@ function InputCheckbox(props) {
   const refreshFilters = () => {
     checkPar.setIsChecked([]);
     checkPar.setAllChecked([]);
-    // sessionStorage.setItem(props.tabDat.ssIsChecked, null);
     dispatch(
       removeTableCheckeds({
-        tableName: props.ssname,
+        tableName: props.tabDat.ssIsChecked,
       })
     );
     const fdfix = FilteredSample(props.tabDat.tableData, [], "");
     props.tabDat.setTableDataFix(fdfix);
     appData.setSortParamByColumn("");
+  };
+
+  const getClassTd = () => {
+    let cl = `${styles.InputCheckbox}`;
+    if (props.tabDat.isActual && !props.workload.isActual) {
+      cl = `${cl} ${styles.tableShaduleTdOld}`;
+    }
+    return cl;
   };
 
   return (
@@ -52,7 +59,11 @@ function InputCheckbox(props) {
         <th style={stylesTh} className={styles.InputCheckbox}>
           <div className={styles.bacground}>
             <ImgClearFilter
-              className={checkPar.isChecked.length > 0 ? styles.svgRed : null}
+              className={
+                checkPar.isChecked.length > 0
+                  ? styles.svgRed
+                  : styles.bacgroundsvgRed
+              }
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
               onClick={refreshFilters}
@@ -71,7 +82,7 @@ function InputCheckbox(props) {
           ></input>
         </th>
       ) : (
-        <td style={stylesTd} className={styles.InputCheckbox}>
+        <td style={stylesTd} className={getClassTd()}>
           {tabPar.fastenedData.some((el) => el.workloadId === props.itid) && ( //отмечаем закрепленные // сделать проверку на преподавателя который закрепляет
             <img
               className={styles.fastenedImg}
@@ -89,15 +100,26 @@ function InputCheckbox(props) {
           )}
           {
             //! определяем разделенная ли нагрузка
-            props.workload?.isSplit === true && (
+            props.workload?.isSplit && props.tabDat.isSignature && (
               <div className={styles.isSplit}>
                 <span>Разделенная</span>
               </div>
             )
           }
           {
+            //! определяем разделенная ли нагрузка
+            props.workload?.isBlocked && props.tabDat.isSignature && (
+              <div
+                className={styles.isSplit}
+                style={{ transform: "translateY(-20px)" }}
+              >
+                <span>Заблокирована </span>
+              </div>
+            )
+          }
+          {
             //! после резделения или обьединения исходную помечаем
-            props.workload?.isSplitArrow === true && (
+            props.workload?.isSplitArrow && props.tabDat.isSignature && (
               <div className={styles.isSplit}>
                 <span>Исходная</span>
                 <img src="img/Arrow.svg" alt=">" />
@@ -106,7 +128,7 @@ function InputCheckbox(props) {
           }
           {
             //! определяем разделенная ли нагрузка
-            props.workload?.isMerged === true && (
+            props.workload?.isMerged && props.tabDat.isSignature && (
               <div className={styles.isSplit}>Объединенная</div>
             )
           }

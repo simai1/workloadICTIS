@@ -101,12 +101,12 @@ function TableHistory(props) {
       sethistoryData(fdfix);
       origsethistoryData(fixHistory);
       visibleDataPar.setStartData(0);
-      appData.setLoaderAction(false);
+      appData.setLoaderAction(0);
     });
   }
 
   useEffect(() => {
-    appData.setLoaderAction(true);
+    appData.setLoaderAction(2);
     funUpdateHistory();
   }, [
     basicTabData.historyChanges,

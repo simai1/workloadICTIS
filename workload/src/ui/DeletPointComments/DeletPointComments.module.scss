@@ -1,0 +1,13 @@
+.DeletPointComments {
+  display: flex;
+  position: absolute;
+  left: 230px;
+  margin-top: 10px;
+  img {
+    height: 10px;
+    cursor: pointer;
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+}

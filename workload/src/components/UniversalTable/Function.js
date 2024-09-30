@@ -242,6 +242,7 @@ export const funGetConfirmation = (itemId, changedData, bufferAction) => {
       (el) =>
         el.request === "joinWorkloads" && el.data.ids.some((e) => e === itemId)
     )[0];
+
     return {
       blocked: true,
       height: "150px",

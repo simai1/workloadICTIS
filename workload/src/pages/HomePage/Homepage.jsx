@@ -24,10 +24,15 @@ import ListKaf from "../../ui/ListKaf/ListKaf";
 import { PopUpCreateEmploy } from "../../ui/PopUpCreateEmploy/PopUpCreateEmploy";
 import {
   GetDepartment,
+  GetDepartmentsMaterials,
+  SyncTable,
   Workload,
   WorkloadBlocked,
+  apiBlockMaterials,
   apiGetUser,
+  apiUnblockMaterials,
   getAllWarningMessage,
+  getSchedule,
 } from "../../api/services/ApiRequest";
 import ConfirmSaving from "../../ui/ConfirmSaving/ConfirmSaving";
 import socketConnect from "../../api/services/socket";
@@ -36,21 +41,30 @@ import TableHistory from "../../components/TableHistory/TableHistory";
 import ErrorHelper from "../../components/ErrorHelper/ErrorHelper";
 import { Link } from "react-router-dom";
 import UnlockDepartment from "../../ui/UnlockDepartment/UnlockDepartment";
-import { saveAs } from "file-saver";
-import * as XLSX from "xlsx";
+
 import SplitByHoursPopup from "../../components/SplitByHoursPopup/SplitByHoursPopup";
 // import { UniversalPopup } from "../../ui/UniversalPopup/UniversalPopup";
 import TableSchedule from "../../components/TableSchedule/TableSchedule";
-
+import MyWorkload from "../../components/MyWorkload/MyWorkload";
+import ListSchedule from "../../ui/ListSchedule/ListSchedule";
+import PopupTextArea from "../../components/PopupTextArea/PopupTextArea";
+import { useDispatch, useSelector } from "react-redux";
+import PopUpTextAreaMore from "../../components/PopUpTextAreaMore/PopUpTextAreaMore";
+import { generateAndDownloadExcel } from "./functionHomePage";
+import BlockingTables from "../../components/BlockingTables/BlockingTables";
+import { resetStatus } from "../../store/popup/textareaData.slice";
+import ScheduleListFilter from "../../components/ScheduleListFilter/ScheduleListFilter";
 function HomePage() {
   const { appData, tabPar, visibleDataPar, basicTabData } =
     React.useContext(DataContext);
+
+  const textareaStor = useSelector((state) => state.textAreaSlice);
   //! заголовки таблиц
   const workloadTableHeaders = headers; // заголовок таблицы на главной странице
   const educatorTableHeaders = headersEducator; // заголовок таблтиц преподавателей
   const educatorLkHeaders = tableHeadersLks; // заголовок страницы личного кабинета
   const scheduleHeaders = scheduleHead;
-  const [tableHeaders, setTableHeaders] = useState(workloadTableHeaders);
+  // const [tableHeaders, setTableHeaders] = useState(workloadTableHeaders);
   const [filePopUp, setfilePopUp] = useState(false);
   // const [appData.selectedComponent, appData.setSelectedComponent] = useState("Disciplines");
   const [tableMode, setTableMode] = useState("cathedrals"); //выбранный компонент
@@ -62,6 +76,8 @@ function HomePage() {
   const [popupUnblockTable, setPopupUnblockTable] = useState(false);
   const [popupExport, setPopupExport] = useState(false); // открыть/закрыть попап подтверждения блокировки таблицы
   const [departments, setdepartments] = useState([]);
+  const [departmentsMaterials, setDepartmentsMaterials] = useState([]);
+  const dispatch = useDispatch();
   // const [kafedralIsOpen, setKafedralIsOpen] = useState(false);
   // const [cafedral, setCafedral] = useState(false);
   const [blockTable, setBlockTable] = useState(false);
@@ -73,7 +89,6 @@ function HomePage() {
           (el) => el.name === basicTabData?.nameKaf
         )?.id
       );
-      // basicTabData.setnameKaf("ОИД");
     }
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 42)) {
       basicTabData.funUpdateTable(
@@ -82,7 +97,6 @@ function HomePage() {
         )?.id
       );
     }
-    // setKafedralIsOpen(false);
     tabPar.setSelectedFilter("Все дисциплины");
   };
 
@@ -113,7 +127,7 @@ function HomePage() {
   const handleComponentChange = (component) => {
     appData.setSelectedComponent(component);
     tabPar.setSelectedTable(component);
-    if (component === "Disciplines") {
+    if (component === "Disciplines" || component === "MyWorkload") {
       basicTabData.setTableHeaders(workloadTableHeaders);
     } else if (component === "History") {
       basicTabData.setTableHeaders(workloadTableHeaders);
@@ -127,7 +141,7 @@ function HomePage() {
   };
 
   const changeInput = () => {
-    setTableHeaders(educatorTableHeaders);
+    basicTabData.setTableHeaders(educatorTableHeaders);
   };
 
   const handleSearch = (event) => {
@@ -173,7 +187,7 @@ function HomePage() {
         ) {
           const id = appData.myProfile.educator.departmentId;
           WorkloadBlocked(id).then((resp) => {
-            if (resp.status === 200) {
+            if (resp?.status === 200) {
               basicTabData.funUpdateTable(99);
               appData.setgodPopUp(true);
             }
@@ -183,7 +197,7 @@ function HomePage() {
             (el) => el.name === basicTabData?.nameKaf
           ).id;
           WorkloadBlocked(idTable).then((resp) => {
-            if (resp.status === 200) {
+            if (resp?.status === 200) {
               basicTabData.funUpdateTable(idTable);
               appData.setgodPopUp(true);
               basicTabData.funGetDepartment();
@@ -197,6 +211,39 @@ function HomePage() {
       setPopupExport(false);
       setConfirmationSave(true);
     }
+  };
+
+  //! функция при клике блокировки в расписании
+  const confirmClickSchedule = () => {
+    const idTable = departmentsMaterials.find(
+      (el) => el.name === basicTabData?.selectTableSchedle
+    ).id;
+    apiBlockMaterials(idTable).then((res) => {
+      if (res?.status === 200) {
+        setPopupExport(false);
+        dispatch(resetStatus({ value: 200 }));
+        GetDepartmentsMaterials().then((resp) => {
+          setDepartmentsMaterials([{ id: 99, name: "Все" }, ...resp.data]);
+        });
+      }
+    });
+  };
+
+  //! функция при клике разблокировки в расписании
+  const confirmClickScheduleUnBlocked = () => {
+    const idTable = departmentsMaterials.find(
+      (el) => el.name === basicTabData?.selectTableSchedle
+    ).id;
+    apiUnblockMaterials(idTable).then((res) => {
+      if (res?.status === 200) {
+        setPopupExport(false);
+        dispatch(resetStatus({ value: 200 }));
+
+        GetDepartmentsMaterials().then((resp) => {
+          setDepartmentsMaterials([{ id: 99, name: "Все" }, ...resp.data]);
+        });
+      }
+    });
   };
 
   //! функции для импорта файла
@@ -220,13 +267,17 @@ function HomePage() {
     let blocked = false;
     if (
       appData.selectedComponent === "History" ||
-      appData.selectedComponent === "Teachers"
+      appData.selectedComponent === "Teachers" ||
+      appData.selectedComponent === "ScheduleMaterials" ||
+      appData.selectedComponent === "MyWorkload"
     ) {
       return false;
     }
     if (
       appData.selectedComponent !== "History" ||
-      appData.selectedComponent !== "Teachers"
+      appData.selectedComponent !== "Teachers" ||
+      appData.selectedComponent === "ScheduleMaterials" ||
+      appData.selectedComponent !== "MyWorkload"
     ) {
       basicTabData.filtredData.every((el) =>
         el.isBlocked === true ? (blocked = true) : (blocked = false)
@@ -257,74 +308,29 @@ function HomePage() {
       url = `?department=${idTableUnlock}`;
     }
     Workload(url).then((resp) => {
-      generateAndDownloadExcel(resp, nameDepartment);
+      generateAndDownloadExcel(resp, nameDepartment, "workload");
     });
   };
 
-  //!Функция генерации файла для скачивания
-  const generateAndDownloadExcel = (data, nameDepartment) => {
-    const transformedData = data.map(
-      ({ id, isBlocked, isMerged, isOid, isSplit, educator, ...item }) => ({
-        Кафедра: item?.department,
-        Дисциплина: item?.discipline,
-        Нагрузка: item?.workload,
-        Группы: item?.groups,
-        Блок: item?.block,
-        Семестр: item?.semester,
-        Период: item?.period,
-        Учебный_план: item?.curriculum,
-        Подразделение_учебного_плана: item?.curriculumUnit,
-        Форма_обучения: item?.formOfEducation,
-        Уровень_подготовки: item?.levelOfTraining,
-        Специальность: item?.specialty,
-        Профиль: item?.core,
-        Количество_студентов: item?.numberOfStudents,
-        Часы: item?.hours,
-        Аудиторные_часы: item?.audienceHours,
-        Часы_рейтинг_контроль: item?.ratingControlHours,
-        Преподаватель: educator?.name,
-      })
-    );
-    const worksheet = XLSX.utils.json_to_sheet(transformedData);
-
-    // Установка ширины столбцов
-    const columnWidths = transformedData.reduce((widths, row) => {
-      Object.keys(row).forEach((key, index) => {
-        const value = row[key] ? row[key].toString() : "";
-        widths[index] = Math.max(widths[index] || 10, value.length);
-      });
-      return widths;
-    }, []);
-
-    worksheet["!cols"] = columnWidths.map((width) => ({ wch: width }));
-
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-
-    const currentDate = new Date();
-    const options = {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-      timeZone: "Europe/Moscow",
-    };
-    const formattedDate = currentDate
-      .toLocaleString("ru-RU", options)
-      .replace(/(\d+)\.(\d+)\.(\d+), (\d+):(\d+)/, "$3.$2.$1_$4:$5");
-    const excelBuffer = XLSX.write(workbook, {
-      bookType: "xlsx",
-      type: "array",
+  //!Функция экспорта расписания
+  const exportSchedulefunc = () => {
+    let url = "";
+    if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 55)) {
+      if (basicTabData.selectTableSchedle != "Все") {
+        const depart = basicTabData.tableDepartment.find(
+          (el) => el.name === basicTabData.selectTableSchedle
+        )?.id;
+        url = `?departments=${depart}`;
+      } else if (basicTabData.selectTableSchedle === "Все") {
+        url = "";
+      }
+    } else {
+      url = "";
+    }
+    const nameDepartment = basicTabData.selectTableSchedle;
+    getSchedule(url).then((resp) => {
+      generateAndDownloadExcel(resp.data, nameDepartment, "schedule");
     });
-    const excelData = new Blob([excelBuffer], {
-      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    });
-    saveAs(
-      excelData,
-      `Экспорт_Таблицы_${nameDepartment}_${formattedDate}.xlsx`
-    );
   };
 
   useEffect(() => {
@@ -341,6 +347,16 @@ function HomePage() {
     basicTabData.setSearchTerm("");
   }, [appData.selectedComponent]);
 
+  const sync = () => {
+    appData.setLoaderAction(1);
+    SyncTable().then((resp) => {
+      if (resp.status === 200) {
+        appData.setLoaderAction(0);
+        appData.setDataUpdated(true);
+        appData.setgodPopUp(true);
+      }
+    });
+  };
   //! функция определения выводить ли посик
   const funGetSherch = () => {
     if (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 41)) {
@@ -359,6 +375,18 @@ function HomePage() {
     } else {
       tabPar.setParametrFilter("?");
     }
+  };
+
+  //! функция которая отпределяет что выбранная кафедра в рассписании заблокированна
+  const getBlockedSchadule = () => {
+    return departmentsMaterials.find(
+      (el) => el.name === basicTabData?.selectTableSchedle
+    )?.isBlocked;
+  };
+
+  //!Функция экспорта преподователей
+  const funExportTeacher = () => {
+    generateAndDownloadExcel(appData.educator, "Преподаватели", "Teacher");
   };
 
   return (
@@ -385,7 +413,7 @@ function HomePage() {
             </div>
           </div>
         )}
-        {appData.loaderAction && (
+        {appData.loaderAction === 1 && (
           <div className={styles.nosavedData}>
             <div className={styles.nosavedDataInner}>
               <div className={styles.loader}>
@@ -400,7 +428,10 @@ function HomePage() {
             <div className={styles.header_top_save_search}>
               <div className={styles.saveBuffre}>
                 {appData.metodRole[appData.myProfile?.role]?.some(
-                  (el) => el === 25 && appData.selectedComponent !== "Teachers"
+                  (el) =>
+                    el === 25 &&
+                    appData.selectedComponent !== "Teachers" &&
+                    appData.selectedComponent !== "ScheduleMaterials"
                 ) && (
                   <div
                     title="Отмена действия"
@@ -515,6 +546,40 @@ function HomePage() {
                     )}
                   </div>
                 )}
+                {appData.selectedComponent === "ScheduleMaterials" &&
+                  appData.metodRole[appData.myProfile?.role]?.some(
+                    (el) => el === 27
+                  ) &&
+                  getBlockedSchadule() && (
+                    <BlockingTables
+                      imgUrl={"./img/unblock.svg"}
+                      title={"Разблокировать материалы к расписанию"}
+                      confirmSavingTitle={`Разблокировать материалы к расписанию ${basicTabData.selectTableSchedle}?`}
+                      popupExport={popupExport}
+                      clickFun={onExportClick}
+                      nameKaf={basicTabData.selectTableSchedle}
+                      confirmClick={confirmClickScheduleUnBlocked}
+                      setShow={setPopupExport}
+                    />
+                  )}
+                {appData.selectedComponent === "ScheduleMaterials" &&
+                  appData.metodRole[appData.myProfile?.role]?.some(
+                    (el) => el === 27
+                  ) &&
+                  !getBlockedSchadule() && (
+                    <BlockingTables
+                      imgUrl={"./img/export.svg"}
+                      title={
+                        "Завершение редактирования материалов к расписанию"
+                      }
+                      confirmSavingTitle={`Завершить редактирование материалов к расписанию ${basicTabData.selectTableSchedle}?`}
+                      popupExport={popupExport}
+                      clickFun={onExportClick}
+                      nameKaf={basicTabData.selectTableSchedle}
+                      confirmClick={confirmClickSchedule}
+                      setShow={setPopupExport}
+                    />
+                  )}
               </div>
               {funGetSherch() && (
                 <div
@@ -565,6 +630,28 @@ function HomePage() {
                 }}
                 text="Дисциплины"
               />
+              {appData.metodRole[appData.myProfile?.role]?.some(
+                (el) => el === 56
+              ) && (
+                <Button
+                  Bg={
+                    appData.selectedComponent === "MyWorkload"
+                      ? "#0040E5"
+                      : "#efedf3"
+                  }
+                  textColot={
+                    appData.selectedComponent !== "MyWorkload"
+                      ? "#000000"
+                      : "#efedf3"
+                  }
+                  onClick={() => {
+                    handleComponentChange("MyWorkload");
+                    // handleButtonClick();
+                    // basicTabData.setselectISOid(false);
+                  }}
+                  text="Моя нагрузка"
+                />
+              )}
 
               {appData.metodRole[appData.myProfile?.role]?.some(
                 (el) => el === 3
@@ -582,12 +669,28 @@ function HomePage() {
                   }
                   onClick={() => {
                     handleComponentChange("Teachers");
-                    handleButtonClick();
                     basicTabData.setselectISOid(false);
                   }}
                   text="Преподаватели"
                 />
               )}
+
+              {appData.metodRole[appData.myProfile?.role]?.some(
+                (el) => el === 24
+              ) && (
+                <Button
+                  text="Моя нагрузка"
+                  onClick={() => {
+                    setEducatorIdforLk(appData.myProfile.educator.id);
+                    appData.setSelectedComponent("Teachers");
+                  }}
+                  Bg={educatorIdforLk.length !== 0 ? "#0040E5" : "#efedf3"}
+                  textColot={
+                    educatorIdforLk.length === 0 ? "#000000" : "#efedf3"
+                  }
+                />
+              )}
+
               {appData.metodRole[appData.myProfile?.role]?.some(
                 (el) => el === 54
               ) && (
@@ -604,32 +707,17 @@ function HomePage() {
                   }
                   onClick={() => {
                     handleComponentChange("ScheduleMaterials");
-                    handleButtonClick();
-                    basicTabData.setselectISOid(false);
+                    setEducatorIdforLk("");
+                    // handleButtonClick();
+                    // basicTabData.setselectISOid(true);
                   }}
-                  text="Материалы к расписанию"
+                  text="Расписание"
                 />
               )}
               {appData.myProfile?.role === "GOD" && (
                 <Link to="../Admin">
                   <Button text="Админ панель" />
                 </Link>
-              )}
-              {appData.metodRole[appData.myProfile?.role]?.some(
-                (el) => el === 24
-              ) && (
-                <Button
-                  text="Моя нагрузка"
-                  onClick={() => {
-                    setEducatorIdforLk(appData.myProfile.educator.id);
-                    appData.setSelectedComponent("Teachers");
-                    console.log("myProfilea", appData.myProfile.id);
-                  }}
-                  Bg={educatorIdforLk.length !== 0 ? "#0040E5" : "#efedf3"}
-                  textColot={
-                    educatorIdforLk.length === 0 ? "#000000" : "#efedf3"
-                  }
-                />
               )}
             </div>
             <div className={styles.header_left_component}>
@@ -655,7 +743,11 @@ function HomePage() {
               />
             </div>
           </div>
-          {blockTable && (
+          {(blockTable ||
+            (appData.selectedComponent === "ScheduleMaterials" &&
+              departmentsMaterials.find(
+                (el) => el.name === basicTabData?.selectTableSchedle
+              )?.isBlocked)) && (
             <div className={styles.blockedTextTable}>
               <div>
                 <img src="./img/errorTreangle.svg" alt="i" />
@@ -673,16 +765,46 @@ function HomePage() {
             <div className={styles.header_bottom}>
               <div className={styles.header_bottom_button}>
                 {appData.metodRole[appData.myProfile?.role]?.some(
-                  (el) => el === 28
+                  (el) => el === 28 || el === 57 || el === 58
                 ) &&
                   (appData.selectedComponent === "Disciplines" ||
                     appData.selectedComponent === "History" ||
                     appData.selectedComponent === "ScheduleMaterials") && (
                     <>
-                      <ListKaf
-                        dataList={departments}
-                        setTableMode={setTableMode}
-                      />
+                      {appData.selectedComponent !== "ScheduleMaterials" ? (
+                        <ListKaf
+                          dataList={departments}
+                          setTableMode={setTableMode}
+                        />
+                      ) : (
+                        <>
+                          {appData.metodRole[appData.myProfile?.role]?.some(
+                            (el) => el === 55
+                          ) && <ListSchedule dataList={departmentsMaterials} />}
+                          <div className={styles.exportSchedule}>
+                            <div className={styles.exportScheduleButton}>
+                              <button
+                                onClick={sync}
+                                className={styles.buttonSync}
+                              >
+                                Синхронизация
+                              </button>
+                              <ScheduleListFilter />
+                            </div>
+                            {/* <div className={styles.import}>
+                              <button onClick={exportSchedulefunc}>
+                                <img
+                                  src="./img/import.svg"
+                                  alt=">"
+                                  className={styles.export__img}
+                                ></img>
+                                <p>Экспорт таблицы</p>
+                              </button>
+                            </div> */}
+                          </div>
+                        </>
+                      )}
+
                       {appData.selectedComponent === "History" && (
                         <div className={styles.perenesen}>
                           <button
@@ -721,7 +843,8 @@ function HomePage() {
                       selectedComponent={appData.selectedComponent}
                       originalHeader={
                         appData.selectedComponent === "Disciplines" ||
-                        appData.selectedComponent === "History"
+                        appData.selectedComponent === "History" ||
+                        appData.selectedComponent === "MyWorkload"
                           ? workloadTableHeaders
                           : appData.selectedComponent === "Teachers"
                           ? educatorTableHeaders
@@ -735,8 +858,10 @@ function HomePage() {
                           ? "headerHistory"
                           : appData.selectedComponent === "Teachers"
                           ? "headerTeachers"
-                          : appData.selectedComponent === "ScheduleMaterials" &&
-                            "headerSchedule"
+                          : appData.selectedComponent === "ScheduleMaterials"
+                          ? "headerSchedule"
+                          : appData.selectedComponent === "MyWorkload" &&
+                            "headerMyWorkload"
                       }
                     />
                   )}
@@ -761,7 +886,7 @@ function HomePage() {
                     <div className={styles.import}>
                       <button onClick={exportFile}>
                         <img
-                          src="./img/import.svg"
+                          src="./img/exportTable.svg"
                           alt=">"
                           className={styles.export__img}
                         ></img>
@@ -769,6 +894,30 @@ function HomePage() {
                       </button>
                     </div>
                   )}
+                {appData.selectedComponent === "ScheduleMaterials" && (
+                  <div className={styles.import}>
+                    <button onClick={exportSchedulefunc}>
+                      <img
+                        src="./img/exportTable.svg"
+                        alt=">"
+                        className={styles.export__img}
+                      ></img>
+                      <p>Экспорт таблицы</p>
+                    </button>
+                  </div>
+                )}
+                {appData.selectedComponent === "Teachers" && (
+                  <div style={{ zIndex: "200" }} className={styles.import}>
+                    <button onClick={funExportTeacher}>
+                      <img
+                        src="./img/exportTable.svg"
+                        alt=">"
+                        className={styles.export__img}
+                      ></img>
+                      <p>Экспорт таблицы</p>
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -778,8 +927,8 @@ function HomePage() {
           {appData.selectedComponent === "Disciplines" ? (
             <TableWorkload
               tableMode={tableMode}
-              tableHeaders={tableHeaders}
-              setTableHeaders={setTableHeaders}
+              tableHeaders={basicTabData.tableHeaders}
+              setTableHeaders={basicTabData.setTableHeaders}
               searchTerm={basicTabData.searchTerm}
               setSearchTerm={basicTabData.setSearchTerm}
               refProfile={refProfile}
@@ -790,8 +939,8 @@ function HomePage() {
             <TableTeachers
               setEducatorIdforLk={setEducatorIdforLk}
               changeInput={changeInput}
-              tableHeaders={tableHeaders}
-              setTableHeaders={setTableHeaders}
+              tableHeaders={basicTabData.tableHeaders}
+              setTableHeaders={basicTabData.setTableHeaders}
               searchTerm={basicTabData.searchTerm}
               setSearchTerm={basicTabData.setSearchTerm}
               setEducatorData={setEducatorData}
@@ -802,15 +951,15 @@ function HomePage() {
               setEducatorIdforLk={setEducatorIdforLk}
               educatorIdforLk={educatorIdforLk}
               changeInput={changeInput}
-              setTableHeaders={setTableHeaders}
+              setTableHeaders={basicTabData.setTableHeaders}
               searchTerm={basicTabData.searchTerm}
               educatorData={educatorData}
             />
           ) : appData.selectedComponent === "History" ? (
             <TableHistory
               tableMode={tableMode}
-              tableHeaders={tableHeaders}
-              setTableHeaders={setTableHeaders}
+              tableHeaders={basicTabData.tableHeaders}
+              setTableHeaders={basicTabData.setTableHeaders}
               searchTerm={basicTabData.searchTerm}
               setSearchTerm={basicTabData.setSearchTerm}
               refProfile={refProfile}
@@ -819,7 +968,19 @@ function HomePage() {
           ) : appData.selectedComponent === "ScheduleMaterials" ? (
             <TableSchedule
               tableMode={tableMode}
-              tableHeaders={tableHeaders}
+              // tableHeaders={tableHeaders}
+              tableHeaders={basicTabData.tableHeaders}
+              setTableHeaders={basicTabData.setTableHeaders}
+              searchTerm={basicTabData.searchTerm}
+              setSearchTerm={basicTabData.setSearchTerm}
+              refProfile={refProfile}
+              setOpenModalWind={setOpenModalWind}
+            />
+          ) : appData.selectedComponent === "MyWorkload" ? (
+            <MyWorkload
+              tableMode={tableMode}
+              tableHeaders={basicTabData.tableHeaders}
+              setTableHeaders={basicTabData.setTableHeaders}
               searchTerm={basicTabData.searchTerm}
               setSearchTerm={basicTabData.setSearchTerm}
               refProfile={refProfile}
@@ -857,7 +1018,11 @@ function HomePage() {
       {appData.errorPopUp && <PopUpError />}
 
       {appData.godPopUp && <PopUpGoodMessage />}
-      {tabPar.popupShareShow && <SplitByHoursPopup />}
+      {tabPar.popupShareShow && (
+        <SplitByHoursPopup component={appData.selectedComponent} />
+      )}
+      {textareaStor.textarea && <PopupTextArea data={textareaStor} />}
+      {appData.popUpTextArea && <PopUpTextAreaMore />}
     </Layout>
   );
 }

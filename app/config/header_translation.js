@@ -17,6 +17,8 @@ const HeaderTranslation = {
     'Аудиторные часы': 'audienceHours', 
     'Часы рейтинг-контроль': 'ratingControlHours',
     'Преподаватель': 'educator',
+    'Вид занятости преподавателя': 'typeOfEmployment',
+    'Должность преподавателя': 'position'
 };
 
 export default HeaderTranslation;

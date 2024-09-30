@@ -4,6 +4,7 @@ import EnumDepartment from '../config/departments.js';
 import EnumTypeOfEmployment from '../config/type-of-employment.js';
 import { setHours } from '../utils/educators-hours.js';
 import createSummaryWorkload from '../utils/create-summary-workload.js';
+import associateUser from '../utils/associate-users.js';
 
 export default class Educator extends Model {
     static initialize(sequelize) {
@@ -94,6 +95,9 @@ export default class Educator extends Model {
         });
         Educator.beforeUpdate(educator => {
             setHours(educator);
+        });
+        Educator.afterCreate(async educator => { // check method
+            await associateUser(educator);
         });
     }
 }

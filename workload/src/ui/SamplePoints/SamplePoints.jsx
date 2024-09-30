@@ -13,6 +13,8 @@ import {
 export function SamplePoints(props) {
   const dispatch = useDispatch();
   // const { basicTabData } = React.useContext(DataContext);
+
+  //! поиск
   const [searchText, setSearchText] = useState("");
   const handleInputChange = (event) => {
     setSearchText(event.target.value);
@@ -46,15 +48,18 @@ export function SamplePoints(props) {
   useEffect(() => {
     //! isSamplePointsData это массив в котором текстовые елементы, взятые из столбца
     //! в fd храним все строки из столбца, и добавляем к ним те которые отфильтрованны (строки из redux)
+    const mass = [
+      ...props.isSamplePointsData,
+      ...props.isChecked
+        .filter((el) => el.itemKey === props.itemKey)
+        .map((el) => el.value),
+    ];
     const fd = [
-      ...props.isSamplePointsData.filter((el) => {
+      ...mass.filter((el) => {
         // Преобразовываем el в строку, если он является числом
         const elString = typeof el === "number" ? el.toString() : el;
         return elString?.toLowerCase().includes(searchText?.toLowerCase());
       }),
-      ...props.isChecked
-        .filter((el) => el.itemKey === props.itemKey)
-        .map((el) => el.value),
     ].sort((a, b) => {
       // Сортируем отфильтрованные данные по возрастанию
       if (a < b) return -1;
@@ -63,7 +68,7 @@ export function SamplePoints(props) {
     });
     //! записываем только уникальные значения
     setFilteredData([...new Set(fd)]);
-  }, [props.isSamplePointsData]);
+  }, [props.isSamplePointsData, searchText]);
 
   //! при нажатии на Input All
   const onAllChecked = () => {
@@ -151,6 +156,18 @@ export function SamplePoints(props) {
     props.setWorkloadDataFix(fdfix);
   };
 
+  const getText = (index, el) => {
+    if (index === 0) {
+      return index + 1;
+    } else {
+      if (el === "" || el === null || el === undefined) {
+        return "___";
+      } else {
+        return el;
+      }
+    }
+  };
+
   return (
     <main className={styles.SamplePoints} ref={spRef}>
       <div className={styles.container}>
@@ -190,7 +207,7 @@ export function SamplePoints(props) {
                       )
                     }
                   />
-                  <p>{props.index === 0 ? index + 1 : el === "" ? "__" : el}</p>
+                  <p>{getText(props.index, el)}</p>
                 </div>
               );
             })}

@@ -1,7 +1,8 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import isCheckedSlice from "./filter/isChecked.slice.js";
 import editInputChecked from "./filter/editInputChecked.slice.js";
-
+import textAreaSlice from "./popup/textareaData.slice.js";
+import scheduleSlice from "./schedule/schedule.slice.js";
 import {
   persistStore,
   persistReducer,
@@ -17,12 +18,14 @@ import storage from "redux-persist/lib/storage";
 const rootReducer = combineReducers({
   isCheckedSlice: isCheckedSlice,
   editInputChecked: editInputChecked,
+  textAreaSlice: textAreaSlice,
+  scheduleSlice: scheduleSlice,
 });
 
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["isCheckedSlice", "editInputChecked"],
+  whitelist: ["isCheckedSlice", "editInputChecked", "scheduleSlice"],
   // blacklist: ["isCheckedSlice"],
 };
 const persistedReducer = persistReducer(persistConfig, rootReducer);

@@ -6,10 +6,13 @@ import DataContext from "../../context";
 import InputCheckbox from "./InputCheckbox/InputCheckbox";
 import { funGetConfirmation, getTextForNotData } from "./Function";
 import { useSelector } from "react-redux";
+import Loader from "../../ui/Loader/Loader";
 
 function Table(props) {
   const { tabPar, visibleDataPar, basicTabData, appData } =
     useContext(DataContext);
+  let visibleData =
+    props.tabDat.filtredData.length > 10 ? 10 : props.tabDat.filtredData.length;
 
   const headerStore = useSelector(
     (state) => state.editInputChecked.editInputCheckeds[props.tabDat.ssHeader]
@@ -31,7 +34,7 @@ function Table(props) {
     return (
       (props.tabDat.filtredData.length -
         visibleDataPar.startData -
-        visibleDataPar.visibleData) *
+        visibleData) *
       visibleDataPar.heightTd
     );
   };
@@ -84,9 +87,12 @@ function Table(props) {
 
   const clickTrAll = () => {
     let ids = [];
-    if (props.tabDat.filtredData.length !== tabPar.selectedTr.length) {
+    if (
+      props.tabDat.filtredData.filter((el) => !el.isBlocked).length !==
+      tabPar.selectedTr.length
+    ) {
       props.tabDat.filtredData.map((item) => {
-        ids.push(item.id);
+        !item.isBlocked && ids.push(item.id);
       });
       tabPar.setOnCheckBoxAll(true);
     } else {
@@ -100,26 +106,36 @@ function Table(props) {
   const getClassNameTr = (items) => {
     const itemId = items.id;
     let classText = null;
-    classText = tabPar.selectedTr?.includes(itemId)
-      ? `${styles.selectedTr}`
-      : null;
+    if (tabPar.selectedTr?.includes(itemId)) {
+      classText = `${styles.selectedTr}`;
+    }
     const item = tabPar.coloredData?.find((el) => el.workloadId === itemId);
     const colored = item ? `colored${item.color}` : null;
-    classText = item ? `${classText} ${styles[colored]}` : classText;
-    classText = tabPar.changedData.deleted?.find((el) => el === itemId)
-      ? `${classText} ${styles.trDeleted}`
-      : classText;
-    classText =
+    if (item) {
+      classText = `${classText} ${styles[colored]}`;
+    }
+    if (tabPar.changedData.deleted?.find((el) => el === itemId)) {
+      classText = `${classText} ${styles.trDeleted}`;
+    }
+    if (
       tabPar.changedData.split?.find((el) => el === itemId) ||
-      tabPar.changedData.join?.find((el) => el === itemId) ||
-      items.isBlocked
-        ? `${classText} ${styles.trBlocked}`
-        : classText;
+      tabPar.changedData.join?.find((el) => el === itemId)
+    ) {
+      classText = `${classText} ${styles.trBlocked}`;
+    }
+    if (
+      items.isBlocked &&
+      (appData.metodRole[appData.myProfile?.role]?.some((el) => el === 33.1) ||
+        appData.selectedComponent === "ScheduleMaterials") &&
+      !props.tabDat.isBlocked
+    ) {
+      classText = `${classText} ${styles.trIsBloced}`;
+    }
 
     return classText;
   };
-
-  //! функция опредления заблокирован ли tr, чтобы вывести кнопки отмены подтверждения
+  // console.log("tabPar.changedData", tabPar.changedData);
+  //! функция опредления заблокирован ли tr, чтобы вывести кнопки отмены и подтверждения
   const getConfirmation = (itemId) => {
     return funGetConfirmation(itemId, tabPar.changedData, appData.bufferAction);
   };
@@ -160,7 +176,16 @@ function Table(props) {
               <td className={styles.tdfix2} style={{ pointerEvents: "none" }}>
                 {
                   <div className={styles.notdatadiv}>
-                    {getTextForNotData(tabPar.selectedFilter)}
+                    {appData.loaderAction === 2 ? (
+                      <>
+                        Загружаем данные...
+                        <div className={styles.loader}>
+                          <Loader />
+                        </div>
+                      </>
+                    ) : (
+                      <>{getTextForNotData(tabPar.selectedFilter)}</>
+                    )}
                   </div>
                 }
               </td>
@@ -178,19 +203,23 @@ function Table(props) {
           {props.tabDat.filtredData
             .slice(
               visibleDataPar.startData,
-              visibleDataPar.startData + visibleDataPar.visibleData
+              visibleDataPar.startData + visibleData
             )
             .map((item, number) => (
               <tr
                 // выделяем цветом если выбранно для контекстного меню
                 className={getClassNameTr(item)}
                 onClick={
-                  getConfirmation(item.id).blocked
+                  getConfirmation(item.id).blocked ||
+                  (item.isBlocked &&
+                    appData.selectedComponent === "ScheduleMaterials")
                     ? null
                     : (e) => clickTr(e, item.id)
                 }
                 onContextMenu={
-                  getConfirmation(item.id).blocked
+                  getConfirmation(item.id).blocked ||
+                  (item.isBlocked &&
+                    appData.selectedComponent === "ScheduleMaterials")
                     ? null
                     : () => clickTrContetx(item.id)
                 }
@@ -203,7 +232,7 @@ function Table(props) {
                   workload={item}
                   number={number}
                   getConfirmation={getConfirmation(item.id)}
-                  checked={tabPar.selectedTr.includes(item.id)}
+                  checked={tabPar.selectedTr?.includes(item.id)}
                   tabDat={props.tabDat}
                 />
                 {tableHeaders.map((itemKey, index) => (

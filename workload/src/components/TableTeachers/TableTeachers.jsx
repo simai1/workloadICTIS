@@ -19,6 +19,8 @@ import TableTh from "./TableTh";
 import { ReactComponent as ImgClearFilter } from "./../../img/ClearFilter.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { removeTableCheckeds } from "../../store/filter/isChecked.slice";
+import Loader from "../../ui/Loader/Loader";
+import { generateAndDownloadExcel } from "../../pages/HomePage/functionHomePage";
 
 function TableTeachers(props) {
   const [updatedHeader, setUpdatedHeader] = useState([]);
@@ -64,6 +66,7 @@ function TableTeachers(props) {
   // };
 
   const updateTable = () => {
+    appData.setLoaderAction(2);
     const par = sortParamByColumn !== "" ? `?${sortParamByColumn}` : "";
     if (
       appData.metodRole[appData.myProfile?.role]?.some(
@@ -79,6 +82,9 @@ function TableTeachers(props) {
           setFilteredData([...fdfix]);
           setUpdatedData(res.data);
           setUpdatedHeader(tableHeaders);
+          appData.setLoaderAction(0);
+        } else {
+          appData.setLoaderAction(0);
         }
       });
     } else if (
@@ -93,6 +99,9 @@ function TableTeachers(props) {
           setFilteredData([...fdfix]);
           setUpdatedData(res.data);
           setUpdatedHeader(tableHeaders);
+          appData.setLoaderAction(0);
+        } else {
+          appData.setLoaderAction(0);
         }
       });
       // else if(appData.metodRole[appData.myProfile?.role]?.some((el) => el === 45)){
@@ -282,22 +291,39 @@ function TableTeachers(props) {
     };
     return style;
   };
+  //!Функция экспорта преподователей
+  const funExportTeacher = () => {
+    generateAndDownloadExcel(appData.educator, "Преподаватели", "Teacher");
+  };
 
   return (
     <div className={styles.TableTeachers}>
-      {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 4) ? (
-        <Button
-          text="Создать преподавателя"
-          Bg="#0040E5"
-          textColot="#fff"
-          onClick={() => {
-            appData.setcreateEdicatorPopUp(true);
-          }}
-        />
-      ) : (
-        <div style={{ height: "59px" }}></div>
-      )}
-
+      <div className={styles.buttonHeader}>
+        {appData.metodRole[appData.myProfile?.role]?.some((el) => el === 4) ? (
+          <Button
+            text="Создать преподавателя"
+            Bg="#0040E5"
+            textColot="#fff"
+            onClick={() => {
+              appData.setcreateEdicatorPopUp(true);
+            }}
+          />
+        ) : (
+          <div style={{ height: "59px" }}></div>
+        )}
+        {/* {appData.selectedComponent === "Teachers" &&
+        <div className={styles.import}>
+              <button onClick={funExportTeacher}>
+                <img
+                  src="./img/import.svg"
+                  alt=">"
+                  className={styles.export__img}
+                ></img>
+                <p>Экспорт таблицы</p>
+              </button>
+        </div>
+      } */}
+      </div>
       <div className={styles.filterdClear}>
         <ImgClearFilter
           className={isChecked.length > 0 ? styles.svgRed : null}
@@ -345,7 +371,18 @@ function TableTeachers(props) {
             <tbody className={styles.NotData}>
               <tr>
                 <td className={styles.tdfix} style={{ pointerEvents: "none" }}>
-                  <div className={styles.notdatadiv}>Нет данных</div>
+                  <div className={styles.notdatadiv}>
+                    {appData.loaderAction === 2 ? (
+                      <>
+                        Загружаем данные...
+                        <div className={styles.loader}>
+                          <Loader />
+                        </div>
+                      </>
+                    ) : (
+                      <>Нет данных</>
+                    )}
+                  </div>
                 </td>
               </tr>
             </tbody>

@@ -1,0 +1,39 @@
+.BlockingTables {
+  .btnMenuBox {
+    position: relative;
+    display: flex;
+    background-color: #fff;
+    border-radius: 8px;
+    height: 45px;
+    padding: 12px;
+    @media (max-width: 1400px) {
+      .text {
+        display: none;
+      }
+    }
+    .text {
+      padding-right: 10px;
+    }
+    cursor: pointer;
+    &:hover {
+      img {
+        cursor: pointer;
+        opacity: 0.6;
+        transition: opacity 0.15s ease;
+      }
+      .text {
+        opacity: 0.6;
+        transition: opacity 0.15s ease;
+      }
+    }
+  }
+  .btnMenuBox:nth-child(1) {
+    margin-right: 15px;
+  }
+  .btnMenuBox:nth-child(2) {
+    margin-right: 15px;
+  }
+  .btnMenuBox:nth-child(3) {
+    margin-right: 15px;
+  }
+}

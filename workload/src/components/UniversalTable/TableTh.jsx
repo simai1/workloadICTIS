@@ -13,7 +13,7 @@ function TableTh(props) {
     if (tabPar.spShow === props.index) {
       tabPar.setSpShow(null);
     } else {
-      const modalData = props.tabDat.tableData.map(
+      const modalData = props.tabDat.tableDataFix.map(
         (item) => item[props.item.key]
       );
       tabPar.setSamplePointsData([...modalData]);
@@ -24,19 +24,19 @@ function TableTh(props) {
   //! сортируем по колонке в App вызывается useEfferc для обновления массива
   const funSortByColumn = () => {
     let par = "";
-    if (appData.sortParamByColumn === "") {
+    if (props.tabDat.sortParamByColumn === "") {
       par = `col=${props.item.key}&type=${"asc"}`;
       setSortImg(1);
     } else {
       if (
-        appData.sortParamByColumn.includes(props.item.key) &&
-        appData.sortParamByColumn.includes("asc")
+        props.tabDat.sortParamByColumn?.includes(props.item.key) &&
+        props.tabDat.sortParamByColumn?.includes("asc")
       ) {
         par = `col=${props.item.key}&type=${"desc"}`;
         setSortImg(2);
       } else if (
-        appData.sortParamByColumn.includes(props.item.key) &&
-        appData.sortParamByColumn.includes("desc")
+        props.tabDat.sortParamByColumn?.includes(props.item.key) &&
+        props.tabDat.sortParamByColumn?.includes("desc")
       ) {
         par = "";
         setSortImg(0);
@@ -45,16 +45,27 @@ function TableTh(props) {
         setSortImg(1);
       }
     }
-    appData.setSortParamByColumn(par);
+    props.tabDat.setSortParamByColumn(par);
   };
 
   useEffect(() => {
-    if (!appData.sortParamByColumn.includes(props.item.key)) {
+    if (!props.tabDat.sortParamByColumn?.includes(props.item.key)) {
       setSortImg(0);
     }
-  }, [appData.sortParamByColumn]);
+  }, [props.tabDat.sortParamByColumn]);
   return (
-    <th name={props.item.key} key={props.item.key}>
+    <th
+      name={props.item.key}
+      key={props.item.key}
+      id={
+        appData.selectedComponent === "ScheduleMaterials" &&
+        (props.item.key === "notes" ||
+          props.item.key === "groups" ||
+          props.item.key === "audiences")
+          ? styles.fihedTh
+          : null
+      }
+    >
       {props.modal && (
         <SamplePoints
           index={props.index}
@@ -71,6 +82,16 @@ function TableTh(props) {
       )}
 
       <div className={styles.th_inner}>
+        {(props.item.key === "notes" ||
+          props.item.key === "groups" ||
+          props.item.key === "audiences") &&
+          appData.selectedComponent === "ScheduleMaterials" && (
+            <img
+              src="./img/Edit.svg"
+              className={styles.topRightCorner}
+              title="Данная колонка редактируется (Двойной клик по полю колонки)"
+            />
+          )}
         <div
           onClick={clickTh}
           className={styles.th_title}
@@ -78,24 +99,29 @@ function TableTh(props) {
         >
           {props.item.label}
         </div>
+
         <div className={styles.th_inner_img}>
-          {props.item.key !== "id" && props.item.key !== "educator" && (
-            <img
-              onClick={funSortByColumn}
-              className={styles.trSort}
-              src={sortImg === 0 ? "./img/=.svg" : "./img/sort.svg"}
-              title="Сортировать колонку"
-              alt=">"
-              style={
-                sortImg !== 1
-                  ? {
-                      transform: "rotate(-180deg)",
-                      transition: "all 0.2s ease",
-                    }
-                  : { transition: "all 0.2s ease" }
-              }
-            ></img>
-          )}
+          {props.tabDat.isSorted &&
+            props.item.key !== "id" &&
+            props.item.key !== "educator" && (
+              <img
+                onClick={funSortByColumn}
+                className={styles.trSort}
+                src={sortImg === 0 ? "./img/=.svg" : "./img/sort.svg"}
+                title="Сортировать колонку"
+                alt=">"
+                style={
+                  sortImg !== 1
+                    ? {
+                        transition: "all 0.2s ease",
+                      }
+                    : {
+                        transition: "all 0.2s ease",
+                        transform: "rotate(-180deg)",
+                      }
+                }
+              ></img>
+            )}
           {checkPar.isChecked &&
             checkPar.isChecked.find(
               (item) => item.itemKey === props.item.key

@@ -131,7 +131,14 @@ export function combineDataIdentify(data, selectedTr, action) {
     text = text + "нагрузка, ";
   }
   if (!prevState.every((el) => el.period === prevState[0].period)) {
-    text = text + "период ";
+    text = text + "период, ";
+  }
+  if (
+    !prevState.every(
+      (el) => el.formOfEducation === prevState[0].formOfEducation
+    )
+  ) {
+    text = text + "форма обучения";
   }
 
   if (action === "g") {
@@ -187,7 +194,8 @@ export function combineData(data, selectedTr, action = "") {
           item.workload === prevState[0].workload &&
           item.discipline === prevState[0].discipline &&
           item.audienceHours === prevState[0].audienceHours &&
-          item.period === prevState[0].period
+          item.period === prevState[0].period &&
+          item.formOfEducation === prevState[0].formOfEducation
       )) ||
     (action === "h" &&
       prevState.every(
@@ -196,7 +204,8 @@ export function combineData(data, selectedTr, action = "") {
           item.discipline === prevState[0].discipline &&
           item.numberOfStudents === prevState[0].numberOfStudents &&
           item.isSplit === true &&
-          item.period === prevState[0].period
+          item.period === prevState[0].period &&
+          item.formOfEducation === prevState[0].formOfEducation
       )) ||
     (action === "vkr" &&
       prevState.every(
@@ -204,28 +213,30 @@ export function combineData(data, selectedTr, action = "") {
           item.workload === prevState[0].workload &&
           item.discipline === prevState[0].discipline &&
           item.numberOfStudents === prevState[0].numberOfStudents &&
-          item.period === prevState[0].period
+          item.period === prevState[0].period &&
+          item.formOfEducation === prevState[0].formOfEducation
       )) ||
     (action === "add" &&
       prevState.every(
         (item) =>
           item.workload === prevState[0].workload &&
           item.discipline === prevState[0].discipline &&
-          item.period === prevState[0].period
+          item.period === prevState[0].period &&
+          item.formOfEducation === prevState[0].formOfEducation
       )) ||
     (action === "candidatesExam" &&
       prevState.every(
         (item) =>
           item.workload === prevState[0].workload &&
           item.discipline === prevState[0].discipline &&
-          item.period === prevState[0].period
+          item.period === prevState[0].period &&
+          item.formOfEducation === prevState[0].formOfEducation
       ))
   ) {
     const sumOfStudents = prevState.reduce(
       (total, el) => total + el.numberOfStudents,
       0
     );
-    console.log(prevState);
     const audienceHours = prevState.reduce(
       (total, el) => total + el.audienceHours,
       0
@@ -273,12 +284,14 @@ export function combineData(data, selectedTr, action = "") {
           ? {
               ...upData[index],
               numberOfStudents: sumOfStudents,
+              groups,
               isSplit: false,
               isMerged: true,
               educator: "___",
             }
           : action === "candidatesExam" && {
               ...upData[index],
+              groups,
               isSplit: false,
               isMerged: true,
               educator: "___",
@@ -290,7 +303,7 @@ export function combineData(data, selectedTr, action = "") {
         const updatedObjectFix = {
           ...updatedObject,
           ratingControlHours: rc,
-          hours: rc + updatedObject.audienceHours,
+          hours: (rc + updatedObject.audienceHours).toFixed(2),
         };
         newState = updatedObjectFix;
       } else if (action === "h") {
@@ -299,7 +312,7 @@ export function combineData(data, selectedTr, action = "") {
         const updatedObjectFix = {
           ...updatedObject,
           ratingControlHours: rc,
-          hours: rc + updatedObject.audienceHours,
+          hours: (rc + updatedObject.audienceHours).toFixed(2),
         };
         newState = updatedObjectFix;
       } else if (action === "vkr") {
@@ -325,6 +338,50 @@ export function combineData(data, selectedTr, action = "") {
       } else if (action === "candidatesExam") {
         newState = { ...updatedObject };
       }
+
+      //! рассчитываем учебный план, берем все учебные планы добалвяем в массив выбираем уникальные переводим в текст
+      let cursum = prevState
+        .map((el) => el.curriculum.split(", "))
+        .flat()
+        .filter((v, i, arr) => arr.indexOf(v) === i)
+        .reduce((acc, curr) => (acc === "" ? curr : `${acc}, ${curr}`), "");
+      // console.log("curmass", cursum);
+
+      let semestersem = prevState
+        .map((el) => el.semester.split(", "))
+        .flat()
+        .filter((v, i, arr) => arr.indexOf(v) === i)
+        .reduce((acc, curr) => (acc === "" ? curr : `${acc}, ${curr}`), "");
+      // console.log("semestersem", semestersem);
+
+      // let groups = prevState
+      //   .map((el) => el.groups.split(", "))
+      //   .flat()
+      //   .filter((v, i, arr) => arr.indexOf(v) === i)
+      //   .reduce((acc, curr) => (acc === "" ? curr : `${acc}, ${curr}`), "");
+      // console.log("groups", groups);
+
+      let block = prevState
+        .map((el) => el.block.split(", "))
+        .flat()
+        .filter((v, i, arr) => arr.indexOf(v) === i)
+        .reduce((acc, curr) => (acc === "" ? curr : `${acc}, ${curr}`), "");
+      // console.log("block", block);
+
+      let core = prevState
+        .map((el) => el.core.split(", "))
+        .flat()
+        .filter((v, i, arr) => arr.indexOf(v) === i)
+        .reduce((acc, curr) => (acc === "" ? curr : `${acc}, ${curr}`), "");
+      // console.log("core", core);
+
+      newState = {
+        ...newState,
+        curriculum: cursum,
+        semester: semestersem,
+        block: block,
+        core: core,
+      };
 
       const newUpdatedData = [
         ...upData.slice(0, index),

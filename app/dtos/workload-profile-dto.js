@@ -22,7 +22,7 @@ export default class WorkloadProfileDto {
         this.hours = model.hours;
         this.hoursFirstPeriod = model.period === 1? Math.round(model.hours * 100) / 100 : 0;
         this.hoursSecondPeriod = model.period === 2? Math.round(model.hours * 100) / 100 : 0;
-        this.hoursWithoutPeriod = model.period === null? Math.round(model.hours * 100) / 100 : 0;
+        this.hoursWithoutPeriod = model.period === 0? Math.round(model.hours * 100) / 100 : 0;
         this.audienceHours = Math.round(model.audienceHours * 100) / 100;
     }
 }

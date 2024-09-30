@@ -26,8 +26,9 @@ export default {
         const {col, type} = req.query;
         let educators;
         if (_user.role === 4 || _user.role === 7) {
-            if (!_user.institutionalAffiliation)
+            if (!_user.institutionalAffiliation) {
                 throw new Error('Нет привязки (institutionalAffiliation) к институту у директора');
+            }
             const allowedDepartments = [];
 
             const start = _user.institutionalAffiliation === 1 ? 0 : _user.institutionalAffiliation === 2 ? 13 : 17;
@@ -45,7 +46,7 @@ export default {
                         model: SummaryWorkload,
                     },
                 ],
-                order: (col && type)? [[col, type.toUpperCase()]] : orderRule,
+                order: orderRule,
             });
         } else if (_user.role === 6) {
             educators = await Educator.findAll({
@@ -57,7 +58,7 @@ export default {
                         model: SummaryWorkload,
                     },
                 ],
-                order: (col && type)? [[col, type.toUpperCase()]] : orderRule,
+                order: orderRule,
             });
         } else {
             const allowedDepartments = [];
@@ -77,14 +78,27 @@ export default {
                         model: SummaryWorkload,
                     },
                 ],
-                order: (col && type)? [[col, type.toUpperCase()]] : orderRule,
+                order: orderRule,
             });
         }
+
         const educatorDtos = [];
         for (const educator of educators) {
             const educatorDto = new EducatorListDto(educator);
             educatorDtos.push(educatorDto);
         }
+
+        if (col && type) {
+            educatorDtos.sort((a, b) => {
+                if (a[col] > b[col]) {
+                    return type === 'asc' ? 1 : -1;
+                } else if (a[col] < b[col]) {
+                    return type === 'asc' ? -1 : 1;
+                }
+                return 0;
+            });
+        }
+
         if (!educatorDtos.length) {
             // Если нет преподавателей, отправляем 404 и выходим из функции
             return res.status(404).json('Educator not found');
@@ -99,6 +113,20 @@ export default {
             include: {
                 model: SummaryWorkload,
             },
+        });
+        if (!educator) throw new AppErrorNotExist('educator');
+        const educatorProfileDto = new EducatorListDto(educator);
+
+        res.json(educatorProfileDto);
+    },
+
+    async getOneByEmail({params: { email }}, res) {
+        if (!email) throw new AppErrorMissing('email');
+        const educator = await Educator.findOne({
+            where: { email },
+            include: [{
+                model: SummaryWorkload,
+            }],
         });
         if (!educator) throw new AppErrorNotExist('educator');
         const educatorProfileDto = new EducatorListDto(educator);
@@ -135,9 +163,10 @@ export default {
                 ) {
                     workloadDto.hoursFirstPeriod += workload.period === 1 ? workload.hours : 0;
                     workloadDto.hoursSecondPeriod += workload.period === 2 ? workload.hours : 0;
-                    workloadDto.hoursWithoutPeriod += workload.period === null ? workload.hours : 0;
+                    workloadDto.hoursWithoutPeriod += workload.period === 0 ? workload.hours : 0;
+
                     // ориентировочно часы это сумма 3 столбиков этих (уточнить)
-                    workloadDto.hours = workloadDto.hoursFirstPeriod + workloadDto.hoursSecondPeriod;
+                    workloadDto.hours = workloadDto.hoursFirstPeriod + workloadDto.hoursSecondPeriod + workloadDto.hoursWithoutPeriod;
                     flag = false;
                     break;
                 }
@@ -152,6 +181,7 @@ export default {
             totalHours: educator.SummaryWorkload.totalHours,
             totalKafedralHours: educator.SummaryWorkload.totalKafedralHours,
             totalOidHours: educator.SummaryWorkload.totalOidHours,
+            kafedralAdditionalWorkload: educator.SummaryWorkload.kafedralAdditionalWorkload,
         });
     },
 
@@ -165,9 +195,9 @@ export default {
         if (!position) position = educator.position;
         if (!rate && rate !== 0) rate = educator.rate;
         if (!email) email = educator.email;
-        if (!department) department = educator.department;
+        if (!department && department !== 0) department = educator.department;
         if (!typeOfEmployment) typeOfEmployment = educator.typeOfEmployment;
-        console.log(rate)
+        console.log(rate);
         await educator.update({
             name,
             position,
@@ -279,11 +309,9 @@ export default {
                     model: SummaryWorkload,
                 },
             ],
-            order: [
-                ['name', 'ASC'],
-            ],
+            order: [['name', 'ASC']],
         });
         const educatorsDto = educators.map(educator => new EducatorListDto(educator));
         res.json(educatorsDto);
-    }
+    },
 };

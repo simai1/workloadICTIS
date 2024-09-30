@@ -22,9 +22,10 @@ function List({
   }, []);
 
   const addClient = (el) => {
+    console.log("el", el);
     setnameClient(el.name);
     setactiveList(!activeList);
-    handleInputList(name, el.id);
+    handleInputList(name, el?.id);
   };
 
   const listRef = useRef(null);

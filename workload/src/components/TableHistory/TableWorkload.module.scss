@@ -37,6 +37,13 @@ $heightCell: 150px;
       font-size: 22px;
       font-weight: 500;
       transform: translateY(-15px);
+
+      display: flex;
+      justify-content: center;
+      .loader {
+        position: absolute;
+        top: 50px;
+      }
     }
   }
 }

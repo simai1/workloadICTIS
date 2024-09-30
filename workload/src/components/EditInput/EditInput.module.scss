@@ -20,6 +20,7 @@
 .EditInput {
   position: relative;
   z-index: 120;
+  width: 271px;
 }
 .EditInput button {
   display: flex;
@@ -88,6 +89,7 @@
       margin-top: -10px;
       align-items: center;
       display: flex;
+      cursor: pointer;
     }
   }
   button {
@@ -116,9 +118,9 @@ ul::-webkit-scrollbar-track {
   background-color: #ffffff;
   border: none;
 }
-.textButton{
+.textButton {
   display: flex;
-  img{
+  img {
     position: relative;
     left: -5px;
   }
