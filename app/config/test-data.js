@@ -279,7 +279,7 @@ export const educators = [
         department: 11,
         email: 'siverin@sfedu.ru',
         position: 5,
-        rate: 0.5,
+        rate: 0.4,
     },
     {
         name: 'Капылов Никита Максимович',
