@@ -3,10 +3,13 @@ import Workload from '../models/workload.js';
 import { AppErrorMissing } from '../utils/errors.js';
 import Attaches from '../models/attached.js';
 import AttachedDto from '../dtos/attached-dto.js';
+import jwt from '../utils/jwt.js';
 
 export default {
     async getAllAttaches(req, res) {
-        const userId = req.user;
+        const existUser = jwt.decode(req.cookies.refreshToken)
+        const userId = existUser.id;
+        // const userId = req.user;
         const educator = await Educator.findOne({ where: { userId } });
         if (!educator) res.json({});
 
@@ -16,11 +19,13 @@ export default {
         res.json(attachedDto);
     },
 
-    async setAttaches({ body: { workloadIds }, user }, res) {
+    async setAttaches({ body: { workloadIds },cookies: {refreshToken} }, res) {
         if (!workloadIds || !Array.isArray(workloadIds) || workloadIds.length === 0) {
             throw new AppErrorMissing('workloadIds');
         }
-        const educator = await Educator.findOne({ where: { userId: user } });
+        const existUser = jwt.decode(cookies)
+        const userId = existUser.id;
+        const educator = await Educator.findOne({ where: { userId: userId } });
         const attachedDtos = [];
 
         for (const workloadId of workloadIds) {

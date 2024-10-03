@@ -7,18 +7,18 @@ const user = async user => {
     if (checkEducator) {
         await checkEducator.update({ userId: user.id });
     }
-    if (
-        await Workload.count({
-            where: {
-                educatorId: checkEducator.id,
-                workload: 'Лекционные',
-            },
-        })
-    ) {
-        await User.update({ role: 2 }, { where: { id: user.id } });
-    } else {
-        await User.update({ role: 5 }, { where: { id: user.id } });
-    }
+    // if (
+    //     await Workload.count({
+    //         where: {
+    //             educatorId: checkEducator.id,
+    //             workload: 'Лекционные',
+    //         },
+    //     })
+    // ) {
+    //     await User.update({ role: 2 }, { where: { id: user.id } });
+    // } else {
+    //     await User.update({ role: 5 }, { where: { id: user.id } });
+    // }
 };
 
 export default user;

@@ -1,7 +1,7 @@
 //? Здесь все запросы к апи, присвоение этих данных состояниями в AssingApiData
 
 import axios from "axios";
-// const server = "https://workload.sfedu.ru";
+// const server = "https://workload.sfedu.ru/apitest";
 const server = "http://localhost:3002";
 const http = axios.create({
   withCredentials: true,
@@ -49,12 +49,13 @@ export const apiEducatorDepartment = async (par = "") => {
 export const apiGetUser = async () => {
   try {
     const response = await http.get(`${server}/user`);
+    console.log("apiGetUser", response)
     return response.data;
   } catch (error) {
     console.error("Error:", error, `${server}/workload`);
     //! если возникли проблемы с получение профиля пользователя перенаправляем на регистрацию
     // window.location.href = "http://localhost:3002/auth/logout";
-    window.location.href = "https://workload.sfedu.ru/auth/logout";
+    // window.location.href = "https://workload.sfedu.ru/auth/logout";
   }
 };
 
@@ -708,56 +709,10 @@ export const UnblockTablePlease = async (indexDepartment) => {
   }
 };
 
-//! Получение Данных для таблицы раасписания к материалам
-export const getSchedule = async (param, lim) => {
-  console.log(param, lim);
+//! Авторизация для теста
+export const AuthTest = async (data) => {
   try {
-    // const response = await http.post(`${server}/materials${param}`, lim);
-    const response = await http.post(`${server}/materials${param}`);
-    return response;
-  } catch (error) {
-    console.error("Error:", error);
-    //throw error;
-  }
-};
-
-//! синхронизация
-export const SyncTable = async () => {
-  try {
-    const response = await http.get(`${server}/materials/sync`);
-    return response;
-  } catch (error) {
-    console.error("Error:", error);
-    //throw error;
-  }
-};
-
-//!удаление по Id строки из материалов
-export const DeleteMaterials = async (materialId) => {
-  try {
-    const response = await http.delete(`${server}/materials/${materialId}`);
-    return response;
-  } catch (error) {
-    console.error("Error:", error);
-    //throw error;
-  }
-};
-
-//! получение кафедр к материалам
-export const GetDepartmentsMaterials = async () => {
-  try {
-    const response = await http.get(`${server}/materials/getUsableDepartments`);
-    return response;
-  } catch (error) {
-    console.error("Error:", error);
-    //throw error;
-  }
-};
-
-//! удалить свой комментарий
-export const apiDeleteMyComment = async (id) => {
-  try {
-    const response = await http.delete(`${server}/comment/delete/${id}`);
+    const response = await http.post(`${server}/auth/loginForTest`, data);
     return response;
   } catch (error) {
     console.error("Error:", error);

@@ -1,6 +1,7 @@
 import Workload from '../models/workload.js';
-import { educators, workloads } from '../config/test-data.js';
+import { educators, workloads, users } from '../config/test-data.js';
 import Educator from '../models/educator.js';
+import User from '../models/user.js';
 
 async function fillWorkload() {
     for (const x of workloads) {
@@ -64,7 +65,26 @@ async function fillEducators() {
     }
 }
 
+async function fillUsers(){
+    for (const x of users) {
+        const user = await User.findOne({
+            where: {
+                name: x.name,
+            },
+        });
+        if (!user) {
+            await User.create({
+                name: x.name,
+                login: x.login,
+                role: x.role,
+                institutionalAffiliation: x.institutionalAffiliation,
+            });
+        }
+    }
+}
+
 export default {
     fillWorkload,
     fillEducators,
+    fillUsers,
 };

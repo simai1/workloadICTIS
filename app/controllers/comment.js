@@ -3,12 +3,15 @@ import Comment from '../models/comment.js';
 import CommentDto from '../dtos/comment-dto.js';
 import Educator from '../models/educator.js';
 import User from '../models/user.js';
+import jwt from '../utils/jwt.js';
 
 export default {
-    async createComment({ body: { workloadId, text }, user }, res) {
+    async createComment({ body: { workloadId, text }, cookies:{refreshToken} }, res) {
         if (!workloadId) throw new AppErrorMissing('workloadId');
         if (!text) throw new AppErrorMissing('text');
-        const sender = await Educator.findOne({ where: { userId: user } });
+        const existUser = jwt.decode(refreshToken)
+        const userId = existUser.id;
+        const sender = await Educator.findOne({ where: { userId: userId } });
 
         const comment = await Comment.create({
             educatorId: sender.id,
@@ -36,8 +39,10 @@ export default {
     },
 
     async getOwnComments(req, res) {
+        const existUser = jwt.decode(req.cookies.refreshToken)
+        const userId = existUser.id;
         const educator = await Educator.findOne({
-            where: { userId: req.user },
+            where: { userId: userId },
             include: [{ model: User }],
         });
         const comments = await Comment.findAll({

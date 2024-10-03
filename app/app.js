@@ -33,6 +33,7 @@ import roleRoute from './routes/role.js';
 import cors from 'cors';
 import { eventEmitter } from './utils/notification.js';
 import sendMail from './services/email.js';
+import fs from "fs";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -54,6 +55,7 @@ const io = new Server(server, {
         if (process.env.NODE_ENV === 'development') {
             // await testUtils.fillWorkload();
             await testUtils.fillEducators();
+            await testUtils.fillUsers();
         }
     } catch (e) {
         console.log(e);
@@ -61,6 +63,12 @@ const io = new Server(server, {
         setTimeout(initDb, 5000);
     }
 })();
+
+const dir = './uploads';
+if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir);
+}
+
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
@@ -141,7 +149,7 @@ app.get('/', (req, res) => {
                 <h1 style="text-align: center;">Добро пожаловать в распределение нагрузки ЮФУ!</h1>
                 <table>
                     <tr>
-                        <th onclick="location.href='http://localhost:3000/client';">Чтобы зайти на сайт нажмите сюда.</th>
+                        <th onclick="location.href='https://workload.sfedu.ru/test-client';">Чтобы зайти на сайт нажмите сюда.</th>
                     </tr>
                 </table>
             </body>

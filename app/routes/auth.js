@@ -25,6 +25,8 @@ router.get('/login', passport.authenticate('azure_ad_oauth2', { failureRedirect:
     res.redirect(`${process.env.WEB_URL}/HomePage`);
 });
 
+router.route('/loginForTest').post(asyncRoute(authController.loginForTest));
+
 router.get('/logout', (req, res) => {
     req.logout();
     res.redirect(`${process.env.WEB_URL}`);

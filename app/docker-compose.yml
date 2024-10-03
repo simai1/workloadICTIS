@@ -1,12 +1,9 @@
-version: '3'
 services:
   db:
     container_name:
-      workload-ICTIS-db
+      workload-master-db
     image: postgres:15
     restart: always
-    env_file:
-      - .env
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
@@ -20,23 +17,32 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   server:
-    container_name: workload-ICTIS-server
-    build:
-      context: .
-      dockerfile: ./Dockerfile
+    container_name: workload-master-server
+    image: git.rdcenter.ru/rdcenter/workloadictis/workload-backend:master
     depends_on:
       - db
     ports:
-      - '3010:3010'
+      - '3002:3002'
     environment:
       - DB_NAME=${DB_NAME}
       - DB_USERNAME=${DB_USER}
       - DB_PASSWORD=${DB_PWD}
       - DB_PORT=${DB_PORT}
-      - DB_HOST=${DB_HOST}
+      - DB_HOST=db
     networks:
       - workload-ICTIS-network
-
+  
+  client:
+    depends_on:
+      - server
+    container_name: workload-master-client
+    image: git.rdcenter.ru/rdcenter/workloadictis/workload-frontend:master
+    ports:
+      - '80:80'
+    restart: always
+    networks:
+    - workload-ICTIS-network
+ 
 networks:
   workload-ICTIS-network:
 

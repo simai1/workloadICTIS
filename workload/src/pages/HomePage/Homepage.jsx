@@ -118,12 +118,10 @@ function HomePage() {
 
   //! получаем и записываем данные usera
   useEffect(() => {
-    apiGetUser().then((data) => {
-      appData.setMyProfile(data);
-    });
-    GetDepartmentsMaterials().then((resp) => {
-      setDepartmentsMaterials([{ id: 99, name: "Все" }, ...resp.data]);
-    });
+    console.log("Вызвал получение ")
+    // apiGetUser().then((data) => {
+    //   appData.setMyProfile(data);
+    // });
   }, []);
 
   const handleComponentChange = (component) => {

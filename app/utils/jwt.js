@@ -38,8 +38,8 @@ export default {
     async findToken(refreshToken) {
         return await TokenModel.findOne({ where: { refreshToken } });
     },
-    //
-    // decode(token) {
-    // 	return jwt.decode(token);
-    // },
+    
+    decode(token) {
+    	return jwt.decode(token);
+    },
 };
