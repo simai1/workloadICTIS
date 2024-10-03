@@ -4,8 +4,8 @@ import { Server } from 'socket.io';
 import cookieParser from 'cookie-parser';
 import cookieSession from 'cookie-session';
 
-import passportSetup from './config/passport-setup.js'; // eslint-disable-line
-import passport from 'passport';
+// import passportSetup from './config/passport-setup.js'; // eslint-disable-line
+// import passport from 'passport';
 
 import 'dotenv/config';
 
@@ -79,8 +79,8 @@ app.use(
         keys: [process.env.COOKIE_KEY],
     })
 );
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.initialize());
+// app.use(passport.session());
 // app.use(corsMiddleware);
 app.use(
     cors({
