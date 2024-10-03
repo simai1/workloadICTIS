@@ -1,7 +1,7 @@
 //? Здесь все запросы к апи, присвоение этих данных состояниями в AssingApiData
 
 import axios from "axios";
-// const server = "https://workload.sfedu.ru/apitest";
+// const server = "https://workload.sfedu.ru";
 const server = "http://localhost:3002";
 const http = axios.create({
   withCredentials: true,
@@ -23,7 +23,7 @@ export const Educator = async (par = "") => {
 export const EducatorByInstitute = async () => {
   try {
     const response = await http.get(
-      `${server}/educator/get/educatorsByInstitute`
+        `${server}/educator/get/educatorsByInstitute`
     );
     return response;
   } catch (error) {
@@ -36,7 +36,7 @@ export const EducatorByInstitute = async () => {
 export const apiEducatorDepartment = async (par = "") => {
   try {
     const response = await http.get(
-      `${server}/educator/get/educatorsByDepartment${par}`
+        `${server}/educator/get/educatorsByDepartment${par}`
     );
     return response;
   } catch (error) {
@@ -49,12 +49,11 @@ export const apiEducatorDepartment = async (par = "") => {
 export const apiGetUser = async () => {
   try {
     const response = await http.get(`${server}/user`);
-    console.log("apiGetUser", response)
     return response.data;
   } catch (error) {
     console.error("Error:", error, `${server}/workload`);
     //! если возникли проблемы с получение профиля пользователя перенаправляем на регистрацию
-    // window.location.href = "http://localhost:3002/auth/logout";
+    window.location.href = "http://localhost:3002/auth/logout";
     // window.location.href = "https://workload.sfedu.ru/auth/logout";
   }
 };
@@ -88,7 +87,7 @@ export const apiGetHistory = async (par, department) => {
   console.log("par", par);
   try {
     const response = await http.get(
-      `${server}/history/getAll${par}${department}`
+        `${server}/history/getAll${par}${department}`
     );
     console.log("история", response);
     return response.data;
@@ -131,7 +130,7 @@ export const TypeOfEmployments = async () => {
 
 const uniqueObjects = (array) => {
   return array.filter(
-    (value, index, self) => index === self.findIndex((t) => t.id === value.id)
+      (value, index, self) => index === self.findIndex((t) => t.id === value.id)
   );
 };
 //! получаем нагрузки
@@ -296,8 +295,8 @@ export const AcceptOffer = async (data) => {
   console.log("Предложение принято ", data);
   try {
     const response = await http.post(
-      `${server}/offers/confirmOrReject/${data.id}`,
-      { status: data.status }
+        `${server}/offers/confirmOrReject/${data.id}`,
+        { status: data.status }
     );
     console.log("response ", response);
     return response.data;
@@ -315,8 +314,8 @@ export const AcceptOfferZK = async (data) => {
   console.log("Предложение принято ", data);
   try {
     const response = await http.post(
-      `${server}/offers/introduceOrDecline/${data.id}`,
-      { status: data.status }
+        `${server}/offers/introduceOrDecline/${data.id}`,
+        { status: data.status }
     );
     console.log("response ", response);
     return response.data;
@@ -330,8 +329,8 @@ export const deleteWorkload = async (data) => {
   console.log("Нагрузки удалены ", data);
   try {
     const response = await http.delete(
-      `${server}/workload/deleteSeveralWorkloads`,
-      { data: data }
+        `${server}/workload/deleteSeveralWorkloads`,
+        { data: data }
     );
     console.log("response ", response);
     return response.data;
@@ -360,7 +359,7 @@ export const deleteComment = async (data) => {
   console.log("Комменты удалены ", data);
   try {
     const response = await http.delete(
-      `${server}/comment/deleteAllComments/${data}`
+        `${server}/comment/deleteAllComments/${data}`
     );
     console.log("response ", response);
     return response.data;
@@ -522,8 +521,8 @@ export const SubmitFileXLSX = async (constIdCafedra, file) => {
   console.log("constIdCafedra", constIdCafedra);
   try {
     const response = await http.post(
-      `${server}/parser/parseWorkload/${constIdCafedra}`,
-      file
+        `${server}/parser/parseWorkload/${constIdCafedra}`,
+        file
     );
     console.log("response ", response);
     return response.data;
@@ -602,7 +601,7 @@ export const EditTeacher = async (idTeacher, data) => {
 export const GetUsibleDepartment = async () => {
   try {
     const response = await http.get(
-      `${server}/workload/get/departmentsForDirectorate`
+        `${server}/workload/get/departmentsForDirectorate`
     );
     return response;
   } catch (error) {
@@ -637,7 +636,7 @@ export const GetAllDepartments = async () => {
 export const ApiUnblockTable = async (indexTable) => {
   try {
     const response = await http.patch(
-      `${server}/workload/unblock/${indexTable}`
+        `${server}/workload/unblock/${indexTable}`
     );
     return response;
   } catch (error) {
@@ -684,11 +683,11 @@ export const apiNotecAddMaterials = async (data) => {
 
 //! Получение текущей суммы и остатка по нагрузкам для ЗК
 export const getAllocatedAndUnallocatedWrokloadHours = async (
-  indexDepartment
+    indexDepartment
 ) => {
   try {
     const response = await http.get(
-      `${server}/workload/getAllocatedAndUnallocatedWrokloadHours/${indexDepartment}`
+        `${server}/workload/getAllocatedAndUnallocatedWrokloadHours/${indexDepartment}`
     );
     return response;
   } catch (error) {
@@ -708,6 +707,64 @@ export const UnblockTablePlease = async (indexDepartment) => {
     //throw error;
   }
 };
+
+//! Получение Данных для таблицы раасписания к материалам
+export const getSchedule = async (param, lim) => {
+  console.log(param, lim);
+  try {
+    // const response = await http.post(`${server}/materials${param}`, lim);
+    const response = await http.post(`${server}/materials${param}`);
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};
+
+//! синхронизация
+export const SyncTable = async () => {
+  try {
+    const response = await http.get(`${server}/materials/sync`);
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};
+
+//!удаление по Id строки из материалов
+export const DeleteMaterials = async (materialId) => {
+  try {
+    const response = await http.delete(`${server}/materials/${materialId}`);
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};
+
+//! получение кафедр к материалам
+export const GetDepartmentsMaterials = async () => {
+  try {
+    const response = await http.get(`${server}/materials/getUsableDepartments`);
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};
+
+//! удалить свой комментарий
+export const apiDeleteMyComment = async (id) => {
+  try {
+    const response = await http.delete(`${server}/comment/delete/${id}`);
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};
+
 
 //! Авторизация для теста
 export const AuthTest = async (data) => {
