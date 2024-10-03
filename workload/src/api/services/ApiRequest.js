@@ -709,17 +709,6 @@
 //   }
 // };
 
-// //! Авторизация для теста
-// export const AuthTest = async (data) => {
-//   try {
-//     const response = await http.post(`${server}/auth/loginForTest`, data);
-//     return response;
-//   } catch (error) {
-//     console.error("Error:", error);
-//     //throw error;
-//   }
-// };
-
 import axios from "axios";
 // const server = "https://workload.sfedu.ru";
 const server = "https://workload.sfedu.ru/apitest";
@@ -727,6 +716,17 @@ const server = "https://workload.sfedu.ru/apitest";
 const http = axios.create({
   withCredentials: true,
 });
+
+//! Авторизация для теста
+export const AuthTest = async (data) => {
+  try {
+    const response = await http.post(`${server}/auth/loginForTest`, data);
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    //throw error;
+  }
+};
 
 //! получаем преподов
 export const Educator = async (par = "") => {
