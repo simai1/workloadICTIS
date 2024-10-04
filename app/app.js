@@ -59,6 +59,7 @@ const io = new Server(server, {
         }
     } catch (e) {
         console.log(e);
+        console.log(process.env.DB_USER, process.env.DB_PWD, process.env.DB_HOST, process.env.DB_PORT, process.env.DB_NAME);
         console.log('COULD NOT CONNECT TO THE DB, retrying in 5 seconds');
         setTimeout(initDb, 5000);
     }
