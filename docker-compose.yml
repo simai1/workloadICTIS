@@ -1,7 +1,7 @@
 services:
   db:
     container_name:
-      workload-master-db
+      workload-db
     image: postgres:15
     restart: always
     environment:
@@ -17,7 +17,7 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   server:
-    container_name: workload-master-server
+    container_name: workload-server
     image: git.rdcenter.ru/rdcenter/workloadictis/workload-backend:master
     depends_on:
       - db
@@ -35,7 +35,7 @@ services:
   client:
     depends_on:
       - server
-    container_name: workload-master-client
+    container_name: workload-client
     image: git.rdcenter.ru/rdcenter/workloadictis/workload-frontend:master
     ports:
       - '80:80'
