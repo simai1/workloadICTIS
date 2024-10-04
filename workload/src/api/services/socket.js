@@ -2,7 +2,7 @@ import socketIO from "socket.io-client";
 
 function socketConnect() {
   // const socketUrl = "https://workload.sfedu.ru/apitest";
-  const socketUrl = process.env.REACT_APP_API_URL;
+  const socketUrl = "http://192.168.120.15:3010";
   // const socket = socketIO.connect(socketUrl);
 
   const socket = socketIO.connect(socketUrl);

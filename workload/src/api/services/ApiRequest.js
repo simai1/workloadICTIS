@@ -2,7 +2,7 @@
 
 import axios from "axios";
 // const server = "https://workload.sfedu.ru";
-const server = process.env.REACT_APP_API_URL;
+const server = "http://192.168.120.15:3010";
 const http = axios.create({
   withCredentials: true,
 });
@@ -53,7 +53,7 @@ export const apiGetUser = async () => {
   } catch (error) {
     console.error("Error:", error, `${server}/workload`);
     //! если возникли проблемы с получение профиля пользователя перенаправляем на регистрацию
-    window.location.href = `${process.env.REACT_APP_API_URL}/auth/logout`;
+    window.location.href = `$http://192.168.120.15:3010/auth/logout`;
     // window.location.href = "https://workload.sfedu.ru/auth/logout";
   }
 };

@@ -107,7 +107,7 @@ function Profile(props) {
             </div>
           )}
           <div className={styles.exid}>
-            <a href="https://workload.sfedu.ru/auth/logout">
+            <a href="http://192.168.120.15:3010/auth/logout">
               Выйти <img src={svgExit} alt="->"></img>
             </a>
           </div>
