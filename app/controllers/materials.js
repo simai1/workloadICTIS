@@ -413,6 +413,34 @@ export default {
                     },
                     order: [['department', 'ASC']],
                 });
+            } else if (checkUser.institutionalAffiliation === 4) {
+                departments = await Materials.findAll({
+                    attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('department')), 'department']],
+                    where: {
+                        department: {
+                            [Sequelize.Op.between]: [25, 31],
+                        },
+                    },
+                    order: [['department', 'ASC']],
+                });
+            } else if (checkUser.institutionalAffiliation === 5) {
+                departments = await Materials.findAll({
+                    attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('department')), 'department']],
+                    where: {
+                        department: 32,
+                    },
+                    order: [['department', 'ASC']],
+                });
+            } else if (checkUser.institutionalAffiliation === 6) {
+                departments = await Materials.findAll({
+                    attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('department')), 'department']],
+                    where: {
+                        department: {
+                            [Sequelize.Op.between]: [33, 35],
+                        },
+                    },
+                    order: [['department', 'ASC']],
+                });
             } else {
                 throw new Error('Такого института не добавленно');
             }

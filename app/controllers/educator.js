@@ -26,14 +26,16 @@ export default {
             if (!_user.institutionalAffiliation) {
                 throw new Error('Нет привязки (institutionalAffiliation) к институту у директора');
             }
-            const allowedDepartments = [];
+            const allowedDepartments = instituteDepartments[_user.institutionalAffiliation];
+            // const allowedDepartments = [];
 
-            const start = _user.institutionalAffiliation === 1 ? 0 : _user.institutionalAffiliation === 2 ? 13 : 17;
-            const end = _user.institutionalAffiliation === 1 ? 12 : _user.institutionalAffiliation === 2 ? 16 : 24;
+            // const start = _user.institutionalAffiliation === 1 ? 0 : _user.institutionalAffiliation === 2 ? 13 : 17;
+            // const end = _user.institutionalAffiliation === 1 ? 12 : _user.institutionalAffiliation === 2 ? 16 : 24;
+            //
+            // for (let i = start; i <= end; i++) {
+            //     allowedDepartments.push(i);
+            // }
 
-            for (let i = start; i <= end; i++) {
-                allowedDepartments.push(i);
-            }
             educators = await Educator.findAll({
                 where: {
                     department: allowedDepartments,
@@ -61,7 +63,7 @@ export default {
             const allowedDepartments = [];
 
             const start = 0;
-            const end = 24;
+            const end = 35;
 
             for (let i = start; i <= end; i++) {
                 allowedDepartments.push(i);
