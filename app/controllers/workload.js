@@ -10,7 +10,7 @@ import checkHours from '../utils/notification.js';
 import History from '../models/history.js';
 import sendMail from '../services/email.js';
 import { Op, Sequelize } from 'sequelize';
-import jwt from '../utils/jwt.js';
+import {instituteDepartments} from "../config/institutional-affiliations.js";
 
 const getIds = modelsArr => {
     const arr = [];
@@ -30,10 +30,8 @@ const orderRule = [
 
 export default {
     // Получение нагрузки
-    async getAllWorkload({ query: { isOid, department, col, type }, cookies:{refreshToken} }, res) {
-        const existUser = jwt.decode(refreshToken)
-        const userId = existUser.id;
-        const _user = await User.findByPk(userId, { include: Educator });
+    async getAllWorkload({ query: { isOid, department, col, type }, user }, res) {
+        const _user = await User.findByPk(user, { include: Educator });
         let workloadsDto;
         try {
             let workloads;
@@ -148,16 +146,16 @@ export default {
                     if (!_user.institutionalAffiliation) {
                         throw new Error('Нет привязки (institutionalAffiliation) к институту у директора');
                     }
-                    const allowedDepartments = [];
+                    const allowedDepartments = instituteDepartments[_user.institutionalAffiliation];
 
-                    const start =
-                        _user.institutionalAffiliation === 1 ? 0 : _user.institutionalAffiliation === 2 ? 13 : 17;
-                    const end =
-                        _user.institutionalAffiliation === 1 ? 12 : _user.institutionalAffiliation === 2 ? 16 : 24;
-
-                    for (let i = start; i <= end; i++) {
-                        allowedDepartments.push(i);
-                    }
+                    // const start =
+                    //     _user.institutionalAffiliation === 1 ? 0 : _user.institutionalAffiliation === 2 ? 13 : 17;
+                    // const end =
+                    //     _user.institutionalAffiliation === 1 ? 12 : _user.institutionalAffiliation === 2 ? 16 : 24;
+                    //
+                    // for (let i = start; i <= end; i++) {
+                    //     allowedDepartments.push(i);
+                    // }
                     workloads = await Workload.findAll({
                         where: {
                             department: allowedDepartments,
@@ -812,8 +810,7 @@ export default {
     },
 
     async getDepartmentWorkload(req, res) {
-        const existUser = jwt.decode(req.cookies.refreshToken)
-        const userId = existUser.id;
+        const userId = req.user;
         const educator = await Educator.findOne({ where: { userId } });
 
         const department = educator.department;
@@ -835,8 +832,7 @@ export default {
     },
 
     async getUsableDepartments(req, res) {
-        const existUser = jwt.decode(req.cookies.refreshToken)
-        const userId = existUser.id;
+        const userId = req.user;
         const checkUser = await User.findByPk(userId);
         if (!checkUser) throw new AppErrorNotExist('User');
         const role = checkUser.role;
@@ -912,6 +908,34 @@ export default {
                     where: {
                         department: {
                             [Sequelize.Op.between]: [17, 24],
+                        },
+                    },
+                    order: [['department', 'ASC']],
+                });
+            } else if (checkUser.institutionalAffiliation === 4) {
+                departments = await Workload.findAll({
+                    attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('department')), 'department']],
+                    where: {
+                        department: {
+                            [Sequelize.Op.between]: [25, 31],
+                        },
+                    },
+                    order: [['department', 'ASC']],
+                });
+            } else if (checkUser.institutionalAffiliation === 5) {
+                departments = await Workload.findAll({
+                    attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('department')), 'department']],
+                    where: {
+                        department: 32,
+                    },
+                    order: [['department', 'ASC']],
+                });
+            } else if (checkUser.institutionalAffiliation === 6) {
+                departments = await Workload.findAll({
+                    attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('department')), 'department']],
+                    where: {
+                        department: {
+                            [Sequelize.Op.between]: [33, 35],
                         },
                     },
                     order: [['department', 'ASC']],
@@ -1039,9 +1063,7 @@ export default {
     },
 
     async getDepartmentsForDirectorate(req, res) {
-        const existUser = jwt.decode(req.cookies.refreshToken)
-        const userId = existUser.id;
-        const _user = await User.findByPk(userId);
+        const _user = await User.findByPk(req.user);
         let filteredDepartments;
         if (_user.role === 4 || _user.role === 7) {
             if (!_user.institutionalAffiliation) {

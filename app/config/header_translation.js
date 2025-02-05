@@ -18,6 +18,7 @@ const HeaderTranslation = {
     'Часы рейтинг-контроль': 'ratingControlHours',
     'Преподаватель': 'educator',
     'Вид занятости преподавателя': 'typeOfEmployment',
+    'Ставка преподавателя': 'rate',
     'Должность преподавателя': 'position'
 };
 

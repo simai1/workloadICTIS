@@ -10,7 +10,23 @@ import fs from 'fs';
 import User from '../models/user.js';
 import { Op } from 'sequelize';
 import History from '../models/history.js';
-import EnumTypeOfEmployment from '../config/type-of-employment.js';
+import typeOfEmployments from "../config/type-of-employment.js";
+
+const extractRealRate = (input) => {
+    if (!input) {
+        return null;
+    }
+
+    const match = input.match(/\b\d+(?:[\\.,]\d+)?\b/);
+
+    if (match) {
+        const numericString = match[0].replace(',', '.');
+        const value = parseFloat(numericString);
+        return isNaN(value) ? null : value;
+    }
+
+    return null;
+};
 
 export default {
     async parseWorkload(req, res) {
@@ -60,7 +76,7 @@ export default {
                     const englishHeader = HeaderTranslation[header];
                     obj[englishHeader] = row[index];
                 });
-                let typeOfEmployment = obj.typeOfEmployment.trim();
+                const typeOfEmployment = typeOfEmployments[obj.typeOfEmployment.trim()];
                 obj.department = obj.department.trim();
                 obj.educator = obj.educator.trim();
                 obj.department = FullNameDepartments[obj.department];
@@ -70,6 +86,7 @@ export default {
                 const ratingControlHours = obj.hours - obj.audienceHours;
                 obj.ratingControlHours = parseFloat(ratingControlHours.toFixed(2));
                 obj.period = Number(obj.period);
+                obj.position = positions[obj.position.trim()];
                 let existEducator;
                 let resEducator;
                 existEducator = await Educator.findOne({
@@ -78,8 +95,17 @@ export default {
                         typeOfEmployment: { [Op.between]: [1, 3] }
                     },
                 });
+                if (!existEducator) {
+                    resEducator = await Educator.create({
+                        name: obj.educator,
+                        department: obj.department,
+                        position: obj.position,
+                        rate: extractRealRate(obj.rate),
+                        typeOfEmployment,
+                    });
+                }
 
-                let educatorId = existEducator ? existEducator.id : null;
+                let educatorId = existEducator ? existEducator.id : resEducator.id;
 
                 if(typeOfEmployment === 'На условиях почасовой оплаты труда'){
                     existEducator = await Educator.findOne({
