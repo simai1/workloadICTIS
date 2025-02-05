@@ -154,7 +154,7 @@ io.on('connection', socket => {
 
     eventEmitter.on('notificationCreated', eventData => {
         socket.emit('notificationCreated', eventData);
-        console.log('Уведомление отправилось клиенту', eventData);
+        // console.log('Уведомление отправилось клиенту', eventData);
     });
 
     socket.on('response', () => {
