@@ -141,7 +141,7 @@ app.get('/', (req, res) => {
                 <h1 style="text-align: center;">Добро пожаловать в распределение нагрузки ЮФУ!</h1>
                 <table>
                     <tr>
-                        <th onclick="location.href='http://localhost:3000/client';">Чтобы зайти на сайт нажмите сюда.</th>
+                        <th onclick="location.href='https://workload.sfedu.ru/client';">Чтобы зайти на сайт нажмите сюда.</th>
                     </tr>
                 </table>
             </body>
