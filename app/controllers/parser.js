@@ -8,7 +8,7 @@ import positions from '../config/position.js';
 import sendMail from '../services/email.js';
 import fs from 'fs';
 import User from '../models/user.js';
-import { Op } from 'sequelize';
+import {Op} from 'sequelize';
 import History from '../models/history.js';
 import typeOfEmployments from "../config/type-of-employment.js";
 
@@ -89,39 +89,42 @@ export default {
                 obj.position = positions[obj.position.trim()];
                 let existEducator;
                 let resEducator;
-                existEducator = await Educator.findOne({
-                    where: {
-                        name: obj.educator,
-                        typeOfEmployment: { [Op.between]: [1, 3] }
-                    },
-                });
-                if (!existEducator) {
-                    resEducator = await Educator.create({
-                        name: obj.educator,
-                        department: obj.department,
-                        position: obj.position,
-                        rate: extractRealRate(obj.rate),
-                        typeOfEmployment,
+                let educatorId
+
+                if ([1, 2, 3].includes(typeOfEmployment)) {
+                    existEducator = await Educator.findOne({
+                        where: {
+                            name: obj.educator,
+                            typeOfEmployment: {[Op.between]: [1, 3]}
+                        },
                     });
+                    if (!existEducator) {
+                        resEducator = await Educator.create({
+                            name: obj.educator,
+                            department: obj.department,
+                            position: obj.position,
+                            rate: extractRealRate(obj.rate),
+                            typeOfEmployment,
+                        });
+                    }
+
+                    educatorId = existEducator ? existEducator.id : resEducator.id;
                 }
-
-                let educatorId = existEducator ? existEducator.id : resEducator.id;
-
-                if(typeOfEmployment === 'На условиях почасовой оплаты труда'){
+                if (typeOfEmployment === 5) {
                     existEducator = await Educator.findOne({
                         where: {
                             name: obj.educator,
                             typeOfEmployment: 4,
                         },
                     });
-                    if(existEducator === null){
+                    if (existEducator === null) {
                         existEducator = await Educator.findOne({
                             where: {
                                 name: obj.educator,
-                                typeOfEmployment: { [Op.between]: [1, 3] }
+                                typeOfEmployment: {[Op.between]: [1, 3]}
                             },
                         });
-                        if(existEducator !== null){
+                        if (existEducator !== null) {
                             resEducator = await Educator.create({
                                 name: existEducator.name,
                                 department: existEducator.department,
@@ -129,11 +132,11 @@ export default {
                                 rate: existEducator.rate,
                                 typeOfEmployment: 4,
                             });
-                        }  else {
+                        } else {
                             resEducator = await Educator.create({
                                 name: obj.educator,
-                                department:  obj.department,
-                                position: positions[obj.position],
+                                department: obj.department,
+                                position: obj.position,
                                 rate: 0,
                                 typeOfEmployment: 4,
                             });
@@ -141,7 +144,7 @@ export default {
                         }
                         educatorId = resEducator.id;
                     } else educatorId = existEducator.id;
-                } 
+                }
 
                 const isSplit = false;
                 delete obj.educator;
@@ -154,7 +157,7 @@ export default {
                         isSplit,
                         isOid,
                     },
-                    { individualHooks: true }
+                    {individualHooks: true}
                 );
             } catch (e) {
                 console.log(e);
@@ -171,7 +174,7 @@ export default {
         if (process.env.NODE_ENV === 'production') {
             const recievers = await User.findAll({
                 where: {
-                    role: { [Op.in]: [3, 8] },
+                    role: {[Op.in]: [3, 8]},
                 },
                 include: [
                     {
@@ -190,20 +193,20 @@ export default {
         }
 
         await History.destroy({
-            where: { department: numberDepartment },
+            where: {department: numberDepartment},
             force: true,
         });
 
         await Workload.destroy({
             where: {
                 department: numberDepartment,
-                deletedAt: { [Op.ne]: null },
+                deletedAt: {[Op.ne]: null},
             },
             paranoid: false,
             force: true,
         });
 
-        return res.json({ status: 'ok' });
+        return res.json({status: 'ok'});
     },
 
     async parseEducators(req, res) {
@@ -238,7 +241,7 @@ export default {
                     const englishHeader = HeaderTranslationEducators[header];
                     newEducator[englishHeader] = row[index];
                 });
-                const existEducator = await Educator.findOne({ where: { email: newEducator.email } });
+                const existEducator = await Educator.findOne({where: {email: newEducator.email}});
                 newEducator.department = FullNameDepartments[newEducator.department];
                 console.log(newEducator);
                 if (!existEducator && validPositions.includes(newEducator.position) && newEducator.department) {
@@ -272,6 +275,6 @@ export default {
             console.error('Ошибка при удалении файла:', error);
         }
 
-        return res.json({ status: 'ok' });
+        return res.json({status: 'ok'});
     },
 };
