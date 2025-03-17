@@ -2,7 +2,9 @@
 export function funFixEducator(data) {
   return data.map((item) => ({
     ...item,
-    educator: item.educator ? item.educator.name : "___",
+    educator: item.educator
+      ? `${item.educator.name} (${item.educator?.typeOfEmployment})`
+      : "___",
   }));
 }
 // if(data && bufferAction.length >0){

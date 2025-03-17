@@ -2,7 +2,9 @@
 export function funFixEducator(data) {
   return data.map((item) => ({
     ...item,
-    educator: item.educator ? item.educator.name : "___",
+    educator: item.educator
+      ? `${item.educator.name} (${item.educator.typeOfEmployment})`
+      : "___",
   }));
 }
 
@@ -261,7 +263,9 @@ const funWorcloadFix = (item, el, action, len, length, keys) => {
     value: {
       ...el,
       objid: item.id,
-      educator: el.educator ? el.educator.name : null,
+      educator: el.educator
+        ? `${el.educator.name} (${el.educator.typeOfEmployment})`
+        : null,
     },
   };
 };

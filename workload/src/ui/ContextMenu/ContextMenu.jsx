@@ -110,9 +110,12 @@ const ContextMenu = (props) => {
         const { newData, prevState } = upDateEducators(
           props.tableDataFix,
           tabPar?.selectedTr,
-          dataReq?.name
+          dataReq?.name,
+          dataReq?.typeOfEmployment
         );
-        const edicatorName = { edicatorName: dataReq?.name };
+        const edicatorName = {
+          edicatorName: `${dataReq?.name} ${dataReq?.typeOfEmployment}`,
+        };
         props.setTableDataFix(newData);
         // basicTabData.setFiltredData(newData);
         const workloadId = data.workloadIds;
