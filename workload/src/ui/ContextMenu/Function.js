@@ -8,9 +8,11 @@ export function upDateEducator(data, ItemSelectedTr, name) {
   return { newData: updatedData, prevState };
 }
 
-export function upDateEducators(data, ItemSelectedTr, name) {
+export function upDateEducators(data, ItemSelectedTr, name, type) {
   const updatedData = data.map((obj) =>
-    ItemSelectedTr.some((e) => e === obj.id) ? { ...obj, educator: name } : obj
+    ItemSelectedTr.some((e) => e === obj.id)
+      ? { ...obj, educator: `${name} ${type ? type : ""}` }
+      : obj
   );
   let prevState = [];
   data.map((obj) => {

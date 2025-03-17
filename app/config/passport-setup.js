@@ -5,19 +5,21 @@ import jwt from 'jsonwebtoken';
 import User from '../models/user.js';
 import jwtUtil from '../utils/jwt.js';
 import UserDto from '../dtos/user-dto.js';
-import associateEducator from "../utils/associate-educator.js";
+import associateEducator from '../utils/associate-educator.js';
 
 passport.serializeUser((user, done) => {
     done(null, user.id);
 });
 
 passport.deserializeUser((req, user, done) => {
-    User.findByPk(user).then(_user => {
-        done(null, _user.id);
-    }).catch(() => {
-        req.logout();
-        done(null, false);
-    });
+    User.findByPk(user)
+        .then(_user => {
+            done(null, _user.id);
+        })
+        .catch(() => {
+            req.logout();
+            done(null, false);
+        });
 });
 passport.use(
     new AzureAdOAuth2Strategy(
